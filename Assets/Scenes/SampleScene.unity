@@ -1380,6 +1380,7 @@ GameObject:
   - component: {fileID: 2337879056328075088}
   - component: {fileID: 7431735201463319718}
   - component: {fileID: 7431735201463319719}
+  - component: {fileID: 7431735201463319720}
   m_Layer: 5
   m_Name: Card
   m_TagString: Untagged
@@ -1536,6 +1537,18 @@ MonoBehaviour:
   image: {fileID: 5779377468409382250}
   suite: {fileID: 1897744123}
   colorPallet: {fileID: 11400000, guid: 6640e9abb150f0a48a5fa11a4cf2f0ab, type: 2}
+--- !u!114 &7431735201463319720
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5621081075678099938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2555a241755d43d4af9c93445e5ee426, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &7638037007188888734
 MonoBehaviour:
   m_ObjectHideFlags: 0
