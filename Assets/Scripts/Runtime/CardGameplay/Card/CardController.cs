@@ -32,7 +32,7 @@ namespace Runtime.CardGameplay.Card
 
         public void Init(CardInstance instance)
         {
-            Init(instance.Data, instance.Number, instance.Suit);
+            Init(instance.data, instance.number, instance.Suit);
         }
 
         public void Select()

@@ -23,7 +23,7 @@ namespace Runtime.CardGameplay.Card
 
         public CardController Create(CardInstance instance)
         {
-            return Create(instance.Data, instance.Number, instance.Suit);
+            return Create(instance.data, instance.number, instance.Suit);
         }
 
         /// <summary>
