@@ -1,5 +1,8 @@
-﻿namespace Runtime.CardGameplay.Card
+﻿using System;
+
+namespace Runtime.CardGameplay.Card
 {
+    [Serializable]
     public struct CardInstance
     {
         public CardData Data { get; private set; }
