@@ -12,4 +12,60 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24a498d149464f759e22662049960c81, type: 3}
   m_Name: Starter Deck
   m_EditorClassIdentifier: 
-  cards: []
+  cards:
+  - data: {fileID: 11400000, guid: a43c849c990c2ed4b9e9f1f2e33ea415, type: 2}
+    number: 1
+  - data: {fileID: 11400000, guid: a43c849c990c2ed4b9e9f1f2e33ea415, type: 2}
+    number: 2
+  - data: {fileID: 11400000, guid: a43c849c990c2ed4b9e9f1f2e33ea415, type: 2}
+    number: 3
+  - data: {fileID: 11400000, guid: a43c849c990c2ed4b9e9f1f2e33ea415, type: 2}
+    number: 4
+  - data: {fileID: 11400000, guid: a43c849c990c2ed4b9e9f1f2e33ea415, type: 2}
+    number: 5
+  - data: {fileID: 11400000, guid: a43c849c990c2ed4b9e9f1f2e33ea415, type: 2}
+    number: 6
+  - data: {fileID: 11400000, guid: a43c849c990c2ed4b9e9f1f2e33ea415, type: 2}
+    number: 7
+  - data: {fileID: 11400000, guid: a43c849c990c2ed4b9e9f1f2e33ea415, type: 2}
+    number: 1
+  - data: {fileID: 11400000, guid: a43c849c990c2ed4b9e9f1f2e33ea415, type: 2}
+    number: 2
+  - data: {fileID: 11400000, guid: a43c849c990c2ed4b9e9f1f2e33ea415, type: 2}
+    number: 3
+  - data: {fileID: 11400000, guid: a43c849c990c2ed4b9e9f1f2e33ea415, type: 2}
+    number: 4
+  - data: {fileID: 11400000, guid: a43c849c990c2ed4b9e9f1f2e33ea415, type: 2}
+    number: 5
+  - data: {fileID: 11400000, guid: a43c849c990c2ed4b9e9f1f2e33ea415, type: 2}
+    number: 6
+  - data: {fileID: 11400000, guid: a43c849c990c2ed4b9e9f1f2e33ea415, type: 2}
+    number: 7
+  - data: {fileID: 11400000, guid: c991fad572efdee44b0d6993abbb32cb, type: 2}
+    number: 1
+  - data: {fileID: 11400000, guid: c991fad572efdee44b0d6993abbb32cb, type: 2}
+    number: 2
+  - data: {fileID: 11400000, guid: c991fad572efdee44b0d6993abbb32cb, type: 2}
+    number: 3
+  - data: {fileID: 11400000, guid: c991fad572efdee44b0d6993abbb32cb, type: 2}
+    number: 4
+  - data: {fileID: 11400000, guid: c991fad572efdee44b0d6993abbb32cb, type: 2}
+    number: 5
+  - data: {fileID: 11400000, guid: c991fad572efdee44b0d6993abbb32cb, type: 2}
+    number: 6
+  - data: {fileID: 11400000, guid: c991fad572efdee44b0d6993abbb32cb, type: 2}
+    number: 7
+  - data: {fileID: 11400000, guid: c991fad572efdee44b0d6993abbb32cb, type: 2}
+    number: 1
+  - data: {fileID: 11400000, guid: c991fad572efdee44b0d6993abbb32cb, type: 2}
+    number: 2
+  - data: {fileID: 11400000, guid: c991fad572efdee44b0d6993abbb32cb, type: 2}
+    number: 3
+  - data: {fileID: 11400000, guid: c991fad572efdee44b0d6993abbb32cb, type: 2}
+    number: 4
+  - data: {fileID: 11400000, guid: c991fad572efdee44b0d6993abbb32cb, type: 2}
+    number: 5
+  - data: {fileID: 11400000, guid: c991fad572efdee44b0d6993abbb32cb, type: 2}
+    number: 6
+  - data: {fileID: 11400000, guid: c991fad572efdee44b0d6993abbb32cb, type: 2}
+    number: 7

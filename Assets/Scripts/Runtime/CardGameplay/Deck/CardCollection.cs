@@ -8,15 +8,20 @@ namespace Runtime.CardGameplay.Deck
 {
     public class CardCollection : MonoBehaviour
     {
-        [SerializeField] private List<CardInstance> cards;
+        [SerializeField, TableList] private List<CardInstance> cards;
         [SerializeField] private int sizeLimitMin, sizeLimitMax;
         [SerializeField] private StarterDeck starterDeck;
+
+        [SerializeField, TabGroup("Dependencies")]
+        private DeckView deckView;
 
         [ShowInInspector, ReadOnly] public Deck Deck { get; private set; }
 
         private void Start()
         {
             cards = new List<CardInstance>(starterDeck.Cards);
+            Deck = new Deck(cards);
+            deckView.Setup(Deck);
         }
 
         public bool TryAddCard(CardInstance card)
@@ -52,8 +57,8 @@ namespace Runtime.CardGameplay.Deck
         [Button]
         public Deck CreateDeck()
         {
-            Deck deck = new Deck(cards);
-            Deck = deck;
+            Deck.Setup(cards);
+
             return Deck;
         }
     }
