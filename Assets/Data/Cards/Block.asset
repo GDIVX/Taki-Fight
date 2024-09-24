@@ -15,6 +15,6 @@ MonoBehaviour:
   title: Block
   description: 1 Defense
   image: {fileID: 21300000, guid: 16fd2dfc9215a094e85144576c3719d7, type: 3}
-  suit: 1
+  suit: 5
   selectStrategy: {fileID: 11400000, guid: 6488691d3e5b1734fbf184a753c30823, type: 2}
   playStrategy: {fileID: 11400000, guid: c63759480ce0df54287d02e4f2969881, type: 2}

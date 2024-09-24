@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
 
@@ -10,11 +11,12 @@ namespace Runtime.CardGameplay.Card
 
         private readonly Stack<CardController> _objectPool = new();
 
+        [Button]
         public CardController Create(CardData data, int number, Suit suit)
         {
             CardController controller = GetController();
             controller.Init(data, number, suit);
-            controller.gameObject.GetComponent<CardView>().Draw(data, number);
+            controller.gameObject.GetComponent<CardView>().Draw(data, number, suit);
             controller.gameObject.SetActive(true);
             return controller;
         }
@@ -35,13 +37,11 @@ namespace Runtime.CardGameplay.Card
 
         private CardController GetController()
         {
-            if (_objectPool.Count > 0)
-            {
-                return _objectPool.Pop();
-            }
-
-            //Create a new instance
-            return Instantiate(prefab);
+            return _objectPool.Count > 0
+                ? _objectPool.Pop()
+                :
+                //Create a new instance
+                Instantiate(prefab);
         }
     }
 }

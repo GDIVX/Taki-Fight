@@ -72,6 +72,8 @@ namespace Runtime.CardGameplay.Card
         Blue,
         Purple,
         Yellow,
-        Green
+        Green,
+        Black,
+        White,
     }
 }
