@@ -17,10 +17,22 @@ namespace Runtime.CardGameplay.Card
         [ShowInInspector, ReadOnly] private CardSelectStrategy _selectStrategy;
         [ShowInInspector, ReadOnly] private CardPlayStrategy _playStrategy;
 
-        public void Init(CardData data, int number)
+        public CardInstance Instance { get; private set; }
+
+        [Button]
+        public void Init(CardData data, int number, Suit suit)
         {
             Number = number;
-            Suit = data.Suit;
+            Suit = suit;
+            _selectStrategy = data.SelectStrategy;
+            _playStrategy = data.PlayStrategy;
+
+            Instance = new CardInstance(data, number);
+        }
+
+        public void Init(CardInstance instance)
+        {
+            Init(instance.Data, instance.Number, instance.Suit);
         }
 
         public void Select()
