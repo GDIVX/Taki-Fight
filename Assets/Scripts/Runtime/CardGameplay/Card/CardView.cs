@@ -1,4 +1,5 @@
-﻿using DG.Tweening;
+﻿using System;
+using DG.Tweening;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
@@ -25,14 +26,27 @@ namespace Runtime.CardGameplay.Card
         [SerializeField, TabGroup("Hover Animation")]
         private Ease hoverEaseType = Ease.OutQuad;
 
+        [ShowInInspector, ReadOnly] private CardData _cardData;
+
         private Vector3 _originalScale;
         private Vector3 _originalPosition;
         private Vector3 _originalRotation;
         private int _originalSiblingIndex;
+        private bool _lockAnimation = false;
+
+        private void Awake()
+        {
+            _originalScale = transform.localScale;
+        }
 
         [Button]
-        public void Draw(CardData data, int number, Suit suit)
+        public void Draw(CardData data, int number, Suit suit = Suit.Defualt)
         {
+            if (suit == Suit.Defualt)
+            {
+                suit = data.Suit;
+            }
+
             if (suit == Suit.White)
             {
                 numberText.text = "J";
@@ -53,27 +67,47 @@ namespace Runtime.CardGameplay.Card
             description.color = color;
             suitImage.color = color;
             image.color = color;
+
+            _cardData = data;
         }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            _originalScale = transform.localScale;
-            _originalPosition = transform.localPosition;
-            _originalRotation = transform.localRotation.eulerAngles;
-            _originalSiblingIndex = transform.GetSiblingIndex();
+            if (_lockAnimation) return;
+
+            _lockAnimation = true;
+
 
             transform.SetAsLastSibling();
             transform.DOLocalRotate(Vector3.zero, hoverRotationDuration).SetEase(hoverEaseType);
             transform.DOScale(_originalScale * hoverScaleFactor, hoverRotationDuration).SetEase(hoverEaseType);
+
+            _lockAnimation = false;
+        }
+
+        public void SetOriginalValues()
+        {
+            _originalSiblingIndex = transform.GetSiblingIndex();
+            _originalPosition = transform.localPosition;
+            _originalRotation = transform.localRotation.eulerAngles;
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
+            ReturnToDefault();
+        }
+
+        private void ReturnToDefault()
+        {
+            if (_lockAnimation) return;
+            _lockAnimation = true;
+
             transform.DOLocalMove(_originalPosition, hoverRotationDuration).SetEase(hoverEaseType);
             transform.DOLocalRotate(_originalRotation, hoverRotationDuration).SetEase(hoverEaseType);
             transform.DOScale(_originalScale, hoverRotationDuration).SetEase(hoverEaseType);
 
             transform.SetSiblingIndex(_originalSiblingIndex);
+            _lockAnimation = false;
         }
     }
 }

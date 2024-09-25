@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using Runtime.CardGameplay.Card;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -9,13 +10,19 @@ namespace Runtime.CardGameplay.Deck
 {
     public class HandController : Singleton<HandController>
     {
+        [SerializeField] private int cardToDrawPerTurn;
+        [SerializeField] private int maxHandSize;
         public Deck Deck { get; set; }
-
         [ShowInInspector, ReadOnly] private List<CardController> _cards = new();
 
         public event Action<CardController> OnCardAdded;
         public event Action<CardController> OnCardRemoved;
 
+        public int CardToDrawPerTurn
+        {
+            get => cardToDrawPerTurn;
+            set => cardToDrawPerTurn = value;
+        }
 
         /// <summary>
         /// Remove a card from hand
@@ -34,6 +41,12 @@ namespace Runtime.CardGameplay.Deck
         /// <param name="cardController"></param>
         public void AddCard(CardController cardController)
         {
+            if (cardController == null)
+            {
+                Debug.LogWarning("Trying to add null card to hand");
+                return;
+            }
+
             _cards.Add(cardController);
             OnCardAdded?.Invoke(cardController);
         }
@@ -44,9 +57,18 @@ namespace Runtime.CardGameplay.Deck
         [Button]
         public void DrawCard()
         {
-            var cardInstance = Deck.Draw();
+            if (_cards.Count >= maxHandSize) return;
+            if (!Deck.Draw(out CardInstance cardInstance)) return;
             var controller = CardFactory.Instance.Create(cardInstance);
             AddCard(controller);
+        }
+
+        public void DrawHand()
+        {
+            for (int i = 0; i < cardToDrawPerTurn; i++)
+            {
+                DrawCard();
+            }
         }
 
         /// <summary>
@@ -61,6 +83,11 @@ namespace Runtime.CardGameplay.Deck
 
             Deck.Discard(cardController.Instance);
             RemoveCard(cardController);
+        }
+
+        public bool Has(CardController cardController)
+        {
+            return _cards.Contains(cardController);
         }
     }
 }

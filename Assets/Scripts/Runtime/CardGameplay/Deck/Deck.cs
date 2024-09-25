@@ -32,16 +32,23 @@ namespace Runtime.CardGameplay.Deck
             OnDiscardPileUpdated?.Invoke(_discardPile);
         }
 
-        public CardInstance Draw()
+        public bool Draw(out CardInstance cardInstance)
         {
             if (_drawPile.Count == 0)
             {
+                if (_discardPile.Count == 0)
+                {
+                    Debug.LogWarning("Can't draw more cards");
+                    cardInstance = default;
+                    return false;
+                }
+
                 Reshuffle();
             }
 
-            var card = _drawPile.Pop();
+            cardInstance = _drawPile.Pop();
             OnDrawPileUpdated?.Invoke(_drawPile);
-            return card;
+            return true;
         }
 
         public void Discard(CardInstance card)

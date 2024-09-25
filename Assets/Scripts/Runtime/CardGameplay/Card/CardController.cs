@@ -1,4 +1,5 @@
-﻿using Runtime.CardGameplay.Board;
+﻿using System;
+using Runtime.CardGameplay.Board;
 using Runtime.CardGameplay.Card.CardBehaviour;
 using Runtime.CardGameplay.Deck;
 using Sirenix.OdinInspector;
@@ -16,12 +17,16 @@ namespace Runtime.CardGameplay.Card
         public Suit Suit { get; private set; }
 
         //TODO: hook some visual indicator
-        public bool Selectable { get; set; }
+        public bool Selectable { get; set; } = true;
 
         [ShowInInspector, ReadOnly] private CardSelectStrategy _selectStrategy;
         [ShowInInspector, ReadOnly] private CardPlayStrategy _playStrategy;
 
+        public event Action<CardController> OnSelectionStart;
+        public event Action<CardController> OnSelectionCancled;
+
         public CardInstance Instance { get; private set; }
+        public CardView View { get; set; }
 
         [Button]
         public void Init(CardData data, int number, Suit suit)
@@ -32,6 +37,7 @@ namespace Runtime.CardGameplay.Card
             _playStrategy = data.PlayStrategy;
 
             Instance = new CardInstance(data, number);
+            View = GetComponent<CardView>();
         }
 
         public void Init(CardInstance instance)
@@ -43,21 +49,41 @@ namespace Runtime.CardGameplay.Card
         public void Select(CardSelectStrategy selectStrategy)
         {
             //If the card is not selectable, return
-            if (!Selectable) return;
-
-            //handle card selection
-            if (selectStrategy.Select(this))
+            if (!Selectable)
             {
-                //if valid, add it to the sequence
-                BoardController.Instance.AddToSequence(this);
-                HandController.Instance.RemoveCard(this);
+                return;
+            }
+
+            OnSelectionStart?.Invoke(this);
+            //handle card selection
+
+            if (HandController.Instance.Has(this))
+            {
+                if (!selectStrategy.Select(this)) return;
+                MoveToBoard();
             }
             else
             {
                 //else, add it to the hand
-                HandController.Instance.AddCard(this);
-                BoardController.Instance.Remove(this);
+                MoveCardFromBoardToHand();
             }
+        }
+
+        private static void MoveCardFromBoardToHand()
+        {
+            var card = BoardController.Instance.Remove();
+            HandController.Instance.AddCard(card);
+        }
+
+        private void MoveToBoard()
+        {
+            if (!BoardController.Instance.AddToSequence(this))
+            {
+                OnSelectionCancled?.Invoke(this);
+                return;
+            }
+
+            HandController.Instance.RemoveCard(this);
         }
 
         public void Play()
@@ -94,5 +120,6 @@ namespace Runtime.CardGameplay.Card
         Green,
         Black,
         White,
+        Defualt
     }
 }
