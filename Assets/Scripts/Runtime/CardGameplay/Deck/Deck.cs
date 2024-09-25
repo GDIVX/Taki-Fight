@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Runtime.CardGameplay.Card;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -10,8 +11,8 @@ namespace Runtime.CardGameplay.Deck
     [Serializable]
     public class Deck
     {
-        [ShowInInspector, ReadOnly, TableList] public Stack<CardInstance> DrawPile { get; private set; }
-        [ShowInInspector, ReadOnly, TableList] public Stack<CardInstance> DiscardPile { get; private set; }
+        [ShowInInspector, ReadOnly, TableList] private Stack<CardInstance> _drawPile;
+        [ShowInInspector, ReadOnly, TableList] private Stack<CardInstance> _discardPile;
 
         public event Action<Stack<CardInstance>> OnDrawPileUpdated;
         public event Action<Stack<CardInstance>> OnDiscardPileUpdated;
@@ -23,30 +24,30 @@ namespace Runtime.CardGameplay.Deck
 
         public void Setup(List<CardInstance> cards)
         {
-            DrawPile = new Stack<CardInstance>(cards);
-            DiscardPile = new Stack<CardInstance>();
+            _drawPile = new Stack<CardInstance>(cards);
+            _discardPile = new Stack<CardInstance>();
             Reshuffle();
 
-            OnDrawPileUpdated?.Invoke(DrawPile);
-            OnDiscardPileUpdated?.Invoke(DiscardPile);
+            OnDrawPileUpdated?.Invoke(_drawPile);
+            OnDiscardPileUpdated?.Invoke(_discardPile);
         }
 
         public CardInstance Draw()
         {
-            if (DrawPile.Count == 0)
+            if (_drawPile.Count == 0)
             {
                 Reshuffle();
             }
 
-            var card = DrawPile.Pop();
-            OnDrawPileUpdated?.Invoke(DrawPile);
+            var card = _drawPile.Pop();
+            OnDrawPileUpdated?.Invoke(_drawPile);
             return card;
         }
 
         public void Discard(CardInstance card)
         {
-            DiscardPile.Push(card);
-            OnDiscardPileUpdated?.Invoke(DiscardPile);
+            _discardPile.Push(card);
+            OnDiscardPileUpdated?.Invoke(_discardPile);
         }
 
         public void Reshuffle()
@@ -55,28 +56,43 @@ namespace Runtime.CardGameplay.Deck
             var cards = ShuffleCards();
 
             // Clear the draw pile and add the shuffled cards back
-            DrawPile.Clear();
+            _drawPile.Clear();
             foreach (var card in cards)
             {
-                DrawPile.Push(card);
+                _drawPile.Push(card);
             }
 
-            OnDrawPileUpdated?.Invoke(DrawPile);
+            OnDrawPileUpdated?.Invoke(_drawPile);
         }
 
         private List<CardInstance> ShuffleCards()
         {
-            var cards = new List<CardInstance>(DrawPile);
+            var cards = new List<CardInstance>(_drawPile);
             cards.Shuffle();
             return cards;
         }
 
         private void MergePiles()
         {
-            while (DiscardPile.Count > 0)
+            while (_discardPile.Count > 0)
             {
-                DrawPile.Push(DiscardPile.Pop());
+                _drawPile.Push(_discardPile.Pop());
             }
+        }
+
+        public bool IsDiscarded(CardInstance card)
+        {
+            return _discardPile.Contains(card);
+        }
+
+        public bool IsInDrawPile(CardInstance card)
+        {
+            return _drawPile.Contains(card);
+        }
+
+        public bool Exist(CardInstance card)
+        {
+            return IsDiscarded(card) || IsInDrawPile(card);
         }
     }
 }

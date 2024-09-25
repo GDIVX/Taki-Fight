@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   title: Strike
   description: 1 Attack
-  image: {fileID: 21300000, guid: 518d85b7989f2b74fa633fe5070511c9, type: 3}
+  image: {fileID: 21300000, guid: 48e2f1306c86ea74cbc32a1541ed772a, type: 3}
   suit: 0
   selectStrategy: {fileID: 11400000, guid: 6488691d3e5b1734fbf184a753c30823, type: 2}
   playStrategy: {fileID: 11400000, guid: c63759480ce0df54287d02e4f2969881, type: 2}

@@ -58,7 +58,7 @@ namespace Runtime.CardGameplay.Deck
         public Deck CreateDeck()
         {
             Deck.Setup(cards);
-
+            HandController.Instance.Deck = Deck;
             return Deck;
         }
     }

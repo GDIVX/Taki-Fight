@@ -29,7 +29,7 @@ namespace Runtime.CardGameplay.Card
         /// <summary>
         /// Remove the card from the front end of the game. Does not destroy the card from all refrence points.
         /// </summary>
-        public void DestroyController(CardController controller)
+        public void Disable(CardController controller)
         {
             controller.gameObject.SetActive(false);
             _objectPool.Push(controller);

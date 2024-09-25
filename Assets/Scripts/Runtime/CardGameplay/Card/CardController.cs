@@ -1,4 +1,6 @@
-﻿using Runtime.CardGameplay.Card.CardBehaviour;
+﻿using Runtime.CardGameplay.Board;
+using Runtime.CardGameplay.Card.CardBehaviour;
+using Runtime.CardGameplay.Deck;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -12,6 +14,8 @@ namespace Runtime.CardGameplay.Card
     {
         public int Number { get; private set; }
         public Suit Suit { get; private set; }
+
+        //TODO: hook some visual indicator
         public bool Selectable { get; set; }
 
         [ShowInInspector, ReadOnly] private CardSelectStrategy _selectStrategy;
@@ -35,23 +39,24 @@ namespace Runtime.CardGameplay.Card
             Init(instance.data, instance.number, instance.Suit);
         }
 
-        public void Select()
+
+        public void Select(CardSelectStrategy selectStrategy)
         {
             //If the card is not selectable, return
             if (!Selectable) return;
 
             //handle card selection
-            if (_selectStrategy.Select(this))
+            if (selectStrategy.Select(this))
             {
                 //if valid, add it to the sequence
-                //Table.Instance.AddToSequence(this);
-                //Hand.Instance.Remove(this);
+                BoardController.Instance.AddToSequence(this);
+                HandController.Instance.RemoveCard(this);
             }
             else
             {
                 //else, add it to the hand
-                //Hand.Instance.Add(this);
-                //Table.Instance.Remove(this);
+                HandController.Instance.AddCard(this);
+                BoardController.Instance.Remove(this);
             }
         }
 
@@ -63,6 +68,20 @@ namespace Runtime.CardGameplay.Card
         public void OnPointerClick(PointerEventData eventData)
         {
             Select();
+        }
+
+        private void Select()
+        {
+            Select(_selectStrategy);
+        }
+
+
+        /// <summary>
+        /// Remove the card 
+        /// </summary>
+        public void Disable()
+        {
+            CardFactory.Instance.Disable(this);
         }
     }
 
