@@ -8,8 +8,8 @@ namespace Runtime.CardGameplay.Card
     public class CardData : ScriptableObject
     {
         [SerializeField] private string title;
-        [SerializeField] private string description;
-        [SerializeField] private Sprite image;
+        [SerializeField, TextArea] private string description;
+        [SerializeField, PreviewField] private Sprite image;
         [SerializeField] private Suit suit;
         [SerializeField] private CardSelectStrategy selectStrategy;
         [SerializeField] private CardPlayStrategy playStrategy;

@@ -16,6 +16,7 @@ namespace Runtime.CardGameplay.Deck
 
         public event Action<Stack<CardInstance>> OnDrawPileUpdated;
         public event Action<Stack<CardInstance>> OnDiscardPileUpdated;
+        public event Action<CardInstance> OnCardDiscarded;
 
         public Deck(List<CardInstance> cards)
         {
@@ -55,6 +56,7 @@ namespace Runtime.CardGameplay.Deck
         {
             _discardPile.Push(card);
             OnDiscardPileUpdated?.Invoke(_discardPile);
+            OnCardDiscarded?.Invoke(card);
         }
 
         public void Reshuffle()

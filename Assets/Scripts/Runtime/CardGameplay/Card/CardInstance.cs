@@ -1,19 +1,23 @@
 ﻿using System;
+using Sirenix.OdinInspector;
 
 namespace Runtime.CardGameplay.Card
 {
     [Serializable]
-    public struct CardInstance
+    public class CardInstance
     {
         public CardData data;
         public int number;
-        public Suit Suit { get; set; }
+        [ShowInInspector] public Suit Suit { get; set; }
+
+        public CardController Controller { get; set; }
 
         public CardInstance(CardData data, int number)
         {
             this.data = data;
             this.number = number;
             Suit = data.Suit;
+            Controller = null;
         }
     }
 }

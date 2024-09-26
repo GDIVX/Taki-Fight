@@ -16,25 +16,25 @@ namespace Runtime.CardGameplay.Deck
         [SerializeField] private float minArcWidthFactor = 0.2f;
         [SerializeField] private float maxArcWidthFactor = 1f;
 
-        private readonly List<CardController> _cards = new();
+        [ShowInInspector, ReadOnly] protected readonly List<CardController> Cards = new();
 
         protected virtual void OnCardAdded(CardController cardController)
         {
             cardController.transform.SetParent(transform);
-            _cards.Add(cardController);
+            Cards.Add(cardController);
             ArrangeCardsInArch();
         }
 
         protected virtual void OnCardRemoved(CardController cardController)
         {
-            _cards.Remove(cardController);
+            Cards.Remove(cardController);
             ArrangeCardsInArch();
         }
 
         [Button]
         protected void ArrangeCardsInArch()
         {
-            int cardCount = _cards.Count;
+            int cardCount = Cards.Count;
             if (cardCount == 0 || arcAngle == 0) return;
 
             RectTransform rectTransform = GetComponent<RectTransform>();
@@ -55,10 +55,10 @@ namespace Runtime.CardGameplay.Deck
 
                 if (float.IsNaN(xPos) || float.IsNaN(yPos)) continue;
 
-                _cards[i].transform.DOLocalMove(new Vector3(xPos, yPos, 0), animationDuration).SetEase(easeType);
-                _cards[i].transform.DOLocalRotate(new Vector3(0, 0, -angle), animationDuration).SetEase(easeType);
+                Cards[i].transform.DOLocalMove(new Vector3(xPos, yPos, 0), animationDuration).SetEase(easeType);
+                Cards[i].transform.DOLocalRotate(new Vector3(0, 0, -angle), animationDuration).SetEase(easeType);
 
-                StartCoroutine(WaitAndSetViewNewValues(_cards[i].View));
+                StartCoroutine(WaitAndSetViewNewValues(Cards[i].View));
             }
         }
 

@@ -79,9 +79,9 @@ namespace Runtime.CardGameplay.Deck
         public void DiscardCard(CardController cardController)
         {
             //If the card is already discard, return to avoid side effects
-            if (Deck.IsDiscarded(cardController.Instance)) return;
+            if (Deck.IsDiscarded(cardController.instance)) return;
 
-            Deck.Discard(cardController.Instance);
+            Deck.Discard(cardController.instance);
             RemoveCard(cardController);
         }
 

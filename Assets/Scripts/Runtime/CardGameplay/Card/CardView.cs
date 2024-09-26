@@ -97,7 +97,7 @@ namespace Runtime.CardGameplay.Card
             ReturnToDefault();
         }
 
-        private void ReturnToDefault()
+        public void ReturnToDefault()
         {
             if (_lockAnimation) return;
             _lockAnimation = true;

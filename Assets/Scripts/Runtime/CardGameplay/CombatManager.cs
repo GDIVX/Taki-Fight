@@ -15,20 +15,13 @@ namespace Runtime.CardGameplay
         {
             cardCollection.CreateDeck();
             HandController.Instance.DrawHand();
+            BoardController.Instance.OnTurnStart();
         }
 
         [Button]
         public void EndTurn()
         {
-            DiscardBoardIfSequenceIsNotIntact();
-        }
-
-        private static void DiscardBoardIfSequenceIsNotIntact()
-        {
-            if (!BoardController.Instance.IsSequenceIsIntact())
-            {
-                BoardController.Instance.DiscardAll();
-            }
+            BoardController.Instance.OnTurnEnd();
         }
     }
 }

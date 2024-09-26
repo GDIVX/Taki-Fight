@@ -13,6 +13,20 @@ MonoBehaviour:
   m_Name: Starter Deck
   m_EditorClassIdentifier: 
   cards:
+  - data: {fileID: 11400000, guid: 136ca0b07a1ebcc449e43b6e701e1b7d, type: 2}
+    number: 1
+  - data: {fileID: 11400000, guid: 136ca0b07a1ebcc449e43b6e701e1b7d, type: 2}
+    number: 2
+  - data: {fileID: 11400000, guid: 136ca0b07a1ebcc449e43b6e701e1b7d, type: 2}
+    number: 3
+  - data: {fileID: 11400000, guid: 136ca0b07a1ebcc449e43b6e701e1b7d, type: 2}
+    number: 4
+  - data: {fileID: 11400000, guid: 136ca0b07a1ebcc449e43b6e701e1b7d, type: 2}
+    number: 5
+  - data: {fileID: 11400000, guid: 136ca0b07a1ebcc449e43b6e701e1b7d, type: 2}
+    number: 6
+  - data: {fileID: 11400000, guid: 136ca0b07a1ebcc449e43b6e701e1b7d, type: 2}
+    number: 7
   - data: {fileID: 11400000, guid: c991fad572efdee44b0d6993abbb32cb, type: 2}
     number: 1
   - data: {fileID: 11400000, guid: c991fad572efdee44b0d6993abbb32cb, type: 2}

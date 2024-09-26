@@ -23,10 +23,11 @@ namespace Runtime.CardGameplay.Card
         [ShowInInspector, ReadOnly] private CardPlayStrategy _playStrategy;
 
         public event Action<CardController> OnSelectionStart;
-        public event Action<CardController> OnSelectionCancled;
+        public event Action<CardController> OnSelectionCanceled;
 
-        public CardInstance Instance { get; private set; }
-        public CardView View { get; set; }
+        public CardInstance instance;
+        public CardView View { get; private set; }
+        public float PlayDuration => _playStrategy.Duration;
 
         [Button]
         public void Init(CardData data, int number, Suit suit)
@@ -36,13 +37,14 @@ namespace Runtime.CardGameplay.Card
             _selectStrategy = data.SelectStrategy;
             _playStrategy = data.PlayStrategy;
 
-            Instance = new CardInstance(data, number);
+            instance = new CardInstance(data, number);
             View = GetComponent<CardView>();
+            instance.Controller = this;
         }
 
-        public void Init(CardInstance instance)
+        public void Init(CardInstance cardInstance)
         {
-            Init(instance.data, instance.number, instance.Suit);
+            Init(cardInstance.data, cardInstance.number, cardInstance.Suit);
         }
 
 
@@ -79,7 +81,7 @@ namespace Runtime.CardGameplay.Card
         {
             if (!BoardController.Instance.AddToSequence(this))
             {
-                OnSelectionCancled?.Invoke(this);
+                OnSelectionCanceled?.Invoke(this);
                 return;
             }
 

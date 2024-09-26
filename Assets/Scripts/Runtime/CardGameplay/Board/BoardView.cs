@@ -27,8 +27,26 @@ namespace Runtime.CardGameplay.Board
         [SerializeField, BoxGroup("Combo Color")]
         private Ease colorTransitionEase;
 
-        [SerializeField, BoxGroup("Combo Message")]
-        private TextMeshProUGUI comboText;
+        [SerializeField, BoxGroup("Combo Counter")]
+        private TextMeshProUGUI comboCounter;
+
+        [SerializeField, BoxGroup("Values Indicator")]
+        private TextMeshProUGUI currentNumberText;
+
+        [SerializeField, BoxGroup("Values Indicator")]
+        private Image currentColorImage;
+
+        [SerializeField, BoxGroup("Values Indicator")]
+        private SuitColorPallet suitColorPallet;
+
+        [SerializeField, BoxGroup("Set Aside")]
+        private Transform setAsideDestination;
+
+        [SerializeField, BoxGroup("Set Aside")]
+        private float setAsideDuration;
+
+        [SerializeField, BoxGroup("Set Aside")]
+        private Ease setAsideEase;
 
         private int _comboCount = 0;
 
@@ -36,31 +54,54 @@ namespace Runtime.CardGameplay.Board
         {
             BoardController.Instance.OnCardAdded += OnCardAdded;
             BoardController.Instance.OnCardRemoved += OnCardRemoved;
-            BoardController.Instance.OnCardAddedExplainReason += UpdateComboText;
+            BoardController.Instance.OnCardSetAside += OnCardSetAside;
+            BoardController.Instance.OnMatchValuesChanged += OnMatchValuesChanged;
+
+
+            UpdateComboColor();
         }
 
-        private void UpdateComboText(string reason)
+        private void OnCardSetAside(CardController card)
         {
-            comboText.text = reason;
+            //Remove the card
+            Cards.Remove(card);
+
+            //Shrink and move the card to fit with the current color image 
+            card.transform.DOMove(setAsideDestination.transform.position, setAsideDuration).SetEase(setAsideEase);
+            card.transform.DOScale(setAsideDestination.localScale, setAsideDuration).SetEase(setAsideEase).onComplete +=
+                () =>
+                {
+                    //disable the view and then reset for future use
+                    card.Disable();
+                    card.View.ReturnToDefault();
+                };
+        }
+
+        private void OnMatchValuesChanged(Suit suit, int number)
+        {
+            currentColorImage.DOColor(suitColorPallet.GetColor(suit), colorTransitionDuration)
+                .SetEase(colorTransitionEase);
+            currentNumberText.text = number.ToString();
         }
 
         protected override void OnCardAdded(CardController cardController)
         {
             base.OnCardAdded(cardController);
             UpdateComboColor();
+            comboCounter.text = BoardController.Instance.SequenceCount.ToString();
         }
 
 
         protected override void OnCardRemoved(CardController cardController)
         {
             base.OnCardRemoved(cardController);
-            comboText.text = "";
             UpdateComboColor();
+            comboCounter.text = BoardController.Instance.SequenceCount.ToString();
         }
 
         private void UpdateComboColor()
         {
-            _comboCount = BoardController.Instance.IsSequenceIsIntact()
+            _comboCount = BoardController.Instance.IsSequenceIsIntact
                 ? Mathf.Min(maxComboCount, BoardController.Instance.SequenceCount)
                 : 0;
             var fraction = (float)_comboCount / (float)maxComboCount;

@@ -17,5 +17,19 @@ namespace Utilities
                 (list[i], list[j]) = (list[j], list[i]); // Swap elements
             }
         }
+
+        /// <summary>
+        /// Picks a random element from the list using Unity's Random.
+        /// </summary>
+        public static T PickRandom<T>(this List<T> list)
+        {
+            if (list == null || list.Count == 0)
+            {
+                return default; // Return default if the list is empty or null
+            }
+
+            int index = Random.Range(0, list.Count);
+            return list[index];
+        }
     }
 }
