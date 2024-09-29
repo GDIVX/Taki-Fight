@@ -28,11 +28,11 @@ namespace Runtime.CardGameplay.Card
 
         [ShowInInspector, ReadOnly] private CardData _cardData;
 
+        public bool lockAnimation = false;
         private Vector3 _originalScale;
         private Vector3 _originalPosition;
         private Vector3 _originalRotation;
         private int _originalSiblingIndex;
-        private bool _lockAnimation = false;
 
         private void Awake()
         {
@@ -73,16 +73,16 @@ namespace Runtime.CardGameplay.Card
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            if (_lockAnimation) return;
+            if (lockAnimation) return;
 
-            _lockAnimation = true;
+            lockAnimation = true;
 
 
             transform.SetAsLastSibling();
             transform.DOLocalRotate(Vector3.zero, hoverRotationDuration).SetEase(hoverEaseType);
             transform.DOScale(_originalScale * hoverScaleFactor, hoverRotationDuration).SetEase(hoverEaseType);
 
-            _lockAnimation = false;
+            lockAnimation = false;
         }
 
         public void SetOriginalValues()
@@ -99,15 +99,15 @@ namespace Runtime.CardGameplay.Card
 
         public void ReturnToDefault()
         {
-            if (_lockAnimation) return;
-            _lockAnimation = true;
+            if (lockAnimation) return;
+            lockAnimation = true;
 
             transform.DOLocalMove(_originalPosition, hoverRotationDuration).SetEase(hoverEaseType);
             transform.DOLocalRotate(_originalRotation, hoverRotationDuration).SetEase(hoverEaseType);
             transform.DOScale(_originalScale, hoverRotationDuration).SetEase(hoverEaseType);
 
             transform.SetSiblingIndex(_originalSiblingIndex);
-            _lockAnimation = false;
+            lockAnimation = false;
         }
     }
 }

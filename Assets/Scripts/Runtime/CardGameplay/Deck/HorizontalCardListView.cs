@@ -59,11 +59,12 @@ namespace Runtime.CardGameplay.Deck
 
                 var card = Cards[i];
                 card.View.lockAnimation = true;
+                card.transform.SetSiblingIndex(i);
                 card.transform.DOLocalMove(new Vector3(xPos, yPos, 0), animationDuration).SetEase(easeType);
                 card.transform.DOLocalRotate(new Vector3(0, 0, -angle), animationDuration).SetEase(easeType)
                     .onComplete += () => StartCoroutine(WaitAndSetViewNewValues(card.View));
+                card.View.lockAnimation = false;
                 //ensure correct ordering 
-                card.transform.SetSiblingIndex(i);
             }
         }
 
@@ -71,7 +72,6 @@ namespace Runtime.CardGameplay.Deck
         {
             yield return new WaitForSeconds(animationDuration);
             view.SetOriginalValues();
-            view.lockAnimation = false;
         }
     }
 }
