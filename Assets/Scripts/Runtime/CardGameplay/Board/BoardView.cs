@@ -101,9 +101,7 @@ namespace Runtime.CardGameplay.Board
 
         private void UpdateComboColor()
         {
-            _comboCount = BoardController.Instance.IsSequenceIsIntact
-                ? Mathf.Min(maxComboCount, BoardController.Instance.SequenceCount)
-                : 0;
+            _comboCount = BoardController.Instance.Combo;
             var fraction = (float)_comboCount / (float)maxComboCount;
             Color color = Color.LerpUnclamped(minColor, maxColor, fraction);
             imageToColorTransition.DOColor(color, colorTransitionDuration);

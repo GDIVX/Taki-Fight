@@ -22,6 +22,9 @@ namespace Runtime.CardGameplay.Board
 
         public int SequenceCount => _sequence.Count;
         public bool IsSequenceIsIntact => _isSequenceIsIntact;
+        public int Combo { get; private set; }
+
+        private int _undoCombo;
 
 
         public event Action<CardController> OnCardAdded;
@@ -37,12 +40,16 @@ namespace Runtime.CardGameplay.Board
 
         public bool AddToSequence(CardController cardController)
         {
-            if (!IsSequenceIsIntact) return false;
+            if (!IsSequenceIsIntact)
+            {
+                return false;
+            }
 
             _sequence.Push(cardController);
             OnCardAdded?.Invoke(cardController);
 
             TestIfCardMatchCurrentValues(cardController.instance, out _isSequenceIsIntact);
+
             UpdateCurrentSuitAndNumber(cardController.Suit, cardController.Number);
 
             return true;
@@ -61,6 +68,8 @@ namespace Runtime.CardGameplay.Board
 
         public void OnTurnEnd()
         {
+            //we can no longer undo moves
+            _undoCombo = 0;
             StartCoroutine(HandleCardPlaying());
         }
 
@@ -142,6 +151,22 @@ namespace Runtime.CardGameplay.Board
             }
 
             isSequenceIsInstance = false;
+
+            UpdateCombo();
+        }
+
+        private void UpdateCombo()
+        {
+            //update combo
+            if (IsSequenceIsIntact)
+            {
+                Combo++;
+            }
+            else
+            {
+                _undoCombo = Combo;
+                Combo = 0;
+            }
         }
 
         public CardController Remove()
@@ -177,6 +202,7 @@ namespace Runtime.CardGameplay.Board
 
         private void UpdateCurrentSuitAndNumber()
         {
+            //use a list to avoid exploits
             if (!_sequence.Any())
             {
                 var values = randomCardValuesPicker.GetRandomValues();
