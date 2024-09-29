@@ -18,6 +18,8 @@ namespace Runtime.CardGameplay.Deck
 
         [ShowInInspector, ReadOnly] protected readonly List<CardController> Cards = new();
 
+        private RectTransform _rectTransform;
+
         protected virtual void OnCardAdded(CardController cardController)
         {
             cardController.transform.SetParent(transform);
@@ -37,8 +39,8 @@ namespace Runtime.CardGameplay.Deck
             int cardCount = Cards.Count;
             if (cardCount == 0 || arcAngle == 0) return;
 
-            RectTransform rectTransform = GetComponent<RectTransform>();
-            float baseWidth = rectTransform.rect.width;
+            _rectTransform ??= GetComponent<RectTransform>();
+            float baseWidth = _rectTransform.rect.width;
 
             // Dynamically adjust the arc width factor based on the number of cards
             float scaledWidth = Mathf.Lerp(baseWidth * minArcWidthFactor, baseWidth * maxArcWidthFactor,
@@ -55,10 +57,13 @@ namespace Runtime.CardGameplay.Deck
 
                 if (float.IsNaN(xPos) || float.IsNaN(yPos)) continue;
 
-                Cards[i].transform.DOLocalMove(new Vector3(xPos, yPos, 0), animationDuration).SetEase(easeType);
-                Cards[i].transform.DOLocalRotate(new Vector3(0, 0, -angle), animationDuration).SetEase(easeType);
-
-                StartCoroutine(WaitAndSetViewNewValues(Cards[i].View));
+                var card = Cards[i];
+                card.View.lockAnimation = true;
+                card.transform.DOLocalMove(new Vector3(xPos, yPos, 0), animationDuration).SetEase(easeType);
+                card.transform.DOLocalRotate(new Vector3(0, 0, -angle), animationDuration).SetEase(easeType)
+                    .onComplete += () => StartCoroutine(WaitAndSetViewNewValues(card.View));
+                //ensure correct ordering 
+                card.transform.SetSiblingIndex(i);
             }
         }
 
@@ -66,6 +71,7 @@ namespace Runtime.CardGameplay.Deck
         {
             yield return new WaitForSeconds(animationDuration);
             view.SetOriginalValues();
+            view.lockAnimation = false;
         }
     }
 }

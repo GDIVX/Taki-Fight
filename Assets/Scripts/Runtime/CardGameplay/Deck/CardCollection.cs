@@ -19,7 +19,7 @@ namespace Runtime.CardGameplay.Deck
 
         private void Start()
         {
-            cards = new List<CardInstance>(starterDeck.Cards);
+            cards = starterDeck.Clone();
             Deck = new Deck(cards);
             deckView.Setup(Deck);
         }

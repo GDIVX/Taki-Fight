@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Runtime.CardGameplay.Card;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -8,9 +9,13 @@ namespace Runtime.CardGameplay.Deck
     [CreateAssetMenu(fileName = "Starter Deck", menuName = "Card/Starter Deck", order = 0)]
     public class StarterDeck : ScriptableObject
     {
-        [SerializeField , TableList] private List<CardInstance> cards;
+        [SerializeField, TableList] private List<CardInstance> cards;
 
-        public List<CardInstance> Cards => cards;
+
+        public List<CardInstance> Clone()
+        {
+            return cards.Select(card => new CardInstance(card.data, card.number)).ToList();
+        }
 
         [Button]
         public void AddCardSeries(CardData data, int numberFrom, int numberTo, int copies)
