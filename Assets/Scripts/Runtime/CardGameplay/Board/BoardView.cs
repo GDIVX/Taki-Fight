@@ -15,8 +15,8 @@ namespace Runtime.CardGameplay.Board
         [SerializeField, BoxGroup("Combo Color")]
         private Color minColor, maxColor;
 
-        [SerializeField, BoxGroup("Combo Color")]
-        private int maxComboCount;
+        // [SerializeField, BoxGroup("Combo Color")]
+        // private int maxComboCount;
 
         [SerializeField, BoxGroup("Combo Color")]
         private Image imageToColorTransition;
@@ -27,8 +27,8 @@ namespace Runtime.CardGameplay.Board
         [SerializeField, BoxGroup("Combo Color")]
         private Ease colorTransitionEase;
 
-        [SerializeField, BoxGroup("Combo Counter")]
-        private TextMeshProUGUI comboCounter;
+        // [SerializeField, BoxGroup("Combo Counter")]
+        // private TextMeshProUGUI comboCounter;
 
         [SerializeField, BoxGroup("Values Indicator")]
         private TextMeshProUGUI currentNumberText;
@@ -58,7 +58,7 @@ namespace Runtime.CardGameplay.Board
             BoardController.Instance.OnMatchValuesChanged += OnMatchValuesChanged;
 
 
-            UpdateComboColor();
+            // UpdateComboColor();
         }
 
         private void OnCardSetAside(CardController card)
@@ -84,27 +84,13 @@ namespace Runtime.CardGameplay.Board
             currentNumberText.text = number.ToString();
         }
 
-        protected override void OnCardAdded(CardController cardController)
-        {
-            base.OnCardAdded(cardController);
-            UpdateComboColor();
-            comboCounter.text = BoardController.Instance.SequenceCount.ToString();
-        }
 
-
-        protected override void OnCardRemoved(CardController cardController)
-        {
-            base.OnCardRemoved(cardController);
-            UpdateComboColor();
-            comboCounter.text = BoardController.Instance.SequenceCount.ToString();
-        }
-
-        private void UpdateComboColor()
-        {
-            _comboCount = BoardController.Instance.Combo;
-            var fraction = (float)_comboCount / (float)maxComboCount;
-            Color color = Color.LerpUnclamped(minColor, maxColor, fraction);
-            imageToColorTransition.DOColor(color, colorTransitionDuration);
-        }
+        // private void UpdateComboColor()
+        // {
+        //     _comboCount = BoardController.Instance.Combo;
+        //     var fraction = (float)_comboCount / (float)maxComboCount;
+        //     Color color = Color.LerpUnclamped(minColor, maxColor, fraction);
+        //     imageToColorTransition.DOColor(color, colorTransitionDuration);
+        // }
     }
 }
