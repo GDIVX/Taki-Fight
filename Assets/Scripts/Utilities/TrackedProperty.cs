@@ -1,18 +1,22 @@
 ﻿using System;
+using Sirenix.OdinInspector;
+using UnityEngine;
 
 namespace Utilities
 {
+    [Serializable]
     public class TrackedProperty<T>
     {
         public event Action<T> OnValueChanged;
-        private T _value;
+        [SerializeField] private T value;
 
+        [Button]
         public T Value
         {
-            get => _value;
+            get => value;
             set
             {
-                _value = value;
+                this.value = value;
                 OnValueChanged?.Invoke(Value);
             }
         }
