@@ -19,9 +19,6 @@ namespace Runtime.CardGameplay.Board
         // private int maxComboCount;
 
         [SerializeField, BoxGroup("Combo Color")]
-        private Image imageToColorTransition;
-
-        [SerializeField, BoxGroup("Combo Color")]
         private float colorTransitionDuration;
 
         [SerializeField, BoxGroup("Combo Color")]
