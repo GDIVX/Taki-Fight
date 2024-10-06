@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Runtime.Combat.Pawn.Targeting;
+using UnityEngine;
 
 namespace Runtime.CardGameplay.Card.CardBehaviour
 {

@@ -10,19 +10,19 @@ namespace Runtime.Combat.Pawn
         [SerializeField, Required] private PawnView view;
         private int _defensePoints;
 
-        public TrackedProperty<int> Defense;
+        public TrackedProperty<int> defense;
 
-        private HealthSystem Health { get; set; }
+        public HealthSystem Health { get; private set; }
 
         public void Init(PawnData data)
         {
             Health = new HealthSystem(data.Health);
 
-            Defense = new()
+            defense = new()
             {
                 Value = data.Defense
             };
-            view.Init(Health, Defense, data);
+            view.Init(Health, defense, data);
         }
 
         [Button]
@@ -44,12 +44,12 @@ namespace Runtime.Combat.Pawn
 
         private int CalculateDamage(int attackPoints)
         {
-            return Mathf.Max(0, attackPoints - Defense.Value);
+            return Mathf.Max(0, attackPoints - defense.Value);
         }
 
         private void ReduceDefense(int attackPoints)
         {
-            Defense.Value = Mathf.Max(0, Defense.Value - attackPoints);
+            defense.Value = Mathf.Max(0, defense.Value - attackPoints);
         }
     }
 }
