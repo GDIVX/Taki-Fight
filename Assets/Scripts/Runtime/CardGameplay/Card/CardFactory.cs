@@ -12,7 +12,7 @@ namespace Runtime.CardGameplay.Card
         private readonly Stack<CardController> _objectPool = new();
 
         [Button]
-        public CardController Create(CardData data, int number, Suit suit = Suit.Defualt)
+        public CardController Create(CardData data, int number, Suit suit = Suit.Default)
         {
             CardController controller = GetController();
             controller.Init(data, number, suit);

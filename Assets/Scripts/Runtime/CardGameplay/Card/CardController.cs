@@ -27,11 +27,17 @@ namespace Runtime.CardGameplay.Card
 
         public CardInstance instance;
         public CardView View { get; private set; }
-        public float PlayDuration => _playStrategy.Duration;
+        public float PlayDuration => _playStrategy?.Duration ?? 0f;
 
         [Button]
         public void Init(CardData data, int number, Suit suit)
         {
+            if (data == null)
+            {
+                Debug.LogError("CardData cannot be null during initialization.");
+                return;
+            }
+
             Number = number;
             Suit = suit;
             _selectStrategy = data.SelectStrategy;
@@ -44,20 +50,32 @@ namespace Runtime.CardGameplay.Card
 
         public void Init(CardInstance cardInstance)
         {
+            if (cardInstance == null)
+            {
+                Debug.LogError("CardInstance cannot be null during initialization.");
+                return;
+            }
+
             Init(cardInstance.data, cardInstance.number, cardInstance.Suit);
         }
 
         private async void Select(CardSelectStrategy selectStrategy)
         {
-            //If the card is not selectable, return
+            if (selectStrategy == null)
+            {
+                Debug.LogError("CardSelectStrategy cannot be null.");
+                return;
+            }
+
+            // If the card is not selectable, return
             if (!Selectable)
             {
                 return;
             }
 
             OnSelectionStart?.Invoke(this);
-            //handle card selection
 
+            // Handle card selection
             if (HandController.Instance.Has(this))
             {
                 if (!await selectStrategy.SelectAsync(this))
@@ -70,25 +88,41 @@ namespace Runtime.CardGameplay.Card
             }
             else
             {
-                //else, add it to the hand
+                // Else, add it to the hand
                 MoveCardFromBoardToHand();
             }
         }
 
         public void Play()
         {
+            if (_playStrategy == null)
+            {
+                Debug.LogError("PlayStrategy is not set.");
+                return;
+            }
+
             _playStrategy.Play(this);
         }
 
         public void OnPointerClick(PointerEventData eventData)
         {
+            if (eventData == null)
+            {
+                Debug.LogWarning("OnPointerClick called with null eventData.");
+                return;
+            }
+
+
             Select();
         }
 
         private static void MoveCardFromBoardToHand()
         {
             var card = BoardController.Instance.Remove();
-            HandController.Instance.AddCard(card);
+            if (card != null)
+            {
+                HandController.Instance.AddCard(card);
+            }
         }
 
         private void MoveToBoard()
@@ -101,7 +135,6 @@ namespace Runtime.CardGameplay.Card
 
             HandController.Instance.RemoveCard(this);
         }
-
 
         private void Select()
         {
@@ -120,12 +153,12 @@ namespace Runtime.CardGameplay.Card
     public enum Suit
     {
         Red,
-        Blue,
-        Purple,
         Yellow,
         Green,
+        Blue,
+        Purple,
         Black,
         White,
-        Defualt
+        Default
     }
 }

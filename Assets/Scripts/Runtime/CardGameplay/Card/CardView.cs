@@ -40,9 +40,9 @@ namespace Runtime.CardGameplay.Card
         }
 
         [Button]
-        public void Draw(CardData data, int number, Suit suit = Suit.Defualt)
+        public void Draw(CardData data, int number, Suit suit = Suit.Default)
         {
-            if (suit == Suit.Defualt)
+            if (suit == Suit.Default)
             {
                 suit = data.Suit;
             }
