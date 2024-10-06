@@ -8,7 +8,7 @@ namespace Runtime.Combat.Pawn.Targeting
     public class PawnTargetingService : Singleton<PawnTargetingService>
     {
         public bool IsLookingForTarget { get; private set; }
-        private PawnTarget _targetedPawn;
+        public PawnTarget TargetedPawn { get; private set; }
         private TaskCompletionSource<PawnTarget> _targetCompletionSource;
 
         public async Task<PawnTarget> RequestTargetAsync()
@@ -35,7 +35,7 @@ namespace Runtime.Combat.Pawn.Targeting
                 throw new InvalidOperationException("No target selection is in progress.");
             }
 
-            _targetedPawn = target;
+            TargetedPawn = target;
             _targetCompletionSource.SetResult(target);
         }
 

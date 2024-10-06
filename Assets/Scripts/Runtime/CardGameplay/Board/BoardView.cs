@@ -45,7 +45,7 @@ namespace Runtime.CardGameplay.Board
         [SerializeField, BoxGroup("Set Aside")]
         private Ease setAsideEase;
 
-        private int _comboCount = 0;
+        // private int _comboCount = 0;
 
         private void Awake()
         {

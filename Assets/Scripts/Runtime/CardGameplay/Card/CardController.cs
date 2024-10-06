@@ -47,8 +47,7 @@ namespace Runtime.CardGameplay.Card
             Init(cardInstance.data, cardInstance.number, cardInstance.Suit);
         }
 
-
-        public void Select(CardSelectStrategy selectStrategy)
+        private async void Select(CardSelectStrategy selectStrategy)
         {
             //If the card is not selectable, return
             if (!Selectable)
@@ -61,7 +60,12 @@ namespace Runtime.CardGameplay.Card
 
             if (HandController.Instance.Has(this))
             {
-                if (!selectStrategy.Select(this)) return;
+                if (!await selectStrategy.SelectAsync(this))
+                {
+                    OnSelectionCanceled?.Invoke(this);
+                    return;
+                }
+
                 MoveToBoard();
             }
             else
@@ -69,6 +73,16 @@ namespace Runtime.CardGameplay.Card
                 //else, add it to the hand
                 MoveCardFromBoardToHand();
             }
+        }
+
+        public void Play()
+        {
+            _playStrategy.Play(this);
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            Select();
         }
 
         private static void MoveCardFromBoardToHand()
@@ -88,24 +102,14 @@ namespace Runtime.CardGameplay.Card
             HandController.Instance.RemoveCard(this);
         }
 
-        public void Play()
-        {
-            _playStrategy.Play(this);
-        }
-
-        public void OnPointerClick(PointerEventData eventData)
-        {
-            Select();
-        }
 
         private void Select()
         {
             Select(_selectStrategy);
         }
 
-
         /// <summary>
-        /// Remove the card 
+        /// Remove the card
         /// </summary>
         public void Disable()
         {
