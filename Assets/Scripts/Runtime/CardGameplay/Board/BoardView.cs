@@ -78,25 +78,24 @@ namespace Runtime.CardGameplay.Board
             // Remove the card
             Cards.Remove(card);
 
-            // Shrink and move the card to fit with the current color image
-            Sequence sequence = DOTween.Sequence();
-            sequence.Append(card.transform.DOMove(setAsideDestination.position, setAsideDuration).SetEase(setAsideEase));
-            sequence.Join(card.transform.DOScale(setAsideDestination.localScale, setAsideDuration).SetEase(setAsideEase));
-            sequence.onComplete += () =>
-            {
-                // Disable the view and then reset for future use
-                card.Disable();
-                //card.View.ReturnToDefault();
-            };
+            // Use the CardView's animation services for setting aside
+            card.View.AnimateToPosition(setAsideDestination.position, setAsideDuration, setAsideEase);
+            card.View.AnimateToScale(setAsideDestination.localScale, setAsideDuration, setAsideEase)
+                .OnComplete(() =>
+                {
+                    // Disable the view and then reset for future use
+                    card.Disable();
+                    card.View.AnimateReturnToDefault();
+                });
         }
 
-        private void OnCardRemoved(CardController card)
-        {
-            if (card == null || !Cards.Contains(card)) return;
-
-            Cards.Remove(card);
-            card.Disable(); // Assuming 'Disable' handles visibility/cleanup.
-        }
+        // protected override void OnCardRemoved(CardController card)
+        // {
+        //     if (card == null || !Cards.Contains(card)) return;
+        //
+        //     Cards.Remove(card);
+        //     card.Disable(); 
+        // }
 
         private void OnMatchValuesChanged(Suit suit, int number)
         {

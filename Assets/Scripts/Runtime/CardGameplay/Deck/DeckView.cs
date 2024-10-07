@@ -30,16 +30,15 @@ namespace Runtime.CardGameplay.Deck
         {
             var controller = cardInstance.Controller;
 
-            //Shrink and move the card to fit with the image 
-            controller.transform.DOMove(discardToLocation.position, discardAnimationDuration).SetEase(ease);
-            controller.transform.DOScale(discardToLocation.localScale, discardAnimationDuration).SetEase(ease)
-                    .onComplete +=
-                () =>
+            // Use the CardView's animation services for discarding
+            controller.View.AnimateToPosition(discardToLocation.position, discardAnimationDuration, ease);
+            controller.View.AnimateToScale(discardToLocation.localScale, discardAnimationDuration, ease)
+                .OnComplete(() =>
                 {
-                    //disable the view and then reset for future use
+                    // Disable the view and then reset for future use
                     controller.Disable();
-                    controller.View.ReturnToDefault();
-                };
+                    controller.View.AnimateReturnToDefault();
+                });
         }
 
         private void OnDeckOnOnDiscardPileUpdated(Stack<CardInstance> pile)

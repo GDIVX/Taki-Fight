@@ -58,12 +58,10 @@ namespace Runtime.CardGameplay.Deck
                 if (float.IsNaN(xPos) || float.IsNaN(yPos)) continue;
 
                 var card = Cards[i];
-                card.View.lockAnimation = true;
                 card.transform.SetSiblingIndex(i);
                 card.transform.DOLocalMove(new Vector3(xPos, yPos, 0), animationDuration).SetEase(easeType);
                 card.transform.DOLocalRotate(new Vector3(0, 0, -angle), animationDuration).SetEase(easeType)
                     .onComplete += () => StartCoroutine(WaitAndSetViewNewValues(card.View));
-                card.View.lockAnimation = false;
                 //ensure correct ordering 
             }
         }

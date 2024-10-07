@@ -28,15 +28,18 @@ namespace Runtime.CardGameplay.Card
 
         [ShowInInspector, ReadOnly] private CardData _cardData;
 
-        public bool lockAnimation = false;
         private Vector3 _originalScale;
         private Vector3 _originalPosition;
         private Vector3 _originalRotation;
         private int _originalSiblingIndex;
 
+        private Tween _currentTween;
+        private bool _isHovered;
+
         private void Awake()
         {
             _originalScale = transform.localScale;
+            SetOriginalValues();
         }
 
         [Button]
@@ -73,16 +76,16 @@ namespace Runtime.CardGameplay.Card
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            if (lockAnimation) return;
+            if (_isHovered) return;
+            _isHovered = true;
+            AnimateHoverEnter();
+        }
 
-            lockAnimation = true;
-
-
-            transform.SetAsLastSibling();
-            transform.DOLocalRotate(Vector3.zero, hoverRotationDuration).SetEase(hoverEaseType);
-            transform.DOScale(_originalScale * hoverScaleFactor, hoverRotationDuration).SetEase(hoverEaseType);
-
-            lockAnimation = false;
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            if (!_isHovered) return;
+            _isHovered = false;
+            AnimateReturnToDefault();
         }
 
         public void SetOriginalValues()
@@ -92,22 +95,50 @@ namespace Runtime.CardGameplay.Card
             _originalRotation = transform.localRotation.eulerAngles;
         }
 
-        public void OnPointerExit(PointerEventData eventData)
+        public void AnimateHoverEnter()
         {
-            ReturnToDefault();
+            _currentTween?.Kill();
+
+            transform.SetAsLastSibling();
+            _currentTween = DOTween.Sequence()
+                .Append(transform.DOLocalRotate(Vector3.zero, hoverRotationDuration).SetEase(hoverEaseType))
+                .Join(transform.DOScale(_originalScale * hoverScaleFactor, hoverRotationDuration).SetEase(hoverEaseType))
+                .OnComplete(() => _currentTween = null);
         }
 
-        public void ReturnToDefault()
+        public void AnimateReturnToDefault()
         {
-            if (lockAnimation) return;
-            lockAnimation = true;
+            _currentTween?.Kill();
 
-            transform.DOLocalMove(_originalPosition, hoverRotationDuration).SetEase(hoverEaseType);
-            transform.DOLocalRotate(_originalRotation, hoverRotationDuration).SetEase(hoverEaseType);
-            transform.DOScale(_originalScale, hoverRotationDuration).SetEase(hoverEaseType);
+            _currentTween = DOTween.Sequence()
+                .Append(transform.DOLocalMove(_originalPosition, hoverRotationDuration).SetEase(hoverEaseType))
+                .Join(transform.DOLocalRotate(_originalRotation, hoverRotationDuration).SetEase(hoverEaseType))
+                .Join(transform.DOScale(_originalScale, hoverRotationDuration).SetEase(hoverEaseType))
+                .OnComplete(() =>
+                {
+                    transform.SetSiblingIndex(_originalSiblingIndex);
+                    _currentTween = null;
+                });
+        }
 
-            transform.SetSiblingIndex(_originalSiblingIndex);
-            lockAnimation = false;
+        public void AnimateToPosition(Vector3 position, float duration, Ease ease)
+        {
+            _currentTween?.Kill();
+            _currentTween = transform.DOLocalMove(position, duration).SetEase(ease).OnComplete(() => _currentTween = null);
+        }
+
+        public void AnimateRotation(Vector3 rotation, float duration, Ease ease)
+        {
+            _currentTween?.Kill();
+            _currentTween = transform.DOLocalRotate(rotation, duration).SetEase(ease).OnComplete(() => _currentTween = null);
+        }
+
+        public Tween AnimateToScale(Vector3 scale, float duration, Ease ease)
+        {
+            _currentTween?.Kill();
+            Tween tween = transform.DOScale(scale, duration).SetEase(ease);
+            tween.OnComplete(() => _currentTween = null);
+            return tween;
         }
     }
 }
