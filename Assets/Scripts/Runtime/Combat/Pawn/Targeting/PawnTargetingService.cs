@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Sirenix.OdinInspector;
 using Utilities;
 
 namespace Runtime.Combat.Pawn.Targeting
 {
     public class PawnTargetingService : Singleton<PawnTargetingService>
     {
-        public bool IsLookingForTarget { get; private set; }
-        public PawnTarget TargetedPawn { get; private set; }
+        [ShowInInspector, ReadOnly] public bool IsLookingForTarget { get; private set; }
+        [ShowInInspector, ReadOnly] public PawnTarget TargetedPawn { get; private set; }
         private TaskCompletionSource<PawnTarget> _targetCompletionSource;
+        private PawnTarget _lastTargetedPawn;
 
+        [Button]
         public async Task<PawnTarget> RequestTargetAsync()
         {
             if (IsLookingForTarget)
@@ -25,6 +28,7 @@ namespace Runtime.Combat.Pawn.Targeting
             PawnTarget target = await _targetCompletionSource.Task;
 
             IsLookingForTarget = false;
+            _lastTargetedPawn = target;
             return target;
         }
 
@@ -45,7 +49,13 @@ namespace Runtime.Combat.Pawn.Targeting
             {
                 _targetCompletionSource.SetCanceled();
                 IsLookingForTarget = false;
+                _targetCompletionSource = null;
             }
+        }
+
+        public PawnTarget GetLastTargetedPawn()
+        {
+            return _lastTargetedPawn;
         }
     }
 }

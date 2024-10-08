@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace Runtime.CardGameplay.Board
 {
-    public class BoardController : Utilities.Singleton<BoardController>
+    public class BoardController : Utilities.Singleton<BoardController>, ITurnEndHandler
     {
         [SerializeField, Required] private RandomCardValuesPicker randomCardValuesPicker;
         [ShowInInspector, ReadOnly] private readonly Stack<CardController> _sequence = new();
@@ -25,6 +25,7 @@ namespace Runtime.CardGameplay.Board
         public int Combo { get; private set; }
 
         private int _undoCombo;
+        private bool _isProcessingTurn = false;
 
 
         public event Action<CardController> OnCardAdded;
@@ -75,6 +76,7 @@ namespace Runtime.CardGameplay.Board
 
         private IEnumerator HandleCardPlaying()
         {
+            _isProcessingTurn = true;
             while (_sequence.Count > 0)
             {
                 var card = Remove();
@@ -103,6 +105,8 @@ namespace Runtime.CardGameplay.Board
                     HandController.Instance.Deck.Discard(card.instance);
                 }
             }
+
+            _isProcessingTurn = false;
         }
 
         private void SetCardAside(CardController card)
@@ -218,6 +222,11 @@ namespace Runtime.CardGameplay.Board
             }
 
             UpdateCurrentSuitAndNumber(nextCard.Suit, nextCard.Number);
+        }
+
+        public bool IsProcessingTurn()
+        {
+            return _isProcessingTurn;
         }
     }
 }

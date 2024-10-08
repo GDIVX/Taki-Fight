@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 842f4e02fee146ddb72cea2b80a51349, type: 3}
-  m_Name: Strike
+  m_Name: FollowUp
   m_EditorClassIdentifier: 
-  title: Strike
-  description: 1 Attack
-  image: {fileID: 21300000, guid: 48e2f1306c86ea74cbc32a1541ed772a, type: 3}
+  title: Floow Up
+  description: 3 Attack on the last enemy that you targeted
+  image: {fileID: 21300000, guid: cc9aa7fccaf8b3c4193e370890ab7e82, type: 3}
   suit: 0
-  selectStrategy: {fileID: 11400000, guid: 693626e501b6ec2438a4e251d9c1a4e4, type: 2}
+  selectStrategy: {fileID: 11400000, guid: 6488691d3e5b1734fbf184a753c30823, type: 2}
   playStrategy: {fileID: 11400000, guid: ee69d39da3dafbf41aefd0cb4ce0c0cd, type: 2}

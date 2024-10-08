@@ -14,6 +14,7 @@ namespace Runtime.Combat.Pawn
 
         public HealthSystem Health { get; private set; }
 
+        [Button]
         public void Init(PawnData data)
         {
             Health = new HealthSystem(data.Health);

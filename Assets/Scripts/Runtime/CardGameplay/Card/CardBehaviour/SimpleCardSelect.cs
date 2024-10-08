@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Runtime.CardGameplay.Card.CardBehaviour
 {
-    [CreateAssetMenu(fileName = "SimpleCardSelect", menuName = "CardGameplay/SelectStrategies/SimpleCardSelect")]
+    [CreateAssetMenu(fileName = "SimpleCardSelect", menuName = "Card/Strategy/Select/SimpleCardSelect")]
     public class SimpleCardSelect : CardSelectStrategy
     {
         public override Task<bool> SelectAsync(CardController card)
