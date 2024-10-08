@@ -13,6 +13,8 @@ namespace Runtime.Combat.Pawn.Targeting
         private TaskCompletionSource<PawnTarget> _targetCompletionSource;
         private PawnTarget _lastTargetedPawn;
 
+        public event Action<PawnTarget> OnTargetFound;
+
         [Button]
         public async Task<PawnTarget> RequestTargetAsync()
         {
@@ -29,6 +31,7 @@ namespace Runtime.Combat.Pawn.Targeting
 
             IsLookingForTarget = false;
             _lastTargetedPawn = target;
+            OnTargetFound?.Invoke(target);
             return target;
         }
 

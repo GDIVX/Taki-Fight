@@ -41,7 +41,12 @@ namespace Runtime.Combat.Pawn.Targeting
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            if (!PawnTargetingService.Instance.IsLookingForTarget) return;
+            if (!PawnTargetingService.Instance.IsLookingForTarget)
+            {
+                ResetMaterial();
+                return;
+            }
+
             if (spriteRenderer == null)
             {
                 Debug.LogError($"{nameof(SpriteRenderer)} was not assigned");
@@ -59,10 +64,15 @@ namespace Runtime.Combat.Pawn.Targeting
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            if (!PawnTargetingService.Instance.IsLookingForTarget) return;
             if (spriteRenderer == null) return;
 
-            spriteRenderer.material = _originalMaterial;
+            ResetMaterial();
+        }
+
+        private void ResetMaterial()
+        {
+            if (spriteRenderer.material != _originalMaterial)
+                spriteRenderer.material = _originalMaterial;
         }
     }
 }
