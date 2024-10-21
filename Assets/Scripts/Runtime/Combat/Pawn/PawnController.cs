@@ -13,6 +13,14 @@ namespace Runtime.Combat.Pawn
         public TrackedProperty<int> defense;
 
         public HealthSystem Health { get; private set; }
+        
+        //TODO: handle bonuses via buffs
+        
+        /// <summary>
+        /// A flat bonus to attack damage
+        /// </summary>
+        public int Power { get; set; }
+        
 
         [Button]
         public void Init(PawnData data)
@@ -52,5 +60,6 @@ namespace Runtime.Combat.Pawn
         {
             defense.Value = Mathf.Max(0, defense.Value - attackPoints);
         }
+
     }
 }

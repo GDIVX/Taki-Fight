@@ -18,6 +18,7 @@ namespace Runtime.Combat.Pawn
 
         [SerializeField, BoxGroup("Health")] private HealthBarUI healthBar;
         [SerializeField, BoxGroup("Health")] private HealthBarTextUI healthBarText;
+        [SerializeField, BoxGroup("Sprite")] private SpriteRenderer spriteRenderer;
 
         public void Init(HealthSystem healthSystem, TrackedProperty<int> defense, PawnData data)
         {
@@ -26,6 +27,8 @@ namespace Runtime.Combat.Pawn
 
             defense.OnValueChanged += UpdateDefenseUI;
             UpdateDefenseUI(defense.Value);
+
+            spriteRenderer.sprite = data.Sprite;
         }
 
         private void UpdateDefenseUI(int defensePoints)

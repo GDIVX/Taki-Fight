@@ -1,35 +1,69 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using Random = UnityEngine.Random;
 
 namespace Utilities
 {
     public static class ListExtensions
     {
-        /// <summary>
-        /// Shuffles the list using the Fisher-Yates algorithm with Unity's Random.
-        /// </summary>
         public static void Shuffle<T>(this List<T> list)
         {
-            int n = list.Count;
-            for (int i = n - 1; i > 0; i--)
+            int listCount = list.Count;
+            for (int i = listCount - 1; i > 0; i--)
             {
-                int j = Random.Range(0, i + 1); // Unity's Random.Range for inclusive upper bound
-                (list[i], list[j]) = (list[j], list[i]); // Swap elements
+                int randomSelection = Random.Range(0, i + 1);
+                //Swap the elements
+                (list[i], list[randomSelection]) = (list[randomSelection], list[i]);
             }
         }
-
-        /// <summary>
-        /// Picks a random element from the list using Unity's Random.
-        /// </summary>
-        public static T PickRandom<T>(this List<T> list)
+        
+        public static T SelectRandom<T>(this List<T> list)
         {
             if (list == null || list.Count == 0)
             {
-                return default; // Return default if the list is empty or null
+                return default;
             }
 
             int index = Random.Range(0, list.Count);
             return list[index];
+        }
+        
+        public static T WeightedSelectRandom<T>(this List<T> list, Func<T, float> weightSelector)
+        {
+            float totalWeight = CalculateTotalWeight(list, weightSelector);
+            float randomValue = GetRandomValue(totalWeight);
+            return GetItemBasedOnWeight(list, weightSelector, randomValue);
+        }
+
+        private static float CalculateTotalWeight<T>(List<T> list, Func<T, float> weightSelector)
+        {
+            float totalWeight = 0f;
+            foreach (var item in list)
+            {
+                totalWeight += weightSelector(item);
+            }
+
+            return totalWeight;
+        }
+
+        private static float GetRandomValue(float maxValue)
+        {
+            return Random.Range(0, maxValue);
+        }
+
+        private static T GetItemBasedOnWeight<T>(List<T> list, Func<T, float> weightSelector, float randomValue)
+        {
+            float cumulativeWeight = 0f;
+            foreach (var item in list)
+            {
+                cumulativeWeight += weightSelector(item);
+                if (randomValue < cumulativeWeight)
+                {
+                    return item;
+                }
+            }
+
+            return default;
         }
     }
 }

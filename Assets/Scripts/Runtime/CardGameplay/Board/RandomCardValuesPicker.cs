@@ -13,7 +13,7 @@ namespace Runtime.CardGameplay.Board
 
         public (Suit, int) GetRandomValues()
         {
-            var suit = suits.PickRandom();
+            var suit = suits.SelectRandom();
             var number = Random.Range(smallestNumber, biggestNumber);
 
             return (suit, number);

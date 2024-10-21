@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Runtime.Combat.Pawn;
+using UnityEngine;
 
 namespace Runtime.CardGameplay.Card.CardBehaviour
 {
@@ -6,6 +7,6 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
     {
         [SerializeField] private float duration = 1f;
         public float Duration => duration;
-        public abstract void Play(CardController card);
+        public abstract void Play(PawnController caller);
     }
 }

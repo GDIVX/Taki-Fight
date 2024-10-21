@@ -101,7 +101,7 @@ namespace Runtime.CardGameplay.Card
                 return;
             }
 
-            _playStrategy.Play(this);
+            _playStrategy.Play(GameManager.Instance.Hero);
         }
 
         public void OnPointerClick(PointerEventData eventData)

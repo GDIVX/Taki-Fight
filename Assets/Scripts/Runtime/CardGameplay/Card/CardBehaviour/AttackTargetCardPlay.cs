@@ -1,4 +1,5 @@
-﻿using Runtime.Combat.Pawn.Targeting;
+﻿using Runtime.Combat.Pawn;
+using Runtime.Combat.Pawn.Targeting;
 using UnityEngine;
 
 namespace Runtime.CardGameplay.Card.CardBehaviour
@@ -8,7 +9,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
     {
         [SerializeField] private int attackDamage;
 
-        public override void Play(CardController card)
+        public override void Play(PawnController caller)
         {
             var target = PawnTargetingService.Instance.TargetedPawn;
 
@@ -16,23 +17,24 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
             if (target == null)
             {
                 Debug.LogError(
-                    $"Card '{card}' tried to play, but no valid target was found. The target might be dead or missing.");
+                    $"Card '{name}' tried to play, but no valid target was found. The target might be dead or missing.");
                 return;
             }
 
             if (target.Controller == null)
             {
-                Debug.LogError($"Card '{card}' tried to play on a target that has no controller. This is a bug.");
+                Debug.LogError($"Card '{name}' tried to play on a target that has no controller. This is a bug.");
                 return;
             }
 
             if (target.Controller.Health.IsDead())
             {
                 Debug.LogWarning(
-                    $"Card '{card}' tried to play on a target that is dead. This could indicate a normal gameplay situation.");
+                    $"Card '{name}' tried to play on a target that is dead. This could indicate a normal gameplay situation.");
                 return;
             }
 
+            var finalDamage = attackDamage + caller.Power;
             target.Controller.Attack(attackDamage);
         }
     }

@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: db39779a7d15495786ef0b741b93a144, type: 3}
-  m_Name: DemoHero
+  m_Name: Kobold
   m_EditorClassIdentifier: 
-  sprite: {fileID: -647556615, guid: aed436a776763734a89aee3e3e9de32c, type: 3}
-  health: 20
+  sprite: {fileID: -1590204285, guid: d0d3cdbb99712534e8f7ecfe2cd176ad, type: 3}
+  health: 5
   defense: 0

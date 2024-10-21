@@ -1,17 +1,21 @@
 ﻿using System.Collections;
 using Runtime.CardGameplay.Board;
 using Runtime.CardGameplay.Deck;
+using Runtime.Combat;
 using Runtime.Combat.Pawn;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
 
-namespace Runtime.CardGameplay
+namespace Runtime
 {
-    public class CombatManager : Singleton<CombatManager>
+    public class GameManager : Singleton<GameManager>
     {
         [SerializeField, Required, TabGroup("Dependencies")]
         private CardCollection cardCollection;
+
+        [SerializeField, Required, TabGroup("Enemies")]
+        private PawnFactory pawnFactory;
 
         [SerializeField, TabGroup("Hero"), Required]
         private PawnController heroPawn;
@@ -27,7 +31,19 @@ namespace Runtime.CardGameplay
 
 
         [Button]
-        public void StartCombat()
+        public void StartCombat(CombatConfig combatConfig)
+        {
+            SetupCardGameplay();
+            
+            //Spawn Enemies
+            foreach (PawnController enemy in combatConfig.Enemies)
+            {
+                
+            }
+        }
+
+        [Button]
+        private void SetupCardGameplay()
         {
             cardCollection.CreateDeck();
             HandController.Instance.DrawHand();

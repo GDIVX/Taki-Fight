@@ -1,4 +1,5 @@
 ﻿using System;
+using Runtime.Combat.Pawn;
 using UnityEngine;
 
 namespace Runtime.CardGameplay.Card.CardBehaviour
@@ -8,15 +9,15 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
     {
         [SerializeField] private int defensePoints;
 
-        public override void Play(CardController card)
+        public override void Play(PawnController caller)
         {
-            var hero = CombatManager.Instance.Hero;
+            var hero = GameManager.Instance.Hero;
             if (!hero)
             {
                 throw new NullReferenceException("Hero pawn manager was not assigned to the combat manager");
             }
 
-            hero.defense.Value += defensePoints;
+            caller.defense.Value += defensePoints;
         }
     }
 }
