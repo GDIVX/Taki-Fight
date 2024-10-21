@@ -312,6 +312,7 @@ GameObject:
   - component: {fileID: 4679274993780167689}
   - component: {fileID: 4496958908397332056}
   - component: {fileID: 6936584690890928603}
+  - component: {fileID: 1207057072508873998}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -513,6 +514,19 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.2, y: 0.2}
   m_EdgeRadius: 0
+--- !u!114 &1207057072508873998
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4047348377845177308}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4f56bfd2ee9457c87b1b3e19d931c55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pawnController: {fileID: 542673728328518700}
 --- !u!1 &4314222220737725030
 GameObject:
   m_ObjectHideFlags: 0
