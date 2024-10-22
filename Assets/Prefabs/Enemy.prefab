@@ -420,7 +420,7 @@ MonoBehaviour:
   defenseCount: {fileID: 274619778565789495}
   healthBar: {fileID: 4274546444134912817}
   healthBarText: {fileID: 3130926900928549826}
-  spriteRenderer: {fileID: 0}
+  spriteRenderer: {fileID: 1608929777918579190}
 --- !u!95 &2785280858220458746
 Animator:
   serializedVersion: 5

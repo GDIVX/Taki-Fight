@@ -13,6 +13,7 @@ namespace Runtime.CardGameplay.Card
         [SerializeField] private Suit suit;
         [SerializeField] private CardSelectStrategy selectStrategy;
         [SerializeField] private CardPlayStrategy playStrategy;
+        [SerializeField] private int energyCost;
 
         public string Title => title;
         public string Description => description;
@@ -20,5 +21,6 @@ namespace Runtime.CardGameplay.Card
         public Suit Suit => suit;
         public CardSelectStrategy SelectStrategy => selectStrategy;
         public CardPlayStrategy PlayStrategy => playStrategy;
+        public int EnergyCost => energyCost;
     }
 }

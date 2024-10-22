@@ -15,11 +15,6 @@ namespace Runtime.CardGameplay.Deck
             // Subscribe to events for card addition and removal if needed
             HandController.Instance.OnCardAdded += OnCardAdded;
             HandController.Instance.OnCardRemoved += OnCardRemoved;
-            BoardController.Instance.OnCardAdded += OnCardAddedToBoard;
-        }
-
-        private void OnCardAddedToBoard(CardController obj)
-        {
         }
     }
 }

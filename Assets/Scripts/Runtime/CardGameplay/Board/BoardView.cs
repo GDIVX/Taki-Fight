@@ -13,31 +13,21 @@ namespace Runtime.CardGameplay.Board
     public class BoardView : HorizontalCardListView
     {
         [SerializeField, BoxGroup("Combo Color")]
-        private Color minColor, maxColor;
-
-        [SerializeField, BoxGroup("Combo Color")]
         private float colorTransitionDuration;
 
         [SerializeField, BoxGroup("Combo Color")]
         private Ease colorTransitionEase;
 
         [SerializeField, BoxGroup("Values Indicator")]
-        private TextMeshProUGUI currentNumberText;
+        private TextMeshProUGUI currentRankText;
 
         [SerializeField, BoxGroup("Values Indicator")]
-        private Image currentColorImage;
+        private Image currentSuiteImage;
 
         [SerializeField, BoxGroup("Values Indicator")]
         private SuitColorPallet suitColorPallet;
 
-        [SerializeField, BoxGroup("Set Aside")]
-        private Transform setAsideDestination;
-
-        [SerializeField, BoxGroup("Set Aside")]
-        private float setAsideDuration;
-
-        [SerializeField, BoxGroup("Set Aside")]
-        private Ease setAsideEase;
+        [SerializeField, BoxGroup("Energy")] private TextMeshProUGUI energyCountText;
 
         private void Awake()
         {
@@ -51,57 +41,29 @@ namespace Runtime.CardGameplay.Board
 
         private void SubscribeToBoardControllerEvents()
         {
-            if (BoardController.Instance != null)
-            {
-                BoardController.Instance.OnCardAdded += OnCardAdded;
-                BoardController.Instance.OnCardRemoved += OnCardRemoved;
-                BoardController.Instance.OnCardSetAside += OnCardSetAside;
-                BoardController.Instance.OnMatchValuesChanged += OnMatchValuesChanged;
-            }
+            if (BoardController.Instance == null) return;
+            BoardController.Instance.OnMatchValuesChanged += OnMatchValuesChanged;
+            BoardController.Instance.RegisterToMatchCountChanged(OnMatchCountChanged);
         }
+
 
         private void UnsubscribeFromBoardControllerEvents()
         {
-            if (BoardController.Instance != null)
-            {
-                BoardController.Instance.OnCardAdded -= OnCardAdded;
-                BoardController.Instance.OnCardRemoved -= OnCardRemoved;
-                BoardController.Instance.OnCardSetAside -= OnCardSetAside;
-                BoardController.Instance.OnMatchValuesChanged -= OnMatchValuesChanged;
-            }
+            if (BoardController.Instance == null) return;
+            BoardController.Instance.OnMatchValuesChanged -= OnMatchValuesChanged;
+            BoardController.Instance.UnregisterToMatchCountChanged(OnMatchCountChanged);
         }
 
-        private void OnCardSetAside(CardController card)
+        private void OnMatchCountChanged(int count)
         {
-            if (card == null) return;
-
-            // Remove the card
-            Cards.Remove(card);
-
-            // Use the CardView's animation services for setting aside
-            card.View.AnimateToPosition(setAsideDestination.position, setAsideDuration, setAsideEase);
-            card.View.AnimateToScale(setAsideDestination.localScale, setAsideDuration, setAsideEase)
-                .OnComplete(() =>
-                {
-                    // Disable the view and then reset for future use
-                    card.Disable();
-                    card.View.AnimateReturnToDefault();
-                });
+            energyCountText.text = count.ToString();
         }
-
-        // protected override void OnCardRemoved(CardController card)
-        // {
-        //     if (card == null || !Cards.Contains(card)) return;
-        //
-        //     Cards.Remove(card);
-        //     card.Disable(); 
-        // }
 
         private void OnMatchValuesChanged(Suit suit, int number)
         {
             Color targetColor = suitColorPallet.GetColor(suit);
-            currentColorImage.DOColor(targetColor, colorTransitionDuration).SetEase(colorTransitionEase);
-            currentNumberText.text = number.ToString();
+            currentSuiteImage.DOColor(targetColor, colorTransitionDuration).SetEase(colorTransitionEase);
+            currentRankText.text = number.ToString();
         }
     }
 }

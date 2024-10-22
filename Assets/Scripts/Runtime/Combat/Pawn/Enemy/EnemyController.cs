@@ -15,12 +15,8 @@ namespace Runtime.Combat.Pawn.Enemy
             _table = playTable;
         }
 
-        public void OnTurnStart()
-        {
-            StartCoroutine(ChoseAndPlayStrategy());
-        }
 
-        private IEnumerator ChoseAndPlayStrategy()
+        public IEnumerator ChoseAndPlayStrategy()
         {
             var chosenStrategy = _table.ChoseRandomPlayStrategy();
             chosenStrategy.Play(pawnController);

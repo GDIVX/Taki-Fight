@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   entries:
   - strategy: {fileID: 11400000, guid: ee69d39da3dafbf41aefd0cb4ce0c0cd, type: 2}
-    weight: 0
-  - strategy: {fileID: 0}
-    weight: 0
-  - strategy: {fileID: 0}
-    weight: 0
+    weight: 0.5
+  - strategy: {fileID: 11400000, guid: 9d47cadf35fa0ae42a5930fbd7c8b4b4, type: 2}
+    weight: 0.25
+  - strategy: {fileID: 11400000, guid: 549e43c006aaa9548b773fde947c00f5, type: 2}
+    weight: 0.25

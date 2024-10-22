@@ -8,9 +8,9 @@ namespace Runtime.Combat.Pawn
     {
         [SerializeField] private PawnController enemyPrefab;
 
-        public PawnController SpawnEnemy(EnemyData data, Vector3 position)
+        public PawnController SpawnEnemy(EnemyData data)
         {
-            var instance = GameObject.Instantiate(enemyPrefab, position, quaternion.identity);
+            var instance = GameObject.Instantiate(enemyPrefab, Vector3.zero, quaternion.identity);
             instance.Init(data);
             var ai = instance.GetComponent<EnemyController>();
             ai.Init(data.PlayTable);

@@ -13,7 +13,7 @@ namespace Runtime.CardGameplay.Card
     /// </summary>
     public class CardController : MonoBehaviour, IPointerClickHandler
     {
-        public int Number { get; private set; }
+        public int Rank { get; private set; }
         public Suit Suit { get; private set; }
 
         //TODO: hook some visual indicator
@@ -28,9 +28,10 @@ namespace Runtime.CardGameplay.Card
         public CardInstance instance;
         public CardView View { get; private set; }
         public float PlayDuration => _playStrategy?.Duration ?? 0f;
+        public int EnergyCost { get; set; }
 
         [Button]
-        public void Init(CardData data, int number, Suit suit)
+        public void Init(CardData data, int rank, Suit suit)
         {
             if (data == null)
             {
@@ -38,12 +39,13 @@ namespace Runtime.CardGameplay.Card
                 return;
             }
 
-            Number = number;
+            Rank = rank;
             Suit = suit;
             _selectStrategy = data.SelectStrategy;
             _playStrategy = data.PlayStrategy;
+            EnergyCost = data.EnergyCost;
 
-            instance = new CardInstance(data, number);
+            instance = new CardInstance(data, rank);
             View = GetComponent<CardView>();
             instance.Controller = this;
         }
@@ -76,21 +78,14 @@ namespace Runtime.CardGameplay.Card
             OnSelectionStart?.Invoke(this);
 
             // Handle card selection
-            if (HandController.Instance.Has(this))
+            if (!HandController.Instance.Has(this)) return;
+            if (!await selectStrategy.SelectAsync(this))
             {
-                if (!await selectStrategy.SelectAsync(this))
-                {
-                    OnSelectionCanceled?.Invoke(this);
-                    return;
-                }
+                OnSelectionCanceled?.Invoke(this);
+                return;
+            }
 
-                MoveToBoard();
-            }
-            else
-            {
-                // Else, add it to the hand
-                MoveCardFromBoardToHand();
-            }
+            TryToPlay();
         }
 
         public void Play()
@@ -116,24 +111,18 @@ namespace Runtime.CardGameplay.Card
             Select();
         }
 
-        private static void MoveCardFromBoardToHand()
-        {
-            var card = BoardController.Instance.Remove();
-            if (card != null)
-            {
-                HandController.Instance.AddCard(card);
-            }
-        }
 
-        private void MoveToBoard()
+        private void TryToPlay()
         {
-            if (!BoardController.Instance.AddToSequence(this))
+            if (!BoardController.Instance.CanPlayCard(this))
             {
                 OnSelectionCanceled?.Invoke(this);
                 return;
             }
 
+            BoardController.Instance.UpdateMatch(this);
             HandController.Instance.RemoveCard(this);
+            _playStrategy.Play(GameManager.Instance.Hero);
         }
 
         private void Select()
