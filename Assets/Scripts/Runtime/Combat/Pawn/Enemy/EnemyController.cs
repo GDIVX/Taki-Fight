@@ -5,12 +5,11 @@ using UnityEngine;
 
 namespace Runtime.Combat.Pawn.Enemy
 {
-    public class EnemyController : MonoBehaviour
+    public class EnemyController : PawnController
     {
-        [SerializeField, Required] private PawnController pawnController;
         private AIPlayTable _table;
 
-        public void Init(AIPlayTable playTable)
+        public void InitAI(AIPlayTable playTable)
         {
             _table = playTable;
         }
@@ -19,7 +18,7 @@ namespace Runtime.Combat.Pawn.Enemy
         public IEnumerator ChoseAndPlayStrategy()
         {
             var chosenStrategy = _table.ChoseRandomPlayStrategy();
-            chosenStrategy.Play(pawnController);
+            chosenStrategy.Play(this);
             yield return new WaitForSeconds(chosenStrategy.Duration);
         }
     }

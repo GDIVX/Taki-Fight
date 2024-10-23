@@ -48,17 +48,17 @@ namespace Runtime.CardGameplay.Board
             }
 
             IsLastCardMatch = IsCardMatching(cardController);
-            if (!IsLastCardMatch)
-            {
-                return false;
-            }
-
-            return true;
+            return IsLastCardMatch;
         }
 
-        public bool IsCardMatching(CardController cardController)
+        private bool IsCardMatching(CardController cardController)
         {
-            return cardController.Suit == CurrentSuit || cardController.Rank == CurrentRank;
+            return CurrentSuit switch
+            {
+                Suit.White => true,
+                Suit.Black => false,
+                _ => cardController.Suit == CurrentSuit || cardController.Rank == CurrentRank
+            };
         }
 
         private void Start()

@@ -51,7 +51,9 @@ namespace Utilities
                 return;
             }
 
-            float distanceBetweenObjects = (totalDistance + padding * 2) / (gameObjectsToArrange.Count - 1);
+            float distanceBetweenObjects = gameObjectsToArrange.Count == 1
+                ? 0
+                : (totalDistance + padding * 2) / (gameObjectsToArrange.Count - 1);
 
             for (int i = 0; i < gameObjectsToArrange.Count; i++)
             {

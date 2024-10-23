@@ -6,22 +6,34 @@ namespace Runtime.Combat.Pawn.Targeting
 {
     public class PawnTarget : MonoBehaviour, IPointerClickHandler
     {
-        [SerializeField] private PawnController controller;
+        [SerializeField, Required] private PawnController controller;
 
         public PawnController Controller => controller;
 
-        private bool IsValidTarget()
+        private bool IsValidTarget(out string errorMessage)
         {
-            return PawnTargetingService.Instance.IsLookingForTarget && controller != null &&
-                   !controller.Health.IsDead();
+            if (!PawnTargetingService.Instance.IsLookingForTarget)
+            {
+                errorMessage = "Attempted to set target while targeting service is still looking for target";
+                return false;
+            }
+
+            if (controller == null)
+            {
+                errorMessage = $"Pawn Target {name} has no {nameof(PawnController)} assigned.";
+                return false;
+            }
+
+            errorMessage = $"Attempted to select a dead pawn {name}";
+            return !controller.Health.IsDead();
         }
 
         [Button]
         public void SetAsTarget()
         {
-            if (!IsValidTarget())
+            if (!IsValidTarget(out string errorMessage))
             {
-                Debug.LogWarning("Attempted to set an invalid target.");
+                Debug.LogWarning(errorMessage);
                 return;
             }
 

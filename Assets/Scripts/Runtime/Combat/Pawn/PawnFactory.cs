@@ -13,7 +13,7 @@ namespace Runtime.Combat.Pawn
             var instance = GameObject.Instantiate(enemyPrefab, Vector3.zero, quaternion.identity);
             instance.Init(data);
             var ai = instance.GetComponent<EnemyController>();
-            ai.Init(data.PlayTable);
+            ai.InitAI(data.PlayTable);
             return instance;
         }
     }

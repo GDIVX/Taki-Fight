@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using Runtime.CardGameplay.Board;
 using Runtime.CardGameplay.Deck;
 using Runtime.Combat;
@@ -61,18 +60,21 @@ namespace Runtime
 
         private IEnumerator ProcessEndTurn()
         {
-            //Play the cards
             BoardController.Instance.OnTurnEnd();
 
-            foreach (var enemy in enemiesLane.Pawns)
-            {
-                var enemyAI = enemy.GetComponent<EnemyController>();
-                yield return enemyAI.ChoseAndPlayStrategy();
-                enemy.defense.Value = 0;
-            }
+            yield return PlayEnemiesTurn();
 
             //Reset the player defense 
             Hero.defense.Value = 0;
+        }
+
+        private IEnumerator PlayEnemiesTurn()
+        {
+            foreach (var enemy in (EnemyController[])enemiesLane.Pawns)
+            {
+                yield return enemy.ChoseAndPlayStrategy();
+                enemy.defense.Value = 0;
+            }
         }
     }
 }

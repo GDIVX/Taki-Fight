@@ -12,4 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e82226971694ad0b3a34100bd613b75, type: 3}
   m_Name: Com_3_Kobolds
   m_EditorClassIdentifier: 
-  enemies: []
+  enemies:
+  - {fileID: 11400000, guid: 1c78d20103a0d0f409c16e18ed4e8354, type: 2}
+  - {fileID: 11400000, guid: 1c78d20103a0d0f409c16e18ed4e8354, type: 2}
+  - {fileID: 11400000, guid: 1c78d20103a0d0f409c16e18ed4e8354, type: 2}

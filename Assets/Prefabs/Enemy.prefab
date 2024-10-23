@@ -306,7 +306,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7747499702585692695}
   - component: {fileID: 1608929777918579190}
-  - component: {fileID: 542673728328518700}
   - component: {fileID: 4836680459862643700}
   - component: {fileID: 2785280858220458746}
   - component: {fileID: 4679274993780167689}
@@ -388,21 +387,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &542673728328518700
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4047348377845177308}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86efd91862724484b48d88700a56bfe3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  view: {fileID: 4836680459862643700}
-  defense:
-    value: 0
 --- !u!114 &4836680459862643700
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -454,7 +438,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c07a1ace24d4bf49dd951e806302741, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controller: {fileID: 542673728328518700}
+  controller: {fileID: 1207057072508873998}
 --- !u!114 &4496958908397332056
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -526,7 +510,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4f56bfd2ee9457c87b1b3e19d931c55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pawnController: {fileID: 542673728328518700}
+  view: {fileID: 4836680459862643700}
+  defense:
+    value: 0
 --- !u!1 &4314222220737725030
 GameObject:
   m_ObjectHideFlags: 0

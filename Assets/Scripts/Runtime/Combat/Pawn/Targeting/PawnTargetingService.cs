@@ -26,31 +26,43 @@ namespace Runtime.Combat.Pawn.Targeting
             IsLookingForTarget = true;
             _targetCompletionSource = new TaskCompletionSource<PawnTarget>();
 
-            // Wait until a target is selected or the action is canceled
-            PawnTarget target = await _targetCompletionSource.Task;
-
-            IsLookingForTarget = false;
-            _lastTargetedPawn = target;
-            OnTargetFound?.Invoke(target);
-            return target;
+            try
+            {
+                // Wait until a target is selected or the action is canceled
+                PawnTarget target = await _targetCompletionSource.Task;
+                _lastTargetedPawn = target;
+                TargetedPawn = target;
+                OnTargetFound?.Invoke(target);
+                return target;
+            }
+            catch (TaskCanceledException)
+            {
+                return null;
+            }
+            finally
+            {
+                IsLookingForTarget = false;
+            }
         }
 
         public void SelectTarget(PawnTarget target)
         {
-            if (!IsLookingForTarget || _targetCompletionSource == null)
+            if (!IsLookingForTarget || _targetCompletionSource == null || _targetCompletionSource.Task.IsCompleted)
             {
-                throw new InvalidOperationException("No target selection is in progress.");
+                UnityEngine.Debug.LogWarning("Attempted to set target while targeting service is not looking for a target or the task is already completed.");
+                return;
             }
 
             TargetedPawn = target;
             _targetCompletionSource.SetResult(target);
+            IsLookingForTarget = false;
         }
 
         public void CancelTargeting()
         {
-            if (IsLookingForTarget && _targetCompletionSource != null)
+            if (IsLookingForTarget && _targetCompletionSource != null && !_targetCompletionSource.Task.IsCompleted)
             {
-                _targetCompletionSource.SetCanceled();
+                _targetCompletionSource.TrySetCanceled();
                 IsLookingForTarget = false;
                 _targetCompletionSource = null;
             }

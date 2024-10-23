@@ -188,7 +188,6 @@ GameObject:
   m_Component:
   - component: {fileID: 51308174}
   - component: {fileID: 51308175}
-  - component: {fileID: 51308176}
   m_Layer: 0
   m_Name: Game Manager
   m_TagString: Untagged
@@ -226,19 +225,6 @@ MonoBehaviour:
   cardCollection: {fileID: 662599563}
   enemiesLane: {fileID: 856932780}
   heroPawn: {fileID: 523498}
---- !u!114 &51308176
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 51308173}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cb80f5ed020945e191d6815291c8b59f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  enemyPrefab: {fileID: 542673728328518700, guid: 45bab92abdc707f428cab1a6888943ea, type: 3}
 --- !u!1 &80757749
 GameObject:
   m_ObjectHideFlags: 0
@@ -1066,6 +1052,7 @@ GameObject:
   - component: {fileID: 856932779}
   - component: {fileID: 856932778}
   - component: {fileID: 856932780}
+  - component: {fileID: 856932781}
   m_Layer: 0
   m_Name: Enemies Area
   m_TagString: Untagged
@@ -1087,11 +1074,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pointA: {fileID: 732473527}
   pointB: {fileID: 1490713798}
-  gameObjectsToArrange:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  gameObjectsToArrange: []
   padding: 0
 --- !u!4 &856932779
 Transform:
@@ -1102,7 +1085,7 @@ Transform:
   m_GameObject: {fileID: 856932777}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.07, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1123,8 +1106,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   arrangeInLine: {fileID: 856932778}
-  pawnFactory: {fileID: 51308176}
+  pawnFactory: {fileID: 856932781}
   pawns: []
+--- !u!114 &856932781
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 856932777}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb80f5ed020945e191d6815291c8b59f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyPrefab: {fileID: 1207057072508873998, guid: 45bab92abdc707f428cab1a6888943ea, type: 3}
 --- !u!1 &1103476680
 GameObject:
   m_ObjectHideFlags: 0

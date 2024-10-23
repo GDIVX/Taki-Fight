@@ -32,6 +32,7 @@ namespace Runtime.CardGameplay.Board
         private void Awake()
         {
             SubscribeToBoardControllerEvents();
+            OnMatchCountChanged(0);
         }
 
         private void OnDestroy()
@@ -61,6 +62,7 @@ namespace Runtime.CardGameplay.Board
 
         private void OnMatchValuesChanged(Suit suit, int number)
         {
+            currentRankText.color = suitColorPallet.GetColor(suit == Suit.White ? Suit.Black : Suit.White);
             Color targetColor = suitColorPallet.GetColor(suit);
             currentSuiteImage.DOColor(targetColor, colorTransitionDuration).SetEase(colorTransitionEase);
             currentRankText.text = number.ToString();

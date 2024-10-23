@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Runtime.CardGameplay.Board;
 using Runtime.CardGameplay.Card.CardBehaviour;
 using Runtime.CardGameplay.Deck;
@@ -69,7 +70,6 @@ namespace Runtime.CardGameplay.Card
                 return;
             }
 
-            // If the card is not selectable, return
             if (!Selectable)
             {
                 return;
@@ -77,15 +77,21 @@ namespace Runtime.CardGameplay.Card
 
             OnSelectionStart?.Invoke(this);
 
-            // Handle card selection
-            if (!HandController.Instance.Has(this)) return;
+            if (await HandleSelectionStrategy(selectStrategy)) return;
+
+            TryToPlay();
+        }
+
+        private async Task<bool> HandleSelectionStrategy(CardSelectStrategy selectStrategy)
+        {
+            if (!HandController.Instance.Has(this)) return true;
             if (!await selectStrategy.SelectAsync(this))
             {
                 OnSelectionCanceled?.Invoke(this);
-                return;
+                return true;
             }
 
-            TryToPlay();
+            return false;
         }
 
         public void Play()
@@ -122,7 +128,7 @@ namespace Runtime.CardGameplay.Card
 
             BoardController.Instance.UpdateMatch(this);
             HandController.Instance.RemoveCard(this);
-            _playStrategy.Play(GameManager.Instance.Hero);
+            Play();
         }
 
         private void Select()
