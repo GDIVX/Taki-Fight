@@ -123,17 +123,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!114 &523498 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1290439825000753545, guid: 7cc881d0c1093a2409e679ef40d9b5dc, type: 3}
-  m_PrefabInstance: {fileID: 269061928862733409}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86efd91862724484b48d88700a56bfe3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &49008646
 GameObject:
   m_ObjectHideFlags: 0
@@ -223,8 +212,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cardCollection: {fileID: 662599563}
-  enemiesLane: {fileID: 856932780}
-  heroPawn: {fileID: 523498}
+  _handController: {fileID: 303423372}
+  _boardController: {fileID: 580355265}
+  _enemiesLane: {fileID: 856932780}
+  _heroPawn: {fileID: 0}
 --- !u!1 &80757749
 GameObject:
   m_ObjectHideFlags: 0
@@ -413,6 +404,7 @@ MonoBehaviour:
   easeType: 4
   minArcWidthFactor: 0.2
   maxArcWidthFactor: 0.8
+  _handController: {fileID: 303423372}
 --- !u!114 &303423372
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -425,8 +417,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17579f31fccb44fc8db39012bce2bbe3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cardToDrawPerTurn: 5
-  maxHandSize: 10
+  _cardToDrawPerTurn: 5
+  _maxHandSize: 10
+  _cardFactory: {fileID: 1877293996}
 --- !u!1 &303998073
 GameObject:
   m_ObjectHideFlags: 0
@@ -741,6 +734,7 @@ MonoBehaviour:
   easeType: 4
   minArcWidthFactor: 0.2
   maxArcWidthFactor: 1
+  _boardController: {fileID: 0}
   colorTransitionDuration: 0.5
   colorTransitionEase: 25
   currentRankText: {fileID: 6630437314431492723}
@@ -878,11 +872,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3569e3c011c4be49036a3374a94debc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cards: []
-  sizeLimitMin: 12
-  sizeLimitMax: 64
-  starterDeck: {fileID: 11400000, guid: fac3175e7a8fb554daef26dcffafcb75, type: 2}
-  deckView: {fileID: 1192004592}
+  _cards: []
+  _sizeLimitMin: 0
+  _sizeLimitMax: 0
+  _starterDeck: {fileID: 11400000, guid: fac3175e7a8fb554daef26dcffafcb75, type: 2}
+  _deckView: {fileID: 1192004592}
+  _handController: {fileID: 303423372}
 --- !u!4 &662599564
 Transform:
   m_ObjectHideFlags: 0
@@ -1724,7 +1719,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c23e8e72be064cfaad2a40f77849a934, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefab: {fileID: 5188398243834909485, guid: 79de2714e98778e45a8d6f81b5df8b9b, type: 3}
+  Prefab: {fileID: 5188398243834909485, guid: 79de2714e98778e45a8d6f81b5df8b9b, type: 3}
+  _handController: {fileID: 303423372}
+  _boardController: {fileID: 580355265}
+  _gameManager: {fileID: 51308175}
 --- !u!4 &1877293997
 Transform:
   m_ObjectHideFlags: 0

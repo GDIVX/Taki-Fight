@@ -1,21 +1,43 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Runtime.CardGameplay.Board;
+using Runtime.CardGameplay.Deck;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
 
 namespace Runtime.CardGameplay.Card
 {
-    public class CardFactory : Singleton<CardFactory>
+    public class CardFactory : MonoBehaviour, ICardFactory
     {
-        [SerializeField] private CardController prefab;
+        [SerializeField] private CardController Prefab;
+
+        [SerializeField, TabGroup("Dependencies")]
+        private HandController _handController;
+        [SerializeField, TabGroup("Dependencies")]
+        private BoardController _boardController;
+        [SerializeField, TabGroup("Dependencies")]
+        private GameManager _gameManager;
+        
+        private CardDependencies _cardDependencies;
 
         private readonly Stack<CardController> _objectPool = new();
+
+        private void Start()
+        {
+            FetchDependencies();
+        }
+
+        private void FetchDependencies()
+        {
+            _cardDependencies = new CardDependencies(_handController, _boardController, _gameManager, this);
+        }
 
         [Button]
         public CardController Create(CardData data, int number, Suit suit = Suit.Default)
         {
             CardController controller = GetController();
-            controller.Init(data, number, suit);
+            controller.Init(data, number, suit, _cardDependencies);
             controller.gameObject.GetComponent<CardView>().Draw(data, number, suit);
             controller.gameObject.SetActive(true);
             return controller;
@@ -23,7 +45,7 @@ namespace Runtime.CardGameplay.Card
 
         public CardController Create(CardInstance instance)
         {
-            return Create(instance.data, instance.number, instance.Suit);
+            return Create(instance.Data, instance.Rank, instance.Suit);
         }
 
         /// <summary>
@@ -41,7 +63,7 @@ namespace Runtime.CardGameplay.Card
                 ? _objectPool.Pop()
                 :
                 //Create a new instance
-                Instantiate(prefab);
+                Instantiate(Prefab);
         }
     }
 }

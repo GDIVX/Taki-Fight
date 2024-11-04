@@ -14,7 +14,7 @@ namespace Runtime.CardGameplay.Deck
 
         public List<CardInstance> Clone()
         {
-            return cards.Select(card => new CardInstance(card.data, card.number)).ToList();
+            return cards.Select(card => new CardInstance(card.Data, card.Rank)).ToList();
         }
 
         [Button]

@@ -6,16 +6,16 @@ namespace Runtime.CardGameplay.Card
     [Serializable]
     public class CardInstance
     {
-        public CardData data;
-        public int number;
+        public CardData Data;
+        public int Rank;
         [ShowInInspector] public Suit Suit { get; set; }
 
         public CardController Controller { get; set; }
 
-        public CardInstance(CardData data, int number)
+        public CardInstance(CardData data, int rank)
         {
-            this.data = data;
-            this.number = number;
+            this.Data = data;
+            this.Rank = rank;
             Suit = data.Suit;
             Controller = null;
         }

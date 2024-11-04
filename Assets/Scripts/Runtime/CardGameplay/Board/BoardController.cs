@@ -1,11 +1,12 @@
 ﻿using System;
 using Runtime.CardGameplay.Card;
 using Sirenix.OdinInspector;
+using UnityEngine;
 using Utilities;
 
 namespace Runtime.CardGameplay.Board
 {
-    public class BoardController : Utilities.Singleton<BoardController>
+    public class BoardController : MonoBehaviour, IBoardController
     {
         [ShowInInspector, ReadOnly] private bool _isLastCardMatch;
 

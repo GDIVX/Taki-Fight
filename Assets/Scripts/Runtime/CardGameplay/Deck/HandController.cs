@@ -8,10 +8,11 @@ using Utilities;
 
 namespace Runtime.CardGameplay.Deck
 {
-    public class HandController : Singleton<HandController>
+    public class HandController : MonoBehaviour, IHandController
     {
-        [SerializeField] private int cardToDrawPerTurn;
-        [SerializeField] private int maxHandSize;
+        [SerializeField] private int _cardToDrawPerTurn;
+        [SerializeField] private int _maxHandSize;
+        [SerializeField, Required] private CardFactory _cardFactory;
         public Deck Deck { get; set; }
         [ShowInInspector, ReadOnly] private List<CardController> _cards = new();
 
@@ -20,15 +21,15 @@ namespace Runtime.CardGameplay.Deck
 
         public int CardToDrawPerTurn
         {
-            get => cardToDrawPerTurn;
-            set => cardToDrawPerTurn = value;
+            get => _cardToDrawPerTurn;
+            set => _cardToDrawPerTurn = value;
         }
 
         /// <summary>
         /// Remove a card from hand
         /// </summary>
         /// <param name="cardController"></param>
-        public void RemoveCard(CardController cardController)
+        private void RemoveCard(CardController cardController)
         {
             if (!_cards.Contains(cardController)) return;
             _cards.Remove(cardController);
@@ -39,7 +40,7 @@ namespace Runtime.CardGameplay.Deck
         /// Add a card to the hand.
         /// </summary>
         /// <param name="cardController"></param>
-        public void AddCard(CardController cardController)
+        private void AddCard(CardController cardController)
         {
             if (cardController == null)
             {
@@ -57,15 +58,15 @@ namespace Runtime.CardGameplay.Deck
         [Button]
         public void DrawCard()
         {
-            if (_cards.Count >= maxHandSize) return;
+            if (_cards.Count >= _maxHandSize) return;
             if (!Deck.Draw(out CardInstance cardInstance)) return;
-            var controller = CardFactory.Instance.Create(cardInstance);
+            var controller = _cardFactory.Create(cardInstance);
             AddCard(controller);
         }
 
         public void DrawHand()
         {
-            for (int i = 0; i < cardToDrawPerTurn; i++)
+            for (int i = 0; i < _cardToDrawPerTurn; i++)
             {
                 DrawCard();
             }
@@ -79,9 +80,9 @@ namespace Runtime.CardGameplay.Deck
         public void DiscardCard(CardController cardController)
         {
             //If the card is already discard, return to avoid side effects
-            if (Deck.IsDiscarded(cardController.instance)) return;
+            if (Deck.IsDiscarded(cardController.Instance)) return;
 
-            Deck.Discard(cardController.instance);
+            Deck.Discard(cardController.Instance);
             RemoveCard(cardController);
         }
 

@@ -120,7 +120,7 @@ namespace Runtime.CardGameplay.Card
                     _currentTween = null;
                 });
         }
-
+        
         public void AnimateToPosition(Vector3 position, float duration, Ease ease)
         {
             _currentTween?.Kill();

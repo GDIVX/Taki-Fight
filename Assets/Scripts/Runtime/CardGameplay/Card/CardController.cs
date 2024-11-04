@@ -10,14 +10,12 @@ using UnityEngine.EventSystems;
 namespace Runtime.CardGameplay.Card
 {
     /// <summary>
-    /// Handle The behaviour of a card
+    /// Handle the behaviour of a card.
     /// </summary>
     public class CardController : MonoBehaviour, IPointerClickHandler
     {
         public int Rank { get; private set; }
         public Suit Suit { get; private set; }
-
-        //TODO: hook some visual indicator
         public bool Selectable { get; set; } = true;
 
         [ShowInInspector, ReadOnly] private CardSelectStrategy _selectStrategy;
@@ -26,13 +24,18 @@ namespace Runtime.CardGameplay.Card
         public event Action<CardController> OnSelectionStart;
         public event Action<CardController> OnSelectionCanceled;
 
-        public CardInstance instance;
+        public CardInstance Instance { get; private set; }
         public CardView View { get; private set; }
         public float PlayDuration => _playStrategy?.Duration ?? 0f;
-        public int EnergyCost { get; set; }
+        public int EnergyCost { get; private set; }
+
+        private IHandController _handController;
+        private IBoardController _boardController;
+        private IGameManager _gameManager;
+        private ICardFactory _cardFactory;
 
         [Button]
-        public void Init(CardData data, int rank, Suit suit)
+        public void Init(CardData data, int rank, Suit suit, CardDependencies dependencies)
         {
             if (data == null)
             {
@@ -40,18 +43,23 @@ namespace Runtime.CardGameplay.Card
                 return;
             }
 
+            _handController = dependencies.HandController;
+            _boardController = dependencies.BoardController;
+            _gameManager = dependencies.GameManager;
+            _cardFactory = dependencies.CardFactory;
+
             Rank = rank;
             Suit = suit;
             _selectStrategy = data.SelectStrategy;
             _playStrategy = data.PlayStrategy;
             EnergyCost = data.EnergyCost;
 
-            instance = new CardInstance(data, rank);
+            Instance = new CardInstance(data, rank);
             View = GetComponent<CardView>();
-            instance.Controller = this;
+            Instance.Controller = this;
         }
 
-        public void Init(CardInstance cardInstance)
+        public void Init(CardInstance cardInstance, CardDependencies dependencies)
         {
             if (cardInstance == null)
             {
@@ -59,42 +67,36 @@ namespace Runtime.CardGameplay.Card
                 return;
             }
 
-            Init(cardInstance.data, cardInstance.number, cardInstance.Suit);
+            Init(cardInstance.Data, cardInstance.Rank, cardInstance.Suit, dependencies);
         }
 
         private async void Select(CardSelectStrategy selectStrategy)
         {
-            if (selectStrategy == null)
+            if (selectStrategy == null || !Selectable)
             {
-                Debug.LogError("CardSelectStrategy cannot be null.");
-                return;
-            }
-
-            if (!Selectable)
-            {
+                Debug.LogError("CardSelectStrategy cannot be null or the card is not selectable.");
                 return;
             }
 
             OnSelectionStart?.Invoke(this);
 
-            if (await HandleSelectionStrategy(selectStrategy)) return;
-
-            TryToPlay();
+            if (!await HandleSelectionStrategy(selectStrategy))
+            {
+                OnSelectionCanceled?.Invoke(this);
+            }
+            else
+            {
+                TryToPlay();
+            }
         }
 
         private async Task<bool> HandleSelectionStrategy(CardSelectStrategy selectStrategy)
         {
-            if (!HandController.Instance.Has(this)) return true;
-            if (!await selectStrategy.SelectAsync(this))
-            {
-                OnSelectionCanceled?.Invoke(this);
-                return true;
-            }
-
-            return false;
+            if (!_handController.Has(this)) return false;
+            return await selectStrategy.SelectAsync(this);
         }
 
-        public void Play()
+        private void Play()
         {
             if (_playStrategy == null)
             {
@@ -102,7 +104,7 @@ namespace Runtime.CardGameplay.Card
                 return;
             }
 
-            _playStrategy.Play(GameManager.Instance.Hero);
+            _playStrategy.Play(_gameManager.Hero);
         }
 
         public void OnPointerClick(PointerEventData eventData)
@@ -113,21 +115,19 @@ namespace Runtime.CardGameplay.Card
                 return;
             }
 
-
             Select();
         }
 
-
         private void TryToPlay()
         {
-            if (!BoardController.Instance.CanPlayCard(this))
+            if (!_boardController.CanPlayCard(this))
             {
                 OnSelectionCanceled?.Invoke(this);
                 return;
             }
 
-            BoardController.Instance.UpdateMatch(this);
-            HandController.Instance.RemoveCard(this);
+            _boardController.UpdateMatch(this);
+            _handController.DiscardCard(this);
             Play();
         }
 
@@ -137,23 +137,11 @@ namespace Runtime.CardGameplay.Card
         }
 
         /// <summary>
-        /// Remove the card
+        /// Remove the card.
         /// </summary>
         public void Disable()
         {
-            CardFactory.Instance.Disable(this);
+            _cardFactory.Disable(this);
         }
-    }
-
-    public enum Suit
-    {
-        Red,
-        Yellow,
-        Green,
-        Blue,
-        Purple,
-        Black,
-        White,
-        Default
     }
 }

@@ -10,11 +10,14 @@ namespace Runtime.CardGameplay.Deck
 {
     public class HandView : HorizontalCardListView
     {
+        [SerializeField, Required, TabGroup("Dependencies")]
+        private HandController _handController;
+
         private void Awake()
         {
             // Subscribe to events for card addition and removal if needed
-            HandController.Instance.OnCardAdded += OnCardAdded;
-            HandController.Instance.OnCardRemoved += OnCardRemoved;
+            _handController.OnCardAdded += OnCardAdded;
+            _handController.OnCardRemoved += OnCardRemoved;
         }
     }
 }

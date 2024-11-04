@@ -23,11 +23,4 @@ namespace Runtime.Combat.Pawn.Enemy
             return entries.WeightedSelectRandom(entry => entry.weight).strategy;
         }
     }
-
-    [System.Serializable]
-    public struct PlayTableEntry
-    {
-        public CardPlayStrategy strategy;
-        public float weight;
-    }
 }

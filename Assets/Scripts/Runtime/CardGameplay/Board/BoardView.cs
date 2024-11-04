@@ -12,6 +12,9 @@ namespace Runtime.CardGameplay.Board
 {
     public class BoardView : HorizontalCardListView
     {
+        [SerializeField, Required, BoxGroup("Dependencies")]
+        private BoardController _boardController;
+
         [SerializeField, BoxGroup("Combo Color")]
         private float colorTransitionDuration;
 
@@ -42,17 +45,17 @@ namespace Runtime.CardGameplay.Board
 
         private void SubscribeToBoardControllerEvents()
         {
-            if (BoardController.Instance == null) return;
-            BoardController.Instance.OnMatchValuesChanged += OnMatchValuesChanged;
-            BoardController.Instance.RegisterToMatchCountChanged(OnMatchCountChanged);
+            if (_boardController == null) return;
+            _boardController.OnMatchValuesChanged += OnMatchValuesChanged;
+            _boardController.RegisterToMatchCountChanged(OnMatchCountChanged);
         }
 
 
         private void UnsubscribeFromBoardControllerEvents()
         {
-            if (BoardController.Instance == null) return;
-            BoardController.Instance.OnMatchValuesChanged -= OnMatchValuesChanged;
-            BoardController.Instance.UnregisterToMatchCountChanged(OnMatchCountChanged);
+            if (_boardController == null) return;
+            _boardController.OnMatchValuesChanged -= OnMatchValuesChanged;
+            _boardController.UnregisterToMatchCountChanged(OnMatchCountChanged);
         }
 
         private void OnMatchCountChanged(int count)

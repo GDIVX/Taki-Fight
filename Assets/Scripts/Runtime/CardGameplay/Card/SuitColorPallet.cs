@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace Runtime.CardGameplay.Card
@@ -13,12 +12,5 @@ namespace Runtime.CardGameplay.Card
         {
             return pallet.Find(p => p.suit == suit).color;
         }
-    }
-
-    [Serializable]
-    public struct SuitColor
-    {
-        public Suit suit;
-        public Color color;
     }
 }
