@@ -17,7 +17,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                 throw new NullReferenceException("Hero pawn manager was not assigned to the combat manager");
             }
 
-            caller.defense.Value += defensePoints;
+            caller.Defense.Value += defensePoints;
         }
     }
 }

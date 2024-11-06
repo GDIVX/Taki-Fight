@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Runtime.CardGameplay.Board;
 using Runtime.CardGameplay.Card.CardBehaviour;
 using Runtime.CardGameplay.Deck;
+using Runtime.Combat.Pawn;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -31,7 +32,7 @@ namespace Runtime.CardGameplay.Card
 
         private IHandController _handController;
         private IBoardController _boardController;
-        private IGameManager _gameManager;
+        private PawnController _pawn;
         private ICardFactory _cardFactory;
 
         [Button]
@@ -45,7 +46,7 @@ namespace Runtime.CardGameplay.Card
 
             _handController = dependencies.HandController;
             _boardController = dependencies.BoardController;
-            _gameManager = dependencies.GameManager;
+            _pawn = dependencies.Pawn;
             _cardFactory = dependencies.CardFactory;
 
             Rank = rank;
@@ -54,9 +55,11 @@ namespace Runtime.CardGameplay.Card
             _playStrategy = data.PlayStrategy;
             EnergyCost = data.EnergyCost;
 
-            Instance = new CardInstance(data, rank);
+            Instance = new CardInstance(data, rank)
+            {
+                Controller = this
+            };
             View = GetComponent<CardView>();
-            Instance.Controller = this;
         }
 
         public void Init(CardInstance cardInstance, CardDependencies dependencies)
@@ -72,28 +75,27 @@ namespace Runtime.CardGameplay.Card
 
         private async void Select(CardSelectStrategy selectStrategy)
         {
-            if (selectStrategy == null || !Selectable)
+            if (selectStrategy == null)
             {
-                Debug.LogError("CardSelectStrategy cannot be null or the card is not selectable.");
+                Debug.LogError("CardSelectStrategy cannot be null.");
                 return;
             }
 
             OnSelectionStart?.Invoke(this);
 
-            if (!await HandleSelectionStrategy(selectStrategy))
-            {
-                OnSelectionCanceled?.Invoke(this);
-            }
-            else
+            if (await HandleSelectionStrategyAsync(selectStrategy))
             {
                 TryToPlay();
             }
+            else
+            {
+                OnSelectionCanceled?.Invoke(this);
+            }
         }
 
-        private async Task<bool> HandleSelectionStrategy(CardSelectStrategy selectStrategy)
+        private async Task<bool> HandleSelectionStrategyAsync(CardSelectStrategy selectStrategy)
         {
-            if (!_handController.Has(this)) return false;
-            return await selectStrategy.SelectAsync(this);
+            return _handController.Has(this) && await selectStrategy.SelectAsync(this);
         }
 
         private void Play()
@@ -104,7 +106,7 @@ namespace Runtime.CardGameplay.Card
                 return;
             }
 
-            _playStrategy.Play(_gameManager.Hero);
+            _playStrategy.Play(_pawn);
         }
 
         public void OnPointerClick(PointerEventData eventData)

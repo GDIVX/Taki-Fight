@@ -14,7 +14,7 @@ namespace Runtime
     public class GameManager : Singleton<GameManager>, IGameManager
     {
         [SerializeField, Required, TabGroup("Dependencies")]
-        private CardCollection cardCollection;
+        private CardCollection _cardCollection;
 
         [SerializeField, Required, TabGroup("Dependencies")]
         private HandController _handController;
@@ -22,9 +22,12 @@ namespace Runtime
         [SerializeField, Required, TabGroup("Dependencies")]
         private BoardController _boardController;
 
+        [SerializeField, Required, TabGroup("Dependencies")]
+        private CardFactory _cardFactory;
+
         [SerializeField, Required] private CombatLane _enemiesLane;
 
-        [SerializeField, TabGroup("Hero"), Required]
+        [SerializeField, TabGroup("Dependencies"), Required]
         private PawnController _heroPawn;
 
 
@@ -39,6 +42,7 @@ namespace Runtime
         public void StartSession(PawnData data)
         {
             _heroPawn.Init(data);
+            _cardFactory.Init(_heroPawn);
         }
 
 
@@ -59,7 +63,7 @@ namespace Runtime
         [Button]
         private void SetupCardGameplay()
         {
-            cardCollection.CreateDeck();
+            _cardCollection.CreateDeck();
             _handController.DrawHand();
         }
 
@@ -76,15 +80,16 @@ namespace Runtime
             yield return PlayEnemiesTurn();
 
             //Reset the player defense 
-            Hero.defense.Value = 0;
+            Hero.Defense.Value = 0;
         }
 
         private IEnumerator PlayEnemiesTurn()
         {
             foreach (var enemy in (EnemyController[])_enemiesLane.Pawns)
             {
+                //TODO: use interface instead of instance casting
                 yield return enemy.ChoseAndPlayStrategy();
-                enemy.defense.Value = 0;
+                enemy.Defense.Value = 0;
             }
         }
     }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Runtime.CardGameplay.Board;
 using Runtime.CardGameplay.Deck;
+using Runtime.Combat.Pawn;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
@@ -14,23 +15,23 @@ namespace Runtime.CardGameplay.Card
 
         [SerializeField, TabGroup("Dependencies")]
         private HandController _handController;
+
         [SerializeField, TabGroup("Dependencies")]
         private BoardController _boardController;
-        [SerializeField, TabGroup("Dependencies")]
-        private GameManager _gameManager;
-        
+
+
         private CardDependencies _cardDependencies;
 
         private readonly Stack<CardController> _objectPool = new();
 
-        private void Start()
+        public void Init(PawnController heroPawn)
         {
-            FetchDependencies();
+            FetchDependencies(heroPawn);
         }
 
-        private void FetchDependencies()
+        private void FetchDependencies(PawnController heroPawn)
         {
-            _cardDependencies = new CardDependencies(_handController, _boardController, _gameManager, this);
+            _cardDependencies = new CardDependencies(_handController, _boardController, heroPawn, this);
         }
 
         [Button]

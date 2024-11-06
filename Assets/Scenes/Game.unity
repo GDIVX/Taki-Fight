@@ -211,11 +211,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d0709aa8cc44d77bd3f2202ccadaa1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cardCollection: {fileID: 662599563}
+  _cardCollection: {fileID: 662599563}
   _handController: {fileID: 303423372}
   _boardController: {fileID: 580355265}
+  _cardFactory: {fileID: 1877293996}
   _enemiesLane: {fileID: 856932780}
-  _heroPawn: {fileID: 0}
+  _heroPawn: {fileID: 1403467536}
 --- !u!1 &80757749
 GameObject:
   m_ObjectHideFlags: 0
@@ -1449,6 +1450,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1328199255}
   m_CullTransparentMesh: 1
+--- !u!114 &1403467536 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1290439825000753545, guid: 7cc881d0c1093a2409e679ef40d9b5dc, type: 3}
+  m_PrefabInstance: {fileID: 269061928862733409}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86efd91862724484b48d88700a56bfe3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1490713797
 GameObject:
   m_ObjectHideFlags: 0
@@ -1722,7 +1734,6 @@ MonoBehaviour:
   Prefab: {fileID: 5188398243834909485, guid: 79de2714e98778e45a8d6f81b5df8b9b, type: 3}
   _handController: {fileID: 303423372}
   _boardController: {fileID: 580355265}
-  _gameManager: {fileID: 51308175}
 --- !u!4 &1877293997
 Transform:
   m_ObjectHideFlags: 0

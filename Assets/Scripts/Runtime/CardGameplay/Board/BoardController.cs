@@ -43,8 +43,11 @@ namespace Runtime.CardGameplay.Board
 
         public bool CanPlayCard(CardController cardController)
         {
-            if (cardController.EnergyCost < _matchCount.Value)
+            if (cardController.EnergyCost > _matchCount.Value)
             {
+                //TODO : Add feedback
+                Debug.Log(
+                    $"Can't play card due to energy cost. Card cost = {cardController.EnergyCost} || current energy = {_matchCount.Value}");
                 return false;
             }
 

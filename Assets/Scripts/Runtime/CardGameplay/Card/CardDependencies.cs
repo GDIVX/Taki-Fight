@@ -1,4 +1,5 @@
 ﻿using System;
+using Runtime.Combat.Pawn;
 
 namespace Runtime.CardGameplay.Card
 {
@@ -6,14 +7,14 @@ namespace Runtime.CardGameplay.Card
     {
         public IHandController HandController { get; }
         public IBoardController BoardController { get; }
-        public IGameManager GameManager { get; }
+        public PawnController Pawn { get; }
         public ICardFactory CardFactory { get; }
 
-        public CardDependencies(IHandController handController, IBoardController boardController, IGameManager gameManager, ICardFactory cardFactory)
+        public CardDependencies(IHandController handController, IBoardController boardController, PawnController pawn, ICardFactory cardFactory)
         {
             HandController = handController ?? throw new ArgumentNullException(nameof(handController));
             BoardController = boardController ?? throw new ArgumentNullException(nameof(boardController));
-            GameManager = gameManager ?? throw new ArgumentNullException(nameof(gameManager));
+            Pawn = pawn ?? throw new ArgumentNullException(nameof(pawn));
             CardFactory = cardFactory ?? throw new ArgumentNullException(nameof(cardFactory));
         }
     }
