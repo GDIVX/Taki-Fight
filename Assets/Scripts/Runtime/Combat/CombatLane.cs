@@ -9,21 +9,22 @@ namespace Runtime.Combat
 {
     public class CombatLane : MonoBehaviour
     {
-        [SerializeField] private ArrangeInLine arrangeInLine;
+        [SerializeField] private ArrangeInLine _arrangeInLine;
 
         [SerializeField, Required, TabGroup("Enemies")]
-        private PawnFactory pawnFactory;
+        private PawnFactory _pawnFactory;
 
-        [SerializeField] private List<PawnController> pawns = new List<PawnController>();
+        [SerializeField] private List<PawnController> _pawns = new List<PawnController>();
 
-        public PawnController[] Pawns => pawns.ToArray();
+        public List<PawnController> Pawns => _pawns;
 
         public void SpawnPawnsForCombat(CombatConfig combatConfig)
         {
             foreach (var data in combatConfig.Enemies)
             {
-                var pawn = pawnFactory.SpawnEnemy(data);
-                arrangeInLine.Add(pawn.gameObject);
+                var pawn = _pawnFactory.SpawnEnemy(data);
+                _arrangeInLine.Add(pawn.gameObject);
+                _pawns.Add(pawn);
             }
         }
     }

@@ -1101,9 +1101,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da569e1892a24830a7b4b96925f49eeb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  arrangeInLine: {fileID: 856932778}
-  pawnFactory: {fileID: 856932781}
-  pawns: []
+  _arrangeInLine: {fileID: 856932778}
+  _pawnFactory: {fileID: 856932781}
+  _pawns: []
 --- !u!114 &856932781
 MonoBehaviour:
   m_ObjectHideFlags: 0

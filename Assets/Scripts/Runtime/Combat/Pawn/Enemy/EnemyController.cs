@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Runtime.Combat.Pawn.Enemy
 {
-    public class EnemyController : PawnController
+    public class EnemyController : PawnController, IAiBrain
     {
         private AIPlayTable _table;
 
@@ -17,9 +17,11 @@ namespace Runtime.Combat.Pawn.Enemy
 
         public IEnumerator ChoseAndPlayStrategy()
         {
+            Debug.Log("Stating to play enemy");
             var chosenStrategy = _table.ChoseRandomPlayStrategy();
             chosenStrategy.Play(this);
             yield return new WaitForSeconds(chosenStrategy.Duration);
+            Debug.Log($"Enemy {gameObject} had played {chosenStrategy}");
         }
     }
 }

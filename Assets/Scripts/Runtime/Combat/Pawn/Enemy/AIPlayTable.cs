@@ -14,13 +14,10 @@ namespace Runtime.Combat.Pawn.Enemy
 
         public CardPlayStrategy ChoseRandomPlayStrategy()
         {
-            if (entries.IsNullOrEmpty())
-            {
-                Debug.LogError($"{name} has no entries for the play table.");
-                return default;
-            }
+            if (!entries.IsNullOrEmpty()) return entries.WeightedSelectRandom(entry => entry.weight).strategy;
+            Debug.LogError($"{name} has no entries for the play table.");
+            return default;
 
-            return entries.WeightedSelectRandom(entry => entry.weight).strategy;
         }
     }
 }

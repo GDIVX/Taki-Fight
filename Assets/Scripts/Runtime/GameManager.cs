@@ -75,9 +75,10 @@ namespace Runtime
 
         private IEnumerator ProcessEndTurn()
         {
+            Debug.Log("Started process turn");
             _boardController.OnTurnEnd();
 
-            yield return PlayEnemiesTurn();
+            yield return StartCoroutine(PlayEnemiesTurn());
 
             //Reset the player defense 
             Hero.Defense.Value = 0;
@@ -85,10 +86,19 @@ namespace Runtime
 
         private IEnumerator PlayEnemiesTurn()
         {
-            foreach (var enemy in (EnemyController[])_enemiesLane.Pawns)
+            Debug.Log("Started Play Enemy Turn");
+            foreach (var enemy in _enemiesLane.Pawns)
             {
-                //TODO: use interface instead of instance casting
-                yield return enemy.ChoseAndPlayStrategy();
+                if (enemy is IAiBrain brain)
+                {
+                    Debug.Log("Casted enemy to brain");
+                    yield return StartCoroutine(brain.ChoseAndPlayStrategy());
+                }
+                else
+                {
+                    Debug.LogError($"Failed to cast enemy {enemy} into interface {nameof(IAiBrain)}");
+                }
+
                 enemy.Defense.Value = 0;
             }
         }
