@@ -9,8 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0bb96013ec9d4e368ea7f578fea6a525, type: 3}
-  m_Name: Attack Play 1
+  m_Script: {fileID: 11500000, guid: 26828eb731df4be1bffee6c60ba9739b, type: 3}
+  m_Name: Get Target On Click Strategy
   m_EditorClassIdentifier: 
-  duration: 1
-  attackDamage: 1

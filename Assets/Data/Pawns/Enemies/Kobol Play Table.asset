@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Kobol Play Table
   m_EditorClassIdentifier: 
   entries:
-  - strategy: {fileID: 11400000, guid: ee69d39da3dafbf41aefd0cb4ce0c0cd, type: 2}
+  - strategy: {fileID: 11400000, guid: 096e7e287617b1145a56fcf896a78cff, type: 2}
     weight: 0.5
-  - strategy: {fileID: 11400000, guid: 9d47cadf35fa0ae42a5930fbd7c8b4b4, type: 2}
+  - strategy: {fileID: 11400000, guid: cd7cd7aafe2c3b14ab5954de633d36b0, type: 2}
     weight: 0.25
   - strategy: {fileID: 11400000, guid: 549e43c006aaa9548b773fde947c00f5, type: 2}
     weight: 0.25
