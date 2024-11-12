@@ -1,4 +1,5 @@
 ﻿using System;
+using Runtime.CardGameplay.Board;
 using Runtime.Combat.Pawn;
 
 namespace Runtime.CardGameplay.Card

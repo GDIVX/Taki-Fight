@@ -37,6 +37,8 @@ namespace Runtime
             private set => _heroPawn = value;
         }
 
+        public Suit CurrentSuit => _boardController.CurrentSuit;
+
 
         [Button]
         public void StartSession(PawnData data)

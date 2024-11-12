@@ -1,8 +1,10 @@
-﻿namespace Runtime.CardGameplay.Card
+﻿using Runtime.CardGameplay.Card;
+
+namespace Runtime.CardGameplay.Board
 {
     public interface IBoardController
     {
-        bool CanPlayCard(CardController card);
-        void UpdateMatch(CardController card);
+        bool CanPlayCard(ICardController card);
+        void UpdateCurrentSuitAndRank(ICardController card);
     }
 }

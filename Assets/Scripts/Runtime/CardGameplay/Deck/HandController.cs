@@ -14,10 +14,10 @@ namespace Runtime.CardGameplay.Deck
         [SerializeField] private int _maxHandSize;
         [SerializeField, Required] private CardFactory _cardFactory;
         public Deck Deck { get; set; }
-        [ShowInInspector, ReadOnly] private List<CardController> _cards = new();
+        [ShowInInspector, ReadOnly] private List<ICardController> _cards = new();
 
-        public event Action<CardController> OnCardAdded;
-        public event Action<CardController> OnCardRemoved;
+        public event Action<ICardController> OnCardAdded;
+        public event Action<ICardController> OnCardRemoved;
 
         public int CardToDrawPerTurn
         {
@@ -29,7 +29,7 @@ namespace Runtime.CardGameplay.Deck
         /// Remove a card from hand
         /// </summary>
         /// <param name="cardController"></param>
-        private void RemoveCard(CardController cardController)
+        private void RemoveCard(ICardController cardController)
         {
             if (!_cards.Contains(cardController)) return;
             _cards.Remove(cardController);
@@ -40,7 +40,7 @@ namespace Runtime.CardGameplay.Deck
         /// Add a card to the hand.
         /// </summary>
         /// <param name="cardController"></param>
-        private void AddCard(CardController cardController)
+        private void AddCard(ICardController cardController)
         {
             if (cardController == null)
             {
@@ -77,7 +77,7 @@ namespace Runtime.CardGameplay.Deck
         /// </summary>
         /// <param name="cardController"></param>
         [Button]
-        public void DiscardCard(CardController cardController)
+        public void DiscardCard(ICardController cardController)
         {
             //If the card is already discard, return to avoid side effects
             if (Deck.IsDiscarded(cardController.Instance)) return;
@@ -86,7 +86,7 @@ namespace Runtime.CardGameplay.Deck
             RemoveCard(cardController);
         }
 
-        public bool Has(CardController cardController)
+        public bool Has(ICardController cardController)
         {
             return _cards.Contains(cardController);
         }

@@ -13,10 +13,10 @@ namespace Runtime.CardGameplay.Card
     /// <summary>
     /// Handle the behaviour of a card.
     /// </summary>
-    public class CardController : MonoBehaviour, IPointerClickHandler
+    public class CardController : MonoBehaviour, IPointerClickHandler, ICardController
     {
-        public int Rank { get; private set; }
-        public Suit Suit { get; private set; }
+        public int Rank { get; set; }
+        public Suit Suit { get; set; }
         public bool Selectable { get; set; } = true;
 
         [ShowInInspector, ReadOnly] private CardSelectStrategy _selectStrategy;
@@ -26,9 +26,10 @@ namespace Runtime.CardGameplay.Card
         public event Action<CardController> OnSelectionCanceled;
 
         public CardInstance Instance { get; private set; }
+        public Transform Transform => gameObject.transform;
         public CardView View { get; private set; }
         public float PlayDuration => _playStrategy?.Duration ?? 0f;
-        public int EnergyCost { get; private set; }
+        public int EnergyCost { get; set; }
 
         private IHandController _handController;
         private IBoardController _boardController;
@@ -106,7 +107,10 @@ namespace Runtime.CardGameplay.Card
                 return;
             }
 
+            //Play the card before discarding it or updating the current suit and rank.
+            //In order to preserve the game state for any play strategy before doing changes 
             _playStrategy.Play(_pawn);
+            _playStrategy.PostPlay(_boardController, _handController, this);
         }
 
         public void OnPointerClick(PointerEventData eventData)
@@ -128,8 +132,7 @@ namespace Runtime.CardGameplay.Card
                 return;
             }
 
-            _boardController.UpdateMatch(this);
-            _handController.DiscardCard(this);
+
             Play();
         }
 

@@ -735,7 +735,7 @@ MonoBehaviour:
   easeType: 4
   minArcWidthFactor: 0.2
   maxArcWidthFactor: 1
-  _boardController: {fileID: 0}
+  _boardController: {fileID: 580355265}
   colorTransitionDuration: 0.5
   colorTransitionEase: 25
   currentRankText: {fileID: 6630437314431492723}

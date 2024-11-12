@@ -1,5 +1,6 @@
 ﻿namespace Runtime.CardGameplay.Card
 {
+    [System.Serializable]
     public enum Suit
     {
         Red,

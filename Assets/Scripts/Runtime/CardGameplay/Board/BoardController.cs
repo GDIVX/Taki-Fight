@@ -10,10 +10,11 @@ namespace Runtime.CardGameplay.Board
     {
         [ShowInInspector, ReadOnly] private bool _isLastCardMatch;
 
-        [ShowInInspector, ReadOnly] private Suit CurrentSuit { get; set; }
-        [ShowInInspector, ReadOnly] private int CurrentRank { get; set; }
+        [ShowInInspector, ReadOnly] public Suit CurrentSuit { get; set; }
+        [ShowInInspector, ReadOnly] public int CurrentRank { get; set; }
 
-        private readonly TrackedProperty<int> _matchCount = new();
+
+        [ShowInInspector, ReadOnly] private TrackedProperty<int> MatchCount { get; } = new();
 
 
         public event Action<Suit, int> OnMatchValuesChanged;
@@ -25,29 +26,29 @@ namespace Runtime.CardGameplay.Board
         }
 
 
-        public void UpdateMatch(CardController cardController)
+        public void UpdateCurrentSuitAndRank(ICardController cardController)
         {
             UpdateCurrentSuitAndRank(cardController.Suit, cardController.Rank);
-            _matchCount.Value += 1;
+            MatchCount.Value += 1;
         }
 
         public void RegisterToMatchCountChanged(Action<int> action)
         {
-            _matchCount.OnValueChanged += action;
+            MatchCount.OnValueChanged += action;
         }
 
         public void UnregisterToMatchCountChanged(Action<int> action)
         {
-            _matchCount.OnValueChanged -= action;
+            MatchCount.OnValueChanged -= action;
         }
 
-        public bool CanPlayCard(CardController cardController)
+        public bool CanPlayCard(ICardController cardController)
         {
-            if (cardController.EnergyCost > _matchCount.Value)
+            if (cardController.EnergyCost > MatchCount.Value)
             {
                 //TODO : Add feedback
                 Debug.Log(
-                    $"Can't play card due to energy cost. Card cost = {cardController.EnergyCost} || current energy = {_matchCount.Value}");
+                    $"Can't play card due to energy cost. Card cost = {cardController.EnergyCost} || current energy = {MatchCount.Value}");
                 return false;
             }
 
@@ -55,7 +56,7 @@ namespace Runtime.CardGameplay.Board
             return IsLastCardMatch;
         }
 
-        private bool IsCardMatching(CardController cardController)
+        private bool IsCardMatching(ICardController cardController)
         {
             return CurrentSuit switch
             {
@@ -79,7 +80,7 @@ namespace Runtime.CardGameplay.Board
 
         public void OnTurnEnd()
         {
-            _matchCount.Value = 0;
+            MatchCount.Value = 0;
         }
 
 

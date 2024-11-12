@@ -2,7 +2,7 @@
 {
     public interface IHandController
     {
-        bool Has(CardController card);
-        void DiscardCard(CardController card);
+        bool Has(ICardController card);
+        void DiscardCard(ICardController card);
     }
 }

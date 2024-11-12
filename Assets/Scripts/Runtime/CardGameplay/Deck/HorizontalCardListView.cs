@@ -9,25 +9,25 @@ namespace Runtime.CardGameplay.Deck
 {
     public class HorizontalCardListView : MonoBehaviour
     {
-        [SerializeField] private float arcAngle = 30f;
-        [SerializeField] private float animationDuration = 0.5f;
-        [SerializeField] private Ease easeType = Ease.InOutSine;
+        [SerializeField] private float _arcAngle = 30f;
+        [SerializeField] private float _animationDuration = 0.5f;
+        [SerializeField] private Ease _easeType = Ease.InOutSine;
 
-        [SerializeField] private float minArcWidthFactor = 0.2f;
-        [SerializeField] private float maxArcWidthFactor = 1f;
+        [SerializeField] private float _minArcWidthFactor = 0.2f;
+        [SerializeField] private float _maxArcWidthFactor = 1f;
 
-        [ShowInInspector, ReadOnly] protected readonly List<CardController> Cards = new();
+        [ShowInInspector, ReadOnly] protected readonly List<ICardController> Cards = new();
 
         private RectTransform _rectTransform;
 
-        protected virtual void OnCardAdded(CardController cardController)
+        protected virtual void OnCardAdded(ICardController cardController)
         {
-            cardController.transform.SetParent(transform);
+            cardController.Transform.SetParent(transform);
             Cards.Add(cardController);
             ArrangeCardsInArch();
         }
 
-        protected virtual void OnCardRemoved(CardController cardController)
+        protected virtual void OnCardRemoved(ICardController cardController)
         {
             Cards.Remove(cardController);
             ArrangeCardsInArch();
@@ -37,30 +37,30 @@ namespace Runtime.CardGameplay.Deck
         protected void ArrangeCardsInArch()
         {
             int cardCount = Cards.Count;
-            if (cardCount == 0 || arcAngle == 0) return;
+            if (cardCount == 0 || _arcAngle == 0) return;
 
             _rectTransform ??= GetComponent<RectTransform>();
             float baseWidth = _rectTransform.rect.width;
 
             // Dynamically adjust the arc width factor based on the number of cards
-            float scaledWidth = Mathf.Lerp(baseWidth * minArcWidthFactor, baseWidth * maxArcWidthFactor,
+            float scaledWidth = Mathf.Lerp(baseWidth * _minArcWidthFactor, baseWidth * _maxArcWidthFactor,
                 Mathf.InverseLerp(1, 10, cardCount));
 
-            float radius = scaledWidth / (2 * Mathf.Tan(Mathf.Deg2Rad * (arcAngle / 2)));
+            float radius = scaledWidth / (2 * Mathf.Tan(Mathf.Deg2Rad * (_arcAngle / 2)));
             if (float.IsNaN(radius) || float.IsInfinity(radius)) return;
 
             for (int i = 0; i < cardCount; i++)
             {
-                float angle = Mathf.Lerp(-arcAngle / 2, arcAngle / 2, i / Mathf.Max(1, (float)(cardCount - 1)));
+                float angle = Mathf.Lerp(-_arcAngle / 2, _arcAngle / 2, i / Mathf.Max(1, (float)(cardCount - 1)));
                 float xPos = Mathf.Sin(Mathf.Deg2Rad * angle) * radius;
                 float yPos = Mathf.Cos(Mathf.Deg2Rad * angle) * radius - radius;
 
                 if (float.IsNaN(xPos) || float.IsNaN(yPos)) continue;
 
                 var card = Cards[i];
-                card.transform.SetSiblingIndex(i);
-                card.transform.DOLocalMove(new Vector3(xPos, yPos, 0), animationDuration).SetEase(easeType);
-                card.transform.DOLocalRotate(new Vector3(0, 0, -angle), animationDuration).SetEase(easeType)
+                card.Transform.SetSiblingIndex(i);
+                card.Transform.DOLocalMove(new Vector3(xPos, yPos, 0), _animationDuration).SetEase(_easeType);
+                card.Transform.DOLocalRotate(new Vector3(0, 0, -angle), _animationDuration).SetEase(_easeType)
                     .onComplete += () => StartCoroutine(WaitAndSetViewNewValues(card.View));
                 //ensure correct ordering 
             }
@@ -68,7 +68,7 @@ namespace Runtime.CardGameplay.Deck
 
         private IEnumerator WaitAndSetViewNewValues(CardView view)
         {
-            yield return new WaitForSeconds(animationDuration);
+            yield return new WaitForSeconds(_animationDuration);
             view.SetOriginalValues();
         }
     }

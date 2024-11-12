@@ -10,21 +10,21 @@ namespace Runtime.CardGameplay.Card
 {
     public class CardView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
-        [SerializeField, TabGroup("Draw")] private TextMeshProUGUI title;
-        [SerializeField, TabGroup("Draw")] private TextMeshProUGUI description;
-        [SerializeField, TabGroup("Draw")] private TextMeshProUGUI numberText;
-        [SerializeField, TabGroup("Draw")] private Image image;
-        [SerializeField, TabGroup("Draw")] private Image suitImage;
-        [SerializeField, TabGroup("Draw")] private SuitColorPallet colorPallet;
+        [SerializeField, TabGroup("Draw")] private TextMeshProUGUI _title;
+        [SerializeField, TabGroup("Draw")] private TextMeshProUGUI _description;
+        [SerializeField, TabGroup("Draw")] private TextMeshProUGUI _rankText;
+        [SerializeField, TabGroup("Draw")] private Image _image;
+        [SerializeField, TabGroup("Draw")] private Image _suitImage;
+        [SerializeField, TabGroup("Draw")] private SuitColorPallet _colorPallet;
 
         [SerializeField, TabGroup("Hover Animation")]
-        private float hoverScaleFactor = 1.2f;
+        private float _hoverScaleFactor = 1.2f;
 
         [SerializeField, TabGroup("Hover Animation")]
-        private float hoverRotationDuration = 0.3f;
+        private float _hoverRotationDuration = 0.3f;
 
         [SerializeField, TabGroup("Hover Animation")]
-        private Ease hoverEaseType = Ease.OutQuad;
+        private Ease _hoverEaseType = Ease.OutQuad;
 
         [ShowInInspector, ReadOnly] private CardData _cardData;
 
@@ -35,6 +35,8 @@ namespace Runtime.CardGameplay.Card
 
         private Tween _currentTween;
         private bool _isHovered;
+        
+        //TODO: dynamic description with variables
 
         private void Awake()
         {
@@ -52,24 +54,24 @@ namespace Runtime.CardGameplay.Card
 
             if (suit == Suit.White)
             {
-                numberText.text = "J";
-                numberText.color = colorPallet.GetColor(Suit.Black);
+                _rankText.text = "J";
+                _rankText.color = _colorPallet.GetColor(Suit.Black);
             }
             else
             {
-                numberText.text = number.ToString();
-                numberText.color = colorPallet.GetColor(Suit.White);
+                _rankText.text = number.ToString();
+                _rankText.color = _colorPallet.GetColor(Suit.White);
             }
 
-            title.text = data.Title;
-            description.text = data.Description;
-            image.sprite = data.Image;
+            _title.text = data.Title;
+            _description.text = data.Description;
+            _image.sprite = data.Image;
 
-            var color = colorPallet.GetColor(suit);
-            title.color = color;
-            description.color = color;
-            suitImage.color = color;
-            image.color = color;
+            var color = _colorPallet.GetColor(suit);
+            _title.color = color;
+            _description.color = color;
+            _suitImage.color = color;
+            _image.color = color;
 
             _cardData = data;
         }
@@ -101,8 +103,8 @@ namespace Runtime.CardGameplay.Card
 
             transform.SetAsLastSibling();
             _currentTween = DOTween.Sequence()
-                .Append(transform.DOLocalRotate(Vector3.zero, hoverRotationDuration).SetEase(hoverEaseType))
-                .Join(transform.DOScale(_originalScale * hoverScaleFactor, hoverRotationDuration).SetEase(hoverEaseType))
+                .Append(transform.DOLocalRotate(Vector3.zero, _hoverRotationDuration).SetEase(_hoverEaseType))
+                .Join(transform.DOScale(_originalScale * _hoverScaleFactor, _hoverRotationDuration).SetEase(_hoverEaseType))
                 .OnComplete(() => _currentTween = null);
         }
 
@@ -111,9 +113,9 @@ namespace Runtime.CardGameplay.Card
             _currentTween?.Kill();
 
             _currentTween = DOTween.Sequence()
-                .Append(transform.DOLocalMove(_originalPosition, hoverRotationDuration).SetEase(hoverEaseType))
-                .Join(transform.DOLocalRotate(_originalRotation, hoverRotationDuration).SetEase(hoverEaseType))
-                .Join(transform.DOScale(_originalScale, hoverRotationDuration).SetEase(hoverEaseType))
+                .Append(transform.DOLocalMove(_originalPosition, _hoverRotationDuration).SetEase(_hoverEaseType))
+                .Join(transform.DOLocalRotate(_originalRotation, _hoverRotationDuration).SetEase(_hoverEaseType))
+                .Join(transform.DOScale(_originalScale, _hoverRotationDuration).SetEase(_hoverEaseType))
                 .OnComplete(() =>
                 {
                     transform.SetSiblingIndex(_originalSiblingIndex);

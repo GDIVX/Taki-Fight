@@ -12,6 +12,11 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
 
         public override void Play(PawnController caller)
         {
+            Play(caller, _attackDamage);
+        }
+
+        public override void Play(PawnController caller, int value)
+        {
             var target = _targetingStrategy.GetTarget();
 
             // It is possible that the target is dead or has no controller. Fire a warning to the log to be safe
@@ -35,8 +40,8 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                 return;
             }
 
-            var finalDamage = _attackDamage + caller.Power;
-            target.Attack(_attackDamage);
+            var finalDamage = value + caller.Power;
+            target.Attack(finalDamage);
         }
     }
 }
