@@ -13,6 +13,7 @@ namespace Runtime.CardGameplay.Card
         [SerializeField, TabGroup("Draw")] private TextMeshProUGUI _title;
         [SerializeField, TabGroup("Draw")] private TextMeshProUGUI _description;
         [SerializeField, TabGroup("Draw")] private TextMeshProUGUI _rankText;
+        [SerializeField, TabGroup("Draw")] private TextMeshProUGUI _energyText;
         [SerializeField, TabGroup("Draw")] private Image _image;
         [SerializeField, TabGroup("Draw")] private Image _suitImage;
         [SerializeField, TabGroup("Draw")] private SuitColorPallet _colorPallet;
@@ -35,7 +36,7 @@ namespace Runtime.CardGameplay.Card
 
         private Tween _currentTween;
         private bool _isHovered;
-        
+
         //TODO: dynamic description with variables
 
         private void Awake()
@@ -65,6 +66,7 @@ namespace Runtime.CardGameplay.Card
 
             _title.text = data.Title;
             _description.text = data.Description;
+            _energyText.text = data.EnergyCost.ToString();
             _image.sprite = data.Image;
 
             var color = _colorPallet.GetColor(suit);
@@ -104,7 +106,8 @@ namespace Runtime.CardGameplay.Card
             transform.SetAsLastSibling();
             _currentTween = DOTween.Sequence()
                 .Append(transform.DOLocalRotate(Vector3.zero, _hoverRotationDuration).SetEase(_hoverEaseType))
-                .Join(transform.DOScale(_originalScale * _hoverScaleFactor, _hoverRotationDuration).SetEase(_hoverEaseType))
+                .Join(transform.DOScale(_originalScale * _hoverScaleFactor, _hoverRotationDuration)
+                    .SetEase(_hoverEaseType))
                 .OnComplete(() => _currentTween = null);
         }
 
@@ -122,17 +125,19 @@ namespace Runtime.CardGameplay.Card
                     _currentTween = null;
                 });
         }
-        
+
         public void AnimateToPosition(Vector3 position, float duration, Ease ease)
         {
             _currentTween?.Kill();
-            _currentTween = transform.DOLocalMove(position, duration).SetEase(ease).OnComplete(() => _currentTween = null);
+            _currentTween = transform.DOLocalMove(position, duration).SetEase(ease)
+                .OnComplete(() => _currentTween = null);
         }
 
         public void AnimateRotation(Vector3 rotation, float duration, Ease ease)
         {
             _currentTween?.Kill();
-            _currentTween = transform.DOLocalRotate(rotation, duration).SetEase(ease).OnComplete(() => _currentTween = null);
+            _currentTween = transform.DOLocalRotate(rotation, duration).SetEase(ease)
+                .OnComplete(() => _currentTween = null);
         }
 
         public Tween AnimateToScale(Vector3 scale, float duration, Ease ease)

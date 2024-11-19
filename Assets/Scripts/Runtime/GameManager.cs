@@ -5,6 +5,7 @@ using Runtime.CardGameplay.Deck;
 using Runtime.Combat;
 using Runtime.Combat.Pawn;
 using Runtime.Combat.Pawn.Enemy;
+using Runtime.UI;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
@@ -30,6 +31,11 @@ namespace Runtime
         [SerializeField, TabGroup("Dependencies"), Required]
         private PawnController _heroPawn;
 
+        [SerializeField, TabGroup("Dependencies"), Required]
+        private BannerViewManager _bannerViewManager;
+
+
+        public BannerViewManager BannerViewManager => _bannerViewManager;
 
         public PawnController Hero
         {
@@ -66,7 +72,12 @@ namespace Runtime
         private void SetupCardGameplay()
         {
             _cardCollection.CreateDeck();
-            _handController.DrawHand();
+            StartTurn();
+        }
+
+        private void StartTurn()
+        {
+            StartCoroutine(ProcessStartTurn());
         }
 
         [Button]
@@ -75,10 +86,18 @@ namespace Runtime
             StartCoroutine(ProcessEndTurn());
         }
 
+        private IEnumerator ProcessStartTurn()
+        {
+            BannerViewManager.WriteMessage("Center Banner", "Player Turn");
+            yield return new WaitForSeconds(1);
+            BannerViewManager.Clear();
+            _handController.DrawHand();
+        }
+
         private IEnumerator ProcessEndTurn()
         {
-            Debug.Log("Started process turn");
             _boardController.OnTurnEnd();
+            _handController.DiscardHand();
 
             yield return StartCoroutine(PlayEnemiesTurn());
 
@@ -88,12 +107,13 @@ namespace Runtime
 
         private IEnumerator PlayEnemiesTurn()
         {
-            Debug.Log("Started Play Enemy Turn");
+            BannerViewManager.WriteMessage("Center Banner", "Enemies Turn");
+            yield return new WaitForSeconds(1);
+            BannerViewManager.Clear();
             foreach (var enemy in _enemiesLane.Pawns)
             {
                 if (enemy is IAiBrain brain)
                 {
-                    Debug.Log("Casted enemy to brain");
                     yield return StartCoroutine(brain.ChoseAndPlayStrategy());
                 }
                 else
@@ -103,6 +123,8 @@ namespace Runtime
 
                 enemy.Defense.Value = 0;
             }
+
+            StartTurn();
         }
     }
 }

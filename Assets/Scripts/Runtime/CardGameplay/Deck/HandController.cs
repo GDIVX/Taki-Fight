@@ -90,5 +90,14 @@ namespace Runtime.CardGameplay.Deck
         {
             return _cards.Contains(cardController);
         }
+
+        public void DiscardHand()
+        {
+            for (var index = _cards.Count - 1; index >= 0; index--)
+            {
+                var card = _cards[index];
+                DiscardCard(card);
+            }
+        }
     }
 }
