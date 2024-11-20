@@ -70,8 +70,6 @@ namespace Runtime.CardGameplay.Card
             _image.sprite = data.Image;
 
             var color = _colorPallet.GetColor(suit);
-            _title.color = color;
-            _description.color = color;
             _suitImage.color = color;
             _image.color = color;
 
