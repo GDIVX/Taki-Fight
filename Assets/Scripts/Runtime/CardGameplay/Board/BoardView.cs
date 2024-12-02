@@ -16,21 +16,21 @@ namespace Runtime.CardGameplay.Board
         private BoardController _boardController;
 
         [SerializeField, BoxGroup("Combo Color")]
-        private float colorTransitionDuration;
+        private float _colorTransitionDuration;
 
         [SerializeField, BoxGroup("Combo Color")]
-        private Ease colorTransitionEase;
+        private Ease _colorTransitionEase;
 
         [SerializeField, BoxGroup("Values Indicator")]
-        private TextMeshProUGUI currentRankText;
+        private TextMeshProUGUI _currentRankText;
 
         [SerializeField, BoxGroup("Values Indicator")]
-        private Image currentSuiteImage;
+        private Image _currentSuiteImage;
 
         [SerializeField, BoxGroup("Values Indicator")]
-        private SuitColorPallet suitColorPallet;
+        private SuitColorPallet _suitColorPallet;
 
-        [SerializeField, BoxGroup("Energy")] private TextMeshProUGUI energyCountText;
+        [SerializeField, BoxGroup("Energy")] private TextMeshProUGUI _energyCountText;
 
         private void Awake()
         {
@@ -60,15 +60,16 @@ namespace Runtime.CardGameplay.Board
 
         private void OnMatchCountChanged(int count)
         {
-            energyCountText.text = count.ToString();
+            _energyCountText.text = count.ToString();
         }
 
         private void OnMatchValuesChanged(Suit suit, int number)
         {
-            currentRankText.color = suitColorPallet.GetColor(suit == Suit.White ? Suit.Black : Suit.White);
-            Color targetColor = suitColorPallet.GetColor(suit);
-            currentSuiteImage.DOColor(targetColor, colorTransitionDuration).SetEase(colorTransitionEase);
-            currentRankText.text = number.ToString();
+            _currentRankText.color = _suitColorPallet.GetColor(suit == Suit.White ? Suit.Black : Suit.White);
+            _currentRankText.gameObject.SetActive(suit != Suit.Black && suit != Suit.White);
+            Color targetColor = _suitColorPallet.GetColor(suit);
+            _currentSuiteImage.DOColor(targetColor, _colorTransitionDuration).SetEase(_colorTransitionEase);
+            _currentRankText.text = number.ToString();
         }
     }
 }

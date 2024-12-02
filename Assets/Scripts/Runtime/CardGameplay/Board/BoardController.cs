@@ -10,8 +10,8 @@ namespace Runtime.CardGameplay.Board
     {
         [ShowInInspector, ReadOnly] private bool _isLastCardMatch;
 
-        [ShowInInspector, ReadOnly] public Suit CurrentSuit { get; set; }
-        [ShowInInspector, ReadOnly] public int CurrentRank { get; set; }
+        [ShowInInspector, ReadOnly] public Suit CurrentSuit { get; private set; }
+        [ShowInInspector, ReadOnly] public int CurrentRank { get; private set; }
 
 
         [ShowInInspector, ReadOnly] private TrackedProperty<int> MatchCount { get; } = new();
@@ -68,19 +68,19 @@ namespace Runtime.CardGameplay.Board
 
         private void Start()
         {
-            OnStartCombat();
+            ResetSuitAndRank();
         }
 
-        public void OnStartCombat()
+        public void ResetSuitAndRank()
         {
-            CurrentSuit = Suit.White;
-            CurrentRank = 0;
+            UpdateCurrentSuitAndRank(Suit.White, 0);
         }
 
 
         public void OnTurnEnd()
         {
             MatchCount.Value = 0;
+            ResetSuitAndRank();
         }
 
 
