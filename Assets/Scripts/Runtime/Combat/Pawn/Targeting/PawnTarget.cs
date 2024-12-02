@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using Sirenix.OdinInspector;
 
@@ -6,9 +7,9 @@ namespace Runtime.Combat.Pawn.Targeting
 {
     public class PawnTarget : MonoBehaviour, IPointerClickHandler
     {
-        [SerializeField, Required] private PawnController controller;
+        [SerializeField, Required] private PawnController _controller;
 
-        public PawnController Controller => controller;
+        public PawnController Controller => _controller;
 
         private bool IsValidTarget(out string errorMessage)
         {
@@ -18,14 +19,19 @@ namespace Runtime.Combat.Pawn.Targeting
                 return false;
             }
 
-            if (controller == null)
+            if (_controller == null)
             {
                 errorMessage = $"Pawn Target {name} has no {nameof(PawnController)} assigned.";
                 return false;
             }
 
             errorMessage = $"Attempted to select a dead pawn {name}";
-            return !controller.Health.IsDead();
+            return !_controller.Health.IsDead();
+        }
+
+        private void OnValidate()
+        {
+            _controller ??= GetComponentInChildren<PawnController>();
         }
 
         [Button]

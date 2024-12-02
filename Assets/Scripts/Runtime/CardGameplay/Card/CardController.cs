@@ -17,13 +17,15 @@ namespace Runtime.CardGameplay.Card
     {
         public int Rank { get; set; }
         public Suit Suit { get; set; }
-        public bool Selectable { get; set; } = true;
+        [ShowInInspector, ReadOnly] public bool Selectable { get; set; } = true;
 
         [ShowInInspector, ReadOnly] private CardSelectStrategy _selectStrategy;
         [ShowInInspector, ReadOnly] private CardPlayStrategy _playStrategy;
 
         public event Action<CardController> OnSelectionStart;
         public event Action<CardController> OnSelectionCanceled;
+
+        public static event Action<CardController> OnCardPlayed;
 
         public CardInstance Instance { get; private set; }
         public Transform Transform => gameObject.transform;
@@ -61,6 +63,14 @@ namespace Runtime.CardGameplay.Card
                 Controller = this
             };
             View = GetComponent<CardView>();
+
+            //Card is selectable only when it can be played
+            Selectable = CanPlayCard();
+            OnCardPlayed += controller =>
+            {
+                if (controller != this) return;
+                Selectable = CanPlayCard();
+            };
         }
 
         public void Init(CardInstance cardInstance, CardDependencies dependencies)
@@ -76,6 +86,12 @@ namespace Runtime.CardGameplay.Card
 
         private async void Select(CardSelectStrategy selectStrategy)
         {
+            if (!Selectable)
+            {
+                Debug.LogWarning($"Trying to select card {name} who is not selectable");
+                return;
+            }
+
             if (selectStrategy == null)
             {
                 Debug.LogError("CardSelectStrategy cannot be null.");
@@ -94,6 +110,7 @@ namespace Runtime.CardGameplay.Card
             }
         }
 
+
         private async Task<bool> HandleSelectionStrategyAsync(CardSelectStrategy selectStrategy)
         {
             return _handController.Has(this) && await selectStrategy.SelectAsync(this);
@@ -111,6 +128,7 @@ namespace Runtime.CardGameplay.Card
             //In order to preserve the game state for any play strategy before doing changes 
             _playStrategy.Play(_pawn);
             _playStrategy.PostPlay(_boardController, _handController, this);
+            OnCardPlayed?.Invoke(this);
         }
 
         public void OnPointerClick(PointerEventData eventData)
@@ -124,9 +142,14 @@ namespace Runtime.CardGameplay.Card
             Select();
         }
 
+        public bool CanPlayCard()
+        {
+            return _boardController.CanPlayCard(this);
+        }
+
         private void TryToPlay()
         {
-            if (!_boardController.CanPlayCard(this))
+            if (!CanPlayCard())
             {
                 OnSelectionCanceled?.Invoke(this);
                 return;
@@ -135,6 +158,7 @@ namespace Runtime.CardGameplay.Card
 
             Play();
         }
+
 
         private void Select()
         {

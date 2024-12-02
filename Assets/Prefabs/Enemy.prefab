@@ -438,7 +438,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c07a1ace24d4bf49dd951e806302741, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controller: {fileID: 1207057072508873998}
+  _controller: {fileID: 1207057072508873998}
 --- !u!114 &4496958908397332056
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -451,8 +451,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fa1c5fb50024b8eb0310b9739e61b96, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteRenderer: {fileID: 1608929777918579190}
-  highlightMaterial: {fileID: 2100000, guid: 694750990e36094419041513ae59f8f8, type: 2}
+  _spriteRenderer: {fileID: 1608929777918579190}
+  _highlightMaterial: {fileID: 2100000, guid: 84a9babc8ba273e4b876dc62f3151ff0, type: 2}
 --- !u!61 &6936584690890928603
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -482,7 +482,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -510,8 +510,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4f56bfd2ee9457c87b1b3e19d931c55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  view: {fileID: 4836680459862643700}
-  defense:
+  _view: {fileID: 4836680459862643700}
+  Defense:
     value: 0
 --- !u!1 &4314222220737725030
 GameObject:

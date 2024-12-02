@@ -6,34 +6,34 @@ namespace Runtime.Combat.Pawn.Targeting
     [RequireComponent(typeof(Collider2D))]
     public class PawnTargetView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
-        [SerializeField] private SpriteRenderer spriteRenderer;
-        [SerializeField] private Material highlightMaterial;
+        [SerializeField] private SpriteRenderer _spriteRenderer;
+        [SerializeField] private Material _highlightMaterial;
         private Material _originalMaterial;
 
         private void Awake()
         {
-            if (spriteRenderer == null)
+            if (_spriteRenderer == null)
             {
-                spriteRenderer = GetComponent<SpriteRenderer>();
+                _spriteRenderer = GetComponent<SpriteRenderer>();
             }
 
-            if (spriteRenderer == null)
+            if (_spriteRenderer == null)
             {
                 Debug.LogError("SpriteRenderer component is missing.");
                 return;
             }
 
-            _originalMaterial = spriteRenderer.material;
+            _originalMaterial = _spriteRenderer.material;
         }
 
         private void OnValidate()
         {
-            if (spriteRenderer == null)
+            if (_spriteRenderer == null)
             {
-                spriteRenderer = GetComponent<SpriteRenderer>();
+                _spriteRenderer = GetComponent<SpriteRenderer>();
             }
 
-            if (highlightMaterial == null)
+            if (_highlightMaterial == null)
             {
                 Debug.LogWarning("Highlight material is not assigned.");
             }
@@ -47,32 +47,32 @@ namespace Runtime.Combat.Pawn.Targeting
                 return;
             }
 
-            if (spriteRenderer == null)
+            if (_spriteRenderer == null)
             {
                 Debug.LogError($"{nameof(SpriteRenderer)} was not assigned");
                 return;
             }
 
-            if (highlightMaterial == null)
+            if (_highlightMaterial == null)
             {
                 Debug.LogError($"Highlight material was not assigned");
                 return;
             }
 
-            spriteRenderer.material = highlightMaterial;
+            _spriteRenderer.material = _highlightMaterial;
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            if (spriteRenderer == null) return;
+            if (_spriteRenderer == null) return;
 
             ResetMaterial();
         }
 
         private void ResetMaterial()
         {
-            if (spriteRenderer.material != _originalMaterial)
-                spriteRenderer.material = _originalMaterial;
+            if (_spriteRenderer.material != _originalMaterial)
+                _spriteRenderer.material = _originalMaterial;
         }
     }
 }
