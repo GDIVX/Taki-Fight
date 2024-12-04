@@ -12,5 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6f89a00994d43bb83e53034aadba1bc, type: 3}
   m_Name: Block Play
   m_EditorClassIdentifier: 
-  duration: 1
-  defensePoints: 1
+  _duration: 1

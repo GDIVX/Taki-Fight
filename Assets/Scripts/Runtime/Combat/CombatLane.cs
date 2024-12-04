@@ -25,7 +25,13 @@ namespace Runtime.Combat
                 var pawn = _pawnFactory.SpawnEnemy(data);
                 _arrangeInLine.Add(pawn.gameObject);
                 _pawns.Add(pawn);
+                pawn.Health.OnDead += (sender, args) => { RemovePawn(pawn); };
             }
+        }
+
+        private void RemovePawn(PawnController pawn)
+        {
+            _pawns.Remove(pawn);
         }
     }
 }

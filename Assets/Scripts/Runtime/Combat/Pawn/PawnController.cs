@@ -12,11 +12,17 @@ namespace Runtime.Combat.Pawn
     public class PawnController : MonoBehaviour
     {
         [SerializeField, Required] private PawnView _view;
+        [SerializeField] protected float WaitBeforeDestroyingObjectOnDeath;
         private int _defensePoints;
 
         public TrackedProperty<int> Defense;
 
         public HealthSystem Health { get; private set; }
+
+        /// <summary>
+        /// Invoked when a pawn is attacked. First value is incoming attack points, second value is the damage taken
+        /// </summary>
+        public event Action<int, int> OnBeingAttacked;
 
         //TODO: handle bonuses via buffs
 
@@ -36,7 +42,7 @@ namespace Runtime.Combat.Pawn
             {
                 Value = data.Defense
             };
-            _view.Init(Health, Defense, data);
+            _view.Init(this, Defense, data);
         }
 
         private void OnValidate()
@@ -45,12 +51,13 @@ namespace Runtime.Combat.Pawn
         }
 
         [Button]
-        public void Attack(int attackPoints)
+        public void ReceiveAttack(int attackPoints)
         {
             if (attackPoints <= 0)
             {
                 //We still want to call damage to invoke UI updates
                 Health.Damage(0);
+                OnBeingAttacked?.Invoke(attackPoints, 0);
                 return;
             }
 
@@ -59,6 +66,7 @@ namespace Runtime.Combat.Pawn
             Health.Damage(finalDamage);
 
             ReduceDefense(attackPoints);
+            OnBeingAttacked?.Invoke(attackPoints, finalDamage);
         }
 
         private int CalculateDamage(int attackPoints)

@@ -7,15 +7,10 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
     [CreateAssetMenu(fileName = "Attack Play", menuName = "Card/Strategy/Play/Attack", order = 0)]
     public class AttackTargetCardPlay : CardPlayStrategy
     {
-        [SerializeField] private int _attackDamage;
         [SerializeField] private TargetingStrategy _targetingStrategy;
 
-        public override void Play(PawnController caller)
-        {
-            Play(caller, _attackDamage);
-        }
 
-        public override void Play(PawnController caller, int value)
+        public override void Play(PawnController caller, int potency)
         {
             var target = _targetingStrategy.GetTarget();
 
@@ -40,8 +35,8 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                 return;
             }
 
-            var finalDamage = value + caller.Power;
-            target.Attack(finalDamage);
+            var finalDamage = potency + caller.Power;
+            target.ReceiveAttack(finalDamage);
         }
     }
 }

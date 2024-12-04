@@ -12,9 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 842f4e02fee146ddb72cea2b80a51349, type: 3}
   m_Name: Strike
   m_EditorClassIdentifier: 
-  title: Strike
-  description: 1 Attack
-  image: {fileID: 21300000, guid: 48e2f1306c86ea74cbc32a1541ed772a, type: 3}
-  suit: 0
-  selectStrategy: {fileID: 11400000, guid: 693626e501b6ec2438a4e251d9c1a4e4, type: 2}
-  playStrategy: {fileID: 11400000, guid: ee69d39da3dafbf41aefd0cb4ce0c0cd, type: 2}
+  _title: Strike
+  _description: Deal $potency Damage
+  _image: {fileID: 21300000, guid: 37f174ab7cb028747b44047583ac73a6, type: 3}
+  _suit: 0
+  _selectStrategy: {fileID: 11400000, guid: 693626e501b6ec2438a4e251d9c1a4e4, type: 2}
+  _playStrategy: {fileID: 11400000, guid: cd7cd7aafe2c3b14ab5954de633d36b0, type: 2}
+  _energyCost: 0
+  _potency: 6

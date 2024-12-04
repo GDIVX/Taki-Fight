@@ -1,27 +1,41 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Runtime.Combat.Pawn.Enemy
 {
-    public class EnemyController : PawnController, IAiBrain
+    public class EnemyController : PawnController
     {
+        [SerializeField] private IntentionsList _intentionsList;
+        private PlayTableEntry _playTableEntry;
         private AIPlayTable _table;
 
-        public void InitAI(AIPlayTable playTable)
+        public void Init(AIPlayTable playTable)
         {
             _table = playTable;
+            Health.OnDead += OnDead;
+        }
+
+        private void OnDead(object sender, EventArgs args)
+        {
+            
+            Destroy(gameObject, WaitBeforeDestroyingObjectOnDeath);
         }
 
 
-        public IEnumerator ChoseAndPlayStrategy()
+        public void ChoosePlayStrategy()
         {
-            Debug.Log("Stating to play enemy");
-            var chosenStrategy = _table.ChoseRandomPlayStrategy();
-            chosenStrategy.Play(this);
-            yield return new WaitForSeconds(chosenStrategy.Duration);
-            Debug.Log($"Enemy {gameObject} had played {chosenStrategy}");
+            _playTableEntry = _table.ChoseRandomPlayStrategy();
+            _intentionsList.Add(_playTableEntry.Sprite, _playTableEntry.Color, _playTableEntry.Potency.ToString());
+        }
+
+        public IEnumerator PlayTurn()
+        {
+            _playTableEntry.Strategy.Play(this, _playTableEntry.Potency);
+            _intentionsList.RemoveNext();
+            yield return new WaitForSeconds(_playTableEntry.Strategy.Duration);
         }
     }
 }

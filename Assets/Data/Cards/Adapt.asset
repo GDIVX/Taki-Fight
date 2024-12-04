@@ -12,12 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 842f4e02fee146ddb72cea2b80a51349, type: 3}
   m_Name: Adapt
   m_EditorClassIdentifier: 
-  title: Adapt
-  description: 'If Match Blue : 1 Attack
-
-    Else if Match Red: 1 Defense'
-  image: {fileID: 21300000, guid: 965ebecaaf8765b4fbb356cea8c3f428, type: 3}
-  suit: 2
-  selectStrategy: {fileID: 11400000, guid: 6488691d3e5b1734fbf184a753c30823, type: 2}
-  playStrategy: {fileID: 11400000, guid: 30617d073a1137f479e2fd3229cd698d, type: 2}
-  energyCost: 0
+  _title: Adapt
+  _description: 
+  _image: {fileID: 21300000, guid: 5dcd746f1c80dcc488ba5c599b0dc0b2, type: 3}
+  _suit: 4
+  _selectStrategy: {fileID: 11400000, guid: 6488691d3e5b1734fbf184a753c30823, type: 2}
+  _playStrategy: {fileID: 11400000, guid: 30617d073a1137f479e2fd3229cd698d, type: 2}
+  _energyCost: 0
+  _potency: 0

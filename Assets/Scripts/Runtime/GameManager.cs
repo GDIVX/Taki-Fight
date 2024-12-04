@@ -91,7 +91,24 @@ namespace Runtime
             BannerViewManager.WriteMessage("Center Banner", "Player Turn");
             yield return new WaitForSeconds(1);
             BannerViewManager.Clear();
+            SetupEnemies();
+
             _handController.DrawHand();
+        }
+
+        private void SetupEnemies()
+        {
+            foreach (var enemy in _enemiesLane.Pawns)
+            {
+                if (enemy is EnemyController enemyController)
+                {
+                    enemyController.ChoosePlayStrategy();
+                }
+                else
+                {
+                    Debug.LogError($"Failed to cast enemy {enemy} into interface {nameof(EnemyController)}");
+                }
+            }
         }
 
         private IEnumerator ProcessEndTurn()
@@ -112,16 +129,15 @@ namespace Runtime
             BannerViewManager.Clear();
             foreach (var enemy in _enemiesLane.Pawns)
             {
-                if (enemy is IAiBrain brain)
+                enemy.Defense.Value = 0;
+                if (enemy is EnemyController enemyController)
                 {
-                    yield return StartCoroutine(brain.ChoseAndPlayStrategy());
+                    yield return StartCoroutine(enemyController.PlayTurn());
                 }
                 else
                 {
-                    Debug.LogError($"Failed to cast enemy {enemy} into interface {nameof(IAiBrain)}");
+                    Debug.LogError($"Failed to cast enemy {enemy} into interface {nameof(EnemyController)}");
                 }
-
-                enemy.Defense.Value = 0;
             }
 
             StartTurn();

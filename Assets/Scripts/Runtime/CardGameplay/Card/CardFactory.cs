@@ -39,7 +39,7 @@ namespace Runtime.CardGameplay.Card
         {
             CardController controller = GetController();
             controller.Init(data, number, suit, _cardDependencies);
-            controller.gameObject.GetComponent<CardView>().Draw(data, number, suit);
+            controller.gameObject.GetComponent<CardView>().Draw(controller);
             controller.gameObject.SetActive(true);
             return controller;
         }

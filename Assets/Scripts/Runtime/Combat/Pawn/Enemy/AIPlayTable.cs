@@ -12,9 +12,9 @@ namespace Runtime.Combat.Pawn.Enemy
     {
         [SerializeField , TableList] private List<PlayTableEntry> entries;
 
-        public CardPlayStrategy ChoseRandomPlayStrategy()
+        public PlayTableEntry ChoseRandomPlayStrategy()
         {
-            if (!entries.IsNullOrEmpty()) return entries.WeightedSelectRandom(entry => entry.weight).strategy;
+            if (!entries.IsNullOrEmpty()) return entries.WeightedSelectRandom(entry => entry.Weight);
             Debug.LogError($"{name} has no entries for the play table.");
             return default;
 

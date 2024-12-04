@@ -12,20 +12,18 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
         [SerializeField] private List<MapSuitToPlay> _plays;
 
 
-        public override void Play(PawnController caller)
+        public override void Play(PawnController caller, int potency)
         {
             var currentSuit = GameManager.Instance.CurrentSuit;
 
             var suitToPlay = _plays.FirstOrDefault(s => s.Suit == currentSuit);
-            if (suitToPlay.Strategy != null)
+            if (!suitToPlay.Strategy)
             {
-                suitToPlay.Strategy.Play(caller, suitToPlay.Value);
+                Debug.LogError($"No play strategy was chosen for {this}");
+                return;
             }
-        }
 
-        public override void Play(PawnController caller, int value)
-        {
-            Play(caller);
+            suitToPlay.Strategy.Play(caller, suitToPlay.Potency);
         }
 
 
@@ -33,7 +31,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
         public struct MapSuitToPlay
         {
             public Suit Suit;
-            public int Value;
+            public int Potency;
             public CardPlayStrategy Strategy;
         }
     }

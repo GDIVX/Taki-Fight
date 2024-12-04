@@ -15,8 +15,8 @@ MonoBehaviour:
   _duration: 1
   _plays:
   - Suit: 0
-    Value: 1
+    Potency: 1
     Strategy: {fileID: 11400000, guid: 096e7e287617b1145a56fcf896a78cff, type: 2}
   - Suit: 3
-    Value: 1
+    Potency: 1
     Strategy: {fileID: 11400000, guid: 549e43c006aaa9548b773fde947c00f5, type: 2}

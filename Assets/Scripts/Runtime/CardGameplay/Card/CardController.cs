@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using PlasticGui.Configuration.CloudEdition.Welcome;
 using Runtime.CardGameplay.Board;
 using Runtime.CardGameplay.Card.CardBehaviour;
 using Runtime.CardGameplay.Deck;
@@ -17,6 +18,7 @@ namespace Runtime.CardGameplay.Card
     {
         public int Rank { get; set; }
         public Suit Suit { get; set; }
+        public int Potency { get; set; }
         [ShowInInspector, ReadOnly] public bool Selectable { get; set; } = true;
 
         [ShowInInspector, ReadOnly] private CardSelectStrategy _selectStrategy;
@@ -30,6 +32,7 @@ namespace Runtime.CardGameplay.Card
         public CardInstance Instance { get; private set; }
         public Transform Transform => gameObject.transform;
         public CardView View { get; private set; }
+        public CardData Data { get; private set; }
         public float PlayDuration => _playStrategy?.Duration ?? 0f;
         public int EnergyCost { get; set; }
 
@@ -54,6 +57,7 @@ namespace Runtime.CardGameplay.Card
 
             Rank = rank;
             Suit = suit;
+            Potency = data.Potency;
             _selectStrategy = data.SelectStrategy;
             _playStrategy = data.PlayStrategy;
             EnergyCost = data.EnergyCost;
@@ -71,6 +75,8 @@ namespace Runtime.CardGameplay.Card
                 if (controller != this) return;
                 Selectable = CanPlayCard();
             };
+
+            Data = data;
         }
 
         public void Init(CardInstance cardInstance, CardDependencies dependencies)
@@ -126,7 +132,7 @@ namespace Runtime.CardGameplay.Card
 
             //Play the card before discarding it or updating the current suit and rank.
             //In order to preserve the game state for any play strategy before doing changes 
-            _playStrategy.Play(_pawn);
+            _playStrategy.Play(_pawn, Potency);
             _playStrategy.PostPlay(_boardController, _handController, this);
             OnCardPlayed?.Invoke(this);
         }

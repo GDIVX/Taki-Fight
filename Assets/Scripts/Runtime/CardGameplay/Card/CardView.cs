@@ -46,7 +46,7 @@ namespace Runtime.CardGameplay.Card
         }
 
         [Button]
-        public void Draw(CardData data, int number, Suit suit = Suit.Default)
+        public void Draw(CardData data, int rank, Suit suit = Suit.Default, int potency = 0)
         {
             if (suit == Suit.Default)
             {
@@ -60,12 +60,12 @@ namespace Runtime.CardGameplay.Card
             }
             else
             {
-                _rankText.text = number.ToString();
+                _rankText.text = rank.ToString();
                 _rankText.color = _colorPallet.GetColor(Suit.White);
             }
 
             _title.text = data.Title;
-            _description.text = data.Description;
+            _description.text = FormatTextWithPotencyValue(data.Description, potency);
             _energyText.text = data.EnergyCost.ToString();
             _image.sprite = data.Image;
 
@@ -74,6 +74,17 @@ namespace Runtime.CardGameplay.Card
             _image.color = color;
 
             _cardData = data;
+        }
+
+        public void Draw(CardController controller)
+        {
+            Draw(controller.Data, controller.Rank, controller.Suit, controller.Potency);
+        }
+
+        private static string FormatTextWithPotencyValue(string description, int potency)
+        {
+            var newDescription = description.Replace("$potency", potency.ToString());
+            return newDescription;
         }
 
         public void OnPointerEnter(PointerEventData eventData)

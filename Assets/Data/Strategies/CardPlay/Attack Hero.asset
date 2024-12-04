@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0bb96013ec9d4e368ea7f578fea6a525, type: 3}
-  m_Name: e Attack Play 3
+  m_Name: Attack Hero
   m_EditorClassIdentifier: 
   duration: 1
-  _attackDamage: 3
+  _attackDamage: 1
   _targetingStrategy: {fileID: 11400000, guid: d4f8ade6f7595c94894d2dc8fc67e94e, type: 2}
