@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using PlasticGui.Configuration.CloudEdition.Welcome;
 using Runtime.CardGameplay.Board;
 using Runtime.CardGameplay.Card.CardBehaviour;
-using Runtime.CardGameplay.Deck;
 using Runtime.Combat.Pawn;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -18,7 +16,8 @@ namespace Runtime.CardGameplay.Card
     {
         public int Rank { get; set; }
         public Suit Suit { get; set; }
-        public int Potency { get; set; }
+        public int Potency { get; private set; }
+        public CardType CardType { get; private set; }
         [ShowInInspector, ReadOnly] public bool Selectable { get; set; } = true;
 
         [ShowInInspector, ReadOnly] private CardSelectStrategy _selectStrategy;
@@ -58,6 +57,7 @@ namespace Runtime.CardGameplay.Card
             Rank = rank;
             Suit = suit;
             Potency = data.Potency;
+            CardType = data.CardType;
             _selectStrategy = data.SelectStrategy;
             _playStrategy = data.PlayStrategy;
             EnergyCost = data.EnergyCost;

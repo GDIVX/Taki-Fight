@@ -15,6 +15,7 @@ namespace Runtime.CardGameplay.Card
         [SerializeField] private CardPlayStrategy _playStrategy;
         [SerializeField] private int _energyCost;
         [SerializeField] private int _potency;
+        [SerializeField] private CardType _cardType;
 
         public int Potency => _potency;
         public string Title => _title;
@@ -24,5 +25,7 @@ namespace Runtime.CardGameplay.Card
         public CardSelectStrategy SelectStrategy => _selectStrategy;
         public CardPlayStrategy PlayStrategy => _playStrategy;
         public int EnergyCost => _energyCost;
+
+        public CardType CardType => _cardType;
     }
 }

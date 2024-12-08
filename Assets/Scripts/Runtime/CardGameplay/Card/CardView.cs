@@ -25,6 +25,9 @@ namespace Runtime.CardGameplay.Card
         private float _hoverRotationDuration = 0.3f;
 
         [SerializeField, TabGroup("Hover Animation")]
+        private float _onOverMoveToY;
+
+        [SerializeField, TabGroup("Hover Animation")]
         private Ease _hoverEaseType = Ease.OutQuad;
 
         [ShowInInspector, ReadOnly] private CardData _cardData;
@@ -37,7 +40,6 @@ namespace Runtime.CardGameplay.Card
         private Tween _currentTween;
         private bool _isHovered;
 
-        //TODO: dynamic description with variables
 
         private void Awake()
         {
@@ -115,6 +117,7 @@ namespace Runtime.CardGameplay.Card
             transform.SetAsLastSibling();
             _currentTween = DOTween.Sequence()
                 .Append(transform.DOLocalRotate(Vector3.zero, _hoverRotationDuration).SetEase(_hoverEaseType))
+                .Join(transform.DOLocalMoveY(_onOverMoveToY, _hoverRotationDuration))
                 .Join(transform.DOScale(_originalScale * _hoverScaleFactor, _hoverRotationDuration)
                     .SetEase(_hoverEaseType))
                 .OnComplete(() => _currentTween = null);

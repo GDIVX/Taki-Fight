@@ -1,10 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using Runtime.CardGameplay.Board;
 using Runtime.CardGameplay.Card;
 using Runtime.CardGameplay.Deck;
 using Runtime.Combat;
 using Runtime.Combat.Pawn;
 using Runtime.Combat.Pawn.Enemy;
+using Runtime.Events;
 using Runtime.UI;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -34,8 +36,12 @@ namespace Runtime
         [SerializeField, TabGroup("Dependencies"), Required]
         private BannerViewManager _bannerViewManager;
 
+        private EventBus _eventBus;
+
 
         public BannerViewManager BannerViewManager => _bannerViewManager;
+        public EventBus EventBus => _eventBus;
+        public Suit CurrentSuit => _boardController.CurrentSuit;
 
         public PawnController Hero
         {
@@ -43,7 +49,10 @@ namespace Runtime
             private set => _heroPawn = value;
         }
 
-        public Suit CurrentSuit => _boardController.CurrentSuit;
+        private void Awake()
+        {
+            _eventBus = new EventBus();
+        }
 
 
         [Button]
@@ -88,7 +97,7 @@ namespace Runtime
 
         private IEnumerator ProcessStartTurn()
         {
-            BannerViewManager.WriteMessage("Center Banner", "Player Turn");
+            BannerViewManager.WriteMessage(1, "Player Turn");
             yield return new WaitForSeconds(1);
             BannerViewManager.Clear();
             SetupEnemies();
@@ -124,7 +133,7 @@ namespace Runtime
 
         private IEnumerator PlayEnemiesTurn()
         {
-            BannerViewManager.WriteMessage("Center Banner", "Enemies Turn");
+            BannerViewManager.WriteMessage(1, "Enemies Turn");
             yield return new WaitForSeconds(1);
             BannerViewManager.Clear();
             foreach (var enemy in _enemiesLane.Pawns)
