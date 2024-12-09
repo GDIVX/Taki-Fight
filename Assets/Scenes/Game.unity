@@ -2497,11 +2497,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fcb57b5fc254f2fa2f92f29522aefc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  drawPileCounter: {fileID: 1578990175}
-  discardPileCounter: {fileID: 80757751}
-  discardToLocation: {fileID: 686823024}
-  discardAnimationDuration: 1
-  ease: 7
+  _drawPileCounter: {fileID: 1578990175}
+  _discardPileCounter: {fileID: 80757751}
+  _discardToLocation: {fileID: 686823024}
+  _drawFromLocation: {fileID: 1103476681}
+  _animationDuration: 1
+  _minScale: 0.1
+  _ease: 4
 --- !u!1 &1311938714
 GameObject:
   m_ObjectHideFlags: 0
@@ -2553,12 +2555,16 @@ MonoBehaviour:
   _image: {fileID: 568967683}
   _suitImage: {fileID: 203309259}
   _colorPallet: {fileID: 11400000, guid: 6640e9abb150f0a48a5fa11a4cf2f0ab, type: 2}
+  _animationDuration: 0
+  _minScale: 0
   _hoverScaleFactor: 1.2
   _hoverRotationDuration: 0.3
   _onOverMoveToY: 0
   _hoverEaseType: 6
   _uiOutline: {fileID: 0}
   _outlineTransitionDuration: 0
+  _outlineAlphaMin: 0
+  _outlineAlphaMax: 1
 --- !u!224 &1311938717
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3540,6 +3546,8 @@ MonoBehaviour:
   Prefab: {fileID: 5188398243834909485, guid: 79de2714e98778e45a8d6f81b5df8b9b, type: 3}
   _handController: {fileID: 303423372}
   _boardController: {fileID: 580355265}
+  _discardToLocation: {fileID: 686823024}
+  _drawFromLocation: {fileID: 1103476681}
 --- !u!4 &1877293997
 Transform:
   m_ObjectHideFlags: 0

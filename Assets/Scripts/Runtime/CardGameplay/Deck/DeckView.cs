@@ -8,12 +8,9 @@ namespace Runtime.CardGameplay.Deck
 {
     public class DeckView : MonoBehaviour
     {
-        [SerializeField] private TextMeshProUGUI drawPileCounter;
-        [SerializeField] private TextMeshProUGUI discardPileCounter;
-
-        [SerializeField] private Transform discardToLocation;
-        [SerializeField] private float discardAnimationDuration;
-        [SerializeField] private Ease ease;
+        [SerializeField] private TextMeshProUGUI _drawPileCounter;
+        [SerializeField] private TextMeshProUGUI _discardPileCounter;
+        [SerializeField] private Ease _ease;
 
         private Deck _deck;
 
@@ -21,29 +18,23 @@ namespace Runtime.CardGameplay.Deck
         {
             _deck = deck;
 
-            _deck.OnDrawPileUpdated += pile => drawPileCounter.text = pile.Count.ToString();
+            _deck.OnDrawPileUpdated += pile => _drawPileCounter.text = pile.Count.ToString();
             _deck.OnDiscardPileUpdated += OnDeckOnOnDiscardPileUpdated;
-            _deck.OnCardDiscarded += OnCardDiscarded;
         }
+
+
 
         private void OnCardDiscarded(CardInstance cardInstance)
         {
             var controller = cardInstance.Controller;
+            var view = controller.View;
 
-            // Use the CardView's animation services for discarding
-            controller.View.AnimateToPosition(discardToLocation.position, discardAnimationDuration, ease);
-            controller.View.AnimateToScale(discardToLocation.localScale, discardAnimationDuration, ease)
-                .OnComplete(() =>
-                {
-                    // Disable the view and then reset for future use
-                    controller.Disable();
-                    controller.View.AnimateReturnToDefault();
-                });
+
         }
 
         private void OnDeckOnOnDiscardPileUpdated(Stack<CardInstance> pile)
         {
-            discardPileCounter.text = pile.Count.ToString();
+            _discardPileCounter.text = pile.Count.ToString();
         }
     }
 }

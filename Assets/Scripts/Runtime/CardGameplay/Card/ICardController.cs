@@ -10,5 +10,6 @@ namespace Runtime.CardGameplay.Card
         CardInstance Instance { get; }
         Transform Transform { get; }
         CardView View { get; }
+        void OnDiscard();
     }
 }

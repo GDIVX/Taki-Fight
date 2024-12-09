@@ -31,6 +31,8 @@ namespace Runtime.CardGameplay.Card
         public CardInstance Instance { get; private set; }
         public Transform Transform => gameObject.transform;
         public CardView View { get; private set; }
+
+
         public CardData Data { get; private set; }
         public float PlayDuration => _playStrategy?.Duration ?? 0f;
         public int EnergyCost { get; set; }
@@ -142,6 +144,9 @@ namespace Runtime.CardGameplay.Card
             Select();
         }
 
+        public void OnDiscard()
+        {
+        }
         public bool CanPlayCard()
         {
             return _boardController.CanPlayCard(this);

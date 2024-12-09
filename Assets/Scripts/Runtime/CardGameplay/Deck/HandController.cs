@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using Runtime.CardGameplay.Card;
@@ -13,6 +14,7 @@ namespace Runtime.CardGameplay.Deck
         [SerializeField] private int _cardToDrawPerTurn;
         [SerializeField] private int _maxHandSize;
         [SerializeField, Required] private CardFactory _cardFactory;
+        [SerializeField] private float _cardMovementDelay;
         public Deck Deck { get; set; }
         [ShowInInspector, ReadOnly] private List<ICardController> _cards = new();
 
@@ -62,13 +64,20 @@ namespace Runtime.CardGameplay.Deck
             if (!Deck.Draw(out CardInstance cardInstance)) return;
             var controller = _cardFactory.Create(cardInstance);
             controller.OnDraw();
+            controller.View.OnDraw();
             AddCard(controller);
         }
 
         public void DrawHand()
         {
+            StartCoroutine(DrawWithDelay());
+        }
+
+        private IEnumerator DrawWithDelay()
+        {
             for (int i = 0; i < _cardToDrawPerTurn; i++)
             {
+                yield return new WaitForSeconds(_cardMovementDelay);
                 DrawCard();
             }
         }
@@ -85,6 +94,8 @@ namespace Runtime.CardGameplay.Deck
 
             Deck.Discard(cardController.Instance);
             RemoveCard(cardController);
+            cardController.OnDiscard();
+            cardController.View.OnDiscard();
         }
 
         public bool Has(ICardController cardController)
@@ -94,8 +105,14 @@ namespace Runtime.CardGameplay.Deck
 
         public void DiscardHand()
         {
+            StartCoroutine(DiscardHandWithDelay());
+        }
+
+        private IEnumerator DiscardHandWithDelay()
+        {
             for (var index = _cards.Count - 1; index >= 0; index--)
             {
+                yield return new WaitForSeconds(_cardMovementDelay);
                 var card = _cards[index];
                 DiscardCard(card);
             }

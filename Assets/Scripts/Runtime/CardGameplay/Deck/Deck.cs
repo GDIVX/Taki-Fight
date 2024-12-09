@@ -17,6 +17,7 @@ namespace Runtime.CardGameplay.Deck
         public event Action<Stack<CardInstance>> OnDrawPileUpdated;
         public event Action<Stack<CardInstance>> OnDiscardPileUpdated;
         public event Action<CardInstance> OnCardDiscarded;
+        public event Action<CardInstance> OnCardDrawn;
 
         public Deck(List<CardInstance> cards)
         {
@@ -49,6 +50,7 @@ namespace Runtime.CardGameplay.Deck
 
             cardInstance = _drawPile.Pop();
             OnDrawPileUpdated?.Invoke(_drawPile);
+            OnCardDrawn?.Invoke(cardInstance);
             return true;
         }
 

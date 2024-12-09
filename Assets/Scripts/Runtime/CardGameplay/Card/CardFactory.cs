@@ -19,6 +19,9 @@ namespace Runtime.CardGameplay.Card
         [SerializeField, TabGroup("Dependencies")]
         private BoardController _boardController;
 
+        [SerializeField, TabGroup("Dependencies")]
+        private Transform _discardToLocation, _drawFromLocation;
+
 
         private CardDependencies _cardDependencies;
 
@@ -39,7 +42,9 @@ namespace Runtime.CardGameplay.Card
         {
             CardController controller = GetController();
             controller.Init(data, number, suit, _cardDependencies);
-            controller.gameObject.GetComponent<CardView>().Draw(controller);
+            controller.gameObject.GetComponent<CardView>()
+                .Init(_drawFromLocation, _discardToLocation)
+                .Draw(controller);
             controller.gameObject.SetActive(true);
             return controller;
         }

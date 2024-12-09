@@ -1290,6 +1290,9 @@ MonoBehaviour:
   _image: {fileID: 4762168539618471456}
   _suitImage: {fileID: 2462283701868395632}
   _colorPallet: {fileID: 11400000, guid: 6640e9abb150f0a48a5fa11a4cf2f0ab, type: 2}
+  _cardMovementDuration: 0.2
+  _minScale: 0.1
+  _cardMovementEase: 4
   _hoverScaleFactor: 1.2
   _hoverRotationDuration: 0.3
   _onOverMoveToY: 150

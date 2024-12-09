@@ -18,6 +18,11 @@ namespace Runtime.CardGameplay.Card
         [SerializeField, TabGroup("Draw")] private Image _suitImage;
         [SerializeField, TabGroup("Draw")] private SuitColorPallet _colorPallet;
 
+        private Transform _discardToLocation, _drawFromLocation;
+        [SerializeField] private float _cardMovementDuration;
+        [SerializeField] private float _minScale;
+        [SerializeField] private Ease _cardMovementEase;
+
         [SerializeField, TabGroup("Hover Animation")]
         private float _hoverScaleFactor = 1.2f;
 
@@ -38,6 +43,7 @@ namespace Runtime.CardGameplay.Card
         [SerializeField, TabGroup("Outline")] private float _outlineAlphaMin = 0;
         [SerializeField, TabGroup("Outline")] private float _outlineAlphaMax = 1;
 
+
         private Vector3 _originalScale;
         private Vector3 _originalPosition;
         private Vector3 _originalRotation;
@@ -54,8 +60,16 @@ namespace Runtime.CardGameplay.Card
             SetOriginalValues();
         }
 
+        public CardView Init(Transform drawFrom, Transform discardTo)
+        {
+            _drawFromLocation = drawFrom;
+            _discardToLocation = discardTo;
+
+            return this;
+        }
+
         [Button]
-        private void Draw(CardData data, int rank, Suit suit = Suit.Default, int potency = 0)
+        private CardView Draw(CardData data, int rank, Suit suit = Suit.Default, int potency = 0)
         {
             if (suit == Suit.Default)
             {
@@ -83,6 +97,8 @@ namespace Runtime.CardGameplay.Card
             _image.color = color;
 
             _cardData = data;
+
+            return this;
         }
 
 
@@ -139,7 +155,7 @@ namespace Runtime.CardGameplay.Card
             _originalRotation = transform.localRotation.eulerAngles;
         }
 
-        public void AnimateHoverEnter()
+        private void AnimateHoverEnter()
         {
             _currentTween?.Kill();
 
@@ -167,26 +183,22 @@ namespace Runtime.CardGameplay.Card
                 });
         }
 
-        public void AnimateToPosition(Vector3 position, float duration, Ease ease)
+        public void OnDraw()
         {
-            _currentTween?.Kill();
-            _currentTween = transform.DOLocalMove(position, duration).SetEase(ease)
-                .OnComplete(() => _currentTween = null);
+            transform.position = _drawFromLocation.position;
+            transform.localScale = new(_minScale, _minScale, 1);
+            transform.DOScale(1, _cardMovementDuration);
         }
 
-        public void AnimateRotation(Vector3 rotation, float duration, Ease ease)
+        public void OnDiscard()
         {
-            _currentTween?.Kill();
-            _currentTween = transform.DOLocalRotate(rotation, duration).SetEase(ease)
-                .OnComplete(() => _currentTween = null);
-        }
-
-        public Tween AnimateToScale(Vector3 scale, float duration, Ease ease)
-        {
-            _currentTween?.Kill();
-            Tween tween = transform.DOScale(scale, duration).SetEase(ease);
-            tween.OnComplete(() => _currentTween = null);
-            return tween;
+            transform.DOMove(_discardToLocation.position, _cardMovementDuration).SetEase(_cardMovementEase);
+            transform.DOScale(_minScale, _cardMovementDuration)
+                .OnComplete(() =>
+                {
+                    // Disable the view and then reset for future use
+                    _controller.Disable();
+                });
         }
     }
 }
