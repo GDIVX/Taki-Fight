@@ -743,6 +743,7 @@ MonoBehaviour:
   _cardToDrawPerTurn: 5
   _maxHandSize: 10
   _cardFactory: {fileID: 1877293996}
+  _cardMovementDelay: 0.1
 --- !u!1 &303998073
 GameObject:
   m_ObjectHideFlags: 0
@@ -2499,10 +2500,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _drawPileCounter: {fileID: 1578990175}
   _discardPileCounter: {fileID: 80757751}
-  _discardToLocation: {fileID: 686823024}
-  _drawFromLocation: {fileID: 1103476681}
-  _animationDuration: 1
-  _minScale: 0.1
   _ease: 4
 --- !u!1 &1311938714
 GameObject:
@@ -2555,8 +2552,9 @@ MonoBehaviour:
   _image: {fileID: 568967683}
   _suitImage: {fileID: 203309259}
   _colorPallet: {fileID: 11400000, guid: 6640e9abb150f0a48a5fa11a4cf2f0ab, type: 2}
-  _animationDuration: 0
+  _cardMovementDuration: 0
   _minScale: 0
+  _cardMovementEase: 0
   _hoverScaleFactor: 1.2
   _hoverRotationDuration: 0.3
   _onOverMoveToY: 0
