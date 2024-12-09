@@ -3,9 +3,11 @@ using System.Threading.Tasks;
 using Runtime.CardGameplay.Board;
 using Runtime.CardGameplay.Card.CardBehaviour;
 using Runtime.Combat.Pawn;
+using Runtime.Events;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Utilities;
 
 namespace Runtime.CardGameplay.Card
 {
@@ -18,13 +20,11 @@ namespace Runtime.CardGameplay.Card
         public Suit Suit { get; set; }
         public int Potency { get; private set; }
         public CardType CardType { get; private set; }
-        [ShowInInspector, ReadOnly] public bool Selectable { get; set; } = true;
+        [ShowInInspector, ReadOnly] public TrackedProperty<bool> IsPlayable;
 
         [ShowInInspector, ReadOnly] private CardSelectStrategy _selectStrategy;
         [ShowInInspector, ReadOnly] private CardPlayStrategy _playStrategy;
 
-        public event Action<CardController> OnSelectionStart;
-        public event Action<CardController> OnSelectionCanceled;
 
         public static event Action<CardController> OnCardPlayed;
 
@@ -69,15 +69,14 @@ namespace Runtime.CardGameplay.Card
             View = GetComponent<CardView>();
 
             //Card is selectable only when it can be played
-            Selectable = CanPlayCard();
-            OnCardPlayed += controller =>
+            IsPlayable = new TrackedProperty<bool>()
             {
-                if (controller != this) return;
-                Selectable = CanPlayCard();
+                Value = true
             };
-
+            OnCardPlayed += (c) => { IsPlayable.Value = CanPlayCard(); };
             Data = data;
         }
+
 
         public void Init(CardInstance cardInstance, CardDependencies dependencies)
         {
@@ -92,7 +91,7 @@ namespace Runtime.CardGameplay.Card
 
         private async void Select(CardSelectStrategy selectStrategy)
         {
-            if (!Selectable)
+            if (!IsPlayable.Value)
             {
                 Debug.LogWarning($"Trying to select card {name} who is not selectable");
                 return;
@@ -104,15 +103,10 @@ namespace Runtime.CardGameplay.Card
                 return;
             }
 
-            OnSelectionStart?.Invoke(this);
 
             if (await HandleSelectionStrategyAsync(selectStrategy))
             {
                 TryToPlay();
-            }
-            else
-            {
-                OnSelectionCanceled?.Invoke(this);
             }
         }
 
@@ -157,7 +151,6 @@ namespace Runtime.CardGameplay.Card
         {
             if (!CanPlayCard())
             {
-                OnSelectionCanceled?.Invoke(this);
                 return;
             }
 
@@ -177,6 +170,11 @@ namespace Runtime.CardGameplay.Card
         public void Disable()
         {
             _cardFactory.Disable(this);
+        }
+
+        public void OnDraw()
+        {
+            IsPlayable.Value = CanPlayCard();
         }
     }
 }

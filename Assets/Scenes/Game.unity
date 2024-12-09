@@ -1397,8 +1397,8 @@ Transform:
   m_GameObject: {fileID: 609502280}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.8573, z: 10}
-  m_LocalScale: {x: 10, y: 5, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 10}
+  m_LocalScale: {x: 10, y: 10, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 519420032}
@@ -2532,6 +2532,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2555a241755d43d4af9c93445e5ee426, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsPlayable:
+    value: 0
 --- !u!114 &1311938716
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2553,8 +2555,10 @@ MonoBehaviour:
   _colorPallet: {fileID: 11400000, guid: 6640e9abb150f0a48a5fa11a4cf2f0ab, type: 2}
   _hoverScaleFactor: 1.2
   _hoverRotationDuration: 0.3
-  _heightIncreaseOnHover: 0
+  _onOverMoveToY: 0
   _hoverEaseType: 6
+  _uiOutline: {fileID: 0}
+  _outlineTransitionDuration: 0
 --- !u!224 &1311938717
 RectTransform:
   m_ObjectHideFlags: 0

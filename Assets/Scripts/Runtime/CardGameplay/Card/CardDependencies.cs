@@ -10,6 +10,7 @@ namespace Runtime.CardGameplay.Card
         public IBoardController BoardController { get; }
         public PawnController Pawn { get; }
         public ICardFactory CardFactory { get; }
+        
 
         public CardDependencies(IHandController handController, IBoardController boardController, PawnController pawn, ICardFactory cardFactory)
         {

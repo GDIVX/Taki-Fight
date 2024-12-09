@@ -61,6 +61,7 @@ namespace Runtime.CardGameplay.Deck
             if (_cards.Count >= _maxHandSize) return;
             if (!Deck.Draw(out CardInstance cardInstance)) return;
             var controller = _cardFactory.Create(cardInstance);
+            controller.OnDraw();
             AddCard(controller);
         }
 

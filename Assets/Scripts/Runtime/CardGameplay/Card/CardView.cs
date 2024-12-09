@@ -32,10 +32,17 @@ namespace Runtime.CardGameplay.Card
 
         [ShowInInspector, ReadOnly] private CardData _cardData;
 
+        [SerializeField, TabGroup("Outline")] private UIOutline _uiOutline;
+        [SerializeField, TabGroup("Outline")] private float _outlineTransitionDuration;
+
+        [SerializeField, TabGroup("Outline")] private float _outlineAlphaMin = 0;
+        [SerializeField, TabGroup("Outline")] private float _outlineAlphaMax = 1;
+
         private Vector3 _originalScale;
         private Vector3 _originalPosition;
         private Vector3 _originalRotation;
         private int _originalSiblingIndex;
+        private CardController _controller;
 
         private Tween _currentTween;
         private bool _isHovered;
@@ -48,7 +55,7 @@ namespace Runtime.CardGameplay.Card
         }
 
         [Button]
-        public void Draw(CardData data, int rank, Suit suit = Suit.Default, int potency = 0)
+        private void Draw(CardData data, int rank, Suit suit = Suit.Default, int potency = 0)
         {
             if (suit == Suit.Default)
             {
@@ -78,9 +85,30 @@ namespace Runtime.CardGameplay.Card
             _cardData = data;
         }
 
+
         public void Draw(CardController controller)
         {
             Draw(controller.Data, controller.Rank, controller.Suit, controller.Potency);
+            _controller = controller;
+            _controller.IsPlayable.OnValueChanged += isPlayable =>
+            {
+                if (isPlayable)
+                {
+                    DOTween.To(() => _uiOutline.color.a,
+                        a => _uiOutline.color =
+                            new Color(_uiOutline.color.r, _uiOutline.color.g, _uiOutline.color.b, a),
+                        _outlineAlphaMax,
+                        _outlineTransitionDuration);
+                }
+                else
+                {
+                    DOTween.To(() => _uiOutline.color.a,
+                        a => _uiOutline.color =
+                            new Color(_uiOutline.color.r, _uiOutline.color.g, _uiOutline.color.b, a),
+                        _outlineAlphaMin,
+                        _outlineTransitionDuration);
+                }
+            };
         }
 
         private static string FormatTextWithPotencyValue(string description, int potency)
@@ -88,6 +116,7 @@ namespace Runtime.CardGameplay.Card
             var newDescription = description.Replace("$potency", potency.ToString());
             return newDescription;
         }
+
 
         public void OnPointerEnter(PointerEventData eventData)
         {
