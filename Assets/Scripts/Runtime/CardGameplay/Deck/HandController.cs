@@ -9,29 +9,24 @@ using Utilities;
 
 namespace Runtime.CardGameplay.Deck
 {
-    public class HandController : MonoBehaviour, IHandController
+    public class HandController : MonoBehaviour
     {
         [SerializeField] private int _cardToDrawPerTurn;
         [SerializeField] private int _maxHandSize;
         [SerializeField, Required] private CardFactory _cardFactory;
         [SerializeField] private float _cardMovementDelay;
         public Deck Deck { get; set; }
-        [ShowInInspector, ReadOnly] private List<ICardController> _cards = new();
+        [ShowInInspector, ReadOnly] private List<CardController> _cards = new();
 
-        public event Action<ICardController> OnCardAdded;
-        public event Action<ICardController> OnCardRemoved;
-
-        public int CardToDrawPerTurn
-        {
-            get => _cardToDrawPerTurn;
-            set => _cardToDrawPerTurn = value;
-        }
+        public event Action<CardController> OnCardAdded;
+        public event Action<CardController> OnCardRemoved;
+        public event Action<CardController> OnCardBurnt;
 
         /// <summary>
         /// Remove a card from hand
         /// </summary>
         /// <param name="cardController"></param>
-        private void RemoveCard(ICardController cardController)
+        private void RemoveCard(CardController cardController)
         {
             if (!_cards.Contains(cardController)) return;
             _cards.Remove(cardController);
@@ -42,7 +37,7 @@ namespace Runtime.CardGameplay.Deck
         /// Add a card to the hand.
         /// </summary>
         /// <param name="cardController"></param>
-        private void AddCard(ICardController cardController)
+        private void AddCard(CardController cardController)
         {
             if (cardController == null)
             {
@@ -68,6 +63,7 @@ namespace Runtime.CardGameplay.Deck
             AddCard(controller);
         }
 
+
         public void DrawHand()
         {
             StartCoroutine(DrawWithDelay());
@@ -87,7 +83,7 @@ namespace Runtime.CardGameplay.Deck
         /// </summary>
         /// <param name="cardController"></param>
         [Button]
-        public void DiscardCard(ICardController cardController)
+        public void DiscardCard(CardController cardController)
         {
             //If the card is already discard, return to avoid side effects
             if (Deck.IsDiscarded(cardController.Instance)) return;
@@ -98,7 +94,18 @@ namespace Runtime.CardGameplay.Deck
             cardController.View.OnDiscard();
         }
 
-        public bool Has(ICardController cardController)
+        public void BurnCard(CardController cardController)
+        {
+            if (Deck.IsBurnt(cardController.Instance)) return;
+
+            Deck.Burn(cardController.Instance);
+            RemoveCard(cardController);
+            cardController.OnDiscard();
+            cardController.View.OnBurn();
+            OnCardBurnt?.Invoke(cardController);
+        }
+
+        public bool Has(CardController cardController)
         {
             return _cards.Contains(cardController);
         }

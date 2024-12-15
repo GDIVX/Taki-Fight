@@ -1,21 +1,22 @@
 ﻿using System;
-using Runtime.CardGameplay.Board;
+using Runtime.CardGameplay.Deck;
+using Runtime.CardGameplay.GlyphsBoard;
 using Runtime.Combat.Pawn;
 
 namespace Runtime.CardGameplay.Card
 {
     public class CardDependencies
     {
-        public IHandController HandController { get; }
-        public IBoardController BoardController { get; }
+        public HandController HandController { get; }
+        public GlyphBoardController GlyphBoardController { get; }
         public PawnController Pawn { get; }
-        public ICardFactory CardFactory { get; }
+        public CardFactory CardFactory { get; }
         
 
-        public CardDependencies(IHandController handController, IBoardController boardController, PawnController pawn, ICardFactory cardFactory)
+        public CardDependencies(HandController handController, GlyphBoardController glyphBoardController, PawnController pawn, CardFactory cardFactory)
         {
             HandController = handController ?? throw new ArgumentNullException(nameof(handController));
-            BoardController = boardController ?? throw new ArgumentNullException(nameof(boardController));
+            GlyphBoardController = glyphBoardController ?? throw new ArgumentNullException(nameof(glyphBoardController));
             Pawn = pawn ?? throw new ArgumentNullException(nameof(pawn));
             CardFactory = cardFactory ?? throw new ArgumentNullException(nameof(cardFactory));
         }

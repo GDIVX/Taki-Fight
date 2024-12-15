@@ -35,11 +35,11 @@ namespace Runtime.UI
             }
         }
 
-        public void WriteMessage(int bannerIndex, string message, int colorHighlight = 0)
+        public void WriteMessage(int bannerIndex, string message, int severity = 0)
         {
 
-            colorHighlight = Mathf.Clamp(colorHighlight, 0, _severityColorPalette.Colors.Count);
-            var textColor = _severityColorPalette.Colors[colorHighlight];
+            severity = Mathf.Clamp(severity, 0, _severityColorPalette.Colors.Count);
+            var textColor = _severityColorPalette.Colors[severity];
 
             var banner = _banners[bannerIndex];
             banner.SetMessage(message, textColor, _fadeDuration);

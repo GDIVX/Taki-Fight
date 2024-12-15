@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using DG.Tweening;
 using Runtime.CardGameplay.Card;
+using Runtime.CardGameplay.Card.View;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -16,18 +17,18 @@ namespace Runtime.CardGameplay.Deck
         [SerializeField] private float _minArcWidthFactor = 0.2f;
         [SerializeField] private float _maxArcWidthFactor = 1f;
 
-        [ShowInInspector, ReadOnly] protected readonly List<ICardController> Cards = new();
+        [ShowInInspector, ReadOnly] protected readonly List<CardController> Cards = new();
 
         private RectTransform _rectTransform;
 
-        protected virtual void OnCardAdded(ICardController cardController)
+        protected virtual void OnCardAdded(CardController cardController)
         {
             cardController.Transform.SetParent(transform);
             Cards.Add(cardController);
             ArrangeCardsInArch();
         }
 
-        protected virtual void OnCardRemoved(ICardController cardController)
+        protected virtual void OnCardRemoved(CardController cardController)
         {
             Cards.Remove(cardController);
             ArrangeCardsInArch();

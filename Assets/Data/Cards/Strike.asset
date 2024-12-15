@@ -13,10 +13,14 @@ MonoBehaviour:
   m_Name: Strike
   m_EditorClassIdentifier: 
   _title: Strike
-  _description: Deal $potency Damage
+  _description: Attack for $potency Damage
   _image: {fileID: 21300000, guid: 37f174ab7cb028747b44047583ac73a6, type: 3}
-  _suit: 0
+  _glyphSlots: 2
+  _potency: 6
+  _cardType: 0
   _selectStrategy: {fileID: 11400000, guid: 693626e501b6ec2438a4e251d9c1a4e4, type: 2}
   _playStrategy: {fileID: 11400000, guid: cd7cd7aafe2c3b14ab5954de633d36b0, type: 2}
-  _energyCost: 0
-  _potency: 6
+  _affordabilityStrategy: {fileID: 11400000, guid: ebd811b0c7aa5cd4bbd4cda479ce3c55, type: 2}
+  _postPlayStrategy: {fileID: 11400000, guid: 34f06bc0b60b90945ae825a222936db1, type: 2}
+  _rankChangedEventHandler: {fileID: 0}
+  _suitChangedEventHandler: {fileID: 0}

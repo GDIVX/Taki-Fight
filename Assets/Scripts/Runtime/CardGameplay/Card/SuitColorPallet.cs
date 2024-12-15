@@ -8,9 +8,9 @@ namespace Runtime.CardGameplay.Card
     {
         [SerializeField] private List<SuitColor> pallet;
 
-        public Color GetColor(Suit suit)
+        public Color GetColor(CardGlyph cardGlyph)
         {
-            return pallet.Find(p => p.suit == suit).color;
+            return pallet.Find(p => p.CardGlyph == cardGlyph).color;
         }
     }
 }

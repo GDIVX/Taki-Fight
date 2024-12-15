@@ -6,7 +6,7 @@ namespace Runtime.CardGameplay.Card
     [Serializable]
     public struct SuitColor
     {
-        public Suit suit;
+        public CardGlyph CardGlyph;
         public Color color;
     }
 }

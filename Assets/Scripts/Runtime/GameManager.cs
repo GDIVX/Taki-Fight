@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections;
-using Runtime.CardGameplay.Board;
 using Runtime.CardGameplay.Card;
 using Runtime.CardGameplay.Deck;
+using Runtime.CardGameplay.GlyphsBoard;
 using Runtime.Combat;
 using Runtime.Combat.Pawn;
 using Runtime.Combat.Pawn.Enemy;
@@ -23,7 +23,7 @@ namespace Runtime
         private HandController _handController;
 
         [SerializeField, Required, TabGroup("Dependencies")]
-        private BoardController _boardController;
+        private GlyphBoardController _glyphBoardController;
 
         [SerializeField, Required, TabGroup("Dependencies")]
         private CardFactory _cardFactory;
@@ -41,7 +41,6 @@ namespace Runtime
 
         public BannerViewManager BannerViewManager => _bannerViewManager;
         public EventBus EventBus => _eventBus;
-        public Suit CurrentSuit => _boardController.CurrentSuit;
 
         public PawnController Hero
         {
@@ -122,7 +121,6 @@ namespace Runtime
 
         private IEnumerator ProcessEndTurn()
         {
-            _boardController.OnTurnEnd();
             _handController.DiscardHand();
 
             yield return StartCoroutine(PlayEnemiesTurn());

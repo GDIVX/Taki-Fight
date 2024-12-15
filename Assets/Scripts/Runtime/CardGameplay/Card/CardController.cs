@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Runtime.CardGameplay.Board;
 using Runtime.CardGameplay.Card.CardBehaviour;
+using Runtime.CardGameplay.Card.View;
+using Runtime.CardGameplay.Deck;
+using Runtime.CardGameplay.GlyphsBoard;
 using Runtime.Combat.Pawn;
 using Runtime.Events;
 using Sirenix.OdinInspector;
@@ -14,16 +17,19 @@ namespace Runtime.CardGameplay.Card
     /// <summary>
     /// Handle the behaviour of a card.
     /// </summary>
-    public class CardController : MonoBehaviour, IPointerClickHandler, ICardController
+    public class CardController : MonoBehaviour, IPointerClickHandler
     {
-        public int Rank { get; set; }
-        public Suit Suit { get; set; }
+        public List<CardGlyph> Glyphs { get; private set; }
         public int Potency { get; private set; }
         public CardType CardType { get; private set; }
         [ShowInInspector, ReadOnly] public TrackedProperty<bool> IsPlayable;
 
         [ShowInInspector, ReadOnly] private CardSelectStrategy _selectStrategy;
         [ShowInInspector, ReadOnly] private CardPlayStrategy _playStrategy;
+        [ShowInInspector, ReadOnly] private CardAffordabilityStrategy _affordabilityStrategy;
+        [ShowInInspector, ReadOnly] private CardPostPlayStrategy _postPlayStrategy;
+        [ShowInInspector, ReadOnly] private CardOnRankChangedEventHandler _rankChangedEventHandler;
+        [ShowInInspector, ReadOnly] private CardOnSuitChangeEventHandler _suitChangeEventHandler;
 
 
         public static event Action<CardController> OnCardPlayed;
@@ -34,16 +40,14 @@ namespace Runtime.CardGameplay.Card
 
 
         public CardData Data { get; private set; }
-        public float PlayDuration => _playStrategy?.Duration ?? 0f;
-        public int EnergyCost { get; set; }
 
-        private IHandController _handController;
-        private IBoardController _boardController;
-        private PawnController _pawn;
-        private ICardFactory _cardFactory;
+        public HandController HandController { get; private set; }
+        public GlyphBoardController GlyphBoardController { get; private set; }
+        public PawnController Pawn { get; private set; }
+        private CardFactory _cardFactory;
 
         [Button]
-        public void Init(CardData data, int rank, Suit suit, CardDependencies dependencies)
+        public void Init(CardData data, List<CardGlyph> glyphs, CardDependencies dependencies)
         {
             if (data == null)
             {
@@ -51,20 +55,24 @@ namespace Runtime.CardGameplay.Card
                 return;
             }
 
-            _handController = dependencies.HandController;
-            _boardController = dependencies.BoardController;
-            _pawn = dependencies.Pawn;
+            HandController = dependencies.HandController;
+            GlyphBoardController = dependencies.GlyphBoardController;
+            Pawn = dependencies.Pawn;
             _cardFactory = dependencies.CardFactory;
 
-            Rank = rank;
-            Suit = suit;
+            Glyphs = glyphs;
             Potency = data.Potency;
             CardType = data.CardType;
+
             _selectStrategy = data.SelectStrategy;
             _playStrategy = data.PlayStrategy;
-            EnergyCost = data.EnergyCost;
+            _affordabilityStrategy = data.AffordabilityStrategy;
+            _postPlayStrategy = data.PostPlayStrategy;
+            _rankChangedEventHandler = data?.RankChangedEventHandler;
+            _suitChangeEventHandler = data?.SuitChangedEventHandler;
 
-            Instance = new CardInstance(data, rank)
+
+            Instance = new CardInstance(data, glyphs)
             {
                 Controller = this
             };
@@ -88,7 +96,7 @@ namespace Runtime.CardGameplay.Card
                 return;
             }
 
-            Init(cardInstance.Data, cardInstance.Rank, cardInstance.Suit, dependencies);
+            Init(cardInstance.Data, cardInstance.Glyphs, dependencies);
         }
 
         private async void Select(CardSelectStrategy selectStrategy)
@@ -115,7 +123,7 @@ namespace Runtime.CardGameplay.Card
 
         private async Task<bool> HandleSelectionStrategyAsync(CardSelectStrategy selectStrategy)
         {
-            return _handController.Has(this) && await selectStrategy.SelectAsync(this);
+            return HandController.Has(this) && await selectStrategy.SelectAsync(this);
         }
 
         private void Play()
@@ -128,8 +136,8 @@ namespace Runtime.CardGameplay.Card
 
             //Play the card before discarding it or updating the current suit and rank.
             //In order to preserve the game state for any play strategy before doing changes 
-            _playStrategy.Play(_pawn, Potency);
-            _playStrategy.PostPlay(_boardController, _handController, this);
+            _playStrategy.Play(Pawn, Potency);
+            _postPlayStrategy.PostPlay(this);
             OnCardPlayed?.Invoke(this);
         }
 
@@ -147,9 +155,23 @@ namespace Runtime.CardGameplay.Card
         public void OnDiscard()
         {
         }
-        public bool CanPlayCard()
+
+        /// <summary>
+        /// Remove the card.
+        /// </summary>
+        public void Disable()
         {
-            return _boardController.CanPlayCard(this);
+            _cardFactory.Disable(this);
+        }
+
+        public void OnDraw()
+        {
+            IsPlayable.Value = CanPlayCard();
+        }
+
+        private bool CanPlayCard()
+        {
+            return _affordabilityStrategy.CanPlayCard(this);
         }
 
         private void TryToPlay()
@@ -167,19 +189,6 @@ namespace Runtime.CardGameplay.Card
         private void Select()
         {
             Select(_selectStrategy);
-        }
-
-        /// <summary>
-        /// Remove the card.
-        /// </summary>
-        public void Disable()
-        {
-            _cardFactory.Disable(this);
-        }
-
-        public void OnDraw()
-        {
-            IsPlayable.Value = CanPlayCard();
         }
     }
 }

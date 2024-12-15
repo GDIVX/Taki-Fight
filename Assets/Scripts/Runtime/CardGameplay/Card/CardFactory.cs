@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Runtime.CardGameplay.Board;
+using Runtime.CardGameplay.Card.View;
 using Runtime.CardGameplay.Deck;
+using Runtime.CardGameplay.GlyphsBoard;
 using Runtime.Combat.Pawn;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -9,15 +10,15 @@ using Utilities;
 
 namespace Runtime.CardGameplay.Card
 {
-    public class CardFactory : MonoBehaviour, ICardFactory
+    public class CardFactory : MonoBehaviour
     {
-        [SerializeField] private CardController Prefab;
+        [SerializeField] private CardController _prefab;
 
         [SerializeField, TabGroup("Dependencies")]
         private HandController _handController;
 
         [SerializeField, TabGroup("Dependencies")]
-        private BoardController _boardController;
+        private GlyphBoardController _glyphBoardController;
 
         [SerializeField, TabGroup("Dependencies")]
         private Transform _discardToLocation, _drawFromLocation;
@@ -34,14 +35,14 @@ namespace Runtime.CardGameplay.Card
 
         private void FetchDependencies(PawnController heroPawn)
         {
-            _cardDependencies = new CardDependencies(_handController, _boardController, heroPawn, this);
+            _cardDependencies = new CardDependencies(_handController, _glyphBoardController, heroPawn, this);
         }
 
         [Button]
-        public CardController Create(CardData data, int number, Suit suit = Suit.Default)
+        public CardController Create(CardData data, List<CardGlyph> glyphs)
         {
             CardController controller = GetController();
-            controller.Init(data, number, suit, _cardDependencies);
+            controller.Init(data, glyphs, _cardDependencies);
             controller.gameObject.GetComponent<CardView>()
                 .Init(_drawFromLocation, _discardToLocation)
                 .Draw(controller);
@@ -51,7 +52,7 @@ namespace Runtime.CardGameplay.Card
 
         public CardController Create(CardInstance instance)
         {
-            return Create(instance.Data, instance.Rank, instance.Suit);
+            return Create(instance.Data, instance.Glyphs);
         }
 
         /// <summary>
@@ -69,7 +70,7 @@ namespace Runtime.CardGameplay.Card
                 ? _objectPool.Pop()
                 :
                 //Create a new instance
-                Instantiate(Prefab);
+                Instantiate(_prefab);
         }
     }
 }

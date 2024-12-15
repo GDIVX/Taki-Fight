@@ -13,11 +13,11 @@ namespace Runtime.CardGameplay.Deck
     {
         [ShowInInspector, ReadOnly, TableList] private Stack<CardInstance> _drawPile;
         [ShowInInspector, ReadOnly, TableList] private Stack<CardInstance> _discardPile;
+        [ShowInInspector, ReadOnly, TableList] private Stack<CardInstance> _burnPile;
 
         public event Action<Stack<CardInstance>> OnDrawPileUpdated;
         public event Action<Stack<CardInstance>> OnDiscardPileUpdated;
-        public event Action<CardInstance> OnCardDiscarded;
-        public event Action<CardInstance> OnCardDrawn;
+        public event Action<Stack<CardInstance>> OnBurnPileUpdated;
 
         public Deck(List<CardInstance> cards)
         {
@@ -28,10 +28,12 @@ namespace Runtime.CardGameplay.Deck
         {
             _drawPile = new Stack<CardInstance>(cards);
             _discardPile = new Stack<CardInstance>();
+            _burnPile = new Stack<CardInstance>();
             Reshuffle();
 
             OnDrawPileUpdated?.Invoke(_drawPile);
             OnDiscardPileUpdated?.Invoke(_discardPile);
+            OnBurnPileUpdated?.Invoke(_burnPile);
         }
 
         public bool Draw(out CardInstance cardInstance)
@@ -50,7 +52,6 @@ namespace Runtime.CardGameplay.Deck
 
             cardInstance = _drawPile.Pop();
             OnDrawPileUpdated?.Invoke(_drawPile);
-            OnCardDrawn?.Invoke(cardInstance);
             return true;
         }
 
@@ -58,7 +59,12 @@ namespace Runtime.CardGameplay.Deck
         {
             _discardPile.Push(card);
             OnDiscardPileUpdated?.Invoke(_discardPile);
-            OnCardDiscarded?.Invoke(card);
+        }
+
+        public void Burn(CardInstance card)
+        {
+            _burnPile.Push(card);
+            OnBurnPileUpdated?.Invoke(_burnPile);
         }
 
         public void Reshuffle()
@@ -104,6 +110,11 @@ namespace Runtime.CardGameplay.Deck
         public bool Exist(CardInstance card)
         {
             return IsDiscarded(card) || IsInDrawPile(card);
+        }
+
+        public bool IsBurnt(CardInstance card)
+        {
+            return _burnPile.Contains(card);
         }
     }
 }

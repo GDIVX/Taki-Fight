@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Runtime.CardGameplay.Card;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -22,7 +23,7 @@ namespace Runtime.CardGameplay.Deck
 
         private void Start()
         {
-            _cards = _starterDeck.Clone();
+            _cards = _starterDeck.Cards.Select(data => new CardInstance(data)).ToList();
             Deck = new Deck(_cards);
             _deckView.Setup(Deck);
         }
