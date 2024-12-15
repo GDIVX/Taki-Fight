@@ -768,6 +768,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ad4bbd952bb49109cc786b5297e6392, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _glyphCountToActivateOnStartBattle: 3
 --- !u!222 &580355267
 CanvasRenderer:
   m_ObjectHideFlags: 0

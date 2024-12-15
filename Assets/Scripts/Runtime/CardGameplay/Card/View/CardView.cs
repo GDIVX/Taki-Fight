@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using DG.Tweening;
+using Runtime.CardGameplay.Tooltip;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
@@ -16,6 +17,9 @@ namespace Runtime.CardGameplay.Card.View
 
         [SerializeField, TabGroup("Dependencies")]
         private CardGlyphView _glyphView;
+
+        [SerializeField, TabGroup("Dependencies")]
+        private CardTooltipSystem _cardTooltipSystem;
 
         private Transform _discardToLocation, _drawFromLocation;
         [SerializeField] private float _cardMovementDuration;
@@ -53,7 +57,8 @@ namespace Runtime.CardGameplay.Card.View
 
         private Tween _currentTween;
 
-
+        private List<CardTooltipData> _tooltip;
+        
         private void Awake()
         {
             _originalScale = transform.localScale;
@@ -72,6 +77,7 @@ namespace Runtime.CardGameplay.Card.View
         private CardView Draw(CardData data, List<CardGlyph> glyphs, int potency = 0)
         {
             DrawGlyphs(glyphs);
+            _tooltip = data.ToolTips;
 
             _title.text = data.Title;
             _description.text = FormatTextWithPotencyValue(data.Description, potency);
@@ -123,13 +129,20 @@ namespace Runtime.CardGameplay.Card.View
         public void OnPointerEnter(PointerEventData eventData)
         {
             if (_isHoverEnabled)
+            {
                 AnimateHoverEnter();
+                _cardTooltipSystem.DrawTooltips(_tooltip);
+
+            }
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
             if (_isHoverEnabled)
+            {
                 AnimateReturnToDefault();
+                _cardTooltipSystem.HideAllTooltips();
+            }
         }
 
         public void SetOriginalValues()

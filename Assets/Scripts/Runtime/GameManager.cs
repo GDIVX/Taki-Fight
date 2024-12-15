@@ -66,6 +66,7 @@ namespace Runtime
         public void StartCombat(CombatConfig combatConfig)
         {
             _enemiesLane.SpawnPawnsForCombat(combatConfig);
+            _glyphBoardController.OnBattleStart();
             SetupCardGameplay();
         }
 

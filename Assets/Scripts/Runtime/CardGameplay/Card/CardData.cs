@@ -1,4 +1,6 @@
-﻿using Runtime.CardGameplay.Card.CardBehaviour;
+﻿using System.Collections.Generic;
+using Runtime.CardGameplay.Card.CardBehaviour;
+using Runtime.CardGameplay.Tooltip;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -14,6 +16,9 @@ namespace Runtime.CardGameplay.Card
 
         [SerializeField, PreviewField, BoxGroup("UI")]
         private Sprite _image;
+
+        [SerializeField, PreviewField, BoxGroup("Tooltips")]
+        private List<CardTooltipData> _tooltips;
 
         [SerializeField, BoxGroup("Stats")] private int _glyphSlots;
         [SerializeField, BoxGroup("Stats")] private int _potency;
@@ -47,12 +52,10 @@ namespace Runtime.CardGameplay.Card
 
         public CardType CardType => _cardType;
 
+        public List<CardTooltipData> ToolTips;
+
         public CardAffordabilityStrategy AffordabilityStrategy => _affordabilityStrategy;
 
         public CardPostPlayStrategy PostPlayStrategy => _postPlayStrategy;
-
-        public CardOnRankChangedEventHandler RankChangedEventHandler => _rankChangedEventHandler;
-
-        public CardOnSuitChangeEventHandler SuitChangedEventHandler => _suitChangedEventHandler;
     }
 }

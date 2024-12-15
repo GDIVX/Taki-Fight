@@ -68,8 +68,6 @@ namespace Runtime.CardGameplay.Card
             _playStrategy = data.PlayStrategy;
             _affordabilityStrategy = data.AffordabilityStrategy;
             _postPlayStrategy = data.PostPlayStrategy;
-            _rankChangedEventHandler = data?.RankChangedEventHandler;
-            _suitChangeEventHandler = data?.SuitChangedEventHandler;
 
 
             Instance = new CardInstance(data, glyphs)

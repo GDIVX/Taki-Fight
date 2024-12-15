@@ -15,6 +15,7 @@ MonoBehaviour:
   _title: Smash
   _description: Attack for $potency damage. <b>Burn</b>
   _image: {fileID: 21300000, guid: 1687138246783984b90b6ee36ed95603, type: 3}
+  _tooltips: []
   _glyphSlots: 1
   _potency: 10
   _cardType: 0
@@ -24,3 +25,5 @@ MonoBehaviour:
   _postPlayStrategy: {fileID: 11400000, guid: c4e87e8431743294888e82e6be499753, type: 2}
   _rankChangedEventHandler: {fileID: 0}
   _suitChangedEventHandler: {fileID: 0}
+  ToolTips:
+  - {fileID: 11400000, guid: 57c03a8ac7d35624fb42d881f3cc0bae, type: 2}
