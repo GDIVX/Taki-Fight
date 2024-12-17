@@ -18,7 +18,7 @@ namespace Runtime.CardGameplay.Card
         private Sprite _image;
 
         [SerializeField, PreviewField, BoxGroup("Tooltips")]
-        private List<CardTooltipData> _tooltips;
+        private List<TooltipData> _tooltips;
 
         [SerializeField, BoxGroup("Stats")] private int _glyphSlots;
         [SerializeField, BoxGroup("Stats")] private int _potency;
@@ -52,7 +52,7 @@ namespace Runtime.CardGameplay.Card
 
         public CardType CardType => _cardType;
 
-        public List<CardTooltipData> ToolTips;
+        public List<TooltipData> ToolTips;
 
         public CardAffordabilityStrategy AffordabilityStrategy => _affordabilityStrategy;
 

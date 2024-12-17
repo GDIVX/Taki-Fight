@@ -27,7 +27,7 @@ namespace Runtime.CardGameplay.Tooltip
 
         }
 
-        public void DrawTooltips(List<CardTooltipData> tooltips)
+        public void DrawTooltips(List<TooltipData> tooltips)
         {
             foreach (var tooltipData in tooltips)
             {
@@ -42,7 +42,7 @@ namespace Runtime.CardGameplay.Tooltip
         }
 
 
-        private void DrawTooltip(CardTooltipData tooltipData)
+        private void DrawTooltip(TooltipData tooltipData)
         {
             CardTooltipView view = GetTooltipView();
             _activeTooltips.Push(view);

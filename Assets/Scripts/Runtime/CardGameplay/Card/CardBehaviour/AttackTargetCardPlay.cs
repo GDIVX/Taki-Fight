@@ -35,7 +35,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                 return;
             }
 
-            var finalDamage = potency + caller.Power;
+            var finalDamage = potency + caller.AttackModifier.Value;
             target.ReceiveAttack(finalDamage);
         }
     }

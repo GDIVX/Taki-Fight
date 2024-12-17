@@ -57,7 +57,7 @@ namespace Runtime.CardGameplay.Card.View
 
         private Tween _currentTween;
 
-        private List<CardTooltipData> _tooltip;
+        private List<TooltipData> _tooltip;
         
         private void Awake()
         {

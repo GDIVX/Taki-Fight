@@ -10,7 +10,7 @@ namespace Runtime.CardGameplay.Tooltip
         [SerializeField] private TextMeshProUGUI _headerGUI;
         [SerializeField] private TextMeshProUGUI _contentGUI;
 
-        public void Draw(CardTooltipData data)
+        public void Draw(TooltipData data)
         {
             _boundingBoxImage.sprite = data.BoundingBoxTexture;
             _boundingBoxImage.color = data.Color;

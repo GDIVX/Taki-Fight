@@ -100,6 +100,7 @@ namespace Runtime
             BannerViewManager.WriteMessage(1, "Player Turn");
             yield return new WaitForSeconds(1);
             BannerViewManager.Clear();
+            _heroPawn.OnTurnStart();
             SetupEnemies();
 
             _handController.DrawHand();
@@ -123,6 +124,7 @@ namespace Runtime
         private IEnumerator ProcessEndTurn()
         {
             _handController.DiscardHand();
+            _heroPawn.OnTurnEnd();
 
             yield return StartCoroutine(PlayEnemiesTurn());
 
