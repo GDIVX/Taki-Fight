@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e067faf9a24044939e1ca6b2fc24a8d4, type: 3}
   m_Name: RageTooltip
   m_EditorClassIdentifier: 
-  _boundingBoxTexture: {fileID: 0}
-  _color: {r: 0, g: 0, b: 0, a: 0}
-  _header: 
-  _content: 
+  _boundingBoxTexture: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  _color: {r: 0.13333334, g: 0.4392157, b: 0.5764706, a: 1}
+  _header: Rage
+  _content: Add attack damage equals to this buff stack size.
   _attachedTooltips: []

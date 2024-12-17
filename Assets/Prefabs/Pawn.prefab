@@ -35,7 +35,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -0.045, y: -0.0371}
+  m_AnchoredPosition: {x: 0.2361, y: 0.0303}
   m_SizeDelta: {x: 0.099999994, y: 0.1}
   m_Pivot: {x: 0, y: 0}
 --- !u!222 &7848603176578822405
@@ -144,8 +144,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 10/10
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 37ca7047d7765f448845350a22b36a02, type: 2}
-  m_sharedMaterial: {fileID: -7579572428249691890, guid: 37ca7047d7765f448845350a22b36a02, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 810e9b2e045b19d41bea9b64dfaf1192, type: 2}
+  m_sharedMaterial: {fileID: -1715530489822160824, guid: 810e9b2e045b19d41bea9b64dfaf1192, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -169,11 +169,11 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 2.5
+  m_fontSize: 2.1
   m_fontSizeBase: 3
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 0.1
+  m_fontSizeMin: 0.01
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 2
@@ -260,7 +260,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0.05}
+  m_AnchoredPosition: {x: 0, y: 0.0628}
   m_SizeDelta: {x: 25, y: 2.5}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &7118177842036355927
@@ -374,8 +374,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 5
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 37ca7047d7765f448845350a22b36a02, type: 2}
-  m_sharedMaterial: {fileID: -7579572428249691890, guid: 37ca7047d7765f448845350a22b36a02, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 810e9b2e045b19d41bea9b64dfaf1192, type: 2}
+  m_sharedMaterial: {fileID: -1715530489822160824, guid: 810e9b2e045b19d41bea9b64dfaf1192, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -541,6 +541,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1456694445059907388}
+  - component: {fileID: 2489130095325401899}
+  - component: {fileID: 3979853724586936929}
   m_Layer: 0
   m_Name: Status Effects UI
   m_TagString: Untagged
@@ -562,11 +564,50 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 6684600840131509813}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0}
-  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: -0.01196, y: 0.05337}
   m_Pivot: {x: 0.5, y: 0}
+--- !u!114 &2489130095325401899
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7169904076030030661}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 3
+  m_Spacing: 0.00125
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
+--- !u!114 &3979853724586936929
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7169904076030030661}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49f719e3291f44179d83ebb9e966d09c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _prefab: {fileID: 1202722585232909617, guid: 4d582a78309ecd246bafe30adcf5ab50, type: 3}
 --- !u!1 &7667745231118676924
 GameObject:
   m_ObjectHideFlags: 0
@@ -670,6 +711,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _view: {fileID: 1229084231330852880}
   _statusEffectHandler: {fileID: 3006272120079008127}
+  _statusEffectListView: {fileID: 3979853724586936929}
   WaitBeforeDestroyingObjectOnDeath: 1
   Defense:
     value: 0
@@ -860,8 +902,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0.01349}
-  m_SizeDelta: {x: 0.27765, y: 0.54101}
+  m_AnchoredPosition: {x: 0, y: 0.00711}
+  m_SizeDelta: {x: 0.27765, y: 0.55377}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &463642889551849496
 Canvas:

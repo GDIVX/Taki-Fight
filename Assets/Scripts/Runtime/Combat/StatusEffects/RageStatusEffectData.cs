@@ -1,6 +1,7 @@
 ﻿using System;
 using Runtime.Combat.Pawn;
 using UnityEngine;
+using Utilities;
 
 namespace Runtime.Combat.StatusEffects
 {
@@ -11,20 +12,21 @@ namespace Runtime.Combat.StatusEffects
         {
             return new RageStatusEffect()
             {
-                Stack = stacks
+                Stack = new TrackedProperty<int>()
+                {
+                    Value = stacks
+                }
             };
         }
     }
 
     public class RageStatusEffect : IStatusEffect
     {
-        public event Action<IStatusEffect> OnApplied;
-        public event Action<IStatusEffect> OnRemoved;
-        public int Stack { get; set; }
+        public TrackedProperty<int> Stack { get; set; }
 
         public void Apply(PawnController pawn)
         {
-            pawn.AttackModifier.Value = Stack;
+            pawn.AttackModifier.Value = Stack.Value;
         }
 
         public void OnAdded(PawnController pawn)

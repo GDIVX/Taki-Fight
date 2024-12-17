@@ -10,6 +10,10 @@ namespace Runtime.Combat.StatusEffects
         [SerializeField] private StatusEffectType _effectType;
         [SerializeField] private Sprite _icon;
 
+        public TooltipData TooltipData => _tooltipData;
+        public StatusEffectType Type => _effectType;
+        public Sprite Icon => _icon;
+
         public abstract IStatusEffect CreateStatusEffect(int stacks);
     }
 

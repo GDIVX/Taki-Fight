@@ -36,7 +36,6 @@ namespace Runtime.Combat.Pawn
             if (data == null) throw new ArgumentNullException(nameof(data));
             Health = new HealthSystem(data.Health);
             _statusEffectHandler ??= GetComponent<StatusEffectHandler>();
-            _statusEffectHandler.Init(this);
 
             Defense = new TrackedProperty<int>
             {
@@ -73,15 +72,9 @@ namespace Runtime.Combat.Pawn
         public void ApplyStatusEffect(StatusEffectData statusEffectData, int stack)
         {
             var statusEffect = statusEffectData.CreateStatusEffect(stack);
-            _statusEffectHandler.Add(statusEffect);
+            _statusEffectHandler.Add(statusEffect, statusEffectData.Icon);
         }
 
-        //TODO:
-        // [Button]
-        // public void RemoveStatusEffect<T>() where T : IStatusEffect
-        // {
-        //     
-        // }
 
         private int CalculateDamage(int attackPoints)
         {
