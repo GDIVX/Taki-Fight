@@ -23,6 +23,6 @@ MonoBehaviour:
   _selectStrategy: {fileID: 11400000, guid: 693626e501b6ec2438a4e251d9c1a4e4, type: 2}
   _playStrategies:
   - PlayStrategy: {fileID: 11400000, guid: cd7cd7aafe2c3b14ab5954de633d36b0, type: 2}
-    Potency: 10
+    Potency: 8
   _postPlayStrategies:
   - {fileID: 11400000, guid: c4e87e8431743294888e82e6be499753, type: 2}

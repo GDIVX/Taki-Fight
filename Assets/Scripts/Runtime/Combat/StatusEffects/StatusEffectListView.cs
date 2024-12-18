@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Sirenix.OdinInspector;
-using Unity.Plastic.Newtonsoft.Json.Serialization;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 

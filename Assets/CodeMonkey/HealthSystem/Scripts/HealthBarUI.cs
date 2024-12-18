@@ -1,5 +1,4 @@
-﻿using Codice.CM.Client.Differences.Graphic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 namespace CodeMonkey.HealthSystemCM

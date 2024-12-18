@@ -9,10 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e71fa074096f4bf7b3dfbc3bb88b3484, type: 3}
-  m_Name: Kobold
+  m_Script: {fileID: 11500000, guid: 1d2ef38cff22425f823e1e531fce8b36, type: 3}
+  m_Name: Gain Rage
   m_EditorClassIdentifier: 
-  sprite: {fileID: -1590204285, guid: d0d3cdbb99712534e8f7ecfe2cd176ad, type: 3}
-  health: 20
-  defense: 0
-  playTable: {fileID: 11400000, guid: 91a5612e7b651fd45b0d5ded5cb3f0d0, type: 2}
+  _duration: 0.2
+  _effectData: {fileID: 11400000, guid: 54cb4099e45e5da4688d9a3d913a1ef2, type: 2}

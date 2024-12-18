@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using Runtime.CardGameplay.Card;
 using Runtime.CardGameplay.Deck;
 using Runtime.CardGameplay.GlyphsBoard;
@@ -36,6 +35,8 @@ namespace Runtime
         [SerializeField, TabGroup("Dependencies"), Required]
         private BannerViewManager _bannerViewManager;
 
+        [SerializeField, TabGroup("Tempt")] private GameObject _newGameButtonObject;
+
         private EventBus _eventBus;
 
 
@@ -57,7 +58,21 @@ namespace Runtime
         [Button]
         public void StartSession(PawnData data)
         {
+            _heroPawn.gameObject.SetActive(true);
             _heroPawn.Init(data);
+            _heroPawn.Health.OnDead += (sender, args) =>
+            {
+                _bannerViewManager.WriteMessage(0, "Defeat", Color.red);
+                GameOver();
+            };
+            _enemiesLane.OnPawnRemoved += () =>
+            {
+                if (!_heroPawn.isActiveAndEnabled) return;
+                if (_enemiesLane.Pawns.Count > 0) return;
+
+                _bannerViewManager.WriteMessage(0, "Victory", Color.green);
+                GameOver();
+            };
             _cardFactory.Init(_heroPawn);
         }
 
@@ -74,12 +89,21 @@ namespace Runtime
         public void EndCombat()
         {
             //TODO
-            Debug.Log("End Combat");
+        }
+
+        private void GameOver()
+        {
+            _handController.gameObject.SetActive(false);
+            _heroPawn.gameObject.SetActive(false);
+            _enemiesLane.Clear();
+            _newGameButtonObject.SetActive(true);
         }
 
         [Button]
         private void SetupCardGameplay()
         {
+            _handController.gameObject.SetActive(true);
+            _handController.DiscardHand();
             _cardCollection.CreateDeck();
             StartTurn();
         }
@@ -97,7 +121,7 @@ namespace Runtime
 
         private IEnumerator ProcessStartTurn()
         {
-            BannerViewManager.WriteMessage(1, "Player Turn");
+            BannerViewManager.WriteMessage(1, "Player Turn" , Color.white);
             yield return new WaitForSeconds(1);
             BannerViewManager.Clear();
             _heroPawn.OnTurnStart();
@@ -134,7 +158,7 @@ namespace Runtime
 
         private IEnumerator PlayEnemiesTurn()
         {
-            BannerViewManager.WriteMessage(1, "Enemies Turn");
+            BannerViewManager.WriteMessage(1, "Enemies Turn" , Color.yellow);
             yield return new WaitForSeconds(1);
             BannerViewManager.Clear();
             foreach (var enemy in _enemiesLane.Pawns)

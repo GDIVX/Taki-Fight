@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: Ouija Borad
   m_EditorClassIdentifier: 
   _title: Ouija Borad
-  _description: Gain {defense:0}. Burn
+  _description: Gain {defense:0}. <color=orange>Burn</color>
   _image: {fileID: 21300000, guid: c5bf6df0d56e81c49b4046e7581de3e6, type: 3}
   _tooltips:
   - {fileID: 11400000, guid: 57c03a8ac7d35624fb42d881f3cc0bae, type: 2}
   _glyphSlots: 4
-  _cardType: 3
+  _cardType: 2
   _affordabilityStrategy: {fileID: 11400000, guid: ebd811b0c7aa5cd4bbd4cda479ce3c55, type: 2}
   _selectStrategy: {fileID: 11400000, guid: 6488691d3e5b1734fbf184a753c30823, type: 2}
   _playStrategies:

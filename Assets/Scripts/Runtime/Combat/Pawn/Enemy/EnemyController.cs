@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Runtime.Combat.Pawn.Enemy
@@ -20,7 +18,6 @@ namespace Runtime.Combat.Pawn.Enemy
 
         private void OnDead(object sender, EventArgs args)
         {
-            
             Destroy(gameObject, WaitBeforeDestroyingObjectOnDeath);
         }
 
@@ -28,7 +25,18 @@ namespace Runtime.Combat.Pawn.Enemy
         public void ChoosePlayStrategy()
         {
             _playTableEntry = _table.ChoseRandomPlayStrategy();
-            _intentionsList.Add(_playTableEntry.Sprite, _playTableEntry.Color, _playTableEntry.Potency.ToString());
+            var finalPotency = _playTableEntry.Potency;
+            if (_playTableEntry.AddAttackMod)
+            {
+                finalPotency += AttackModifier.Value;
+            }
+
+            if (_playTableEntry.AddDefenseMod)
+            {
+                finalPotency += DefenseModifier.Value;
+            }
+
+            _intentionsList.Add(_playTableEntry.Sprite, _playTableEntry.Color, finalPotency.ToString());
         }
 
         public IEnumerator PlayTurn()

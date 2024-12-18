@@ -14,17 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   entries:
   - Strategy: {fileID: 11400000, guid: 096e7e287617b1145a56fcf896a78cff, type: 2}
-    Potency: 1
+    Potency: 2
+    AddAttackMod: 1
+    AddDefenseMod: 0
     Weight: 0.5
     Sprite: {fileID: 21300000, guid: 37f174ab7cb028747b44047583ac73a6, type: 3}
     Color: {r: 0.7019608, g: 0.22352941, b: 0.22352941, a: 1}
-  - Strategy: {fileID: 11400000, guid: 549e43c006aaa9548b773fde947c00f5, type: 2}
-    Potency: 1
-    Weight: 0.3
-    Sprite: {fileID: 21300000, guid: 868c7068a2d8eab48af4975f686260c2, type: 3}
-    Color: {r: 0.20392157, g: 0.6745098, b: 0.8784314, a: 1}
-  - Strategy: {fileID: 11400000, guid: 096e7e287617b1145a56fcf896a78cff, type: 2}
+  - Strategy: {fileID: 11400000, guid: 591598e589b73164e8540f8555024026, type: 2}
     Potency: 3
-    Weight: 0.2
-    Sprite: {fileID: 21300000, guid: 1687138246783984b90b6ee36ed95603, type: 3}
-    Color: {r: 0.7019608, g: 0.22352941, b: 0.22352941, a: 1}
+    AddAttackMod: 0
+    AddDefenseMod: 0
+    Weight: 0.5
+    Sprite: {fileID: 21300000, guid: c5bf6df0d56e81c49b4046e7581de3e6, type: 3}
+    Color: {r: 0.2, g: 0.8509804, b: 0.69803923, a: 1}

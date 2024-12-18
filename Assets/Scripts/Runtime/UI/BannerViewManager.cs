@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
-using Sirenix.OdinInspector.Editor;
 using UnityEngine;
 
 namespace Runtime.UI
@@ -11,9 +9,8 @@ namespace Runtime.UI
     {
         [ShowInInspector] private List<BannerView> _banners;
         [SerializeField] private float _fadeDuration;
-        [SerializeField] private ColorPalette _severityColorPalette;
 
-        private void OnValidate()
+        private void Awake()
         {
             _banners = new();
             foreach (BannerView banner in transform.GetComponentsInChildren<BannerView>())
@@ -29,17 +26,16 @@ namespace Runtime.UI
 
         public void Clear()
         {
-            foreach (var bannerView in _banners.Where(bannerView => bannerView.IsShowingMessage))
+            foreach (var bannerView in _banners)
             {
                 bannerView.Clear(_fadeDuration);
             }
         }
 
-        public void WriteMessage(int bannerIndex, string message, int severity = 0)
+        public void WriteMessage(int bannerIndex, string message, Color textColor)
         {
-
-            severity = Mathf.Clamp(severity, 0, _severityColorPalette.Colors.Count);
-            var textColor = _severityColorPalette.Colors[severity];
+            // severity = Mathf.Clamp(severity, 0, _severityColorPalette.Colors.Count);
+            // var textColor = _severityColorPalette.Colors[severity];
 
             var banner = _banners[bannerIndex];
             banner.SetMessage(message, textColor, _fadeDuration);

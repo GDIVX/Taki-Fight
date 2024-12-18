@@ -24,11 +24,22 @@ namespace Runtime.Combat.StatusEffects
             _statusEffects = new List<IStatusEffect>();
         }
 
-        public void Add(IStatusEffect effect, Sprite icon)
+        public void Add(IStatusEffect newEffect, Sprite icon)
         {
-            _statusEffects.Add(effect);
-            effect.OnAdded(_pawn);
-            _statusEffectView.Add(effect, icon);
+            // Check if we already have the same effect
+            var existingEffect = _statusEffects.Find(e => e.GetType() == newEffect.GetType());
+            if (existingEffect != null)
+            {
+                // Increase stacks instead of adding a new one
+                existingEffect.Stack.Value += newEffect.Stack.Value;
+            }
+            else
+            {
+                // Add new effect
+                _statusEffects.Add(newEffect);
+                newEffect.OnAdded(_pawn);
+                _statusEffectView.Add(newEffect, icon);
+            }
         }
 
         private void Remove(IStatusEffect effect)
@@ -50,20 +61,20 @@ namespace Runtime.Combat.StatusEffects
 
         private IEnumerator HandleTurnStart()
         {
-            for (int i = _statusEffects.Count - 1; i >= 0; i--)
+            foreach (IStatusEffect statusEffect in _statusEffects)
             {
-                var effect = _statusEffects[i];
-                effect.OnTurnStart(_pawn);
-
+                statusEffect.OnTurnStart(_pawn);
                 yield return new WaitForSeconds(0.5f);
             }
         }
 
         private IEnumerator HandleTurnEnd()
         {
-            for (int i = _statusEffects.Count - 1; i >= 0; i--)
+            // We copy the list because we might remove effects as we go
+            var effectsSnapshot = new List<IStatusEffect>(_statusEffects);
+
+            foreach (var effect in effectsSnapshot)
             {
-                var effect = _statusEffects[i];
                 effect.Stack.Value--;
 
                 if (effect.Stack.Value <= 0)
@@ -71,7 +82,7 @@ namespace Runtime.Combat.StatusEffects
                     Remove(effect);
                 }
 
-                yield return new WaitForSeconds(0.5f);
+                yield return new WaitForSeconds(0.1f);
             }
         }
     }

@@ -8,6 +8,7 @@ namespace Runtime.Combat.Pawn.Enemy
     {
         public CardPlayStrategy Strategy;
         public int Potency;
+        public bool AddAttackMod, AddDefenseMod;
         public float Weight;
         public Sprite Sprite;
         public Color Color;

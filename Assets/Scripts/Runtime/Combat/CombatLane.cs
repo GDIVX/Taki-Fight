@@ -16,6 +16,8 @@ namespace Runtime.Combat
 
         [SerializeField] private List<PawnController> _pawns = new List<PawnController>();
 
+        public event Action OnPawnRemoved;
+
         public List<PawnController> Pawns => _pawns;
 
         public void SpawnPawnsForCombat(CombatConfig combatConfig)
@@ -32,6 +34,17 @@ namespace Runtime.Combat
         private void RemovePawn(PawnController pawn)
         {
             _pawns.Remove(pawn);
+            OnPawnRemoved?.Invoke();
+        }
+
+        public void Clear()
+        {
+            var snapshot = new List<PawnController>(_pawns);
+
+            foreach (PawnController controller in snapshot)
+            {
+                RemovePawn(controller);
+            }
         }
     }
 }

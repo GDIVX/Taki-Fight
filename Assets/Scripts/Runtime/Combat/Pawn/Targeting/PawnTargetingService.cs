@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Sirenix.OdinInspector;
+using UnityEngine;
 using Utilities;
 
 namespace Runtime.Combat.Pawn.Targeting
@@ -26,7 +27,7 @@ namespace Runtime.Combat.Pawn.Targeting
 
             IsLookingForTarget = true;
             _targetCompletionSource = new TaskCompletionSource<PawnTarget>();
-            GameManager.Instance.BannerViewManager.WriteMessage(0, "Select Target" , 1);
+            GameManager.Instance.BannerViewManager.WriteMessage(0, "Select Target" , Color.yellow);
             OnLookingForTarget?.Invoke();
 
             try

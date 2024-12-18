@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Runtime.CardGameplay.Card.CardBehaviour;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEngine;

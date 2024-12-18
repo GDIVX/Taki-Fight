@@ -4,9 +4,6 @@
     {
         Attack,
         Defense,
-        Draw,
-        Other,
-        ChangeRank,
-        ChangeSuite
+        Skill
     }
 }
