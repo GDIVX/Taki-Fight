@@ -384,10 +384,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 303998077}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 0}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
   m_AnchoredPosition: {x: 0, y: 95}
-  m_SizeDelta: {x: -400, y: 350}
+  m_SizeDelta: {x: 1520, y: 350}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &303423371
 MonoBehaviour:
@@ -407,6 +407,9 @@ MonoBehaviour:
   _minArcWidthFactor: 0.2
   _maxArcWidthFactor: 1
   _handController: {fileID: 303423372}
+  _moveToWhenHiding: {x: 0, y: -800, z: 0}
+  _hideMovementDuration: 0.5
+  _ease: 4
 --- !u!114 &303423372
 MonoBehaviour:
   m_ObjectHideFlags: 0

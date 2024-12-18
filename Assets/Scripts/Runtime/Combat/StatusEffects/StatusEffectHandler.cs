@@ -53,7 +53,7 @@ namespace Runtime.Combat.StatusEffects
             for (int i = _statusEffects.Count - 1; i >= 0; i--)
             {
                 var effect = _statusEffects[i];
-                effect.Apply(_pawn);
+                effect.OnTurnStart(_pawn);
 
                 yield return new WaitForSeconds(0.5f);
             }

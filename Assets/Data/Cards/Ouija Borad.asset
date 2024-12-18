@@ -13,17 +13,16 @@ MonoBehaviour:
   m_Name: Ouija Borad
   m_EditorClassIdentifier: 
   _title: Ouija Borad
-  _description: Gain 5 block. Burn
+  _description: Gain {defense:0}. Burn
   _image: {fileID: 21300000, guid: c5bf6df0d56e81c49b4046e7581de3e6, type: 3}
-  _tooltips: []
-  _glyphSlots: 4
-  _potency: 5
-  _cardType: 3
-  _selectStrategy: {fileID: 11400000, guid: 6488691d3e5b1734fbf184a753c30823, type: 2}
-  _playStrategy: {fileID: 11400000, guid: 549e43c006aaa9548b773fde947c00f5, type: 2}
-  _affordabilityStrategy: {fileID: 11400000, guid: ebd811b0c7aa5cd4bbd4cda479ce3c55, type: 2}
-  _postPlayStrategy: {fileID: 11400000, guid: c4e87e8431743294888e82e6be499753, type: 2}
-  _rankChangedEventHandler: {fileID: 0}
-  _suitChangedEventHandler: {fileID: 0}
-  ToolTips:
+  _tooltips:
   - {fileID: 11400000, guid: 57c03a8ac7d35624fb42d881f3cc0bae, type: 2}
+  _glyphSlots: 4
+  _cardType: 3
+  _affordabilityStrategy: {fileID: 11400000, guid: ebd811b0c7aa5cd4bbd4cda479ce3c55, type: 2}
+  _selectStrategy: {fileID: 11400000, guid: 6488691d3e5b1734fbf184a753c30823, type: 2}
+  _playStrategies:
+  - PlayStrategy: {fileID: 11400000, guid: 549e43c006aaa9548b773fde947c00f5, type: 2}
+    Potency: 5
+  _postPlayStrategies:
+  - {fileID: 11400000, guid: c4e87e8431743294888e82e6be499753, type: 2}

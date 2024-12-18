@@ -17,14 +17,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
             // It is possible that the target is dead or has no controller. Fire a warning to the log to be safe
             if (target == null)
             {
-                Debug.LogError(
-                    $"Card '{name}' tried to play, but no valid target was found. The target might be dead or missing.");
-                return;
-            }
-
-            if (target == null)
-            {
-                Debug.LogError($"Card '{name}' tried to play on a target that has no controller. This is a bug.");
+                Debug.LogError($"Card '{name}' tried to play on a target that has no controller.");
                 return;
             }
 

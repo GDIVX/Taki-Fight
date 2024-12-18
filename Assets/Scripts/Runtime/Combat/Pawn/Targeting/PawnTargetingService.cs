@@ -14,17 +14,20 @@ namespace Runtime.Combat.Pawn.Targeting
         private PawnTarget _lastTargetedPawn;
 
         public event Action<PawnTarget> OnTargetFound;
+        public event Action OnLookingForTarget;
 
         [Button]
         public async Task<PawnTarget> RequestTargetAsync()
         {
             if (IsLookingForTarget)
             {
-                throw new InvalidOperationException("A target selection is already in progress.");
+                throw new InvalidOperationException("A target selection is already in progress." );
             }
 
             IsLookingForTarget = true;
             _targetCompletionSource = new TaskCompletionSource<PawnTarget>();
+            GameManager.Instance.BannerViewManager.WriteMessage(0, "Select Target" , 1);
+            OnLookingForTarget?.Invoke();
 
             try
             {
@@ -32,6 +35,7 @@ namespace Runtime.Combat.Pawn.Targeting
                 PawnTarget target = await _targetCompletionSource.Task;
                 _lastTargetedPawn = target;
                 TargetedPawn = target;
+                GameManager.Instance.BannerViewManager.Clear();
                 OnTargetFound?.Invoke(target);
                 return target;
             }
@@ -49,7 +53,8 @@ namespace Runtime.Combat.Pawn.Targeting
         {
             if (!IsLookingForTarget || _targetCompletionSource == null || _targetCompletionSource.Task.IsCompleted)
             {
-                UnityEngine.Debug.LogWarning("Attempted to set target while targeting service is not looking for a target or the task is already completed.");
+                UnityEngine.Debug.LogWarning(
+                    "Attempted to set target while targeting service is not looking for a target or the task is already completed.");
                 return;
             }
 

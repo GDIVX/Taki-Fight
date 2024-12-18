@@ -24,19 +24,26 @@ namespace Runtime.Combat.StatusEffects
     {
         public TrackedProperty<int> Stack { get; set; }
 
-        public void Apply(PawnController pawn)
-        {
-            pawn.AttackModifier.Value = Stack.Value;
-        }
+        private int _previousStack;
 
         public void OnAdded(PawnController pawn)
         {
-            Apply(pawn);
+            pawn.AttackModifier.Value += Stack.Value;
+            _previousStack = Stack.Value;
+        }
+
+        public void OnTurnStart(PawnController pawn)
+        {
+            // Remove the old bonus and apply the new one
+            pawn.AttackModifier.Value -= _previousStack;
+            pawn.AttackModifier.Value += Stack.Value;
+            _previousStack = Stack.Value;
         }
 
         public void Remove(PawnController pawn)
         {
-            pawn.AttackModifier.Value = 0;
+            pawn.AttackModifier.Value -= Stack.Value;
         }
     }
+
 }

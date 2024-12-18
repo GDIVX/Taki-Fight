@@ -21,6 +21,9 @@ namespace Runtime.CardGameplay.Card.View
         [SerializeField, TabGroup("Dependencies")]
         private CardTooltipSystem _cardTooltipSystem;
 
+        [SerializeField, TabGroup("Dependencies")]
+        private CardTextParser _cardTextParser;
+
         private Transform _discardToLocation, _drawFromLocation;
         [SerializeField] private float _cardMovementDuration;
         [SerializeField] private float _minScale;
@@ -58,7 +61,7 @@ namespace Runtime.CardGameplay.Card.View
         private Tween _currentTween;
 
         private List<TooltipData> _tooltip;
-        
+
         private void Awake()
         {
             _originalScale = transform.localScale;
@@ -74,13 +77,12 @@ namespace Runtime.CardGameplay.Card.View
         }
 
         [Button]
-        private CardView Draw(CardData data, List<CardGlyph> glyphs, int potency = 0)
+        private CardView Draw(CardData data, List<CardGlyph> glyphs)
         {
             DrawGlyphs(glyphs);
             _tooltip = data.ToolTips;
 
             _title.text = data.Title;
-            _description.text = FormatTextWithPotencyValue(data.Description, potency);
             _image.sprite = data.Image;
 
             _cardData = data;
@@ -96,8 +98,9 @@ namespace Runtime.CardGameplay.Card.View
 
         public void Draw(CardController controller)
         {
-            Draw(controller.Data, controller.Glyphs, controller.Potency);
+            Draw(controller.Data, controller.Glyphs);
             _controller = controller;
+            UpdateDescription();
             _controller.IsPlayable.OnValueChanged += isPlayable =>
             {
                 if (isPlayable)
@@ -119,10 +122,9 @@ namespace Runtime.CardGameplay.Card.View
             };
         }
 
-        private static string FormatTextWithPotencyValue(string description, int potency)
+        public void UpdateDescription()
         {
-            var newDescription = description.Replace("$potency", potency.ToString());
-            return newDescription;
+            _cardTextParser.DrawTextDescription(_controller, _cardData.Description);
         }
 
 
@@ -132,7 +134,6 @@ namespace Runtime.CardGameplay.Card.View
             {
                 AnimateHoverEnter();
                 _cardTooltipSystem.DrawTooltips(_tooltip);
-
             }
         }
 

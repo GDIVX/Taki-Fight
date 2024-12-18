@@ -229,15 +229,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: Long Description of what the card does
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 810e9b2e045b19d41bea9b64dfaf1192, type: 2}
-  m_sharedMaterial: {fileID: -1715530489822160824, guid: 810e9b2e045b19d41bea9b64dfaf1192, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: fa434f7404f9789449b844c8a0bb86f2, type: 2}
+  m_sharedMaterial: {fileID: -4053843045154802402, guid: fa434f7404f9789449b844c8a0bb86f2, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4283706412
-  m_fontColor: {r: 0.17254902, g: 0.17254902, b: 0.32941177, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1129,6 +1129,7 @@ GameObject:
   - component: {fileID: 288914488201551484}
   - component: {fileID: 3631230817857128461}
   - component: {fileID: 303948700310367551}
+  - component: {fileID: 8891487651071034071}
   m_Layer: 5
   m_Name: Description
   m_TagString: Untagged
@@ -1194,6 +1195,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &8891487651071034071
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7722791846587031952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6a6e3df0e514c0ebb0d50e09e9146de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _textField: {fileID: 6774713613490928545}
 --- !u!1 &8140057467381704309
 GameObject:
   m_ObjectHideFlags: 0
@@ -1408,6 +1422,7 @@ MonoBehaviour:
   _image: {fileID: 4762168539618471456}
   _glyphView: {fileID: 6838678908690674028}
   _cardTooltipSystem: {fileID: 8361860098374648973}
+  _cardTextParser: {fileID: 8891487651071034071}
   _cardMovementDuration: 0.2
   _minScale: 0.1
   _cardMovementEase: 4

@@ -15,7 +15,7 @@ namespace Runtime.Combat.Pawn.Targeting
         {
             if (!PawnTargetingService.Instance.IsLookingForTarget)
             {
-                errorMessage = "Attempted to set target while targeting service is still looking for target";
+                errorMessage = "Attempted to set target while no target selection is in progress.";
                 return false;
             }
 

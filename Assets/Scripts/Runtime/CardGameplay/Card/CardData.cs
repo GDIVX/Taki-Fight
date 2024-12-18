@@ -17,45 +17,45 @@ namespace Runtime.CardGameplay.Card
         [SerializeField, PreviewField, BoxGroup("UI")]
         private Sprite _image;
 
-        [SerializeField, PreviewField, BoxGroup("Tooltips")]
-        private List<TooltipData> _tooltips;
+        [SerializeField, BoxGroup("Tooltips")] private List<TooltipData> _tooltips;
 
         [SerializeField, BoxGroup("Stats")] private int _glyphSlots;
-        [SerializeField, BoxGroup("Stats")] private int _potency;
         [SerializeField, BoxGroup("Stats")] private CardType _cardType;
-
-        [SerializeField, BoxGroup("Behaviour")]
-        private CardSelectStrategy _selectStrategy;
-
-        [SerializeField, BoxGroup("Behaviour")]
-        private CardPlayStrategy _playStrategy;
 
         [SerializeField, BoxGroup("Behaviour")]
         private CardAffordabilityStrategy _affordabilityStrategy;
 
         [SerializeField, BoxGroup("Behaviour")]
-        private CardPostPlayStrategy _postPlayStrategy;
+        private CardSelectStrategy _selectStrategy;
 
         [SerializeField, BoxGroup("Behaviour")]
-        private CardOnRankChangedEventHandler _rankChangedEventHandler;
+        private List<PlayStrategyData> _playStrategies;
+
 
         [SerializeField, BoxGroup("Behaviour")]
-        private CardOnSuitChangeEventHandler _suitChangedEventHandler;
+        private List<CardPostPlayStrategy> _postPlayStrategies;
 
-        public int Potency => _potency;
+
         public string Title => _title;
         public string Description => _description;
         public Sprite Image => _image;
         public int GlyphSlots => _glyphSlots;
         public CardSelectStrategy SelectStrategy => _selectStrategy;
-        public CardPlayStrategy PlayStrategy => _playStrategy;
+        public List<PlayStrategyData> PlayStrategies => _playStrategies;
 
         public CardType CardType => _cardType;
 
-        public List<TooltipData> ToolTips;
+        public List<TooltipData> ToolTips => _tooltips;
 
         public CardAffordabilityStrategy AffordabilityStrategy => _affordabilityStrategy;
 
-        public CardPostPlayStrategy PostPlayStrategy => _postPlayStrategy;
+        public List<CardPostPlayStrategy> PostPlayStrategies => _postPlayStrategies;
+    }
+
+    [System.Serializable]
+    public struct PlayStrategyData
+    {
+        public CardPlayStrategy PlayStrategy;
+        public int Potency;
     }
 }

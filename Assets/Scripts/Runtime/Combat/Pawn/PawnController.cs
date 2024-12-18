@@ -55,7 +55,6 @@ namespace Runtime.Combat.Pawn
             if (attackPoints <= 0)
             {
                 //We still want to call damage to invoke UI updates
-                Health.Damage(0);
                 OnBeingAttacked?.Invoke(attackPoints, 0);
                 return;
             }

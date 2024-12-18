@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Runtime.CardGameplay.Card.CardBehaviour;
 using Runtime.CardGameplay.Card.View;
@@ -20,19 +22,16 @@ namespace Runtime.CardGameplay.Card
     public class CardController : MonoBehaviour, IPointerClickHandler
     {
         public List<CardGlyph> Glyphs { get; private set; }
-        public int Potency { get; private set; }
         public CardType CardType { get; private set; }
         [ShowInInspector, ReadOnly] public TrackedProperty<bool> IsPlayable;
 
         [ShowInInspector, ReadOnly] private CardSelectStrategy _selectStrategy;
-        [ShowInInspector, ReadOnly] private CardPlayStrategy _playStrategy;
+        [ShowInInspector, ReadOnly] private List<(CardPlayStrategy, int)> _playStrategies;
         [ShowInInspector, ReadOnly] private CardAffordabilityStrategy _affordabilityStrategy;
-        [ShowInInspector, ReadOnly] private CardPostPlayStrategy _postPlayStrategy;
-        [ShowInInspector, ReadOnly] private CardOnRankChangedEventHandler _rankChangedEventHandler;
-        [ShowInInspector, ReadOnly] private CardOnSuitChangeEventHandler _suitChangeEventHandler;
+        [ShowInInspector, ReadOnly] private List<CardPostPlayStrategy> _postPlayStrategies;
 
 
-        public static event Action<CardController> OnCardPlayed;
+        public static event Action<CardController> OnCardPlayedEvent;
 
         public CardInstance Instance { get; private set; }
         public Transform Transform => gameObject.transform;
@@ -61,13 +60,12 @@ namespace Runtime.CardGameplay.Card
             _cardFactory = dependencies.CardFactory;
 
             Glyphs = glyphs;
-            Potency = data.Potency;
             CardType = data.CardType;
 
             _selectStrategy = data.SelectStrategy;
-            _playStrategy = data.PlayStrategy;
+            _playStrategies = CreatePlayStrategyTupletList(data.PlayStrategies);
             _affordabilityStrategy = data.AffordabilityStrategy;
-            _postPlayStrategy = data.PostPlayStrategy;
+            _postPlayStrategies = data.PostPlayStrategies;
 
 
             Instance = new CardInstance(data, glyphs)
@@ -81,10 +79,35 @@ namespace Runtime.CardGameplay.Card
             {
                 Value = true
             };
-            OnCardPlayed += (c) => { IsPlayable.Value = CanPlayCard(); };
+            OnCardPlayedEvent += OnCardPlayed;
             Data = data;
         }
 
+        private void OnCardPlayed(CardController c)
+        {
+            IsPlayable.Value = _affordabilityStrategy.CanPlayCard(this);
+            View.UpdateDescription();
+        }
+
+        private List<(CardPlayStrategy, int)> CreatePlayStrategyTupletList(List<PlayStrategyData> dataPlayStrategies)
+        {
+            List<(CardPlayStrategy, int)> tuples = new();
+            dataPlayStrategies.ForEach(x => tuples.Add((x.PlayStrategy, x.Potency)));
+            return tuples;
+        }
+
+        public int GetPotency(int index)
+        {
+            return _playStrategies[index].Item2;
+        }
+
+        public void SetPotency(int index, int newValue)
+        {
+            (CardPlayStrategy, int) tuple = _playStrategies[index];
+            _playStrategies.Remove(tuple);
+            tuple.Item2 = newValue;
+            _playStrategies.Insert(index, tuple);
+        }
 
         public void Init(CardInstance cardInstance, CardDependencies dependencies)
         {
@@ -126,17 +149,23 @@ namespace Runtime.CardGameplay.Card
 
         private void Play()
         {
-            if (_playStrategy == null)
+            StartCoroutine(HandlePlay());
+        }
+
+        private IEnumerator HandlePlay()
+        {
+            foreach (var tuple in _playStrategies)
             {
-                Debug.LogError("PlayStrategy is not set.");
-                return;
+                tuple.Item1.Play(Pawn, tuple.Item2);
+                yield return new WaitForSeconds(tuple.Item1.Duration);
             }
 
-            //Play the card before discarding it or updating the current suit and rank.
-            //In order to preserve the game state for any play strategy before doing changes 
-            _playStrategy.Play(Pawn, Potency);
-            _postPlayStrategy.PostPlay(this);
-            OnCardPlayed?.Invoke(this);
+            foreach (var postPlayStrategy in _postPlayStrategies.Where(strategy => strategy != null))
+            {
+                postPlayStrategy.PostPlay(this);
+            }
+
+            OnCardPlayedEvent?.Invoke(this);
         }
 
         public void OnPointerClick(PointerEventData eventData)
@@ -164,17 +193,13 @@ namespace Runtime.CardGameplay.Card
 
         public void OnDraw()
         {
-            IsPlayable.Value = CanPlayCard();
+            IsPlayable.Value = _affordabilityStrategy.CanPlayCard(this);
         }
 
-        private bool CanPlayCard()
-        {
-            return _affordabilityStrategy.CanPlayCard(this);
-        }
 
         private void TryToPlay()
         {
-            if (!CanPlayCard())
+            if (!IsPlayable.Value)
             {
                 return;
             }

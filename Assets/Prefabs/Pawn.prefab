@@ -169,10 +169,10 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 2.1
+  m_fontSize: 3
   m_fontSizeBase: 3
   m_fontWeight: 400
-  m_enableAutoSizing: 1
+  m_enableAutoSizing: 0
   m_fontSizeMin: 0.01
   m_fontSizeMax: 72
   m_fontStyle: 0
@@ -711,7 +711,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _view: {fileID: 1229084231330852880}
   _statusEffectHandler: {fileID: 3006272120079008127}
-  _statusEffectListView: {fileID: 3979853724586936929}
   WaitBeforeDestroyingObjectOnDeath: 1
   Defense:
     value: 0
@@ -774,6 +773,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c12a4edaeb9b468aa082c211472428b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _statusEffectView: {fileID: 3979853724586936929}
+  _pawn: {fileID: 1290439825000753545}
 --- !u!1 &7769541161473441226
 GameObject:
   m_ObjectHideFlags: 0

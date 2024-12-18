@@ -13,17 +13,16 @@ MonoBehaviour:
   m_Name: Smash
   m_EditorClassIdentifier: 
   _title: Smash
-  _description: Attack for $potency damage. <b>Burn</b>
+  _description: <color=red>Attack</color> for {attack:0} damage. <color=orange>Burn</color>
   _image: {fileID: 21300000, guid: 1687138246783984b90b6ee36ed95603, type: 3}
-  _tooltips: []
-  _glyphSlots: 1
-  _potency: 10
-  _cardType: 0
-  _selectStrategy: {fileID: 11400000, guid: 693626e501b6ec2438a4e251d9c1a4e4, type: 2}
-  _playStrategy: {fileID: 11400000, guid: cd7cd7aafe2c3b14ab5954de633d36b0, type: 2}
-  _affordabilityStrategy: {fileID: 11400000, guid: ebd811b0c7aa5cd4bbd4cda479ce3c55, type: 2}
-  _postPlayStrategy: {fileID: 11400000, guid: c4e87e8431743294888e82e6be499753, type: 2}
-  _rankChangedEventHandler: {fileID: 0}
-  _suitChangedEventHandler: {fileID: 0}
-  ToolTips:
+  _tooltips:
   - {fileID: 11400000, guid: 57c03a8ac7d35624fb42d881f3cc0bae, type: 2}
+  _glyphSlots: 1
+  _cardType: 0
+  _affordabilityStrategy: {fileID: 11400000, guid: ebd811b0c7aa5cd4bbd4cda479ce3c55, type: 2}
+  _selectStrategy: {fileID: 11400000, guid: 693626e501b6ec2438a4e251d9c1a4e4, type: 2}
+  _playStrategies:
+  - PlayStrategy: {fileID: 11400000, guid: cd7cd7aafe2c3b14ab5954de633d36b0, type: 2}
+    Potency: 10
+  _postPlayStrategies:
+  - {fileID: 11400000, guid: c4e87e8431743294888e82e6be499753, type: 2}

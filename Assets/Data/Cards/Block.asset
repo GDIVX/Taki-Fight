@@ -13,16 +13,15 @@ MonoBehaviour:
   m_Name: Block
   m_EditorClassIdentifier: 
   _title: Block
-  _description: Gain $potency Defense
+  _description: Gain {defense:0}  <color=blue>Defense</color>
   _image: {fileID: 21300000, guid: 1624d84235ed6c44fa665e45c861842a, type: 3}
   _tooltips: []
   _glyphSlots: 3
-  _potency: 3
   _cardType: 0
-  _selectStrategy: {fileID: 11400000, guid: 6488691d3e5b1734fbf184a753c30823, type: 2}
-  _playStrategy: {fileID: 11400000, guid: 549e43c006aaa9548b773fde947c00f5, type: 2}
   _affordabilityStrategy: {fileID: 11400000, guid: ebd811b0c7aa5cd4bbd4cda479ce3c55, type: 2}
-  _postPlayStrategy: {fileID: 11400000, guid: 34f06bc0b60b90945ae825a222936db1, type: 2}
-  _rankChangedEventHandler: {fileID: 0}
-  _suitChangedEventHandler: {fileID: 0}
-  ToolTips: []
+  _selectStrategy: {fileID: 11400000, guid: 6488691d3e5b1734fbf184a753c30823, type: 2}
+  _playStrategies:
+  - PlayStrategy: {fileID: 11400000, guid: 549e43c006aaa9548b773fde947c00f5, type: 2}
+    Potency: 3
+  _postPlayStrategies:
+  - {fileID: 11400000, guid: 34f06bc0b60b90945ae825a222936db1, type: 2}
