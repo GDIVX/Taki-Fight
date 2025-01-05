@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: df6a950fa6814a198efbc063d5ff403f, type: 3}
-  m_Name: CoinSymbol
+  m_Name: Spade Symbol
   m_EditorClassIdentifier: 
-  _sprite: {fileID: 21300000, guid: cb1769a82f0a5304389b24c63e532549, type: 3}
+  _sprite: {fileID: 21300000, guid: 374da8ce8278d52409a184a4e14482e9, type: 3}
   _playStrategyData:
-    PlayStrategy: {fileID: 11400000, guid: 309288acea7655644aaf16781d151084, type: 2}
+    PlayStrategy: {fileID: 11400000, guid: 8189f672ac20b304c83523f3db5da91d, type: 2}
     Potency: 1

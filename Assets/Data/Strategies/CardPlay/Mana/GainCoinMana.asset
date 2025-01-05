@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c180ba2380ea4a9e8a48d73f4eb355c5, type: 3}
-  m_Name: ClubMana
+  m_Script: {fileID: 11500000, guid: cff6aa09d1764eabb4f9460efeb239c8, type: 3}
+  m_Name: GainCoinMana
   m_EditorClassIdentifier: 
-  _icon: {fileID: 21300000, guid: 790761f1ee86f064e8df2958d0a03892, type: 3}
-  _name: club
+  _duration: 1
+  _manaDefinition: {fileID: 11400000, guid: eafe6e50105b0cb46bd1b12c02f9f6be, type: 2}

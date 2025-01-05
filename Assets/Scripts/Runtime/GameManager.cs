@@ -2,6 +2,7 @@
 using Runtime.CardGameplay.Card;
 using Runtime.CardGameplay.Deck;
 using Runtime.CardGameplay.GlyphsBoard;
+using Runtime.CardGameplay.ManaSystem;
 using Runtime.CardGameplay.SlotMachineLib;
 using Runtime.Combat;
 using Runtime.Combat.Pawn;
@@ -18,6 +19,9 @@ namespace Runtime
     {
         [SerializeField, Required, TabGroup("Dependencies")]
         private CardCollection _cardCollection;
+
+        [SerializeField, Required, TabGroup("Dependencies")]
+        private ManaInventory _manaInventory;
 
         [SerializeField, Required, TabGroup("Dependencies")]
         private HandController _handController;
@@ -47,6 +51,7 @@ namespace Runtime
 
 
         public BannerViewManager BannerViewManager => _bannerViewManager;
+        public ManaInventory ManaInventory => _manaInventory;
         public EventBus EventBus => _eventBus;
 
         public PawnController Hero

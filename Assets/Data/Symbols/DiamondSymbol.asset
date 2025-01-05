@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df6a950fa6814a198efbc063d5ff403f, type: 3}
   m_Name: DiamondSymbol
   m_EditorClassIdentifier: 
-  _sprite: {fileID: 21300000, guid: f5731955f9fa9324faaa70b53014ca26, type: 3}
+  _sprite: {fileID: 21300000, guid: c776b18562bfcbf4494de5e0cc509ce8, type: 3}
   _playStrategyData:
-    PlayStrategy: {fileID: 11400000, guid: 591598e589b73164e8540f8555024026, type: 2}
-    Potency: 3
+    PlayStrategy: {fileID: 11400000, guid: 8c68b14c01756dc4ba0742de0236daec, type: 2}
+    Potency: 1
