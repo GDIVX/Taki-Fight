@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Runtime.CardGameplay.Card;
+using Runtime.CardGameplay.SlotMachineLib;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -20,12 +21,14 @@ namespace Runtime.CardGameplay.Deck
         private HandController _handController;
 
         [ShowInInspector, ReadOnly] public Deck Deck { get; private set; }
+        public ReelDefinition ReelDefinition { get; private set; }
 
         private void Start()
         {
             _cards = _starterDeck.Cards.Select(data => new CardInstance(data)).ToList();
             Deck = new Deck(_cards);
             _deckView.Setup(Deck);
+            ReelDefinition = _starterDeck.ReelDefinition;
         }
 
         public bool TryAddCard(CardInstance card)

@@ -2,6 +2,7 @@
 using Runtime.CardGameplay.Card;
 using Runtime.CardGameplay.Deck;
 using Runtime.CardGameplay.GlyphsBoard;
+using Runtime.CardGameplay.SlotMachineLib;
 using Runtime.Combat;
 using Runtime.Combat.Pawn;
 using Runtime.Combat.Pawn.Enemy;
@@ -20,6 +21,11 @@ namespace Runtime
 
         [SerializeField, Required, TabGroup("Dependencies")]
         private HandController _handController;
+
+        [SerializeField, Required, TabGroup("Dependencies")]
+        private SlotMachine _slotMachine;
+
+        [SerializeField, TabGroup("Settings")] private int _initialReelsCount;
 
         [SerializeField, Required, TabGroup("Dependencies")]
         private GlyphBoardController _glyphBoardController;
@@ -105,6 +111,8 @@ namespace Runtime
             _handController.gameObject.SetActive(true);
             _handController.DiscardHand();
             _cardCollection.CreateDeck();
+            var reelDef = _cardCollection.ReelDefinition;
+            _slotMachine.Initialize(_initialReelsCount, reelDef);
             StartTurn();
         }
 
@@ -121,13 +129,19 @@ namespace Runtime
 
         private IEnumerator ProcessStartTurn()
         {
-            BannerViewManager.WriteMessage(1, "Player Turn" , Color.white);
+            BannerViewManager.WriteMessage(1, "Player Turn", Color.white);
+            SpinSlotMachine();
             yield return new WaitForSeconds(1);
             BannerViewManager.Clear();
             _heroPawn.OnTurnStart();
             SetupEnemies();
 
             _handController.DrawHand();
+        }
+
+        private void SpinSlotMachine()
+        {
+            _slotMachine.Spin();
         }
 
         private void SetupEnemies()
@@ -158,7 +172,7 @@ namespace Runtime
 
         private IEnumerator PlayEnemiesTurn()
         {
-            BannerViewManager.WriteMessage(1, "Enemies Turn" , Color.yellow);
+            BannerViewManager.WriteMessage(1, "Enemies Turn", Color.yellow);
             yield return new WaitForSeconds(1);
             BannerViewManager.Clear();
             foreach (var enemy in _enemiesLane.Pawns)
