@@ -17,7 +17,7 @@ namespace Runtime.CardGameplay.Card.View
         [SerializeField, TabGroup("Draw")] private Image _image;
 
         [SerializeField, TabGroup("Dependencies")]
-        private CardCostView _costView;
+        private SymbolListView _costView;
 
         [SerializeField, TabGroup("Dependencies")]
         private CardTooltipSystem _cardTooltipSystem;

@@ -5,11 +5,12 @@ using UnityEngine.UI;
 
 namespace Runtime.CardGameplay.Card.View
 {
-    public class CardCostView : MonoBehaviour
+    public class SymbolListView : MonoBehaviour
     {
         [SerializeField] private Image _prefab;
         private readonly Queue<Image> _imagePool = new Queue<Image>();
         private readonly List<Image> _activeImages = new List<Image>();
+        public Rect ImageSize => _prefab.rectTransform.rect;
 
         public void Draw(List<Mana> cost)
         {

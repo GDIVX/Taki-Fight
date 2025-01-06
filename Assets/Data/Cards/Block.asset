@@ -16,7 +16,8 @@ MonoBehaviour:
   _description: Gain {defense:0}  <color=blue>Defense</color>
   _image: {fileID: 21300000, guid: 1624d84235ed6c44fa665e45c861842a, type: 3}
   _tooltips: []
-  _glyphSlots: 3
+  _cost:
+  - {fileID: 11400000, guid: 95a069dfc3af1704d815a62e317b6515, type: 2}
   _cardType: 1
   _affordabilityStrategy: {fileID: 11400000, guid: ebd811b0c7aa5cd4bbd4cda479ce3c55, type: 2}
   _selectStrategy: {fileID: 11400000, guid: 6488691d3e5b1734fbf184a753c30823, type: 2}

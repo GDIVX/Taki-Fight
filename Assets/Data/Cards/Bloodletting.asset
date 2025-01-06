@@ -18,7 +18,9 @@ MonoBehaviour:
   _image: {fileID: 21300000, guid: 711dc09fa730343499d6f83e427cc093, type: 3}
   _tooltips:
   - {fileID: 11400000, guid: f91fbbc877d69c54dab66e024167cc4c, type: 2}
-  _glyphSlots: 2
+  _cost:
+  - {fileID: 11400000, guid: 02b3331b553ad3046b46561f0804933d, type: 2}
+  - {fileID: 11400000, guid: eafe6e50105b0cb46bd1b12c02f9f6be, type: 2}
   _cardType: 2
   _affordabilityStrategy: {fileID: 11400000, guid: ebd811b0c7aa5cd4bbd4cda479ce3c55, type: 2}
   _selectStrategy: {fileID: 11400000, guid: 6488691d3e5b1734fbf184a753c30823, type: 2}

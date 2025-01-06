@@ -153,9 +153,16 @@ namespace Runtime.CardGameplay.Card
 
         private IEnumerator HandlePlay()
         {
+            if (!ManaInventory.TryToExtractMana(Cost))
+            {
+                Debug.LogWarning("Tried to play a card without being able to afford it");
+                yield break;
+            }
+
             foreach (var tuple in _playStrategies)
             {
                 tuple.Item1.Play(Pawn, tuple.Item2);
+                //pay for the card
                 yield return new WaitForSeconds(tuple.Item1.Duration);
             }
 

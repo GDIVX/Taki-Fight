@@ -83,5 +83,41 @@ namespace Utilities
         {
             return _list.ToList();
         }
+
+        /// <summary>
+        /// Retrieves the item at the specified index without removing it.
+        /// </summary>
+        /// <param name="index">The zero-based index of the item to retrieve.</param>
+        /// <returns>The item at the specified index.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when the index is out of range.</exception>
+        public T ElementAt(int index)
+        {
+            if (index < 0 || index >= _list.Count)
+                throw new ArgumentOutOfRangeException(nameof(index), "Index is out of range.");
+
+            return _list.ElementAt(index);
+        }
+
+        /// <summary>
+        /// Removes the item at the specified index.
+        /// </summary>
+        /// <param name="index">The zero-based index of the item to remove.</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when the index is out of range.</exception>
+        public void RemoveAt(int index)
+        {
+            if (index < 0 || index >= _list.Count)
+                throw new ArgumentOutOfRangeException(nameof(index), "Index is out of range.");
+
+            var node = _list.First;
+            for (int i = 0; i < index; i++)
+            {
+                node = node?.Next;
+            }
+
+            if (node != null)
+            {
+                _list.Remove(node);
+            }
+        }
     }
 }
