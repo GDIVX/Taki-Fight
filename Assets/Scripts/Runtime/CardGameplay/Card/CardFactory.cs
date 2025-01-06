@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using Runtime.CardGameplay.Card.View;
 using Runtime.CardGameplay.Deck;
-using Runtime.CardGameplay.GlyphsBoard;
+using Runtime.CardGameplay.ManaSystem;
 using Runtime.Combat.Pawn;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using Utilities;
 
 namespace Runtime.CardGameplay.Card
 {
@@ -18,7 +17,7 @@ namespace Runtime.CardGameplay.Card
         private HandController _handController;
 
         [SerializeField, TabGroup("Dependencies")]
-        private GlyphBoardController _glyphBoardController;
+        private ManaInventory _manaInventory;
 
         [SerializeField, TabGroup("Dependencies")]
         private Transform _discardToLocation, _drawFromLocation;
@@ -35,14 +34,14 @@ namespace Runtime.CardGameplay.Card
 
         private void FetchDependencies(PawnController heroPawn)
         {
-            _cardDependencies = new CardDependencies(_handController, _glyphBoardController, heroPawn, this);
+            _cardDependencies = new CardDependencies(_handController, _manaInventory, heroPawn, this);
         }
 
         [Button]
-        public CardController Create(CardData data, List<CardGlyph> glyphs)
+        public CardController Create(CardData data)
         {
             CardController controller = GetController();
-            controller.Init(data, glyphs, _cardDependencies);
+            controller.Init(data, _cardDependencies);
             controller.gameObject.GetComponent<CardView>()
                 .Init(_drawFromLocation, _discardToLocation)
                 .Draw(controller);
@@ -52,7 +51,7 @@ namespace Runtime.CardGameplay.Card
 
         public CardController Create(CardInstance instance)
         {
-            return Create(instance.Data, instance.Glyphs);
+            return Create(instance.Data);
         }
 
         /// <summary>

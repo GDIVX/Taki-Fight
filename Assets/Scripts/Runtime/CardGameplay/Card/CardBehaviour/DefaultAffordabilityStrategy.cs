@@ -7,7 +7,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
     {
         public override bool CanPlayCard(CardController cardController)
         {
-            return cardController.GlyphBoardController.AreGlyphsMatching(cardController.Glyphs);
+            return cardController.ManaInventory.Contains(cardController.Cost);
         }
     }
 }

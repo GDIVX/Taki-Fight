@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using DG.Tweening;
+using Runtime.CardGameplay.ManaSystem;
 using Runtime.CardGameplay.Tooltip;
 using Sirenix.OdinInspector;
 using TMPro;
@@ -16,7 +17,7 @@ namespace Runtime.CardGameplay.Card.View
         [SerializeField, TabGroup("Draw")] private Image _image;
 
         [SerializeField, TabGroup("Dependencies")]
-        private CardGlyphView _glyphView;
+        private CardCostView _costView;
 
         [SerializeField, TabGroup("Dependencies")]
         private CardTooltipSystem _cardTooltipSystem;
@@ -46,7 +47,7 @@ namespace Runtime.CardGameplay.Card.View
         [SerializeField, TabGroup("Outline")] private UIOutline _uiOutline;
         [SerializeField, TabGroup("Outline")] private float _outlineTransitionDuration;
 
-        [SerializeField, TabGroup("Outline")] private float _outlineAlphaMin = 0;
+        [SerializeField, TabGroup("Outline")] private float _outlineAlphaMin;
         [SerializeField, TabGroup("Outline")] private float _outlineAlphaMax = 1;
 
         [ShowInInspector, ReadOnly] private bool _isHoverEnabled;
@@ -77,9 +78,9 @@ namespace Runtime.CardGameplay.Card.View
         }
 
         [Button]
-        private CardView Draw(CardData data, List<CardGlyph> glyphs)
+        private CardView Draw(CardData data)
         {
-            DrawGlyphs(glyphs);
+            DrawSymbols(data.GetCost());
             _tooltip = data.ToolTips;
 
             _title.text = data.Title;
@@ -90,15 +91,15 @@ namespace Runtime.CardGameplay.Card.View
             return this;
         }
 
-        private void DrawGlyphs(List<CardGlyph> glyphs)
+        private void DrawSymbols(List<Mana> cost)
         {
-            _glyphView.Draw(glyphs);
+            _costView.Draw(cost);
         }
 
 
         public void Draw(CardController controller)
         {
-            Draw(controller.Data, controller.Glyphs);
+            Draw(controller.Data);
             _controller = controller;
             UpdateDescription();
             _controller.IsPlayable.OnValueChanged += isPlayable =>

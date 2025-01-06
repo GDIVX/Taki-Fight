@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Runtime.CardGameplay.Card.CardBehaviour;
+using Runtime.CardGameplay.ManaSystem;
 using Runtime.CardGameplay.Tooltip;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -18,8 +21,8 @@ namespace Runtime.CardGameplay.Card
         private Sprite _image;
 
         [SerializeField, BoxGroup("Tooltips")] private List<TooltipData> _tooltips;
+        [SerializeField, BoxGroup("Cost")] private List<ManaDefinition> _cost;
 
-        [SerializeField, BoxGroup("Stats")] private int _glyphSlots;
         [SerializeField, BoxGroup("Stats")] private CardType _cardType;
 
         [SerializeField, BoxGroup("Behaviour")]
@@ -39,9 +42,21 @@ namespace Runtime.CardGameplay.Card
         public string Title => _title;
         public string Description => _description;
         public Sprite Image => _image;
-        public int GlyphSlots => _glyphSlots;
         public CardSelectStrategy SelectStrategy => _selectStrategy;
         public List<PlayStrategyData> PlayStrategies => _playStrategies;
+
+        public List<Mana> GetCost()
+        {
+            if (_cost == null)
+            {
+                //no cost is a valid cost
+                return new List<Mana>();
+            }
+
+            List<Mana> cost = _cost.Select(definition => definition.InstantiateMana()).ToList();
+            return cost;
+        }
+
 
         public CardType CardType => _cardType;
 

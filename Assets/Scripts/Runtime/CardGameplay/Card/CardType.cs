@@ -4,6 +4,7 @@
     {
         Attack,
         Defense,
-        Skill
+        Skill,
+        Power
     }
 }

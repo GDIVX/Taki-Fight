@@ -23,7 +23,7 @@ namespace Runtime.CardGameplay.Deck
         [ShowInInspector, ReadOnly] public Deck Deck { get; private set; }
         public ReelDefinition ReelDefinition { get; private set; }
 
-        private void Start()
+        public void Init()
         {
             _cards = _starterDeck.Cards.Select(data => new CardInstance(data)).ToList();
             Deck = new Deck(_cards);

@@ -63,7 +63,7 @@ namespace Runtime.CardGameplay.ManaSystem
             CallOnInventoryModified();
         }
 
-        private bool Contains(List<Mana> query)
+        public bool Contains(List<Mana> query)
         {
             // Create a temporary list to track the available mana
             var tempInventory = _inventory.ToList();

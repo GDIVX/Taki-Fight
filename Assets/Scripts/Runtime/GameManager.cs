@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using Runtime.CardGameplay.Card;
 using Runtime.CardGameplay.Deck;
-using Runtime.CardGameplay.GlyphsBoard;
 using Runtime.CardGameplay.ManaSystem;
 using Runtime.CardGameplay.SlotMachineLib;
 using Runtime.Combat;
@@ -30,9 +29,6 @@ namespace Runtime
         private SlotMachine _slotMachine;
 
         [SerializeField, TabGroup("Settings")] private int _initialReelsCount;
-
-        [SerializeField, Required, TabGroup("Dependencies")]
-        private GlyphBoardController _glyphBoardController;
 
         [SerializeField, Required, TabGroup("Dependencies")]
         private CardFactory _cardFactory;
@@ -69,6 +65,7 @@ namespace Runtime
         [Button]
         public void StartSession(PawnData data)
         {
+            _cardCollection.Init();
             _heroPawn.gameObject.SetActive(true);
             _heroPawn.Init(data);
             _heroPawn.Health.OnDead += (sender, args) =>
@@ -92,7 +89,6 @@ namespace Runtime
         public void StartCombat(CombatConfig combatConfig)
         {
             _enemiesLane.SpawnPawnsForCombat(combatConfig);
-            _glyphBoardController.OnBattleStart();
             SetupCardGameplay();
         }
 

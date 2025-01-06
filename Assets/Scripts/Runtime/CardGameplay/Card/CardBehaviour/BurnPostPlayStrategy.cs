@@ -7,7 +7,6 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
     {
         public override void PostPlay(CardController cardController)
         {
-            cardController.GlyphBoardController.UpdateGlyphs(cardController.Glyphs);
             cardController.HandController.BurnCard(cardController);
         }
     }

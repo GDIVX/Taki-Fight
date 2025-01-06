@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 using Runtime.CardGameplay.Card.CardBehaviour;
 using Runtime.CardGameplay.Card.View;
 using Runtime.CardGameplay.Deck;
-using Runtime.CardGameplay.GlyphsBoard;
+using Runtime.CardGameplay.ManaSystem;
 using Runtime.Combat.Pawn;
-using Runtime.Events;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -21,7 +20,6 @@ namespace Runtime.CardGameplay.Card
     /// </summary>
     public class CardController : MonoBehaviour, IPointerClickHandler
     {
-        public List<CardGlyph> Glyphs { get; private set; }
         public CardType CardType { get; private set; }
         [ShowInInspector, ReadOnly] public TrackedProperty<bool> IsPlayable;
 
@@ -41,12 +39,14 @@ namespace Runtime.CardGameplay.Card
         public CardData Data { get; private set; }
 
         public HandController HandController { get; private set; }
-        public GlyphBoardController GlyphBoardController { get; private set; }
+        public ManaInventory ManaInventory { get; private set; }
         public PawnController Pawn { get; private set; }
+        public List<Mana> Cost => Instance.Cost;
+
         private CardFactory _cardFactory;
 
         [Button]
-        public void Init(CardData data, List<CardGlyph> glyphs, CardDependencies dependencies)
+        public void Init(CardData data, CardDependencies dependencies)
         {
             if (data == null)
             {
@@ -55,11 +55,10 @@ namespace Runtime.CardGameplay.Card
             }
 
             HandController = dependencies.HandController;
-            GlyphBoardController = dependencies.GlyphBoardController;
+            ManaInventory = dependencies.ManaInventory;
             Pawn = dependencies.Pawn;
             _cardFactory = dependencies.CardFactory;
 
-            Glyphs = glyphs;
             CardType = data.CardType;
 
             _selectStrategy = data.SelectStrategy;
@@ -68,7 +67,7 @@ namespace Runtime.CardGameplay.Card
             _postPlayStrategies = data.PostPlayStrategies;
 
 
-            Instance = new CardInstance(data, glyphs)
+            Instance = new CardInstance(data)
             {
                 Controller = this
             };
@@ -117,7 +116,7 @@ namespace Runtime.CardGameplay.Card
                 return;
             }
 
-            Init(cardInstance.Data, cardInstance.Glyphs, dependencies);
+            Init(cardInstance.Data, dependencies);
         }
 
         private async void Select(CardSelectStrategy selectStrategy)
