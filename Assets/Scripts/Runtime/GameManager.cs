@@ -56,6 +56,8 @@ namespace Runtime
             private set => _heroPawn = value;
         }
 
+        public SlotMachine SlotMachine => _slotMachine;
+
         private void Awake()
         {
             _eventBus = new EventBus();
@@ -173,6 +175,8 @@ namespace Runtime
 
         private IEnumerator PlayEnemiesTurn()
         {
+            if (Hero.Health.IsDead()) yield break;
+
             BannerViewManager.WriteMessage(1, "Enemies Turn", Color.yellow);
             yield return new WaitForSeconds(1);
             BannerViewManager.Clear();

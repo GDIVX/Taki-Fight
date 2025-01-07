@@ -78,11 +78,12 @@ namespace Runtime.CardGameplay.Card
             {
                 Value = true
             };
-            OnCardPlayedEvent += OnCardPlayed;
+            OnCardPlayedEvent += _ => UpdateAffordability();
+            GameManager.Instance.SlotMachine.OnComplete += UpdateAffordability;
             Data = data;
         }
 
-        private void OnCardPlayed(CardController c)
+        private void UpdateAffordability()
         {
             IsPlayable.Value = _affordabilityStrategy.CanPlayCard(this);
             View.UpdateDescription();
@@ -182,7 +183,21 @@ namespace Runtime.CardGameplay.Card
                 return;
             }
 
-            Select();
+            switch (eventData.button)
+            {
+                case PointerEventData.InputButton.Left:
+                    Select();
+                    break;
+                case PointerEventData.InputButton.Right:
+                    Exchange();
+                    break;
+            }
+        }
+
+        private void Exchange()
+        {
+            HandController.DiscardCard(this);
+            GameManager.Instance.SlotMachine.Spin();
         }
 
         public void OnDiscard()

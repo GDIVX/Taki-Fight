@@ -91,6 +91,12 @@ namespace Runtime.CardGameplay.Card.View
             return this;
         }
 
+        [Button]
+        public void SetOutlineColor(Color color)
+        {
+            _uiOutline.color = color;
+        }
+
         private void DrawSymbols(List<Mana> cost)
         {
             _costView.Draw(cost);
