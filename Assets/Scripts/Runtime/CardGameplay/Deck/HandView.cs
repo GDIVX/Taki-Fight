@@ -22,8 +22,8 @@ namespace Runtime.CardGameplay.Deck
         private void Awake()
         {
             // Subscribe to events for card addition and removal if needed
-            _handController.OnCardAdded += OnCardAdded;
-            _handController.OnCardRemoved += OnCardRemoved;
+            _handController.OnCardAdded += AddCard;
+            _handController.OnCardRemoved += RemoveCard;
 
             PawnTargetingService.Instance.OnLookingForTarget +=
                 Hide;

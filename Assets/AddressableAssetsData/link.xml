@@ -1,0 +1,29 @@
+<linker>
+  <assembly fullname="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="Runtime.CardGameplay.Card.CardBehaviour.AttackTargetCardPlay" preserve="all" />
+    <type fullname="Runtime.CardGameplay.Card.CardBehaviour.DefaultAffordabilityStrategy" preserve="all" />
+    <type fullname="Runtime.CardGameplay.Card.CardBehaviour.DefenseCardPlay" preserve="all" />
+    <type fullname="Runtime.CardGameplay.Card.CardBehaviour.DiscardCardPostPlayStrategy" preserve="all" />
+    <type fullname="Runtime.CardGameplay.Card.CardBehaviour.GetTargetOnClickStrategy" preserve="all" />
+    <type fullname="Runtime.CardGameplay.Card.CardBehaviour.SimpleCardSelect" preserve="all" />
+    <type fullname="Runtime.CardGameplay.Card.CardBehaviour.TargetedCardSelect" preserve="all" />
+    <type fullname="Runtime.CardGameplay.Card.CardData" preserve="all" />
+    <type fullname="Runtime.CardGameplay.ManaSystem.ManaDefinition" preserve="all" />
+    <type fullname="Runtime.CardGameplay.Card.PlayStrategyData" preserve="nothing" serialized="true" />
+  </assembly>
+  <assembly fullname="Unity.Addressables, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" preserve="all">
+    <type fullname="UnityEngine.AddressableAssets.Addressables" preserve="all" />
+  </assembly>
+  <assembly fullname="Unity.ResourceManager, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" preserve="all">
+    <type fullname="UnityEngine.ResourceManagement.ResourceProviders.AssetBundleProvider" preserve="all" />
+    <type fullname="UnityEngine.ResourceManagement.ResourceProviders.BundledAssetProvider" preserve="all" />
+    <type fullname="UnityEngine.ResourceManagement.ResourceProviders.InstanceProvider" preserve="all" />
+    <type fullname="UnityEngine.ResourceManagement.ResourceProviders.LegacyResourcesProvider" preserve="all" />
+    <type fullname="UnityEngine.ResourceManagement.ResourceProviders.SceneProvider" preserve="all" />
+  </assembly>
+  <assembly fullname="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="UnityEngine.Object" preserve="all" />
+    <type fullname="UnityEngine.Sprite" preserve="all" />
+    <type fullname="UnityEngine.Texture2D" preserve="all" />
+  </assembly>
+</linker>

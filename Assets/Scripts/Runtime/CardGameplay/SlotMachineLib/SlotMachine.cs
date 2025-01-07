@@ -19,15 +19,22 @@ namespace Runtime.CardGameplay.SlotMachineLib
         public event Action OnComplete;
 
         [Button]
-        public void Initialize(int reelCounts, ReelDefinition reelDefinition)
+        public void Initialize(int reelCounts)
         {
-            var slots = reelDefinition.CreateSlots();
             _reels = new List<ReelController>();
             for (int i = 0; i < reelCounts; i++)
             {
                 var reelInstance = Instantiate(_reelPrefab, _reelsParentTransform);
-                reelInstance.Initialize(slots);
                 _reels.Add(reelInstance);
+            }
+        }
+
+        public void SetupSlots(ReelDefinition reelDefinition)
+        {
+            foreach (ReelController reel in _reels)
+            {
+                var slots = reelDefinition.CreateSlots();
+                reel.SetupSlots(slots);
             }
         }
 

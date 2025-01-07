@@ -61,6 +61,7 @@ namespace Runtime
         private void Awake()
         {
             _eventBus = new EventBus();
+            _slotMachine.Initialize(_initialReelsCount);
         }
 
 
@@ -115,7 +116,7 @@ namespace Runtime
             _handController.DiscardHand();
             _cardCollection.CreateDeck();
             var reelDef = _cardCollection.ReelDefinition;
-            _slotMachine.Initialize(_initialReelsCount, reelDef);
+            _slotMachine.SetupSlots(reelDef);
             StartTurn();
         }
 

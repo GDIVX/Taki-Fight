@@ -17,7 +17,7 @@ namespace Runtime.CardGameplay.SlotMachineLib
 
         public event Action<ReelController> OnSpin;
 
-        public void Initialize(List<SMSymbol> slots)
+        public void SetupSlots(List<SMSymbol> slots)
         {
             _slots = new List<SMSymbol>(slots);
         }

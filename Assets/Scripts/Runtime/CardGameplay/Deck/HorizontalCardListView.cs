@@ -1,76 +1,151 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using DG.Tweening;
 using Runtime.CardGameplay.Card;
-using Runtime.CardGameplay.Card.View;
-using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Runtime.CardGameplay.Deck
 {
+    [RequireComponent(typeof(RectTransform))]
     public class HorizontalCardListView : MonoBehaviour
     {
-        [SerializeField] private float _arcAngle = 30f;
-        [SerializeField] private float _animationDuration = 0.5f;
-        [SerializeField] private Ease _easeType = Ease.InOutSine;
-
-        [SerializeField] private float _minArcWidthFactor = 0.2f;
-        [SerializeField] private float _maxArcWidthFactor = 1f;
-
-        [ShowInInspector, ReadOnly] protected readonly List<CardController> Cards = new();
+        [SerializeField] private float arcAngle = 30f;
+        [SerializeField] private float animationDuration = 0.5f;
+        [SerializeField] private Ease easeType = Ease.InOutSine;
+        [SerializeField] private float minArcWidthFactor = 0.2f;
+        [SerializeField] private float maxArcWidthFactor = 1f;
 
         private RectTransform _rectTransform;
+        private readonly List<CardController> _cards = new();
 
-        protected virtual void OnCardAdded(CardController cardController)
+        // Optional events for pointer interaction (drag/hover).
+        public UnityEvent<CardController> PointerEnterEvent;
+        public UnityEvent<CardController> PointerExitEvent;
+        public UnityEvent<CardController> BeginDragEvent;
+        public UnityEvent<CardController> EndDragEvent;
+
+        private CardController _hoveredCard;
+        private CardController _selectedCard;
+        private bool _isSwapping;
+
+        private void Start()
         {
-            cardController.Transform.SetParent(transform);
-            Cards.Add(cardController);
+            _rectTransform = GetComponent<RectTransform>();
+        }
+
+        public void AddCard(CardController card)
+        {
+            card.Transform.SetParent(transform);
+            _cards.Add(card);
+            HookCardEvents(card);
             ArrangeCardsInArch();
         }
 
-        protected virtual void OnCardRemoved(CardController cardController)
+        public void RemoveCard(CardController card)
         {
-            Cards.Remove(cardController);
+            _cards.Remove(card);
             ArrangeCardsInArch();
         }
 
-        [Button]
-        protected void ArrangeCardsInArch()
+        private void HookCardEvents(CardController card)
         {
-            int cardCount = Cards.Count;
-            if (cardCount == 0 || _arcAngle == 0) return;
+            // Suppose CardController calls these UnityEvents internally:
+            // card.PointerEnterEvent.AddListener(OnCardPointerEnter);
+            // card.PointerExitEvent.AddListener(OnCardPointerExit);
+            // card.BeginDragEvent.AddListener(OnBeginDrag);
+            // card.EndDragEvent.AddListener(OnEndDrag);
+        }
 
-            _rectTransform ??= GetComponent<RectTransform>();
-            float baseWidth = _rectTransform.rect.width;
+        private void OnCardPointerEnter(CardController card)
+        {
+            _hoveredCard = card;
+            PointerEnterEvent?.Invoke(card);
+        }
 
-            // Dynamically adjust the arc width factor based on the number of cards
-            float scaledWidth = Mathf.Lerp(baseWidth * _minArcWidthFactor, baseWidth * _maxArcWidthFactor,
-                Mathf.InverseLerp(1, 10, cardCount));
+        private void OnCardPointerExit(CardController card)
+        {
+            if (_hoveredCard == card) _hoveredCard = null;
+            PointerExitEvent?.Invoke(card);
+        }
 
-            float radius = scaledWidth / (2 * Mathf.Tan(Mathf.Deg2Rad * (_arcAngle / 2)));
-            if (float.IsNaN(radius) || float.IsInfinity(radius)) return;
+        private void OnBeginDrag(CardController card)
+        {
+            _selectedCard = card;
+            BeginDragEvent?.Invoke(card);
+        }
 
-            for (int i = 0; i < cardCount; i++)
+        private void OnEndDrag(CardController card)
+        {
+            if (_selectedCard == card) _selectedCard = null;
+            EndDragEvent?.Invoke(card);
+        }
+
+        private void Update()
+        {
+            if (_selectedCard == null || _isSwapping) return;
+            // Basic example of swapping by horizontal position:
+            for (int i = 0; i < _cards.Count; i++)
             {
-                float angle = Mathf.Lerp(-_arcAngle / 2, _arcAngle / 2, i / Mathf.Max(1, (float)(cardCount - 1)));
-                float xPos = Mathf.Sin(Mathf.Deg2Rad * angle) * radius;
-                float yPos = Mathf.Cos(Mathf.Deg2Rad * angle) * radius - radius;
-
-                if (float.IsNaN(xPos) || float.IsNaN(yPos)) continue;
-
-                var card = Cards[i];
-                card.Transform.SetSiblingIndex(i);
-                card.Transform.DOLocalMove(new Vector3(xPos, yPos, 0), _animationDuration).SetEase(_easeType);
-                card.Transform.DOLocalRotate(new Vector3(0, 0, -angle), _animationDuration).SetEase(_easeType)
-                    .onComplete += () => StartCoroutine(WaitAndSetViewNewValues(card.View));
-                //ensure correct ordering 
+                var other = _cards[i];
+                if (_selectedCard == other) continue;
+                if (_selectedCard.Transform.position.x > other.Transform.position.x &&
+                    GetIndex(_selectedCard) < GetIndex(other))
+                {
+                    Swap(_selectedCard, other);
+                    break;
+                }
+                else if (_selectedCard.Transform.position.x < other.Transform.position.x &&
+                         GetIndex(_selectedCard) > GetIndex(other))
+                {
+                    Swap(_selectedCard, other);
+                    break;
+                }
             }
         }
 
-        private IEnumerator WaitAndSetViewNewValues(CardView view)
+        private void Swap(CardController first, CardController second)
         {
-            yield return new WaitForSeconds(_animationDuration);
-            view.SetOriginalValues();
+            _isSwapping = true;
+            int firstIndex = GetIndex(first);
+            int secondIndex = GetIndex(second);
+            first.Transform.SetSiblingIndex(secondIndex);
+            second.Transform.SetSiblingIndex(firstIndex);
+            _isSwapping = false;
+        }
+
+        private int GetIndex(CardController card) => card.Transform.GetSiblingIndex();
+
+        public void ArrangeCardsInArch()
+        {
+            int count = _cards.Count;
+            if (count == 0 || arcAngle == 0) return;
+            float baseWidth = _rectTransform.rect.width;
+
+            float scaledWidth = Mathf.Lerp(
+                baseWidth * minArcWidthFactor,
+                baseWidth * maxArcWidthFactor,
+                Mathf.InverseLerp(1, 10, count)
+            );
+
+            float radius = scaledWidth / (2 * Mathf.Tan(Mathf.Deg2Rad * (arcAngle / 2)));
+            if (float.IsNaN(radius) || float.IsInfinity(radius)) return;
+
+            for (int i = 0; i < count; i++)
+            {
+                float angle = Mathf.Lerp(-arcAngle / 2, arcAngle / 2, i / Mathf.Max(1f, (count - 1f)));
+                float xPos = Mathf.Sin(Mathf.Deg2Rad * angle) * radius;
+                float yPos = Mathf.Cos(Mathf.Deg2Rad * angle) * radius - radius;
+
+                var card = _cards[i];
+                card.Transform.SetSiblingIndex(i);
+
+                // Move and rotate with DOTween, then update the card’s view.
+                card.Transform.DOLocalMove(new Vector3(xPos, yPos, 0), animationDuration)
+                    .SetEase(easeType);
+                card.Transform.DOLocalRotate(new Vector3(0, 0, -angle), animationDuration)
+                    .SetEase(easeType)
+                    .OnComplete(() => card.View.SetOriginalValues());
+            }
         }
     }
 }
