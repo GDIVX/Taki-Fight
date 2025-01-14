@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Runtime.CardGameplay.Card.CardBehaviour;
 using Runtime.CardGameplay.ManaSystem;
-using Runtime.CardGameplay.Tooltip;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -20,7 +19,6 @@ namespace Runtime.CardGameplay.Card
         [SerializeField, PreviewField, BoxGroup("UI")]
         private Sprite _image;
 
-        [SerializeField, BoxGroup("Tooltips")] private List<TooltipData> _tooltips;
         [SerializeField, BoxGroup("Cost")] private List<ManaDefinition> _cost;
 
         [SerializeField, BoxGroup("Stats")] private CardType _cardType;
@@ -60,7 +58,6 @@ namespace Runtime.CardGameplay.Card
 
         public CardType CardType => _cardType;
 
-        public List<TooltipData> ToolTips => _tooltips;
 
         public CardAffordabilityStrategy AffordabilityStrategy => _affordabilityStrategy;
 

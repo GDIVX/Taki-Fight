@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using DG.Tweening;
 using Runtime.CardGameplay.ManaSystem;
-using Runtime.CardGameplay.Tooltip;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
@@ -19,8 +18,6 @@ namespace Runtime.CardGameplay.Card.View
         [SerializeField, TabGroup("Dependencies")]
         private SymbolListView _costView;
 
-        [SerializeField, TabGroup("Dependencies")]
-        private CardTooltipSystem _cardTooltipSystem;
 
         [SerializeField, TabGroup("Dependencies")]
         private CardTextParser _cardTextParser;
@@ -61,7 +58,6 @@ namespace Runtime.CardGameplay.Card.View
 
         private Tween _currentTween;
 
-        private List<TooltipData> _tooltip;
 
         private void Awake()
         {
@@ -81,7 +77,6 @@ namespace Runtime.CardGameplay.Card.View
         private CardView Draw(CardData data)
         {
             DrawSymbols(data.GetCost());
-            _tooltip = data.ToolTips;
 
             _title.text = data.Title;
             _image.sprite = data.Image;
@@ -140,7 +135,6 @@ namespace Runtime.CardGameplay.Card.View
             if (_isHoverEnabled)
             {
                 AnimateHoverEnter();
-                _cardTooltipSystem.DrawTooltips(_tooltip);
             }
         }
 
@@ -149,7 +143,6 @@ namespace Runtime.CardGameplay.Card.View
             if (_isHoverEnabled)
             {
                 AnimateReturnToDefault();
-                _cardTooltipSystem.HideAllTooltips();
             }
         }
 

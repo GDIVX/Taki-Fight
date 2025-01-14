@@ -1,6 +1,8 @@
-﻿using TMPro;
+﻿using System.Linq;
+using TMPro;
 using UnityEngine;
 using System.Text.RegularExpressions;
+using Runtime.UI.Tooltip;
 
 namespace Runtime.CardGameplay.Card.View
 {
@@ -10,10 +12,7 @@ namespace Runtime.CardGameplay.Card.View
 
         /// <summary>
         /// Replaces placeholders in rawText with dynamic values from the controller’s data.
-        /// {cardType} -> CardType string
-        /// {potency:X} -> Replaces with GetPotency(X)
-        /// {attackValue:X} -> Replaces with GetPotency(X) + attackModifier
-        /// {defenseValue:X} -> Replaces with GetPotency(X) + defenseModifier
+        /// Keywords in the TooltipDictionary are underlined.
         /// </summary>
         public void DrawTextDescription(CardController controller, string rawText)
         {
@@ -27,7 +26,6 @@ namespace Runtime.CardGameplay.Card.View
 
             // Replace {cardType}
             parsedText = parsedText.Replace("{cardType}", controller.CardType.ToString());
-
 
             // Replace {potency:X}
             for (int i = 0; i < controller.Data.PlayStrategies.Count; i++)
@@ -76,7 +74,51 @@ namespace Runtime.CardGameplay.Card.View
                 return match.Value;
             });
 
+            // Underline keywords from the TooltipDictionary
+            parsedText = UnderlineKeywords(parsedText);
+
             _textField.text = parsedText;
+        }
+
+        /// <summary>
+        /// Underlines keywords found in the TooltipDictionary within the given text.
+        /// </summary>
+        private string UnderlineKeywords(string text)
+        {
+            var _keywordDictionary = GameManager.Instance.KeywordDictionary;
+
+            // Get keywords from the dictionary
+            var keywords = _keywordDictionary.Keywords;
+            if (keywords == null || !keywords.Any())
+            {
+                Debug.LogError("Dictionary dose not contain keys");
+                return text;
+            }
+
+            // Iterate over each keyword
+            foreach (var keyword in keywords)
+            {
+                if (string.IsNullOrEmpty(keyword))
+                    continue;
+
+                // Escape the keyword for Regex
+                var escapedKeyword = Regex.Escape(keyword);
+
+                // Regex pattern to match whole words (case-insensitive)
+                var keywordPattern = $@"\b{escapedKeyword}\b";
+
+                // Replace the matched keyword with underlined text
+                text = Regex.Replace(text, keywordPattern, match =>
+                {
+                    // Avoid double-underlining or tag conflicts
+                    if (match.Value.Contains("<u>") || match.Value.Contains("</u>"))
+                        return match.Value;
+
+                    return $"<u>{match.Value}</u>";
+                }, RegexOptions.IgnoreCase);
+            }
+
+            return text;
         }
     }
 }

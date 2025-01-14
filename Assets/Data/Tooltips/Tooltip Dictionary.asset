@@ -9,11 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 1726182683, guid: a4865f1ab4504ed8a368670db22f409c, type: 3}
-  m_Name: AOTGenerationConfig
+  m_Script: {fileID: 11500000, guid: 669d2ed0cadf4df98252d19cd82c9143, type: 3}
+  m_Name: Tooltip Dictionary
   m_EditorClassIdentifier: 
-  automateBeforeBuilds: 1
-  deleteDllAfterBuilds: 1
-  AutomateForAllAOTPlatforms: 1
-  automateForPlatforms: 0900000014000000
-  supportSerializedTypes: []
+  _tooltipData:
+  - {fileID: 11400000, guid: 57c03a8ac7d35624fb42d881f3cc0bae, type: 2}
+  - {fileID: 11400000, guid: 8d6d7d0af7ca7f04e9a042c81ff18dff, type: 2}

@@ -8,6 +8,7 @@ using Runtime.Combat.Pawn;
 using Runtime.Combat.Pawn.Enemy;
 using Runtime.Events;
 using Runtime.UI;
+using Runtime.UI.Tooltip;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
@@ -44,6 +45,8 @@ namespace Runtime
         [SerializeField, TabGroup("Tempt")] private GameObject _newGameButtonObject;
 
         private EventBus _eventBus;
+        [SerializeField] private TooltipPool _tooltipPool;
+        [SerializeField] private KeywordDictionary _keywordDictionary;
 
 
         public BannerViewManager BannerViewManager => _bannerViewManager;
@@ -57,6 +60,10 @@ namespace Runtime
         }
 
         public SlotMachine SlotMachine => _slotMachine;
+
+        public TooltipPool TooltipPool => _tooltipPool;
+
+        public KeywordDictionary KeywordDictionary => _keywordDictionary;
 
         private void Awake()
         {
@@ -122,25 +129,19 @@ namespace Runtime
 
         private void StartTurn()
         {
-            StartCoroutine(ProcessStartTurn());
+            BannerViewManager.WriteMessage(1, "Player Turn", Color.white);
+            SpinSlotMachine();
+            BannerViewManager.Clear();
+            _heroPawn.OnTurnStart();
+            SetupEnemies();
+
+            _handController.DrawHand();
         }
 
         [Button]
         public void EndTurn()
         {
             StartCoroutine(ProcessEndTurn());
-        }
-
-        private IEnumerator ProcessStartTurn()
-        {
-            BannerViewManager.WriteMessage(1, "Player Turn", Color.white);
-            SpinSlotMachine();
-            yield return new WaitForSeconds(1);
-            BannerViewManager.Clear();
-            _heroPawn.OnTurnStart();
-            SetupEnemies();
-
-            _handController.DrawHand();
         }
 
         private void SpinSlotMachine()
