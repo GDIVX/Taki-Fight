@@ -823,7 +823,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _textField: {fileID: 6774713613490928545}
-  _keywordDictionary: {fileID: 0}
 --- !u!114 &6598248545535228594
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -836,7 +835,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f10eea9e7c9d41b28d50e2fbe4fd74a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BaseOffset: {x: 2, y: 2}
+  BaseOffset: {x: 0, y: 0}
   _keywordDictionary: {fileID: 11400000, guid: 66d450156de073643a2a3a33c7bc17b1, type: 2}
   _textField: {fileID: 6774713613490928545}
 --- !u!1 &8140057467381704309

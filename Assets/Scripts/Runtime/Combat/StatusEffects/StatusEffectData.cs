@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Runtime.UI.Tooltip;
+using UnityEngine;
 
 namespace Runtime.Combat.StatusEffects
 {
@@ -6,9 +7,12 @@ namespace Runtime.Combat.StatusEffects
     {
         [SerializeField] private StatusEffectType _effectType;
         [SerializeField] private Sprite _icon;
+        [SerializeField] private TooltipData _tooltip;
 
         public StatusEffectType Type => _effectType;
         public Sprite Icon => _icon;
+
+        public TooltipData Tooltip => _tooltip;
 
         public abstract IStatusEffect CreateStatusEffect(int stacks);
     }

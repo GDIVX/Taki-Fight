@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Runtime.UI.Tooltip;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,11 +11,11 @@ namespace Runtime.Combat.StatusEffects
         [SerializeField] private StatusEffectView _prefab;
         private readonly Dictionary<IStatusEffect, StatusEffectView> _statusEffectViews = new();
 
-        public void Add(IStatusEffect effect, Sprite icon)
+        public void Add(IStatusEffect effect, Sprite icon, TooltipData tooltipData)
         {
             var view = Instantiate(_prefab, transform);
             _statusEffectViews[effect] = view;
-            view.Init(effect, icon);
+            view.Init(effect, icon, tooltipData);
         }
 
         public void Remove(IStatusEffect effect)

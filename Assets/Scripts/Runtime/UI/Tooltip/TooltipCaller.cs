@@ -7,6 +7,11 @@ namespace Runtime.UI.Tooltip
     {
         [SerializeField] private TooltipData _tooltipData;
 
+        public void SetData(TooltipData data)
+        {
+            _tooltipData = data;
+        }
+
         public override void OnPointerEnter(PointerEventData eventData)
         {
             RectTransform canvasRect = GetComponentInParent<Canvas>().GetComponent<RectTransform>();

@@ -71,7 +71,7 @@ namespace Runtime.Combat.Pawn
         public void ApplyStatusEffect(StatusEffectData statusEffectData, int stack)
         {
             var statusEffect = statusEffectData.CreateStatusEffect(stack);
-            _statusEffectHandler.Add(statusEffect, statusEffectData.Icon);
+            _statusEffectHandler.Add(statusEffect, statusEffectData.Icon , statusEffectData.Tooltip);
         }
 
 

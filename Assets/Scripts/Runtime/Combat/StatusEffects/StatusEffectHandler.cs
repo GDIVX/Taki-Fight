@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Runtime.Combat.Pawn;
+using Runtime.UI.Tooltip;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -24,7 +25,7 @@ namespace Runtime.Combat.StatusEffects
             _statusEffects = new List<IStatusEffect>();
         }
 
-        public void Add(IStatusEffect newEffect, Sprite icon)
+        public void Add(IStatusEffect newEffect, Sprite icon , TooltipData tooltipData)
         {
             // Check if we already have the same effect
             var existingEffect = _statusEffects.Find(e => e.GetType() == newEffect.GetType());
@@ -38,7 +39,7 @@ namespace Runtime.Combat.StatusEffects
                 // Add new effect
                 _statusEffects.Add(newEffect);
                 newEffect.OnAdded(_pawn);
-                _statusEffectView.Add(newEffect, icon);
+                _statusEffectView.Add(newEffect, icon , tooltipData);
             }
         }
 
