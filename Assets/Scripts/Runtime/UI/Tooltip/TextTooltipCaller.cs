@@ -52,8 +52,7 @@ namespace Runtime.UI.Tooltip
                     string hoveredWord = _textField.textInfo.wordInfo[hoveredWordIndex].GetWord();
                     TooltipData data = _keywordDictionary.GetTooltip(hoveredWord);
 
-                    RectTransform canvasRect = GetComponentInParent<Canvas>().GetComponent<RectTransform>();
-                    ShowTooltip(data, transform, canvasRect, BaseOffset); // Adjust offset
+                    ShowTooltip(data);
                 }
                 else if (CurrentTooltip)
                 {

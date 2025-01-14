@@ -1,5 +1,6 @@
 ﻿using System;
 using Runtime.CardGameplay.Card;
+using Runtime.UI.Tooltip;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -12,15 +13,18 @@ namespace Runtime.CardGameplay.SlotMachineLib
 
         [ShowInInspector, ReadOnly] public Sprite Sprite { get; private set; }
 
-        public SMSymbol(PlayStrategyData playStrategyData, Sprite sprite)
+        public SMSymbol(PlayStrategyData playStrategyData, Sprite sprite, string tooltip)
         {
             _strategyData = playStrategyData;
             Sprite = sprite;
+            Tooltip = tooltip;
         }
+
+        public string Tooltip { get; private set; }
 
         public static SMSymbol Create(SymbolData data)
         {
-            return new(data.PlayStrategyData, data.Sprite);
+            return new(data.PlayStrategyData, data.Sprite, data.Tooltip);
         }
 
         public void Execute()

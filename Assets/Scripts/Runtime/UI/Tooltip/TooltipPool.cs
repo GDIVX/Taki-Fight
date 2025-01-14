@@ -33,7 +33,6 @@ namespace Runtime.UI.Tooltip
             if (_pool.Count > 0)
             {
                 var tooltip = _pool.Dequeue();
-                tooltip.ShowTooltip();
                 return tooltip;
             }
 

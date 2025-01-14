@@ -14,8 +14,7 @@ namespace Runtime.UI.Tooltip
 
         public override void OnPointerEnter(PointerEventData eventData)
         {
-            RectTransform canvasRect = GetComponentInParent<Canvas>().GetComponent<RectTransform>();
-            ShowTooltip(_tooltipData, transform, canvasRect, BaseOffset); // Adjust offset as needed
+            ShowTooltip(_tooltipData); // Adjust offset as needed
         }
     }
 }

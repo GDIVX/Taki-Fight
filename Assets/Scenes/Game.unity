@@ -310,7 +310,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f5887506ffc4f5fa290634a4517f851, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BaseOffset: {x: 0, y: 0}
+  _delayTime: 1
+  _fadeInTime: 1
   _tooltipData: {fileID: 11400000, guid: cf0ba780479e04e458c3911d7cbcf49c, type: 2}
 --- !u!1 &80757749
 GameObject:
@@ -1101,7 +1102,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f5887506ffc4f5fa290634a4517f851, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BaseOffset: {x: 0, y: 0}
+  _delayTime: 1
+  _fadeInTime: 1
   _tooltipData: {fileID: 11400000, guid: 58b9209ddf9f03941a707e26dd9bb1b3, type: 2}
 --- !u!1 &732473526
 GameObject:
@@ -1521,7 +1523,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f5887506ffc4f5fa290634a4517f851, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BaseOffset: {x: 0, y: 0}
+  _delayTime: 1
+  _fadeInTime: 1
   _tooltipData: {fileID: 11400000, guid: 2d751d3f86ea14c4cba29eca51a411b5, type: 2}
 --- !u!1 &1103476680
 GameObject:
@@ -1613,7 +1616,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f5887506ffc4f5fa290634a4517f851, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BaseOffset: {x: 0, y: 0}
+  _delayTime: 1
+  _fadeInTime: 1
   _tooltipData: {fileID: 11400000, guid: 153297568953245498fe4dd11416d94e, type: 2}
 --- !u!1 &1124417402
 GameObject:
@@ -1704,7 +1708,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f5887506ffc4f5fa290634a4517f851, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BaseOffset: {x: 0, y: 0}
+  _delayTime: 1
+  _fadeInTime: 0
   _tooltipData: {fileID: 11400000, guid: 08c83b49de109534d9e0a6704b594ace, type: 2}
 --- !u!1 &1129298101
 GameObject:
@@ -2739,7 +2744,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f5887506ffc4f5fa290634a4517f851, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BaseOffset: {x: 0, y: 0}
+  _delayTime: 1
+  _fadeInTime: 0
   _tooltipData: {fileID: 11400000, guid: c31b3742f8cc5ea489bfaa5cce545ce9, type: 2}
 --- !u!1 &1578990173
 GameObject:
@@ -3583,7 +3589,6 @@ GameObject:
   - component: {fileID: 2124363126}
   - component: {fileID: 2124363125}
   - component: {fileID: 2124363124}
-  - component: {fileID: 2124363123}
   m_Layer: 5
   m_Name: TooltipCanvas
   m_TagString: Untagged
@@ -3591,23 +3596,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &2124363123
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2124363122}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IgnoreReversedGraphics: 1
-  m_BlockingObjects: 0
-  m_BlockingMask:
-    serializedVersion: 2
-    m_Bits: 55
 --- !u!114 &2124363124
 MonoBehaviour:
   m_ObjectHideFlags: 0

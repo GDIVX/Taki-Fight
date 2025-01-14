@@ -1,14 +1,16 @@
 ﻿using System;
+using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Utilities;
 
 namespace Runtime.UI.Tooltip
 {
     public abstract class TooltipCallerBase : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         protected TooltipController CurrentTooltip;
-        [SerializeField] protected Vector2 BaseOffset;
+        [SerializeField] private float _delayTime;
 
         protected TooltipPool TooltipPool => GameManager.Instance.TooltipPool;
 
@@ -20,14 +22,14 @@ namespace Runtime.UI.Tooltip
 
         public virtual void OnPointerExit(PointerEventData eventData)
         {
-            if (CurrentTooltip != null)
-            {
-                TooltipPool.ReturnTooltip(CurrentTooltip);
-                CurrentTooltip = null;
-            }
+            if (CurrentTooltip == null) return;
+
+            StopAllCoroutines();
+            TooltipPool.ReturnTooltip(CurrentTooltip);
+            CurrentTooltip = null;
         }
 
-        protected void ShowTooltip(TooltipData data, Transform positionSource, RectTransform canvasRect, Vector2 offset)
+        protected void ShowTooltip(TooltipData data)
         {
             if (data == null) return;
             if (CurrentTooltip == null)
@@ -37,9 +39,10 @@ namespace Runtime.UI.Tooltip
 
             CurrentTooltip.SetTooltip(data.Header, data.SecondHeader, data.Description, data.BackgroundColor,
                 data.Icon);
-
-            // Position the tooltip
-            CurrentTooltip.PositionTooltip(positionSource, canvasRect, offset);
+            this.Timer(_delayTime, () =>
+            {
+                CurrentTooltip.ShowTooltip();
+            });
         }
     }
 }
