@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c180ba2380ea4a9e8a48d73f4eb355c5, type: 3}
   m_Name: ClubMana
   m_EditorClassIdentifier: 
-  _icon: {fileID: 21300000, guid: 790761f1ee86f064e8df2958d0a03892, type: 3}
-  _name: club
+  _possibleTypes: 03000000
+  _icon: {fileID: 21300000, guid: cc47192bd33536a489c0db77152eba13, type: 3}

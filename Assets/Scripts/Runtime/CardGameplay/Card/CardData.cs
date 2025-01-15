@@ -47,11 +47,16 @@ namespace Runtime.CardGameplay.Card
         {
             if (_cost == null)
             {
-                //no cost is a valid cost
+                // no cost is a valid cost
                 return new List<Mana>();
             }
 
-            List<Mana> cost = _cost.Select(definition => definition.InstantiateMana()).ToList();
+            // `_cost` is a list of `ManaDefinition`
+            // which can produce single or multi-named Mana
+            List<Mana> cost = _cost
+                .Select(definition => definition.InstantiateMana())
+                .ToList();
+
             return cost;
         }
 

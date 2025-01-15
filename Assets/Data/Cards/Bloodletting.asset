@@ -13,11 +13,8 @@ MonoBehaviour:
   m_Name: Bloodletting
   m_EditorClassIdentifier: 
   _title: Bloodletting
-  _description: <color=red>Attack Yourself</color> for  {attack:0}. Gain <color=green>Rage
-    {potency:1}</color>
+  _description: " <sprite name=\"heart\"> -{attack:0} \nGain Rage {potency:1}"
   _image: {fileID: 21300000, guid: 711dc09fa730343499d6f83e427cc093, type: 3}
-  _tooltips:
-  - {fileID: 11400000, guid: f91fbbc877d69c54dab66e024167cc4c, type: 2}
   _cost:
   - {fileID: 11400000, guid: 02b3331b553ad3046b46561f0804933d, type: 2}
   - {fileID: 11400000, guid: eafe6e50105b0cb46bd1b12c02f9f6be, type: 2}

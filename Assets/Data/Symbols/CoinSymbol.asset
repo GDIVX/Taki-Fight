@@ -16,3 +16,4 @@ MonoBehaviour:
   _playStrategyData:
     PlayStrategy: {fileID: 11400000, guid: 309288acea7655644aaf16781d151084, type: 2}
     Potency: 1
+  _tooltip: Gain 1 Coin Mana

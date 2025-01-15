@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
@@ -29,7 +28,7 @@ namespace Runtime.CardGameplay.ManaSystem
             {
                 // Remove excess mana
                 var removedMana = _inventory.Dequeue();
-                Debug.Log($"Mana {removedMana.Name} removed due to capacity limit.");
+                Debug.Log($"Mana {removedMana.DisplayName} removed due to capacity limit.");
             }
 
             CallOnInventoryModified();
@@ -45,7 +44,7 @@ namespace Runtime.CardGameplay.ManaSystem
             while (_inventory.Count > _capacity)
             {
                 var removedMana = _inventory.Dequeue();
-                Debug.Log($"Mana {removedMana.Name} removed due to reduced capacity.");
+                Debug.Log($"Mana {removedMana.DisplayName} removed due to reduced capacity.");
             }
 
             CallOnInventoryModified();
@@ -65,24 +64,25 @@ namespace Runtime.CardGameplay.ManaSystem
             OnInventoryModifiedEvent?.Invoke(_inventory.ToList());
         }
 
-        private void Extract(List<Mana> cost)
+        public void Extract(List<Mana> cost)
         {
-            foreach (var mana in cost)
+            foreach (var manaNeeded in cost)
             {
-                if (mana.Name == WildName)
+                if (manaNeeded.IsAny)
                 {
-                    // Wild mana consumes the first available mana
                     _inventory.Dequeue();
                 }
                 else
                 {
-                    // Remove the first matching mana by type
-                    for (int i = 0; i < _inventory.Count; i++)
+                    foreach (var type in manaNeeded.PossibleTypes)
                     {
-                        if (_inventory.ElementAt(i).Name == mana.Name)
+                        for (int i = 0; i < _inventory.Count; i++)
                         {
-                            _inventory.RemoveAt(i);
-                            break;
+                            if (_inventory.ElementAt(i).PossibleTypes.Contains(type))
+                            {
+                                _inventory.RemoveAt(i);
+                                break;
+                            }
                         }
                     }
                 }
@@ -95,34 +95,35 @@ namespace Runtime.CardGameplay.ManaSystem
         {
             var tempInventory = _inventory.ToList();
 
-            foreach (var mana in query)
+            foreach (var manaNeeded in query)
             {
-                if (mana.Name == WildName)
+                if (manaNeeded.IsAny)
                 {
-                    if (tempInventory.Count > 0)
+                    if (tempInventory.Count == 0)
+                        return false; // No mana available
+                    tempInventory.RemoveAt(0); // Use any mana
+                }
+                else
+                {
+                    bool matchFound = false;
+
+                    foreach (var type in manaNeeded.PossibleTypes)
                     {
-                        tempInventory.RemoveAt(0); // Use the first available mana
-                        continue;
+                        for (int i = 0; i < tempInventory.Count; i++)
+                        {
+                            if (tempInventory[i].PossibleTypes.Contains(type))
+                            {
+                                tempInventory.RemoveAt(i); // Match found
+                                matchFound = true;
+                                break;
+                            }
+                        }
+
+                        if (matchFound) break;
                     }
 
-                    return false; // No mana left for Wild to use
-                }
-
-                // Check for matching mana
-                bool matchFound = false;
-                for (int i = 0; i < tempInventory.Count; i++)
-                {
-                    if (tempInventory[i].Name == mana.Name)
-                    {
-                        tempInventory.RemoveAt(i);
-                        matchFound = true;
-                        break;
-                    }
-                }
-
-                if (!matchFound)
-                {
-                    return false; // Required mana not found
+                    if (!matchFound)
+                        return false; // Required type not found
                 }
             }
 

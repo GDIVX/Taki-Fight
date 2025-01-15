@@ -16,3 +16,4 @@ MonoBehaviour:
   _playStrategyData:
     PlayStrategy: {fileID: 11400000, guid: 8189f672ac20b304c83523f3db5da91d, type: 2}
     Potency: 1
+  _tooltip: Gain 1 Spade Mana

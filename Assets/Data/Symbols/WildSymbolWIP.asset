@@ -16,3 +16,4 @@ MonoBehaviour:
   _playStrategyData:
     PlayStrategy: {fileID: 0}
     Potency: 1
+  _tooltip: Transform into a random symbol on the Payline

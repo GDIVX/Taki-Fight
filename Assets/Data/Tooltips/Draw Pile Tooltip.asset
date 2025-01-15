@@ -16,4 +16,4 @@ MonoBehaviour:
   _secondHeader: 
   _description: You draw cards from here
   _icon: {fileID: 21300000, guid: c0cf1e35b91c1d442a6020d85a257818, type: 3}
-  _backgroundColor: {r: 0.776, g: 0.651, b: 0.349, a: 1}
+  _backgroundColor: {r: 0.478, g: 0.573, b: 0.431, a: 0.98039216}

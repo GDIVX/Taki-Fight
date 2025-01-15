@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c180ba2380ea4a9e8a48d73f4eb355c5, type: 3}
   m_Name: DiamondMana
   m_EditorClassIdentifier: 
-  _icon: {fileID: 21300000, guid: c776b18562bfcbf4494de5e0cc509ce8, type: 3}
-  _name: diamond
+  _possibleTypes: 02000000
+  _icon: {fileID: 21300000, guid: 2ce0018d248c9d148822fdae9f4b8759, type: 3}

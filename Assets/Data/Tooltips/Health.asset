@@ -16,4 +16,4 @@ MonoBehaviour:
   _secondHeader: 
   _description: The health of the pawn. If it reach 0, the pawn dies.
   _icon: {fileID: 0}
-  _backgroundColor: {r: 0.647, g: 0.204, b: 0.227, a: 1}
+  _backgroundColor: {r: 0.478, g: 0.573, b: 0.431, a: 0.98039216}

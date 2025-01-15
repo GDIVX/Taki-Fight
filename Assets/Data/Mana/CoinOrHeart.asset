@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c180ba2380ea4a9e8a48d73f4eb355c5, type: 3}
-  m_Name: CoinMana
+  m_Name: CoinOrHeart
   m_EditorClassIdentifier: 
-  _possibleTypes: 05000000
+  _possibleTypes: 0500000001000000
   _icon: {fileID: 21300000, guid: cb1769a82f0a5304389b24c63e532549, type: 3}

@@ -13,9 +13,8 @@ MonoBehaviour:
   m_Name: Strike
   m_EditorClassIdentifier: 
   _title: Strike
-  _description: <color=red>Attack</color> for {attack:0} Damage
+  _description: <sprite name="sword"> {attack:0}
   _image: {fileID: 21300000, guid: 37f174ab7cb028747b44047583ac73a6, type: 3}
-  _tooltips: []
   _cost:
   - {fileID: 11400000, guid: baf018c3847b94f438ae8d51177dec43, type: 2}
   _cardType: 0

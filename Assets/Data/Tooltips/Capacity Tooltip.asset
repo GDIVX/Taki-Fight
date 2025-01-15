@@ -17,4 +17,4 @@ MonoBehaviour:
   _description: This is the limit to how much mana you can collect. If you gather
     more mana than you can hold, you get rid of the oldest (rightmost) mana.
   _icon: {fileID: 0}
-  _backgroundColor: {r: 0.776, g: 0.651, b: 0.349, a: 1}
+  _backgroundColor: {r: 0.478, g: 0.573, b: 0.431, a: 0.98039216}

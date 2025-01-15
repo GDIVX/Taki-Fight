@@ -16,4 +16,4 @@ MonoBehaviour:
   _secondHeader: Symbol
   _description: This symbol gives mana when it lands on the payline
   _icon: {fileID: 21300000, guid: 374da8ce8278d52409a184a4e14482e9, type: 3}
-  _backgroundColor: {r: 0.478, g: 0.573, b: 0.431, a: 1}
+  _backgroundColor: {r: 0.478, g: 0.573, b: 0.431, a: 0.98039216}

@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c180ba2380ea4a9e8a48d73f4eb355c5, type: 3}
   m_Name: HeartMana
   m_EditorClassIdentifier: 
+  _possibleTypes: 01000000
   _icon: {fileID: 21300000, guid: e678b5ac781f17047bfe40de9780737c, type: 3}
-  _name: heart

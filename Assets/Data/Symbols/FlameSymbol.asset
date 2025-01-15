@@ -16,3 +16,4 @@ MonoBehaviour:
   _playStrategyData:
     PlayStrategy: {fileID: 11400000, guid: 591598e589b73164e8540f8555024026, type: 2}
     Potency: 3
+  _tooltip: Gain 3 Rage

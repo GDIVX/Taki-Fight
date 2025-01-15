@@ -11,8 +11,7 @@ namespace Runtime.CardGameplay.Card.View
         [SerializeField] private TextMeshProUGUI _textField;
 
         /// <summary>
-        /// Replaces placeholders in rawText with dynamic values from the controller’s data.
-        /// Keywords in the TooltipDictionary are underlined.
+        /// Parses and updates the card's text description with dynamic values and icons.
         /// </summary>
         public void DrawTextDescription(CardController controller, string rawText)
         {
@@ -38,12 +37,14 @@ namespace Runtime.CardGameplay.Card.View
                 }
             }
 
-            // Regex pattern for {attack:X} and {defense:X} where X is the potency index
+            // Handle {attack:X} and {defense:X} values with Regex
             int attackModifier = controller.Pawn != null ? controller.Pawn.AttackModifier.Value : 0;
+            int defenseModifier = controller.Pawn != null ? controller.Pawn.DefenseModifier.Value : 0;
+
             var attackValuePattern = @"\{attack:(\d+)\}";
             var defenseValuePattern = @"\{defense:(\d+)\}";
 
-            // Handle attack values
+            // Replace attack values
             parsedText = Regex.Replace(parsedText, attackValuePattern, match =>
             {
                 if (int.TryParse(match.Groups[1].Value, out int index)
@@ -58,8 +59,7 @@ namespace Runtime.CardGameplay.Card.View
                 return match.Value;
             });
 
-            // Handle defense values
-            int defenseModifier = controller.Pawn != null ? controller.Pawn.DefenseModifier.Value : 0;
+            // Replace defense values
             parsedText = Regex.Replace(parsedText, defenseValuePattern, match =>
             {
                 if (int.TryParse(match.Groups[1].Value, out int index)
@@ -74,45 +74,36 @@ namespace Runtime.CardGameplay.Card.View
                 return match.Value;
             });
 
-            // Underline keywords from the TooltipDictionary
+            // Underline keywords
             parsedText = UnderlineKeywords(parsedText);
 
+            // Assign the parsed text to the TMP field
             _textField.text = parsedText;
         }
 
         /// <summary>
-        /// Underlines keywords found in the TooltipDictionary within the given text.
+        /// Underlines keywords from the TooltipDictionary within the text.
         /// </summary>
         private string UnderlineKeywords(string text)
         {
-            var _keywordDictionary = GameManager.Instance.KeywordDictionary;
+            var keywordDictionary = GameManager.Instance.KeywordDictionary;
 
-            // Get keywords from the dictionary
-            var keywords = _keywordDictionary.Keywords;
-            if (keywords == null || !keywords.Any())
+            if (keywordDictionary == null || !keywordDictionary.Keywords.Any())
             {
-                Debug.LogError("Dictionary dose not contain keys");
+                Debug.LogWarning("TooltipDictionary is empty or not assigned.");
                 return text;
             }
 
-            // Iterate over each keyword
-            foreach (var keyword in keywords)
+            foreach (var keyword in keywordDictionary.Keywords)
             {
-                if (string.IsNullOrEmpty(keyword))
-                    continue;
+                if (string.IsNullOrEmpty(keyword)) continue;
 
-                // Escape the keyword for Regex
                 var escapedKeyword = Regex.Escape(keyword);
-
-                // Regex pattern to match whole words (case-insensitive)
                 var keywordPattern = $@"\b{escapedKeyword}\b";
 
-                // Replace the matched keyword with underlined text
                 text = Regex.Replace(text, keywordPattern, match =>
                 {
-                    // Avoid double-underlining or tag conflicts
-                    if (match.Value.Contains("<u>") || match.Value.Contains("</u>"))
-                        return match.Value;
+                    if (match.Value.Contains("<u>") || match.Value.Contains("</u>")) return match.Value;
 
                     return $"<u>{match.Value}</u>";
                 }, RegexOptions.IgnoreCase);

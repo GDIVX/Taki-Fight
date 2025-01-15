@@ -16,3 +16,4 @@ MonoBehaviour:
   _playStrategyData:
     PlayStrategy: {fileID: 11400000, guid: 7a393bc5e8fe55143bebdc520fcc4798, type: 2}
     Potency: 1
+  _tooltip: Gain 1 Club Mana

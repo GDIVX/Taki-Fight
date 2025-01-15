@@ -17,4 +17,4 @@ MonoBehaviour:
   _description: You collect mana from symbols in here. You use mana to play cards.
     Mana is preserved between turns, so think carefully when to use it!
   _icon: {fileID: 0}
-  _backgroundColor: {r: 0.776, g: 0.651, b: 0.349, a: 1}
+  _backgroundColor: {r: 0.478, g: 0.573, b: 0.431, a: 0.98039216}

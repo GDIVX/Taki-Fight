@@ -16,4 +16,4 @@ MonoBehaviour:
   _secondHeader: Buff
   _description: All attacks deal +X more damage. Reduce by 1 at the end of the turn.
   _icon: {fileID: 21300000, guid: 2f0a9d9bf58fc2b47954e70d13c5f2bd, type: 3}
-  _backgroundColor: {r: 0.478, g: 0.573, b: 0.431, a: 1}
+  _backgroundColor: {r: 0.478, g: 0.573, b: 0.431, a: 0.98039216}

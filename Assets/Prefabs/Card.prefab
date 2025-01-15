@@ -141,7 +141,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Long Description of what the card does
+  m_text: " <sprite name=\"heart\"> -{attack:0} \nGain Rage {potency:1}"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: fa434f7404f9789449b844c8a0bb86f2, type: 2}
   m_sharedMaterial: {fileID: -4053843045154802402, guid: fa434f7404f9789449b844c8a0bb86f2, type: 2}
@@ -168,8 +168,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 15
-  m_fontSizeBase: 15
+  m_fontSize: 25
+  m_fontSizeBase: 25
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 10
@@ -835,7 +835,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f10eea9e7c9d41b28d50e2fbe4fd74a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BaseOffset: {x: 0, y: 0}
+  _delayTime: 0
   _keywordDictionary: {fileID: 11400000, guid: 66d450156de073643a2a3a33c7bc17b1, type: 2}
   _textField: {fileID: 6774713613490928545}
 --- !u!1 &8140057467381704309
