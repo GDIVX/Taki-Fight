@@ -10,14 +10,14 @@ namespace Runtime.CardGameplay.Card
         public HandController HandController { get; }
         public PawnController Pawn { get; }
         public CardFactory CardFactory { get; }
-        public ManaInventory ManaInventory { get; }
+        public GemsBag GemsBag { get; }
 
 
-        public CardDependencies(HandController handController, ManaInventory manaInventory, PawnController pawn,
+        public CardDependencies(HandController handController, GemsBag gemsBag, PawnController pawn,
             CardFactory cardFactory)
         {
             HandController = handController ?? throw new ArgumentNullException(nameof(handController));
-            ManaInventory = manaInventory ?? throw new ArgumentNullException(nameof(manaInventory));
+            GemsBag = gemsBag ?? throw new ArgumentNullException(nameof(gemsBag));
             Pawn = pawn ?? throw new ArgumentNullException(nameof(pawn));
             CardFactory = cardFactory ?? throw new ArgumentNullException(nameof(cardFactory));
         }

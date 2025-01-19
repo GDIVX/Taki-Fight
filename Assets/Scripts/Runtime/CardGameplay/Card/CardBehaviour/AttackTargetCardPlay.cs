@@ -11,6 +11,11 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
 
         public override void Play(PawnController caller, int potency)
         {
+            HandleAttack(caller, potency);
+        }
+
+        protected virtual void HandleAttack(PawnController caller, int potency)
+        {
             var target = _targetingStrategy.GetTarget();
 
             // It is possible that the target is dead or has no controller. Fire a warning to the log to be safe

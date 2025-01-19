@@ -42,9 +42,8 @@ namespace Runtime.Combat.Pawn.Enemy
         public IEnumerator PlayTurn()
         {
             OnTurnStart();
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.2f);
             _playTableEntry.Strategy.Play(this, _playTableEntry.Potency);
-            yield return new WaitForSeconds(_playTableEntry.Strategy.Duration);
             _intentionsList.RemoveNext();
             OnTurnEnd();
         }

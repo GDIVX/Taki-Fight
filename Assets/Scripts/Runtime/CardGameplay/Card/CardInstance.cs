@@ -10,7 +10,7 @@ namespace Runtime.CardGameplay.Card
     public class CardInstance
     {
         public CardData Data;
-        [ShowInInspector] public List<Mana> Cost { get; set; }
+        [ShowInInspector] public GemGroup Group { get; set; }
 
         public CardController Controller { get; set; }
 
@@ -19,7 +19,7 @@ namespace Runtime.CardGameplay.Card
         {
             Data = data;
             Controller = null;
-            Cost = data.GetCost();
+            Group = data.Group;
         }
     }
 }

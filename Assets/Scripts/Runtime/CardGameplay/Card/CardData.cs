@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using Runtime.CardGameplay.Card.CardBehaviour;
-using Runtime.CardGameplay.ManaSystem;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -19,12 +16,7 @@ namespace Runtime.CardGameplay.Card
         [SerializeField, PreviewField, BoxGroup("UI")]
         private Sprite _image;
 
-        [SerializeField, BoxGroup("Cost")] private List<ManaDefinition> _cost;
-
         [SerializeField, BoxGroup("Stats")] private CardType _cardType;
-
-        [SerializeField, BoxGroup("Behaviour")]
-        private CardAffordabilityStrategy _affordabilityStrategy;
 
         [SerializeField, BoxGroup("Behaviour")]
         private CardSelectStrategy _selectStrategy;
@@ -34,7 +26,10 @@ namespace Runtime.CardGameplay.Card
 
 
         [SerializeField, BoxGroup("Behaviour")]
-        private List<CardPostPlayStrategy> _postPlayStrategies;
+        private bool _destroyCardAfterUse = false;
+
+        [SerializeField, BoxGroup("Economy")] private GemGroup _group;
+        [SerializeField, BoxGroup("Economy")] private bool _extractGems = false;
 
 
         public string Title => _title;
@@ -42,31 +37,15 @@ namespace Runtime.CardGameplay.Card
         public Sprite Image => _image;
         public CardSelectStrategy SelectStrategy => _selectStrategy;
         public List<PlayStrategyData> PlayStrategies => _playStrategies;
-
-        public List<Mana> GetCost()
-        {
-            if (_cost == null)
-            {
-                // no cost is a valid cost
-                return new List<Mana>();
-            }
-
-            // `_cost` is a list of `ManaDefinition`
-            // which can produce single or multi-named Mana
-            List<Mana> cost = _cost
-                .Select(definition => definition.InstantiateMana())
-                .ToList();
-
-            return cost;
-        }
+        public bool ExtractGems => _extractGems;
 
 
         public CardType CardType => _cardType;
 
 
-        public CardAffordabilityStrategy AffordabilityStrategy => _affordabilityStrategy;
+        public bool DestroyCardAfterUse => _destroyCardAfterUse;
 
-        public List<CardPostPlayStrategy> PostPlayStrategies => _postPlayStrategies;
+        public GemGroup Group => _group;
     }
 
     [System.Serializable]

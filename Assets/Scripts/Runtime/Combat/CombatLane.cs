@@ -18,7 +18,7 @@ namespace Runtime.Combat
 
         public event Action OnPawnRemoved;
 
-        public List<PawnController> Pawns => _pawns;
+        public List<PawnController> Pawns => new List<PawnController>(_pawns);
 
         public void SpawnPawnsForCombat(CombatConfig combatConfig)
         {

@@ -14,7 +14,7 @@ namespace Runtime.UI.Tooltip
         private Dictionary<string, TooltipData> _dictionary;
         [ShowInInspector, ReadOnly] public List<string> Keywords => _dictionary.Keys.ToList();
 
-        private void OnValidate()
+        private void OnEnable()
         {
             _dictionary = new Dictionary<string, TooltipData>();
 

@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Runtime.CardGameplay.Card;
-using Runtime.CardGameplay.SlotMachineLib;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -11,10 +9,11 @@ namespace Runtime.CardGameplay.Deck
     public class StarterDeck : ScriptableObject
     {
         [SerializeField, TableList] private List<CardData> _cards;
-        [SerializeField] private ReelDefinition _reelDefinition;
+        [SerializeField, BoxGroup("Gems")] private GemGroup _gems;
+
 
         public List<CardData> Cards => _cards;
-        public ReelDefinition ReelDefinition => _reelDefinition;
+        public GemGroup Gems => _gems;
 
 
         [Button]

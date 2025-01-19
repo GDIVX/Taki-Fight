@@ -2,7 +2,6 @@
 using Runtime.CardGameplay.Card;
 using Runtime.CardGameplay.Deck;
 using Runtime.CardGameplay.ManaSystem;
-using Runtime.CardGameplay.SlotMachineLib;
 using Runtime.Combat;
 using Runtime.Combat.Pawn;
 using Runtime.Combat.Pawn.Enemy;
@@ -21,13 +20,11 @@ namespace Runtime
         private CardCollection _cardCollection;
 
         [SerializeField, Required, TabGroup("Dependencies")]
-        private ManaInventory _manaInventory;
+        private GemsBag _gemsBag;
 
         [SerializeField, Required, TabGroup("Dependencies")]
         private HandController _handController;
 
-        [SerializeField, Required, TabGroup("Dependencies")]
-        private SlotMachine _slotMachine;
 
         [SerializeField, TabGroup("Settings")] private int _initialReelsCount;
 
@@ -50,7 +47,7 @@ namespace Runtime
 
 
         public BannerViewManager BannerViewManager => _bannerViewManager;
-        public ManaInventory ManaInventory => _manaInventory;
+        public GemsBag GemsBag => _gemsBag;
         public EventBus EventBus => _eventBus;
 
         public PawnController Hero
@@ -59,7 +56,6 @@ namespace Runtime
             private set => _heroPawn = value;
         }
 
-        public SlotMachine SlotMachine => _slotMachine;
 
         public TooltipPool TooltipPool => _tooltipPool;
 
@@ -68,7 +64,6 @@ namespace Runtime
         private void Awake()
         {
             _eventBus = new EventBus();
-            _slotMachine.Initialize(_initialReelsCount);
         }
 
 
@@ -122,15 +117,14 @@ namespace Runtime
             _handController.gameObject.SetActive(true);
             _handController.DiscardHand();
             _cardCollection.CreateDeck();
-            var reelDef = _cardCollection.ReelDefinition;
-            _slotMachine.SetupSlots(reelDef);
+            _gemsBag.Initialize(_cardCollection.Gems);
             StartTurn();
         }
 
         private void StartTurn()
         {
             BannerViewManager.WriteMessage(1, "Player Turn", Color.white);
-            SpinSlotMachine();
+            _gemsBag.Reroll();
             BannerViewManager.Clear();
             _heroPawn.OnTurnStart();
             SetupEnemies();
@@ -144,10 +138,6 @@ namespace Runtime
             StartCoroutine(ProcessEndTurn());
         }
 
-        private void SpinSlotMachine()
-        {
-            _slotMachine.Spin();
-        }
 
         private void SetupEnemies()
         {

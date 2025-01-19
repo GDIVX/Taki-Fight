@@ -25,9 +25,6 @@ namespace Runtime.CardGameplay.Card
 
         [ShowInInspector, ReadOnly] private CardSelectStrategy _selectStrategy;
         [ShowInInspector, ReadOnly] private List<(CardPlayStrategy, int)> _playStrategies;
-        [ShowInInspector, ReadOnly] private CardAffordabilityStrategy _affordabilityStrategy;
-        [ShowInInspector, ReadOnly] private List<CardPostPlayStrategy> _postPlayStrategies;
-
 
         public static event Action<CardController> OnCardPlayedEvent;
 
@@ -39,9 +36,9 @@ namespace Runtime.CardGameplay.Card
         public CardData Data { get; private set; }
 
         public HandController HandController { get; private set; }
-        public ManaInventory ManaInventory { get; private set; }
+        public GemsBag GemsBag { get; private set; }
         public PawnController Pawn { get; private set; }
-        public List<Mana> Cost => Instance.Cost;
+        public GemGroup Group => Instance.Group;
 
         private CardFactory _cardFactory;
 
@@ -54,8 +51,13 @@ namespace Runtime.CardGameplay.Card
                 return;
             }
 
+            Instance = new CardInstance(data)
+            {
+                Controller = this
+            };
+
             HandController = dependencies.HandController;
-            ManaInventory = dependencies.ManaInventory;
+            GemsBag = dependencies.GemsBag;
             Pawn = dependencies.Pawn;
             _cardFactory = dependencies.CardFactory;
 
@@ -63,14 +65,8 @@ namespace Runtime.CardGameplay.Card
 
             _selectStrategy = data.SelectStrategy;
             _playStrategies = CreatePlayStrategyTupletList(data.PlayStrategies);
-            _affordabilityStrategy = data.AffordabilityStrategy;
-            _postPlayStrategies = data.PostPlayStrategies;
 
 
-            Instance = new CardInstance(data)
-            {
-                Controller = this
-            };
             View = GetComponent<CardView>();
 
             //Card is selectable only when it can be played
@@ -79,13 +75,13 @@ namespace Runtime.CardGameplay.Card
                 Value = true
             };
             OnCardPlayedEvent += _ => UpdateAffordability();
-            GameManager.Instance.SlotMachine.OnComplete += UpdateAffordability;
+            GemsBag.OnContentModifiedEvent += gems => UpdateAffordability();
             Data = data;
         }
 
         private void UpdateAffordability()
         {
-            IsPlayable.Value = _affordabilityStrategy.CanPlayCard(this);
+            IsPlayable.Value = CanAfford();
             View.UpdateDescription();
         }
 
@@ -149,30 +145,43 @@ namespace Runtime.CardGameplay.Card
 
         private void Play()
         {
-            StartCoroutine(HandlePlay());
-        }
-
-        private IEnumerator HandlePlay()
-        {
-            if (!ManaInventory.TryToExtractMana(Cost))
+            if (!CanAfford())
             {
                 Debug.LogWarning("Tried to play a card without being able to afford it");
-                yield break;
+                return;
             }
 
             foreach (var tuple in _playStrategies)
             {
                 tuple.Item1.Play(Pawn, tuple.Item2);
                 //pay for the card
-                yield return new WaitForSeconds(tuple.Item1.Duration);
             }
 
-            foreach (var postPlayStrategy in _postPlayStrategies.Where(strategy => strategy != null))
+            if (Data.ExtractGems)
             {
-                postPlayStrategy.PostPlay(this);
+                //Destroy the gems
+                GemsBag.DestroyGems(GemType.Pearl, Group.Pearls);
+                GemsBag.DestroyGems(GemType.Quartz, Group.Quartz);
+                GemsBag.DestroyGems(GemType.Brimstone, Group.Brimstone);
+            }
+            else
+            {
+                GemsBag.ReturnToBag(GemType.Pearl, Group.Pearls);
+                GemsBag.ReturnToBag(GemType.Quartz, Group.Quartz);
+                GemsBag.ReturnToBag(GemType.Brimstone, Group.Brimstone);
+            }
+
+            if (Data.DestroyCardAfterUse)
+            {
+                HandController.BurnCard(this);
             }
 
             OnCardPlayedEvent?.Invoke(this);
+        }
+
+        private bool CanAfford()
+        {
+            return GemsBag.Has(Group.Pearls, Group.Quartz, Group.Brimstone);
         }
 
         public void OnPointerClick(PointerEventData eventData)
@@ -197,7 +206,7 @@ namespace Runtime.CardGameplay.Card
         private void Exchange()
         {
             HandController.DiscardCard(this);
-            GameManager.Instance.SlotMachine.Spin();
+            GemsBag.Reroll();
         }
 
         public void OnDiscard()
@@ -214,7 +223,7 @@ namespace Runtime.CardGameplay.Card
 
         public void OnDraw()
         {
-            IsPlayable.Value = _affordabilityStrategy.CanPlayCard(this);
+            UpdateAffordability();
         }
 
 
@@ -234,5 +243,13 @@ namespace Runtime.CardGameplay.Card
         {
             Select(_selectStrategy);
         }
+    }
+
+    [Serializable]
+    public struct GemGroup
+    {
+        public int Pearls;
+        public int Quartz;
+        public int Brimstone;
     }
 }

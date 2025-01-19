@@ -16,10 +16,6 @@ namespace Runtime.CardGameplay.Card.View
         [SerializeField, TabGroup("Draw")] private Image _image;
 
         [SerializeField, TabGroup("Dependencies")]
-        private SymbolListView _costView;
-
-
-        [SerializeField, TabGroup("Dependencies")]
         private CardTextParser _cardTextParser;
 
         private Transform _discardToLocation, _drawFromLocation;
@@ -76,8 +72,6 @@ namespace Runtime.CardGameplay.Card.View
         [Button]
         private CardView Draw(CardData data)
         {
-            DrawSymbols(data.GetCost());
-
             _title.text = data.Title;
             _image.sprite = data.Image;
 
@@ -90,11 +84,6 @@ namespace Runtime.CardGameplay.Card.View
         public void SetOutlineColor(Color color)
         {
             _uiOutline.color = color;
-        }
-
-        private void DrawSymbols(List<Mana> cost)
-        {
-            _costView.Draw(cost);
         }
 
 

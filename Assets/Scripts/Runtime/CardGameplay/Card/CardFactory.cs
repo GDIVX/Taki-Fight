@@ -17,7 +17,7 @@ namespace Runtime.CardGameplay.Card
         private HandController _handController;
 
         [SerializeField, TabGroup("Dependencies")]
-        private ManaInventory _manaInventory;
+        private GemsBag _gemsBag;
 
         [SerializeField, TabGroup("Dependencies")]
         private Transform _discardToLocation, _drawFromLocation;
@@ -34,7 +34,7 @@ namespace Runtime.CardGameplay.Card
 
         private void FetchDependencies(PawnController heroPawn)
         {
-            _cardDependencies = new CardDependencies(_handController, _manaInventory, heroPawn, this);
+            _cardDependencies = new CardDependencies(_handController, _gemsBag, heroPawn, this);
         }
 
         [Button]
