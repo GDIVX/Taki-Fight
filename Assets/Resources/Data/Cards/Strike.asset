@@ -15,13 +15,14 @@ MonoBehaviour:
   _title: Strike
   _description: Attack for {attack:0}
   _image: {fileID: 21300000, guid: 37f174ab7cb028747b44047583ac73a6, type: 3}
-  _cost:
-  - {fileID: 11400000, guid: baf018c3847b94f438ae8d51177dec43, type: 2}
   _cardType: 0
-  _affordabilityStrategy: {fileID: 11400000, guid: ebd811b0c7aa5cd4bbd4cda479ce3c55, type: 2}
   _selectStrategy: {fileID: 11400000, guid: 693626e501b6ec2438a4e251d9c1a4e4, type: 2}
   _playStrategies:
   - PlayStrategy: {fileID: 11400000, guid: cd7cd7aafe2c3b14ab5954de633d36b0, type: 2}
     Potency: 3
-  _postPlayStrategies:
-  - {fileID: 11400000, guid: 34f06bc0b60b90945ae825a222936db1, type: 2}
+  _destroyCardAfterUse: 0
+  _group:
+    Pearls: 1
+    Quartz: 0
+    Brimstone: 0
+  _extractGems: 0

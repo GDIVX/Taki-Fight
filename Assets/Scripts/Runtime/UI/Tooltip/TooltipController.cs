@@ -17,6 +17,7 @@ namespace Runtime.UI.Tooltip
         [SerializeField] private Image _background;
         [SerializeField] private LayoutElement _layoutElement;
         [SerializeField] private int _characterWrapLimit;
+        [SerializeField] private Vector2 _pointerOffset = new Vector2(15f, -15f);
 
         private RectTransform _rectTransform;
 
@@ -52,19 +53,30 @@ namespace Runtime.UI.Tooltip
             }
         }
 
-        private void Update()
+        private void CalculatePosition()
         {
             Vector2 mousePosition = Input.mousePosition;
-
             float pivotX = mousePosition.x / Screen.width;
             float pivotY = mousePosition.y / Screen.height;
-
             _rectTransform.pivot = new Vector2(pivotX, pivotY);
-            transform.position = mousePosition;
+
+            // Apply offset
+            Vector2 newPosition = mousePosition + _pointerOffset;
+
+            // Determine tooltip’s scaled size
+            float scaledWidth = _rectTransform.rect.width * _rectTransform.lossyScale.x;
+            float scaledHeight = _rectTransform.rect.height * _rectTransform.lossyScale.y;
+
+            // Clamp so we stay fully on-screen
+            newPosition.x = Mathf.Clamp(newPosition.x, 0, Screen.width - scaledWidth);
+            newPosition.y = Mathf.Clamp(newPosition.y, scaledHeight, Screen.height);
+
+            transform.position = newPosition;
         }
 
         public void ShowTooltip()
         {
+            CalculatePosition();
             gameObject.SetActive(true); // turn on first
         }
 

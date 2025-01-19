@@ -17,14 +17,14 @@ MonoBehaviour:
 
 '
   _image: {fileID: 21300000, guid: ab63ca1dc4be886448697889a26584dd, type: 3}
-  _cost:
-  - {fileID: 11400000, guid: baf018c3847b94f438ae8d51177dec43, type: 2}
-  - {fileID: 11400000, guid: baf018c3847b94f438ae8d51177dec43, type: 2}
   _cardType: 0
-  _affordabilityStrategy: {fileID: 11400000, guid: ebd811b0c7aa5cd4bbd4cda479ce3c55, type: 2}
   _selectStrategy: {fileID: 11400000, guid: 693626e501b6ec2438a4e251d9c1a4e4, type: 2}
   _playStrategies:
   - PlayStrategy: {fileID: 11400000, guid: 583361563f3967d4197a25e441f0dc35, type: 2}
     Potency: 4
-  _postPlayStrategies:
-  - {fileID: 11400000, guid: 34f06bc0b60b90945ae825a222936db1, type: 2}
+  _destroyCardAfterUse: 0
+  _group:
+    Pearls: 2
+    Quartz: 0
+    Brimstone: 0
+  _extractGems: 0

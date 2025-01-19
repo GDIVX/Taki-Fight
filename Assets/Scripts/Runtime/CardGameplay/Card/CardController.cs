@@ -175,6 +175,10 @@ namespace Runtime.CardGameplay.Card
             {
                 HandController.BurnCard(this);
             }
+            else
+            {
+                HandController.DiscardCard(this);
+            }
 
             OnCardPlayedEvent?.Invoke(this);
         }
