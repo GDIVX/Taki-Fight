@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Runtime.CardGameplay.Card.View;
 using Runtime.CardGameplay.Deck;
-using Runtime.CardGameplay.ManaSystem;
+using Runtime.CardGameplay.GemSystem;
 using Runtime.Combat.Pawn;
 using Sirenix.OdinInspector;
 using UnityEngine;

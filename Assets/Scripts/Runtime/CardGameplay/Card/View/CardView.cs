@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using DG.Tweening;
-using Runtime.CardGameplay.ManaSystem;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;

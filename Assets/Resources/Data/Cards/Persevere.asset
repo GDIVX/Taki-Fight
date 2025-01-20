@@ -12,15 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 842f4e02fee146ddb72cea2b80a51349, type: 3}
   m_Name: Persevere
   m_EditorClassIdentifier: 
-  _title: 
-  _description: 
-  _image: {fileID: 0}
+  _title: Persevere
+  _description: 'Gain {defense:0} Defense.
+
+    Gain {potency:1} Power.'
+  _image: {fileID: 21300000, guid: 8421d7eb0e5f0d94aa6d4c400f01b755, type: 3}
   _cardType: 0
-  _selectStrategy: {fileID: 0}
-  _playStrategies: []
+  _selectStrategy: {fileID: 11400000, guid: 6488691d3e5b1734fbf184a753c30823, type: 2}
+  _playStrategies:
+  - PlayStrategy: {fileID: 11400000, guid: 549e43c006aaa9548b773fde947c00f5, type: 2}
+    Potency: 3
+  - PlayStrategy: {fileID: 11400000, guid: 591598e589b73164e8540f8555024026, type: 2}
+    Potency: 4
   _destroyCardAfterUse: 0
   _group:
     Pearls: 0
     Quartz: 0
-    Brimstone: 0
+    Brimstone: 1
   _extractGems: 0

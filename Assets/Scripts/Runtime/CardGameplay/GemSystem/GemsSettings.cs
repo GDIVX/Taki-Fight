@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
-namespace Runtime.CardGameplay.ManaSystem
+namespace Runtime.CardGameplay.GemSystem
 {
     [CreateAssetMenu(fileName = "Gems Settings", menuName = "Game/Settings/Gems", order = 0)]
     public class GemsSettings : ScriptableObject

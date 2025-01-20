@@ -1,6 +1,6 @@
 ﻿using System;
 using Runtime.CardGameplay.Deck;
-using Runtime.CardGameplay.ManaSystem;
+using Runtime.CardGameplay.GemSystem;
 using Runtime.Combat.Pawn;
 
 namespace Runtime.CardGameplay.Card

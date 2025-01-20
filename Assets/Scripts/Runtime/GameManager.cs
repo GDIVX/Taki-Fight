@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using Runtime.CardGameplay.Card;
 using Runtime.CardGameplay.Deck;
-using Runtime.CardGameplay.ManaSystem;
+using Runtime.CardGameplay.GemSystem;
 using Runtime.Combat;
 using Runtime.Combat.Pawn;
 using Runtime.Combat.Pawn.Enemy;
@@ -49,6 +49,7 @@ namespace Runtime
         public BannerViewManager BannerViewManager => _bannerViewManager;
         public GemsBag GemsBag => _gemsBag;
         public EventBus EventBus => _eventBus;
+        public HandController Hand => _handController;
 
         public PawnController Hero
         {

@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
 
-namespace Runtime.CardGameplay.ManaSystem
+namespace Runtime.CardGameplay.GemSystem
 {
     [Serializable]
     public struct Gem

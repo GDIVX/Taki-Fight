@@ -19,6 +19,17 @@ namespace Runtime.CardGameplay.Deck
         public event Action<CardController> OnCardAdded;
         public event Action<CardController> OnCardRemoved;
         public event Action<CardController> OnCardBurnt;
+        public event Action<int> OnCardDrawPerTurnUpdated;
+
+        public int DrawPerTurn
+        {
+            get => _cardToDrawPerTurn;
+            set
+            {
+                _cardToDrawPerTurn = value;
+                OnCardDrawPerTurnUpdated?.Invoke(value);
+            }
+        }
 
         /// <summary>
         /// Remove a card from hand
@@ -64,7 +75,10 @@ namespace Runtime.CardGameplay.Deck
 
         public void DrawHand()
         {
-            StartCoroutine(DrawWithDelay());
+            if (isActiveAndEnabled)
+            {
+                StartCoroutine(DrawWithDelay());
+            }
         }
 
         private IEnumerator DrawWithDelay()

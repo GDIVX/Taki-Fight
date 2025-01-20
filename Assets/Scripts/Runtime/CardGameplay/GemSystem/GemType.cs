@@ -1,4 +1,4 @@
-﻿namespace Runtime.CardGameplay.ManaSystem
+﻿namespace Runtime.CardGameplay.GemSystem
 {
     public enum GemType
     {

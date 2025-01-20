@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Runtime.CardGameplay.ManaSystem;
 using Sirenix.OdinInspector;
 
 namespace Runtime.CardGameplay.Card

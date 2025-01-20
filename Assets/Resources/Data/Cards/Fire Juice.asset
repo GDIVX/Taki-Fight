@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Fire Juice
   m_EditorClassIdentifier: 
   _title: Fire Juice
-  _description: 'Heal for {potency:0}.
+  _description: 'Heal for {potency:0}
 
-    Overheal: Attack with excess healing.'
+    Overheal: Attack with excess healing ({overheal_attack:0})'
   _image: {fileID: 21300000, guid: bfaf2382409554543a210c69c28ead7a, type: 3}
   _cardType: 0
   _selectStrategy: {fileID: 11400000, guid: 693626e501b6ec2438a4e251d9c1a4e4, type: 2}

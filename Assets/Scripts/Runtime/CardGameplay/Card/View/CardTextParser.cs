@@ -67,6 +67,28 @@ namespace Runtime.CardGameplay.Card.View
                             modifier != 0
                         );
                     }
+                },
+
+                {
+                    "overheal_attack", (controller, index) =>
+                    {
+                        var health = controller.Pawn?.Health;
+                        var currHealth = health.GetHealth();
+                        var healing = controller.GetPotency(index);
+                        var maxHealth = health.GetHealthMax();
+
+                        var missingHealth = maxHealth - currHealth;
+                        var modifier = controller.Pawn?.HealingModifier.Value ??
+                                       0 + controller.Pawn?.AttackModifier.Value ?? 0;
+
+                        var overHealValue = (healing + modifier) - missingHealth;
+                        overHealValue = overHealValue > 0 ? overHealValue : 0;
+
+                        return (
+                            overHealValue.ToString(),
+                            modifier != 0
+                        );
+                    }
                 }
             };
 
