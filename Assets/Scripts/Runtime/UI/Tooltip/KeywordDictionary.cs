@@ -16,6 +16,16 @@ namespace Runtime.UI.Tooltip
 
         private void OnEnable()
         {
+            Initialize();
+        }
+
+        private void OnValidate()
+        {
+            Initialize();
+        }
+
+        private void Initialize()
+        {
             _dictionary = new Dictionary<string, TooltipData>();
 
             foreach (TooltipData data in _tooltipData)

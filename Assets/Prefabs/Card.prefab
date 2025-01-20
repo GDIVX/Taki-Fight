@@ -747,6 +747,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _textField: {fileID: 6774713613490928545}
+  keywordColor: {r: 0.8039216, g: 0.38039216, b: 0.2, a: 1}
+  modifiedValueColor: {r: 0.13333334, g: 0.4392157, b: 0.5764706, a: 1}
 --- !u!114 &6598248545535228594
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Runtime.Combat.Pawn;
 using Runtime.UI.Tooltip;
 using Sirenix.OdinInspector;
@@ -25,7 +26,7 @@ namespace Runtime.Combat.StatusEffects
             _statusEffects = new List<IStatusEffect>();
         }
 
-        public void Add(IStatusEffect newEffect, Sprite icon , TooltipData tooltipData)
+        public void Add(IStatusEffect newEffect, Sprite icon, TooltipData tooltipData)
         {
             // Check if we already have the same effect
             var existingEffect = _statusEffects.Find(e => e.GetType() == newEffect.GetType());
@@ -39,7 +40,7 @@ namespace Runtime.Combat.StatusEffects
                 // Add new effect
                 _statusEffects.Add(newEffect);
                 newEffect.OnAdded(_pawn);
-                _statusEffectView.Add(newEffect, icon , tooltipData);
+                _statusEffectView.Add(newEffect, icon, tooltipData);
             }
         }
 
@@ -52,38 +53,20 @@ namespace Runtime.Combat.StatusEffects
 
         public void OnTurnStart()
         {
-            StartCoroutine(HandleTurnStart());
+            foreach (IStatusEffect statusEffect in _statusEffects)
+            {
+                statusEffect.OnTurnStart(_pawn);
+            }
         }
 
         public void OnTurnEnd()
         {
-            StartCoroutine(HandleTurnEnd());
-        }
-
-        private IEnumerator HandleTurnStart()
-        {
-            foreach (IStatusEffect statusEffect in _statusEffects)
-            {
-                statusEffect.OnTurnStart(_pawn);
-                yield return new WaitForSeconds(0.5f);
-            }
-        }
-
-        private IEnumerator HandleTurnEnd()
-        {
             // We copy the list because we might remove effects as we go
             var effectsSnapshot = new List<IStatusEffect>(_statusEffects);
 
-            foreach (var effect in effectsSnapshot)
+            foreach (var effect in effectsSnapshot.Where(effect => effect.Stack.Value <= 0))
             {
-                effect.Stack.Value--;
-
-                if (effect.Stack.Value <= 0)
-                {
-                    Remove(effect);
-                }
-
-                yield return new WaitForSeconds(0.1f);
+                Remove(effect);
             }
         }
     }

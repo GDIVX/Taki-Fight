@@ -2978,7 +2978,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _tooltipPrefab: {fileID: 6036290927624565365, guid: e9297393ee27db847b5e9c8b69a068aa, type: 3}
-  _initialSize: 5
+  _initialSize: 3
 --- !u!1 &1901233116
 GameObject:
   m_ObjectHideFlags: 0

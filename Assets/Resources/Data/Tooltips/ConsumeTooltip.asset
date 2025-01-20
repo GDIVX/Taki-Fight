@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6763c31d68e84c31a632f095429b1351, type: 3}
-  m_Name: Mana Symbol Tooltip
+  m_Name: ConsumeTooltip
   m_EditorClassIdentifier: 
-  _header: Mana Symbol
-  _secondHeader: Symbol
-  _description: This symbol gives mana when it lands on the payline
-  _icon: {fileID: 21300000, guid: 374da8ce8278d52409a184a4e14482e9, type: 3}
+  _header: Burn
+  _secondHeader: 
+  _description: 'This card can only be played once '
+  _icon: {fileID: 0}
   _backgroundColor: {r: 0.478, g: 0.573, b: 0.431, a: 0.98039216}

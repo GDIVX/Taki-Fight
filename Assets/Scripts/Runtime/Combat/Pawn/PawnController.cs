@@ -16,10 +16,10 @@ namespace Runtime.Combat.Pawn
         [SerializeField] protected float WaitBeforeDestroyingObjectOnDeath;
 
 
-        //TODO: handle bonuses via buffs
         public TrackedProperty<int> Defense;
         public TrackedProperty<int> DefenseModifier;
         public TrackedProperty<int> AttackModifier;
+        public TrackedProperty<int> HealingModifier;
 
         public HealthSystem Health { get; private set; }
 

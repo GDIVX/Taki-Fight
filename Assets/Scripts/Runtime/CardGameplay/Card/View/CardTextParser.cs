@@ -1,8 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
-using System.Text.RegularExpressions;
-using Runtime.UI.Tooltip;
 
 namespace Runtime.CardGameplay.Card.View
 {
@@ -10,9 +11,85 @@ namespace Runtime.CardGameplay.Card.View
     {
         [SerializeField] private TextMeshProUGUI _textField;
 
+        [Header("Keyword Formatting")] [SerializeField]
+        private Color keywordColor = Color.yellow;
+
+        [Header("Modified Value Formatting")] [SerializeField]
+        private Color modifiedValueColor = Color.green;
+
+        private static readonly Dictionary<string, Func<CardController, int, (string text, bool isModified)>>
+            PlaceholderHandlers = new()
+            {
+                {
+                    "potency", (controller, index) => (
+                        controller.GetPotency(index).ToString(),
+                        false // Base potency is never considered modified
+                    )
+                },
+                {
+                    "attack", (controller, index) =>
+                    {
+                        int baseValue = controller.GetPotency(index);
+                        int modifier = controller.Pawn?.AttackModifier.Value ?? 0;
+                        return (
+                            (baseValue + modifier).ToString(),
+                            modifier != 0
+                        );
+                    }
+                },
+                {
+                    "defense", (controller, index) =>
+                    {
+                        int baseValue = controller.GetPotency(index);
+                        int modifier = controller.Pawn?.DefenseModifier.Value ?? 0;
+                        return (
+                            (baseValue + modifier).ToString(),
+                            modifier != 0
+                        );
+                    }
+                },
+                {
+                    "overheal", (controller, index) =>
+                    {
+                        var health = controller.Pawn?.Health;
+                        var currHealth = health.GetHealth();
+                        var healing = controller.GetPotency(index);
+                        var maxHealth = health.GetHealthMax();
+
+                        var missingHealth = maxHealth - currHealth;
+                        var modifier = controller.Pawn?.HealingModifier.Value ?? 0;
+
+                        var overHealValue = (healing + modifier) - missingHealth;
+                        overHealValue = overHealValue > 0 ? overHealValue : 0;
+
+                        return (
+                            overHealValue.ToString(),
+                            modifier != 0
+                        );
+                    }
+                }
+            };
+
+        private static readonly Regex PlaceholderPattern = new(
+            @"\{(?<type>[^:}]+)(?::(?<index>\d+))?\}",
+            RegexOptions.Compiled
+        );
+
+        /// <summary>
+        /// Formats text with the specified color and bold styling
+        /// </summary>
+        private string FormatText(string text, Color color)
+        {
+            string colorHex = ColorUtility.ToHtmlStringRGB(color);
+            return $"<b><color=#{colorHex}>{text}</color></b>";
+        }
+
         /// <summary>
         /// Parses and updates the card's text description with dynamic values and icons.
         /// </summary>
+        /// <param name="controller">The card controller containing game logic and data</param>
+        /// <param name="rawText">The unparsed text containing placeholders</param>
+        /// <exception cref="ArgumentException">Thrown when an invalid placeholder type is encountered</exception>
         public void DrawTextDescription(CardController controller, string rawText)
         {
             if (controller == null || string.IsNullOrEmpty(rawText))
@@ -21,95 +98,85 @@ namespace Runtime.CardGameplay.Card.View
                 return;
             }
 
-            var parsedText = rawText;
-
-            // Replace {cardType}
-            parsedText = parsedText.Replace("{cardType}", controller.CardType.ToString());
-
-            // Replace {potency:X}
-            for (int i = 0; i < controller.Data.PlayStrategies.Count; i++)
+            try
             {
-                string potencyPlaceholder = $"{{potency:{i}}}";
-                if (parsedText.Contains(potencyPlaceholder))
-                {
-                    var potency = controller.GetPotency(i);
-                    parsedText = parsedText.Replace(potencyPlaceholder, potency.ToString());
-                }
+                string parsedText = ParsePlaceholders(controller, rawText);
+                parsedText = FormatKeywords(parsedText);
+                _textField.text = parsedText;
             }
-
-            // Handle {attack:X} and {defense:X} values with Regex
-            int attackModifier = controller.Pawn != null ? controller.Pawn.AttackModifier.Value : 0;
-            int defenseModifier = controller.Pawn != null ? controller.Pawn.DefenseModifier.Value : 0;
-
-            var attackValuePattern = @"\{attack:(\d+)\}";
-            var defenseValuePattern = @"\{defense:(\d+)\}";
-
-            // Replace attack values
-            parsedText = Regex.Replace(parsedText, attackValuePattern, match =>
+            catch (Exception e)
             {
-                if (int.TryParse(match.Groups[1].Value, out int index)
-                    && index >= 0
-                    && index < controller.Data.PlayStrategies.Count)
-                {
-                    int potency = controller.GetPotency(index);
-                    int finalAttack = potency + attackModifier;
-                    return finalAttack.ToString();
-                }
-
-                return match.Value;
-            });
-
-            // Replace defense values
-            parsedText = Regex.Replace(parsedText, defenseValuePattern, match =>
-            {
-                if (int.TryParse(match.Groups[1].Value, out int index)
-                    && index >= 0
-                    && index < controller.Data.PlayStrategies.Count)
-                {
-                    int potency = controller.GetPotency(index);
-                    int finalDefense = potency + defenseModifier;
-                    return finalDefense.ToString();
-                }
-
-                return match.Value;
-            });
-
-            // Underline keywords
-            parsedText = UnderlineKeywords(parsedText);
-
-            // Assign the parsed text to the TMP field
-            _textField.text = parsedText;
+                Debug.LogError($"Error parsing card text: {e.Message}");
+                _textField.text = rawText; // Fallback to raw text on error
+            }
         }
 
         /// <summary>
-        /// Underlines keywords from the TooltipDictionary within the text.
+        /// Processes all placeholders in the text using registered handlers
         /// </summary>
-        private string UnderlineKeywords(string text)
+        private string ParsePlaceholders(CardController controller, string text)
+        {
+            return PlaceholderPattern.Replace(text, match =>
+            {
+                string type = match.Groups["type"].Value.ToLowerInvariant();
+
+                // Handle special case for cardType
+                if (type == "cardtype")
+                    return controller.CardType.ToString();
+
+                // Handle indexed placeholders
+                if (!match.Groups["index"].Success)
+                    return match.Value;
+
+                if (!PlaceholderHandlers.TryGetValue(type, out var handler))
+                {
+                    Debug.LogWarning($"Unknown placeholder type: {type}");
+                    return match.Value;
+                }
+
+                int index = int.Parse(match.Groups["index"].Value);
+                if (index < 0 || index >= controller.Data.PlayStrategies.Count)
+                {
+                    Debug.LogWarning($"Index out of range for {type}: {index}");
+                    return match.Value;
+                }
+
+                var (value, isModified) = handler(controller, index);
+                return isModified ? FormatText(value, modifiedValueColor) : value;
+            });
+        }
+
+        /// <summary>
+        /// Formats keywords from the KeywordDictionary with bold and color styling
+        /// </summary>
+        private string FormatKeywords(string text)
         {
             var keywordDictionary = GameManager.Instance.KeywordDictionary;
-
-            if (keywordDictionary == null || !keywordDictionary.Keywords.Any())
+            if (keywordDictionary?.Keywords == null || !keywordDictionary.Keywords.Any())
             {
-                Debug.LogWarning("TooltipDictionary is empty or not assigned.");
+                Debug.LogWarning("KeywordDictionary is empty or not assigned.");
                 return text;
             }
 
-            foreach (var keyword in keywordDictionary.Keywords)
-            {
-                if (string.IsNullOrEmpty(keyword)) continue;
+            // Build a single regex pattern for all keywords
+            var keywords = keywordDictionary.Keywords
+                .Where(k => !string.IsNullOrEmpty(k))
+                .Select(Regex.Escape)
+                .OrderByDescending(k => k.Length); // Process longer keywords first
 
-                var escapedKeyword = Regex.Escape(keyword);
-                var keywordPattern = $@"\b{escapedKeyword}\b";
+            string pattern = $@"\b(?:{string.Join("|", keywords)})\b";
+            var keywordRegex = new Regex(pattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-                text = Regex.Replace(text, keywordPattern, match =>
-                {
-                    if (match.Value.Contains("<u>") || match.Value.Contains("</u>")) return match.Value;
+            return keywordRegex.Replace(text, match =>
+                match.Value.Contains("<b>") ? match.Value : FormatText(match.Value, keywordColor));
+        }
 
-                    return $"<u>{match.Value}</u>";
-                }, RegexOptions.IgnoreCase);
-            }
-
-            return text;
+        // Optional: Add method to preview colors in editor
+        private void OnValidate()
+        {
+            // Ensure colors are not fully transparent
+            keywordColor.a = 1f;
+            modifiedValueColor.a = 1f;
         }
     }
 }
