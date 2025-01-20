@@ -13,6 +13,7 @@ namespace Runtime.CardGameplay.Card.View
         [SerializeField, TabGroup("Draw")] private TextMeshProUGUI _title;
         [SerializeField, TabGroup("Draw")] private TextMeshProUGUI _description;
         [SerializeField, TabGroup("Draw")] private Image _image;
+        [SerializeField, TabGroup("Draw")] private TextMeshProUGUI _pearlsCount, _quartzCount, _brimstoneCount;
 
         [SerializeField, TabGroup("Dependencies")]
         private CardTextParser _cardTextParser;
@@ -73,6 +74,15 @@ namespace Runtime.CardGameplay.Card.View
         {
             _title.text = data.Title;
             _image.sprite = data.Image;
+
+            var cost = data.Cost;
+            _pearlsCount.text = cost.Pearls.ToString();
+            _quartzCount.text = cost.Quartz.ToString();
+            _brimstoneCount.text = cost.Brimstone.ToString();
+
+            _pearlsCount.transform.parent.gameObject.SetActive(cost.Pearls > 0);
+            _quartzCount.transform.parent.gameObject.SetActive(cost.Quartz > 0);
+            _brimstoneCount.transform.parent.gameObject.SetActive(cost.Brimstone > 0);
 
             _cardData = data;
 

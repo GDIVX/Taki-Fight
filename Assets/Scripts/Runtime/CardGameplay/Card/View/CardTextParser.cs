@@ -89,6 +89,17 @@ namespace Runtime.CardGameplay.Card.View
                             modifier != 0
                         );
                     }
+                },
+                {
+                    "heal", (controller, index) =>
+                    {
+                        int baseValue = controller.GetPotency(index);
+                        int modifier = controller.Pawn?.HealingModifier.Value ?? 0;
+                        return (
+                            (baseValue + modifier).ToString(),
+                            modifier != 0
+                        );
+                    }
                 }
             };
 

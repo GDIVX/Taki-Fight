@@ -18,7 +18,7 @@ namespace Runtime.CardGameplay.Card
         {
             Data = data;
             Controller = null;
-            Group = data.Group;
+            Group = data.Cost;
         }
     }
 }

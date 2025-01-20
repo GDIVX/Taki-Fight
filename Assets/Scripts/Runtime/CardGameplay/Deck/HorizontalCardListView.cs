@@ -37,7 +37,6 @@ namespace Runtime.CardGameplay.Deck
         {
             card.Transform.SetParent(transform);
             _cards.Add(card);
-            HookCardEvents(card);
             ArrangeCardsInArch();
         }
 
@@ -47,14 +46,7 @@ namespace Runtime.CardGameplay.Deck
             ArrangeCardsInArch();
         }
 
-        private void HookCardEvents(CardController card)
-        {
-            // Suppose CardController calls these UnityEvents internally:
-            // card.PointerEnterEvent.AddListener(OnCardPointerEnter);
-            // card.PointerExitEvent.AddListener(OnCardPointerExit);
-            // card.BeginDragEvent.AddListener(OnBeginDrag);
-            // card.EndDragEvent.AddListener(OnEndDrag);
-        }
+ 
 
         private void OnCardPointerEnter(CardController card)
         {
