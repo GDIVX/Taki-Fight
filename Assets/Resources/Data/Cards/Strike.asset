@@ -26,3 +26,4 @@ MonoBehaviour:
     Quartz: 0
     Brimstone: 0
   _extractGems: 0
+  _feedbackStrategy: {fileID: 11400000, guid: 52c6c4e3abe5a3947b1aebe3de5d1939, type: 2}

@@ -10,6 +10,8 @@ namespace Runtime.Combat.Pawn.Enemy
         private PlayTableEntry _playTableEntry;
         private AIPlayTable _table;
 
+        private int _currPotency = 0;
+
         public void Init(AIPlayTable playTable)
         {
             _table = playTable;
@@ -36,6 +38,12 @@ namespace Runtime.Combat.Pawn.Enemy
                 finalPotency += DefenseModifier.Value;
             }
 
+            if (_playTableEntry.AddHealingMod)
+            {
+                finalPotency += HealingModifier.Value;
+            }
+
+            _currPotency = finalPotency;
             _intentionsList.Add(_playTableEntry.Sprite, _playTableEntry.Color, finalPotency.ToString());
         }
 
@@ -43,7 +51,16 @@ namespace Runtime.Combat.Pawn.Enemy
         {
             OnTurnStart();
             yield return new WaitForSeconds(0.2f);
-            _playTableEntry.Strategy.Play(this, _playTableEntry.Potency);
+            var feedbackStrategy = _playTableEntry.FeedbackStrategy;
+            if (feedbackStrategy)
+            {
+                feedbackStrategy.Animate(this, () => _playTableEntry.Strategy.Play(this, _currPotency));
+            }
+            else
+            {
+                _playTableEntry.Strategy.Play(this, _currPotency);
+            }
+
             _intentionsList.RemoveNext();
             OnTurnEnd();
         }

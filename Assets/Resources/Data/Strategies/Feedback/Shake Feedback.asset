@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0a7eb2bc4d7445eb8ca22eebe869068, type: 3}
   m_Name: Shake Feedback
   m_EditorClassIdentifier: 
-  _animationTime: 0
-  _strength: {x: 0, y: 0, z: 0}
-  _vibrato: 0
-  _ease: 0
+  _animationTime: 0.15
+  _strength: {x: 0.5, y: 0.5, z: 0}
+  _vibrato: 10
+  _ease: 4

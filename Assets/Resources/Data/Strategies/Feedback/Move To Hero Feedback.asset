@@ -9,14 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f752b4300514837b339dd47fecb8d08, type: 3}
-  m_Name: Move To Target Feedback
+  m_Script: {fileID: 11500000, guid: ea3db8e978a24ab7833ee676f9d8199b, type: 3}
+  m_Name: Move To Hero Feedback
   m_EditorClassIdentifier: 
   _animationTimeForward: 0.5
   _animationTimeBackward: 0.5
-  _knockbackVector: {x: 2, y: 0, z: -1}
+  _knockbackVector: {x: -2, y: 0, z: -1}
   _knockbackDuration: 0.25
   _offset: {x: 0, y: 0, z: 0}
   _easeForward: 5
   _easeBackward: 6
-  _knockbackEase: 18
+  _knockbackEase: 27
