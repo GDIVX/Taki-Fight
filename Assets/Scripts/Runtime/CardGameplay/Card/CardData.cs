@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Runtime.CardGameplay.Card.CardBehaviour;
+using Runtime.CardGameplay.Card.CardBehaviour.Feedback;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -30,6 +31,7 @@ namespace Runtime.CardGameplay.Card
 
         [SerializeField, BoxGroup("Economy")] private GemGroup _cost;
         [SerializeField, BoxGroup("Economy")] private bool _extractGems = false;
+        [SerializeField] private FeedbackStrategy _feedbackStrategy;
 
 
         public string Title => _title;
@@ -46,6 +48,8 @@ namespace Runtime.CardGameplay.Card
         public bool DestroyCardAfterUse => _destroyCardAfterUse;
 
         public GemGroup Cost => _cost;
+
+        public FeedbackStrategy FeedbackStrategy => _feedbackStrategy;
     }
 
     [System.Serializable]

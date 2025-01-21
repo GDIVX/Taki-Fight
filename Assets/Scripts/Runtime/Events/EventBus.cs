@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Runtime.Events
 {
@@ -29,6 +30,7 @@ namespace Runtime.Events
 
         public void Publish<T>(T eventData)
         {
+            Debug.Log("Published");
             var type = typeof(T);
             if (_subscribers.TryGetValue(type, out var subscriber))
             {

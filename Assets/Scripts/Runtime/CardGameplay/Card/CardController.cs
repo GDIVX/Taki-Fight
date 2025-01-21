@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Runtime.CardGameplay.Card.CardBehaviour;
+using Runtime.CardGameplay.Card.CardBehaviour.Feedback;
 using Runtime.CardGameplay.Card.View;
 using Runtime.CardGameplay.Deck;
 using Runtime.CardGameplay.GemSystem;
@@ -25,6 +26,7 @@ namespace Runtime.CardGameplay.Card
 
         [ShowInInspector, ReadOnly] private CardSelectStrategy _selectStrategy;
         [ShowInInspector, ReadOnly] private List<(CardPlayStrategy, int)> _playStrategies;
+        [ShowInInspector, ReadOnly] private FeedbackStrategy _feedbackStrategy;
 
         public static event Action<CardController> OnCardPlayedEvent;
 
@@ -64,6 +66,7 @@ namespace Runtime.CardGameplay.Card
             CardType = data.CardType;
 
             _selectStrategy = data.SelectStrategy;
+            _feedbackStrategy = data.FeedbackStrategy;
             _playStrategies = CreatePlayStrategyTupletList(data.PlayStrategies);
 
 
@@ -147,16 +150,45 @@ namespace Runtime.CardGameplay.Card
         {
             if (!CanAfford())
             {
-                Debug.LogWarning("Tried to play a card without being able to afford it");
+                GameManager.Instance.BannerViewManager.WriteMessage(1, "Can't Afford to Play This Card", Color.red);
+                this.Timer(1f, () => GameManager.Instance.BannerViewManager.Clear());
                 return;
             }
 
+            if (_feedbackStrategy)
+            {
+                Debug.Log("Starting feedback");
+                _feedbackStrategy.Animate(Pawn, RunPlayLogic);
+            }
+            else
+            {
+                RunPlayLogic();
+            }
+        }
+
+        private void RunPlayLogic()
+        {
             foreach (var tuple in _playStrategies)
             {
                 tuple.Item1.Play(Pawn, tuple.Item2);
-                //pay for the card
             }
 
+            HandleGemCost();
+
+            if (Data.DestroyCardAfterUse)
+            {
+                HandController.BurnCard(this);
+            }
+            else
+            {
+                HandController.DiscardCard(this);
+            }
+
+            OnCardPlayedEvent?.Invoke(this);
+        }
+
+        private void HandleGemCost()
+        {
             if (Data.ExtractGems)
             {
                 //Destroy the gems
@@ -170,17 +202,6 @@ namespace Runtime.CardGameplay.Card
                 GemsBag.ReturnToBag(GemType.Quartz, Group.Quartz);
                 GemsBag.ReturnToBag(GemType.Brimstone, Group.Brimstone);
             }
-
-            if (Data.DestroyCardAfterUse)
-            {
-                HandController.BurnCard(this);
-            }
-            else
-            {
-                HandController.DiscardCard(this);
-            }
-
-            OnCardPlayedEvent?.Invoke(this);
         }
 
         private bool CanAfford()

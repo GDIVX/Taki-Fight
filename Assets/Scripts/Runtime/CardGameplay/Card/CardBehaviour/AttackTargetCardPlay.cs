@@ -1,4 +1,5 @@
 ﻿using Runtime.Combat.Pawn;
+using Runtime.Events;
 using UnityEngine;
 
 namespace Runtime.CardGameplay.Card.CardBehaviour
