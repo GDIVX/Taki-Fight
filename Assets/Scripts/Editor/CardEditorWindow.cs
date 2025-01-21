@@ -100,7 +100,7 @@ namespace Editor
                         EditorGUILayout.PropertyField(so.FindProperty("_selectStrategy"));
                         EditorGUILayout.PropertyField(so.FindProperty("_playStrategies"), true);
                         EditorGUILayout.PropertyField(so.FindProperty("_destroyCardAfterUse"));
-                        EditorGUILayout.PropertyField(so.FindProperty("_group"));
+                        EditorGUILayout.PropertyField(so.FindProperty("_cost"));
                         EditorGUILayout.PropertyField(so.FindProperty("_extractGems"));
                         so.ApplyModifiedProperties();
 

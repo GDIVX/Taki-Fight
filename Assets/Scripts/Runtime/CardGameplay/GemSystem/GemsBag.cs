@@ -92,8 +92,8 @@ namespace Runtime.CardGameplay.GemSystem
         public bool Has(int pearls, int quartz, int brimstone)
         {
             return Has(GemType.Pearl, pearls)
-                && Has(GemType.Quartz, quartz)
-                && Has(GemType.Brimstone, brimstone);
+                   && Has(GemType.Quartz, quartz)
+                   && Has(GemType.Brimstone, brimstone);
         }
 
         #endregion
@@ -118,8 +118,6 @@ namespace Runtime.CardGameplay.GemSystem
                 drawnGems.Add(gem);
             }
 
-            Debug.Log("Drawing new gems");
-
             // Single event trigger
             OnContentModifiedEvent?.Invoke(_content);
             OnAvailableModified?.Invoke(_gemsAvailableList);
@@ -135,7 +133,7 @@ namespace Runtime.CardGameplay.GemSystem
             for (int i = 0; i < amount; i++)
             {
                 int index = _content.FindIndex(g => g.Type == type);
-                if (index == -1) break; 
+                if (index == -1) break;
                 var gem = _content[index];
                 _content.RemoveAt(index);
                 _gemsAvailableList.Add(gem);
@@ -257,9 +255,12 @@ namespace Runtime.CardGameplay.GemSystem
             {
                 _gemsAvailableCount[gem.Type] = Mathf.Max(0, _gemsAvailableCount[gem.Type] - 1);
             }
+            else
+            {
+                // Remove from content if present
+                _content.Remove(gem);
+            }
 
-            // Remove from content if present
-            _content.Remove(gem);
 
             // By default, destroy does not spam events; public methods do that
             if (fireEvents)

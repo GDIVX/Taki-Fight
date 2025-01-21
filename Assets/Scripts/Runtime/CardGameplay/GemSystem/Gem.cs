@@ -3,7 +3,7 @@
 namespace Runtime.CardGameplay.GemSystem
 {
     [Serializable]
-    public struct Gem
+    public class Gem
     {
         public GemType Type;
 

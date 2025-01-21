@@ -18,7 +18,6 @@ namespace Runtime.CardGameplay.Deck
         private RectTransform _rectTransform;
         private readonly List<CardController> _cards = new();
 
-        // Optional events for pointer interaction (drag/hover).
         public UnityEvent<CardController> PointerEnterEvent;
         public UnityEvent<CardController> PointerExitEvent;
         public UnityEvent<CardController> BeginDragEvent;
@@ -27,6 +26,7 @@ namespace Runtime.CardGameplay.Deck
         private CardController _hoveredCard;
         private CardController _selectedCard;
         private bool _isSwapping;
+        private Sequence _currentArrangeSequence;
 
         private void Start()
         {
@@ -46,11 +46,23 @@ namespace Runtime.CardGameplay.Deck
             ArrangeCardsInArch();
         }
 
- 
+        private void EnsureCardOnTop(CardController card)
+        {
+            if (card != null)
+            {
+                // Kill any existing arrangement animation
+                if (_currentArrangeSequence != null && _currentArrangeSequence.IsPlaying())
+                {
+                    _currentArrangeSequence.Kill();
+                }
+                card.Transform.SetAsLastSibling();
+            }
+        }
 
         private void OnCardPointerEnter(CardController card)
         {
             _hoveredCard = card;
+            EnsureCardOnTop(card);
             PointerEnterEvent?.Invoke(card);
         }
 
@@ -75,7 +87,7 @@ namespace Runtime.CardGameplay.Deck
         private void Update()
         {
             if (_selectedCard == null || _isSwapping) return;
-            // Basic example of swapping by horizontal position:
+            
             for (int i = 0; i < _cards.Count; i++)
             {
                 var other = _cards[i];
@@ -122,6 +134,14 @@ namespace Runtime.CardGameplay.Deck
             float radius = scaledWidth / (2 * Mathf.Tan(Mathf.Deg2Rad * (arcAngle / 2)));
             if (float.IsNaN(radius) || float.IsInfinity(radius)) return;
 
+            // Kill any existing arrangement animation
+            if (_currentArrangeSequence != null && _currentArrangeSequence.IsPlaying())
+            {
+                _currentArrangeSequence.Kill();
+            }
+
+            _currentArrangeSequence = DOTween.Sequence();
+
             for (int i = 0; i < count; i++)
             {
                 float angle = Mathf.Lerp(-arcAngle / 2, arcAngle / 2, i / Mathf.Max(1f, (count - 1f)));
@@ -129,15 +149,32 @@ namespace Runtime.CardGameplay.Deck
                 float yPos = Mathf.Cos(Mathf.Deg2Rad * angle) * radius - radius;
 
                 var card = _cards[i];
-                card.Transform.SetSiblingIndex(i);
+                
+                if (card != _hoveredCard)
+                {
+                    card.Transform.SetSiblingIndex(i);
+                }
 
-                // Move and rotate with DOTween, then update the card’s view.
-                card.Transform.DOLocalMove(new Vector3(xPos, yPos, 0), animationDuration)
-                    .SetEase(easeType);
-                card.Transform.DOLocalRotate(new Vector3(0, 0, -angle), animationDuration)
-                    .SetEase(easeType)
-                    .OnComplete(() => card.View.SetOriginalValues());
+                _currentArrangeSequence.Join(
+                    card.Transform.DOLocalMove(new Vector3(xPos, yPos, 0), animationDuration)
+                        .SetEase(easeType)
+                );
+                _currentArrangeSequence.Join(
+                    card.Transform.DOLocalRotate(new Vector3(0, 0, -angle), animationDuration)
+                        .SetEase(easeType)
+                );
             }
+
+            _currentArrangeSequence.OnComplete(() => {
+                foreach (var card in _cards)
+                {
+                    card.View.SetOriginalValues();
+                }
+                if (_hoveredCard != null)
+                {
+                    EnsureCardOnTop(_hoveredCard);
+                }
+            });
         }
     }
 }

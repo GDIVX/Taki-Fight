@@ -16,4 +16,5 @@ MonoBehaviour:
   _secondHeader: 
   _description: 'This card can only be played once '
   _icon: {fileID: 0}
-  _backgroundColor: {r: 0.478, g: 0.573, b: 0.431, a: 0.98039216}
+  _backgroundColor: {r: 0.7019608, g: 0.22352941, b: 0.22352941, a: 1}
+  _alpha: 0.95

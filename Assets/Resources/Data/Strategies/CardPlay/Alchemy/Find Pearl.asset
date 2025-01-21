@@ -9,8 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cff6aa09d1764eabb4f9460efeb239c8, type: 3}
-  m_Name: GainClubMana
+  m_Script: {fileID: 11500000, guid: 136128e3b6db47448b38a5511f4a24d8, type: 3}
+  m_Name: Find Pearl
   m_EditorClassIdentifier: 
-  _duration: 1
-  _manaDefinition: {fileID: 11400000, guid: baf018c3847b94f438ae8d51177dec43, type: 2}
+  _gemType: 0

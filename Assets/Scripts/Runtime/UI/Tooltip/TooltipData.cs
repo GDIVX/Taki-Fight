@@ -8,9 +8,10 @@ namespace Runtime.UI.Tooltip
     {
         [SerializeField] private string _header;
         [SerializeField] private string _secondHeader;
-        [SerializeField , TextArea] private string _description;
+        [SerializeField, TextArea] private string _description;
         [SerializeField] private Sprite _icon;
         [SerializeField, ColorPalette] private Color _backgroundColor;
+        [SerializeField, Range(0, 1)] private float _alpha = 0.95f;
 
 
         public string Header => _header;
@@ -20,6 +21,13 @@ namespace Runtime.UI.Tooltip
 
         public Sprite Icon => _icon;
 
-        public Color BackgroundColor => _backgroundColor;
+        public Color BackgroundColor
+        {
+            get
+            {
+                var color = new Color(_backgroundColor.r, _backgroundColor.g, _backgroundColor.b, _alpha);
+                return color;
+            }
+        }
     }
 }

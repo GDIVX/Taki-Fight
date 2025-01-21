@@ -16,4 +16,5 @@ MonoBehaviour:
   _secondHeader: Trigger
   _description: If healing exceeds your maximum health, trigger this effect.
   _icon: {fileID: 21300000, guid: 725cf42747268ab45997e177b3b9a2e4, type: 3}
-  _backgroundColor: {r: 0.478, g: 0.573, b: 0.431, a: 0.98039216}
+  _backgroundColor: {r: 0.4392157, g: 0.43529412, b: 0.827451, a: 1}
+  _alpha: 0.95

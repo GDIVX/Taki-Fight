@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cff6aa09d1764eabb4f9460efeb239c8, type: 3}
-  m_Name: GainDiamondMana
+  m_Script: {fileID: 11500000, guid: 1291db31afa54dca84315ecdd8125bc4, type: 3}
+  m_Name: Gain Brimstone and draw
   m_EditorClassIdentifier: 
-  _duration: 1
-  _manaDefinition: {fileID: 11400000, guid: 9a72e5ddf60ae4543ac7bd7e6d7d27f3, type: 2}
+  _gemType: 2
+  _drawGemsAfterAdding: 1

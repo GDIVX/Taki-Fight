@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6763c31d68e84c31a632f095429b1351, type: 3}
-  m_Name: Consume Pile Tooltip
+  m_Name: Find Tooltip
   m_EditorClassIdentifier: 
-  _header: Consume Pile
-  _secondHeader: 
-  _description: 
-  _icon: {fileID: 21300000, guid: 38f55e8f01a35b844808249e624ae978, type: 3}
-  _backgroundColor: {r: 0.863, g: 0.761, b: 0.631, a: 1}
+  _header: Find
+  _secondHeader: Action
+  _description: Draw a specified Gem from the Bag
+  _icon: {fileID: -1722815243, guid: aaf06ea70717cc643b5453f87d2e7c1f, type: 3}
+  _backgroundColor: {r: 1, g: 0.69411767, b: 0.25882354, a: 1}
   _alpha: 0.95
