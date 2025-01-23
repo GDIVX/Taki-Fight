@@ -19,10 +19,10 @@ MonoBehaviour:
   _selectStrategy: {fileID: 11400000, guid: 6488691d3e5b1734fbf184a753c30823, type: 2}
   _playStrategies:
   - PlayStrategy: {fileID: 11400000, guid: 549e43c006aaa9548b773fde947c00f5, type: 2}
-    Potency: 5
+    Potency: 3
   _destroyCardAfterUse: 0
   _cost:
-    Pearls: 1
+    Pearls: 0
     Quartz: 0
     Brimstone: 0
   _extractGems: 0

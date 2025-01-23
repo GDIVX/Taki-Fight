@@ -66,10 +66,24 @@ namespace Runtime.CardGameplay.Deck
         {
             if (_cards.Count >= _maxHandSize) return;
             if (!Deck.Draw(out CardInstance cardInstance)) return;
+            DrawCard(cardInstance);
+        }
+
+        private void DrawCard(CardInstance cardInstance)
+        {
             var controller = _cardFactory.Create(cardInstance);
             controller.OnDraw();
             controller.View.OnDraw();
             AddCard(controller);
+        }
+
+        [Button]
+        public void FindAndDrawCard(CardData cardData)
+        {
+            if (_cards.Count >= _maxHandSize) return;
+            if (!Deck.TryToFindAndRemoveCard(cardData, out CardInstance cardInstance)) return;
+
+            DrawCard(cardInstance);
         }
 
 

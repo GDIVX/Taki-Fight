@@ -9,9 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: db39779a7d15495786ef0b741b93a144, type: 3}
-  m_Name: DemoHero
+  m_Script: {fileID: 11500000, guid: 4997804bd6fd4a8499fa2444d4c73c6b, type: 3}
+  m_Name: Target Random Enemy
   m_EditorClassIdentifier: 
-  sprite: {fileID: -647556615, guid: aed436a776763734a89aee3e3e9de32c, type: 3}
-  health: 90
-  defense: 0

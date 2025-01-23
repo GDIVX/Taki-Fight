@@ -10,21 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 842f4e02fee146ddb72cea2b80a51349, type: 3}
-  m_Name: Fuse
+  m_Name: Bombardment
   m_EditorClassIdentifier: 
-  _title: Fuse
-  _description: 'Extract
-
-    Gain {potency:0} Quartz'
-  _image: {fileID: 1041157148, guid: aaf06ea70717cc643b5453f87d2e7c1f, type: 3}
-  _cardType: 2
+  _title: Bombardment
+  _description: Attack a random enemy for {attack:0} per stack of Power.
+  _image: {fileID: 21300000, guid: 2f0a9d9bf58fc2b47954e70d13c5f2bd, type: 3}
+  _cardType: 0
   _selectStrategy: {fileID: 11400000, guid: 6488691d3e5b1734fbf184a753c30823, type: 2}
   _playStrategies:
-  - PlayStrategy: {fileID: 11400000, guid: c0b19e88e1f51ab4d8f31979f40c4e69, type: 2}
-    Potency: 1
+  - PlayStrategy: {fileID: 11400000, guid: e3b0c29a224cf514295e97a029807acc, type: 2}
+    Potency: 4
   _destroyCardAfterUse: 0
   _cost:
     Pearls: 2
     Quartz: 0
-    Brimstone: 0
-  _extractGems: 1
+    Brimstone: 1
+  _extractGems: 0
+  _feedbackStrategy: {fileID: 11400000, guid: 82bb37c4993b74f4a91e9a6190ef52d0, type: 2}

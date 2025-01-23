@@ -11,11 +11,11 @@ namespace Runtime.CardGameplay.GemSystem
 
         public void Initialize(GemsBag gemsBag)
         {
-            _bagContentCount.text = gemsBag.Count.ToString();
-            gemsBag.OnContentModifiedEvent += gems => _bagContentCount.text = gems.Count.ToString();
+            //.text = gemsBag.Count.ToString();
+            //gemsBag.OnModifiedEvent += gems => _bagContentCount.text = gems.Count.ToString();
 
             UpdateGemsCount(gemsBag);
-            gemsBag.OnAvailableModified += (_) => UpdateGemsCount(gemsBag);
+            gemsBag.OnModifiedEvent += () => UpdateGemsCount(gemsBag);
         }
 
         private void UpdateGemsCount(GemsBag gemsBag)

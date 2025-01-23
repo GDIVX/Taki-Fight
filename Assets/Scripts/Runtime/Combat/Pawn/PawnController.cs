@@ -71,7 +71,7 @@ namespace Runtime.Combat.Pawn
         public void ApplyStatusEffect(StatusEffectData statusEffectData, int stack)
         {
             var statusEffect = statusEffectData.CreateStatusEffect(stack);
-            _statusEffectHandler.Add(statusEffect, statusEffectData.Icon , statusEffectData.Tooltip);
+            _statusEffectHandler.Add(statusEffect, statusEffectData.Icon, statusEffectData.Tooltip);
         }
 
 
@@ -93,6 +93,17 @@ namespace Runtime.Combat.Pawn
         public void OnTurnEnd()
         {
             _statusEffectHandler.OnTurnEnd();
+        }
+
+        public int GetStatusEffectStacks(Type type)
+        {
+            var effect = _statusEffectHandler.Get(type);
+            if (effect != null)
+            {
+                return effect.Stack.Value;
+            }
+
+            return 0;
         }
     }
 }

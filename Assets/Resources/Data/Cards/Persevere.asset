@@ -26,8 +26,8 @@ MonoBehaviour:
     Potency: 4
   _destroyCardAfterUse: 0
   _cost:
-    Pearls: 1
-    Quartz: 0
-    Brimstone: 1
+    Pearls: 0
+    Quartz: 1
+    Brimstone: 0
   _extractGems: 0
   _feedbackStrategy: {fileID: 11400000, guid: 82bb37c4993b74f4a91e9a6190ef52d0, type: 2}

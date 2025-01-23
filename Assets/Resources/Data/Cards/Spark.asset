@@ -10,21 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 842f4e02fee146ddb72cea2b80a51349, type: 3}
-  m_Name: Split
+  m_Name: Spark
   m_EditorClassIdentifier: 
-  _title: Split
-  _description: 'Extract
-
-    Gain {potency:0} Pearls'
-  _image: {fileID: 1878701654, guid: aaf06ea70717cc643b5453f87d2e7c1f, type: 3}
-  _cardType: 2
-  _selectStrategy: {fileID: 11400000, guid: 6488691d3e5b1734fbf184a753c30823, type: 2}
+  _title: Spark
+  _description: Attack for {attack:0}
+  _image: {fileID: 21300000, guid: 37f174ab7cb028747b44047583ac73a6, type: 3}
+  _cardType: 0
+  _selectStrategy: {fileID: 11400000, guid: 693626e501b6ec2438a4e251d9c1a4e4, type: 2}
   _playStrategies:
-  - PlayStrategy: {fileID: 11400000, guid: 5ad1dbb390affa54f8618ace51516182, type: 2}
+  - PlayStrategy: {fileID: 11400000, guid: cd7cd7aafe2c3b14ab5954de633d36b0, type: 2}
     Potency: 2
   _destroyCardAfterUse: 0
   _cost:
     Pearls: 0
-    Quartz: 1
+    Quartz: 0
     Brimstone: 0
-  _extractGems: 1
+  _extractGems: 0
+  _feedbackStrategy: {fileID: 11400000, guid: 82bb37c4993b74f4a91e9a6190ef52d0, type: 2}

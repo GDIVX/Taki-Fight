@@ -44,6 +44,16 @@ namespace Runtime.Combat.StatusEffects
             }
         }
 
+        public T Get<T>() where T : IStatusEffect
+        {
+            return (T)_statusEffects.FirstOrDefault(effect => effect is T);
+        }
+
+        public IStatusEffect Get(Type type)
+        {
+            return _statusEffects.FirstOrDefault(type.IsInstanceOfType);
+        }
+
         private void Remove(IStatusEffect effect)
         {
             effect.Remove(_pawn);

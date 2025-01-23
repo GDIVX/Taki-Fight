@@ -47,13 +47,31 @@ namespace Runtime.CardGameplay.Deck
                     return false;
                 }
 
-                Reshuffle();
+                MergePiles();
+                //Reshuffle();
             }
 
             cardInstance = _drawPile.Pop();
             OnDrawPileUpdated?.Invoke(_drawPile);
             return true;
         }
+
+        public bool TryToFindAndRemoveCard(CardData cardData, out CardInstance cardInstance)
+        {
+            cardInstance = null;
+
+            if (_drawPile.All(card => card.Data.Title != cardData.Title)) return false;
+
+            var listedPile = _drawPile.ToList();
+            cardInstance = listedPile.First(card => card.Data.Title == cardData.Title);
+            listedPile.Remove(cardInstance);
+
+            // Rebuild the stack
+            _drawPile = new Stack<CardInstance>(listedPile);
+
+            return true;
+        }
+
 
         public void Discard(CardInstance card)
         {

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   entries:
   - Strategy: {fileID: 11400000, guid: 096e7e287617b1145a56fcf896a78cff, type: 2}
-    FeedbackStrategy: {fileID: 11400000, guid: 87678fb723948604abd5204c8facd1f2, type: 2}
+    FeedbackStrategy: {fileID: 11400000, guid: 82bb37c4993b74f4a91e9a6190ef52d0, type: 2}
     Potency: 2
     AddAttackMod: 1
     AddDefenseMod: 0
@@ -24,7 +24,7 @@ MonoBehaviour:
     Color: {r: 0.7019608, g: 0.22352941, b: 0.22352941, a: 1}
   - Strategy: {fileID: 11400000, guid: 591598e589b73164e8540f8555024026, type: 2}
     FeedbackStrategy: {fileID: 11400000, guid: 82bb37c4993b74f4a91e9a6190ef52d0, type: 2}
-    Potency: 3
+    Potency: 1
     AddAttackMod: 0
     AddDefenseMod: 0
     AddHealingMod: 0

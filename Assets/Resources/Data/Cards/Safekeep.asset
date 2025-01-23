@@ -13,14 +13,14 @@ MonoBehaviour:
   m_Name: Safekeep
   m_EditorClassIdentifier: 
   _title: Safekeep
-  _description: 'Find {potency:0} Brimstone
+  _description: 'Add {potency:0} Brimstone
 
     Consume'
-  _image: {fileID: 21300000, guid: 49f6b4497592fca42bc8cdb6e5760904, type: 3}
+  _image: {fileID: 524610007, guid: aaf06ea70717cc643b5453f87d2e7c1f, type: 3}
   _cardType: 0
   _selectStrategy: {fileID: 11400000, guid: 6488691d3e5b1734fbf184a753c30823, type: 2}
   _playStrategies:
-  - PlayStrategy: {fileID: 11400000, guid: 654e7aebf8b8b6b4ebd33466937bfd25, type: 2}
+  - PlayStrategy: {fileID: 11400000, guid: e4454ce5b42081a4db51880b45ff70c2, type: 2}
     Potency: 1
   _destroyCardAfterUse: 1
   _cost:
@@ -28,3 +28,4 @@ MonoBehaviour:
     Quartz: 0
     Brimstone: 0
   _extractGems: 0
+  _feedbackStrategy: {fileID: 11400000, guid: 82bb37c4993b74f4a91e9a6190ef52d0, type: 2}

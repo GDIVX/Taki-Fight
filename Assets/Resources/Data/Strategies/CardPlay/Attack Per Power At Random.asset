@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d09b7fa8ed1f402abd7a7c31aa9db6fe, type: 3}
+  m_Name: Attack Per Power At Random
+  m_EditorClassIdentifier: 
+  _pawnSelectMode: 0
+  _statusEffectData: {fileID: 11400000, guid: 54cb4099e45e5da4688d9a3d913a1ef2, type: 2}
+  _nestedStrategy: {fileID: 11400000, guid: ea3e2ef4febb6e34eb8d53d74877599b, type: 2}

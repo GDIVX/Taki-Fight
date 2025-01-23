@@ -8,15 +8,10 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
     public class GainGemPlay : CardPlayStrategy
     {
         [SerializeField] private GemType _gemType;
-        [SerializeField] private bool _drawGemsAfterAdding;
 
         public override void Play(PawnController caller, int potency)
         {
             GameManager.Instance.GemsBag.Add(_gemType, potency);
-            if (_drawGemsAfterAdding)
-            {
-                GameManager.Instance.GemsBag.Draw(_gemType, potency);
-            }
         }
     }
 }

@@ -16,20 +16,19 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c991fad572efdee44b0d6993abbb32cb, type: 2}
   - {fileID: 11400000, guid: c991fad572efdee44b0d6993abbb32cb, type: 2}
   - {fileID: 11400000, guid: c991fad572efdee44b0d6993abbb32cb, type: 2}
+  - {fileID: 11400000, guid: a43c849c990c2ed4b9e9f1f2e33ea415, type: 2}
+  - {fileID: 11400000, guid: a43c849c990c2ed4b9e9f1f2e33ea415, type: 2}
+  - {fileID: 11400000, guid: d7abef7bd65a4d7438f0c8eef0ea7173, type: 2}
+  - {fileID: 11400000, guid: d7abef7bd65a4d7438f0c8eef0ea7173, type: 2}
+  - {fileID: 11400000, guid: d7abef7bd65a4d7438f0c8eef0ea7173, type: 2}
+  - {fileID: 11400000, guid: d7abef7bd65a4d7438f0c8eef0ea7173, type: 2}
+  - {fileID: 11400000, guid: d7abef7bd65a4d7438f0c8eef0ea7173, type: 2}
   - {fileID: 11400000, guid: 3d3688b991b42cd4aa1080b9a64fbd78, type: 2}
-  - {fileID: 11400000, guid: a43c849c990c2ed4b9e9f1f2e33ea415, type: 2}
-  - {fileID: 11400000, guid: a43c849c990c2ed4b9e9f1f2e33ea415, type: 2}
-  - {fileID: 11400000, guid: a43c849c990c2ed4b9e9f1f2e33ea415, type: 2}
   - {fileID: 11400000, guid: 8b3e5515c9dc8a3459e00c0352df9f2c, type: 2}
-  - {fileID: 11400000, guid: 8b3e5515c9dc8a3459e00c0352df9f2c, type: 2}
+  - {fileID: 11400000, guid: b550abefa3890804f844acfb1af0847d, type: 2}
+  - {fileID: 11400000, guid: b550abefa3890804f844acfb1af0847d, type: 2}
   - {fileID: 11400000, guid: cc83e7a0de1799c468a5904ea1e305d3, type: 2}
-  - {fileID: 11400000, guid: d7abef7bd65a4d7438f0c8eef0ea7173, type: 2}
-  - {fileID: 11400000, guid: d7abef7bd65a4d7438f0c8eef0ea7173, type: 2}
-  - {fileID: 11400000, guid: cd5b1f8a2a2b1e149b7e1d2f747d82a0, type: 2}
-  - {fileID: 11400000, guid: b550abefa3890804f844acfb1af0847d, type: 2}
-  - {fileID: 11400000, guid: b550abefa3890804f844acfb1af0847d, type: 2}
-  - {fileID: 11400000, guid: b550abefa3890804f844acfb1af0847d, type: 2}
   _gems:
-    Pearls: 8
-    Quartz: 3
-    Brimstone: 1
+    Pearls: 0
+    Quartz: 0
+    Brimstone: 0

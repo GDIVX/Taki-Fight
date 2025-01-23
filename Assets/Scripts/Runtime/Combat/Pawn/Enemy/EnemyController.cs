@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Runtime.Combat.Pawn.Enemy
@@ -10,11 +11,13 @@ namespace Runtime.Combat.Pawn.Enemy
         private PlayTableEntry _playTableEntry;
         private AIPlayTable _table;
 
+        private bool _isPlaying = false;
         private int _currPotency = 0;
 
         public void Init(AIPlayTable playTable)
         {
             _table = playTable;
+            _isPlaying = false;
             Health.OnDead += OnDead;
         }
 
@@ -47,22 +50,46 @@ namespace Runtime.Combat.Pawn.Enemy
             _intentionsList.Add(_playTableEntry.Sprite, _playTableEntry.Color, finalPotency.ToString());
         }
 
-        public IEnumerator PlayTurn()
+        public void PlayTurn(Action onComplete)
         {
-            OnTurnStart();
-            yield return new WaitForSeconds(0.2f);
-            var feedbackStrategy = _playTableEntry.FeedbackStrategy;
-            if (feedbackStrategy)
+            if (_isPlaying)
             {
-                feedbackStrategy.Animate(this, () => _playTableEntry.Strategy.Play(this, _currPotency));
-            }
-            else
-            {
-                _playTableEntry.Strategy.Play(this, _currPotency);
+                onComplete?.Invoke();
+                return;
             }
 
-            _intentionsList.RemoveNext();
-            OnTurnEnd();
+            try
+            {
+                _isPlaying = true;
+                OnTurnStart();
+
+                var feedbackStrategy = _playTableEntry.FeedbackStrategy;
+                if (feedbackStrategy)
+                {
+                    feedbackStrategy.Animate(this, () =>
+                    {
+                        _playTableEntry.Strategy.Play(this, _currPotency);
+                        _intentionsList.RemoveNext();
+                        OnTurnEnd();
+                        _isPlaying = false;
+                        onComplete?.Invoke();
+                    });
+                }
+                else
+                {
+                    _playTableEntry.Strategy.Play(this, _currPotency);
+                    _intentionsList.RemoveNext();
+                    OnTurnEnd();
+                    _isPlaying = false;
+                    onComplete?.Invoke();
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"Error during enemy turn: {e}");
+                _isPlaying = false;
+                onComplete?.Invoke();
+            }
         }
     }
 }

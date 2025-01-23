@@ -18,6 +18,11 @@ namespace Runtime.Combat.StatusEffects
                 }
             };
         }
+
+        public override Type GetStatusEffectType()
+        {
+            return typeof(RageStatusEffect);
+        }
     }
 
     public class RageStatusEffect : IStatusEffect
@@ -45,5 +50,4 @@ namespace Runtime.Combat.StatusEffects
             pawn.AttackModifier.Value -= Stack.Value;
         }
     }
-
 }

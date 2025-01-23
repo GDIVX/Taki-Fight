@@ -78,7 +78,7 @@ namespace Runtime.CardGameplay.Card
                 Value = true
             };
             OnCardPlayedEvent += _ => UpdateAffordability();
-            GemsBag.OnContentModifiedEvent += gems => UpdateAffordability();
+            GemsBag.OnModifiedEvent += UpdateAffordability;
             Data = data;
         }
 
@@ -166,6 +166,7 @@ namespace Runtime.CardGameplay.Card
             }
         }
 
+        [Button]
         private void RunPlayLogic()
         {
             foreach (var tuple in _playStrategies)
@@ -189,19 +190,9 @@ namespace Runtime.CardGameplay.Card
 
         private void HandleGemCost()
         {
-            if (Data.ExtractGems)
-            {
-                //Destroy the gems
-                GemsBag.DestroyGems(GemType.Pearl, Group.Pearls);
-                GemsBag.DestroyGems(GemType.Quartz, Group.Quartz);
-                GemsBag.DestroyGems(GemType.Brimstone, Group.Brimstone);
-            }
-            else
-            {
-                GemsBag.ReturnToBag(GemType.Pearl, Group.Pearls);
-                GemsBag.ReturnToBag(GemType.Quartz, Group.Quartz);
-                GemsBag.ReturnToBag(GemType.Brimstone, Group.Brimstone);
-            }
+            GemsBag.Remove(GemType.Pearl, Group.Pearls);
+            GemsBag.Remove(GemType.Quartz, Group.Quartz);
+            GemsBag.Remove(GemType.Brimstone, Group.Brimstone);
         }
 
         private bool CanAfford()
@@ -222,17 +213,9 @@ namespace Runtime.CardGameplay.Card
                 case PointerEventData.InputButton.Left:
                     Select();
                     break;
-                case PointerEventData.InputButton.Right:
-                    Exchange();
-                    break;
             }
         }
 
-        private void Exchange()
-        {
-            HandController.DiscardCard(this);
-            GemsBag.Reroll();
-        }
 
         public void OnDiscard()
         {

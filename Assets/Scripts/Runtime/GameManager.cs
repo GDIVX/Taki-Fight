@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using Runtime.CardGameplay.Card;
 using Runtime.CardGameplay.Deck;
 using Runtime.CardGameplay.GemSystem;
@@ -50,6 +52,8 @@ namespace Runtime
         public GemsBag GemsBag => _gemsBag;
         public EventBus EventBus => _eventBus;
         public HandController Hand => _handController;
+
+        public CombatLane Enemies => _enemiesLane;
 
         public PawnController Hero
         {
@@ -125,18 +129,30 @@ namespace Runtime
         private void StartTurn()
         {
             BannerViewManager.WriteMessage(1, "Player Turn", Color.white);
-            _gemsBag.Reroll();
-            BannerViewManager.Clear();
-            _heroPawn.OnTurnStart();
-            SetupEnemies();
+            _gemsBag.OnTurnStart(() =>
+            {
+                BannerViewManager.Clear();
+                _heroPawn.OnTurnStart();
+                SetupEnemies();
 
-            _handController.DrawHand();
+                _handController.DrawHand();
+            });
         }
 
         [Button]
         public void EndTurn()
         {
-            StartCoroutine(ProcessEndTurn());
+            //_handController.DiscardHand();
+            _heroPawn.OnTurnEnd();
+            _gemsBag.OnTurnEnd();
+
+            PlayEnemiesTurn(() =>
+            {
+                //Reset the player defense 
+                Hero.Defense.Value = 0;
+                BannerViewManager.Clear();
+                StartTurn();
+            });
         }
 
 
@@ -155,38 +171,36 @@ namespace Runtime
             }
         }
 
-        private IEnumerator ProcessEndTurn()
+        private void PlayEnemiesTurn(Action onComplete)
         {
-            _handController.DiscardHand();
-            _heroPawn.OnTurnEnd();
-
-            yield return StartCoroutine(PlayEnemiesTurn());
-
-            //Reset the player defense 
-            Hero.Defense.Value = 0;
-        }
-
-        private IEnumerator PlayEnemiesTurn()
-        {
-            if (Hero.Health.IsDead()) yield break;
+            if (Hero.Health.IsDead()) return;
 
             BannerViewManager.WriteMessage(1, "Enemies Turn", Color.yellow);
-            yield return new WaitForSeconds(1);
-            BannerViewManager.Clear();
-            foreach (var enemy in _enemiesLane.Pawns)
+    
+            var enemies = new Queue<PawnController>(_enemiesLane.Pawns);
+            ProcessNextEnemy(enemies, onComplete);
+        }
+
+        private void ProcessNextEnemy(Queue<PawnController> enemies, Action onComplete)
+        {
+            if (enemies.Count == 0)
             {
-                enemy.Defense.Value = 0;
-                if (enemy is EnemyController enemyController)
-                {
-                    yield return StartCoroutine(enemyController.PlayTurn());
-                }
-                else
-                {
-                    Debug.LogError($"Failed to cast enemy {enemy} into interface {nameof(EnemyController)}");
-                }
+                onComplete?.Invoke();
+                return;
             }
 
-            StartTurn();
+            var enemy = enemies.Dequeue();
+            enemy.Defense.Value = 0;
+    
+            if (enemy is EnemyController enemyController)
+            {
+                enemyController.PlayTurn(() => ProcessNextEnemy(enemies, onComplete));
+            }
+            else
+            {
+                Debug.LogError($"Failed to cast enemy {enemy} into interface {nameof(EnemyController)}");
+                ProcessNextEnemy(enemies, onComplete);
+            }
         }
     }
 }

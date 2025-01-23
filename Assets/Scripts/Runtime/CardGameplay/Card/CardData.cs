@@ -50,6 +50,8 @@ namespace Runtime.CardGameplay.Card
         public GemGroup Cost => _cost;
 
         public FeedbackStrategy FeedbackStrategy => _feedbackStrategy;
+
+
     }
 
     [System.Serializable]
