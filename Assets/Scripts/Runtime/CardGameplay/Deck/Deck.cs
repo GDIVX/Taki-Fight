@@ -48,7 +48,6 @@ namespace Runtime.CardGameplay.Deck
                 }
 
                 MergePiles();
-                //Reshuffle();
             }
 
             cardInstance = _drawPile.Pop();
@@ -58,20 +57,25 @@ namespace Runtime.CardGameplay.Deck
 
         public bool TryToFindAndRemoveCard(CardData cardData, out CardInstance cardInstance)
         {
+            return TryToFindAndRemoveCard(card => card.Data.Title == cardData.Title, out cardInstance);
+        }
+
+        public bool TryToFindAndRemoveCard(Func<CardInstance, bool> predicate, out CardInstance cardInstance)
+        {
             cardInstance = null;
 
-            if (_drawPile.All(card => card.Data.Title != cardData.Title)) return false;
+            if (!_drawPile.Any(predicate)) return false;
 
             var listedPile = _drawPile.ToList();
-            cardInstance = listedPile.First(card => card.Data.Title == cardData.Title);
+            cardInstance = listedPile.First(predicate);
             listedPile.Remove(cardInstance);
 
             // Rebuild the stack
             _drawPile = new Stack<CardInstance>(listedPile);
 
+            OnDrawPileUpdated?.Invoke(_drawPile);
             return true;
         }
-
 
         public void Discard(CardInstance card)
         {

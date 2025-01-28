@@ -122,7 +122,7 @@ namespace Runtime
             _handController.gameObject.SetActive(true);
             _handController.DiscardHand();
             _cardCollection.CreateDeck();
-            _gemsBag.Initialize(_cardCollection.Gems);
+            _gemsBag.Initialize();
             StartTurn();
         }
 

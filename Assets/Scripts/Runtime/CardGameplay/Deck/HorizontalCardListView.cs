@@ -48,46 +48,28 @@ namespace Runtime.CardGameplay.Deck
 
         private void EnsureCardOnTop(CardController card)
         {
-            if (card != null)
+            if (card == null) return;
+            if (_currentArrangeSequence != null && _currentArrangeSequence.IsPlaying())
             {
-                // Kill any existing arrangement animation
-                if (_currentArrangeSequence != null && _currentArrangeSequence.IsPlaying())
-                {
-                    _currentArrangeSequence.Kill();
-                }
-                card.Transform.SetAsLastSibling();
+                _currentArrangeSequence.Kill();
             }
+
+            card.Transform.SetAsLastSibling();
+            ArrangeCardsInArch(); // Re-arrange cards to update positions
         }
 
-        private void OnCardPointerEnter(CardController card)
+        private void OnDisable()
         {
-            _hoveredCard = card;
-            EnsureCardOnTop(card);
-            PointerEnterEvent?.Invoke(card);
-        }
-
-        private void OnCardPointerExit(CardController card)
-        {
-            if (_hoveredCard == card) _hoveredCard = null;
-            PointerExitEvent?.Invoke(card);
-        }
-
-        private void OnBeginDrag(CardController card)
-        {
-            _selectedCard = card;
-            BeginDragEvent?.Invoke(card);
-        }
-
-        private void OnEndDrag(CardController card)
-        {
-            if (_selectedCard == card) _selectedCard = null;
-            EndDragEvent?.Invoke(card);
+            if (_currentArrangeSequence != null && _currentArrangeSequence.IsActive())
+            {
+                _currentArrangeSequence.Kill();
+            }
         }
 
         private void Update()
         {
             if (_selectedCard == null || _isSwapping) return;
-            
+
             for (int i = 0; i < _cards.Count; i++)
             {
                 var other = _cards[i];
@@ -110,11 +92,22 @@ namespace Runtime.CardGameplay.Deck
         private void Swap(CardController first, CardController second)
         {
             _isSwapping = true;
+
             int firstIndex = GetIndex(first);
             int secondIndex = GetIndex(second);
-            first.Transform.SetSiblingIndex(secondIndex);
-            second.Transform.SetSiblingIndex(firstIndex);
-            _isSwapping = false;
+
+            // Animate the swap
+            Sequence swapSequence = DOTween.Sequence();
+            swapSequence.Join(first.Transform.DOLocalMove(second.Transform.localPosition, animationDuration)
+                .SetEase(easeType));
+            swapSequence.Join(second.Transform.DOLocalMove(first.Transform.localPosition, animationDuration)
+                .SetEase(easeType));
+            swapSequence.OnComplete(() =>
+            {
+                first.Transform.SetSiblingIndex(secondIndex);
+                second.Transform.SetSiblingIndex(firstIndex);
+                _isSwapping = false;
+            });
         }
 
         private int GetIndex(CardController card) => card.Transform.GetSiblingIndex();
@@ -122,6 +115,14 @@ namespace Runtime.CardGameplay.Deck
         public void ArrangeCardsInArch()
         {
             int count = _cards.Count;
+
+            if (count == 1)
+            {
+                _cards[0].Transform.DOLocalMove(Vector3.zero, animationDuration).SetEase(easeType);
+                _cards[0].Transform.DOLocalRotate(Vector3.zero, animationDuration).SetEase(easeType);
+                return;
+            }
+
             if (count == 0 || arcAngle == 0) return;
             float baseWidth = _rectTransform.rect.width;
 
@@ -149,7 +150,7 @@ namespace Runtime.CardGameplay.Deck
                 float yPos = Mathf.Cos(Mathf.Deg2Rad * angle) * radius - radius;
 
                 var card = _cards[i];
-                
+
                 if (card != _hoveredCard)
                 {
                     card.Transform.SetSiblingIndex(i);
@@ -165,11 +166,13 @@ namespace Runtime.CardGameplay.Deck
                 );
             }
 
-            _currentArrangeSequence.OnComplete(() => {
+            _currentArrangeSequence.OnComplete(() =>
+            {
                 foreach (var card in _cards)
                 {
                     card.View.SetOriginalValues();
                 }
+
                 if (_hoveredCard != null)
                 {
                     EnsureCardOnTop(_hoveredCard);

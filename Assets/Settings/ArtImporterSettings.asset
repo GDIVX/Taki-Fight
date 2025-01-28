@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 521503e9616b43a9bf737f91e35ba979, type: 3}
+  m_Name: ArtImporterSettings
+  m_EditorClassIdentifier: 
+  OutputFolderPath: Assets/Sprites/Card Art
+  GoogleDriveFolderId: 1GYUfr06DhOAryb-ikSU99xNx9AAM7ocV
+  GoogleDriveCredentialsJson: '{   "type": "service_account",   "project_id": "cardgameproject-449211",  
+    "private_key_id": "3b6658a5312cb45979ea57e5754a350b9ac7069a",   "private_key":
+    "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQClWnLml5ujL6C5\nRyAZFpHFHbLjP597TIvVMhtBZMHt83wEKtLG+HJobCRCbB7Eye4orVKdlyWHY9AQ\nQ65Aj1rQ466IcGK7WvgM+kzAGhv1rAfWQWpyh3t5UIlBQhATUq/ZjHihNhnbwLP6\npJ4Yo6GySF1+zYK5f7dRr0rAEchoOLYtNed8+O7XiX093iGu9HTVXmjN8RVljOFh\nByYh3+hG8koJO+ibZXer22npFiXOEzhhEmRfppGrOIKZbP3sKlyLv3vvPqI/Q2Jj\n9oYVdrGzrIUyTLquEC20EzPgyc4vbppFQsCy9NU/VLYUX99wCGSy5P+4ZpR9spzg\ndh41EPuNAgMBAAECggEALWGCCGRSjDpdl4v8NLZ7gkhQ2MqU2A+djwEF9vASw14g\nSrqAB6iXKa6IUwx+c07iRJqxAlxBqgNMTrJsh/5wE8VxGLQTfM0OJ+2oE872nnm8\n2uIwN0eUrSpbySO66rq2VXQWhVQmS6f7HU6Br0x1a8stkcgQWR3Cr7H2x3j58hQx\nPj7L5yFzfXlwF4mOUH0M3bI6DgUR3w5pMt9OpcwQMoTwMEzyiKMWrKapV5rxLdHx\nHL8g478UCcMECq2nKxTx++T7bZHjlOprRatjnpt1tYPS2fTEytalD7btDIGFgNS0\nHcB+DvW1oFK4NSmLjPFqARIIhVFmfJP18QacXY4ZRwKBgQDdBtCfUtdo8VO3njrF\njet1OcqBPklXAE9lvraqOSKbcTf0W89BTGzMsiapQHxMpSgnf9V6Q7cIUJpQ5pPf\n7fzlb44R7rEa1UJOLX1djwjS6xteH8juikJRliQTTbxTFsHgfRLMPwdT4d8zxUbO\n2J01mnhRvdlHBpC4/yggxawnvwKBgQC/hHXVKBypKY3UeAafSU1MDmSpd3UiEuJ1\nvqUXWFnP8KXAPivKG1GE+F0HOLR7KXxe2/RA7KldQ0LQisec5ayOlu5O+SA5q27O\nB3Pd3dM9U2piVYkshgTmXdqtjV9rZHnmmh0n63AFD8VcvF4McysCMq00AUG8Xk+b\nHyj6l+MPswKBgH4i+oJCS66XMriyc0X09S/kOD5D5qThB27ARQymKKrfFRi+IGxa\niijTbp7er1EqW90W5iStalIzda2/uRptfgsN+90eBDKVDA8DhO0UyOtdwzOXHhuM\nCcb30US280fTz/cmSckIG01ytOedqQg4tJc3vXygxNP02jjJXQQ+6z2PAoGAOGZl\n3RQm/JpELmH6cUZBATjr5AxN7m7pSguOysU2DcqsxWSJuMc6xpHts4a7f9nDypuz\n3rrTVafNMWTtTANHQeao35D2MIWP6BTBxoDhCJpcJgFSmE4Pe1gAYkPT6eh5DbQt\nCeiH4LW4RYsjlz8DV25dG4eTOEn934zZoJLCR4kCgYBhWqZAIqkTxucsUER7csSk\n9eJLpUsrMWYWFylRuhPwzIxQuLTujA9Iz/fGB2SHziv1nQbJrDiIqI6NQ0cYTIHM\nevQ2zfFfNzFxAXWVD0u8Fg84Fb5ljBvvWKcgrdFHqOviEEz2gRKCyVzvmSiKnBk2\nxydHcW7Q3I0/Ue4jyCjIsw==\n-----END
+    PRIVATE KEY-----\n",   "client_email": "artpipeline@cardgameproject-449211.iam.gserviceaccount.com",  
+    "client_id": "109790878142882052449",   "auth_uri": "https://accounts.google.com/o/oauth2/auth",  
+    "token_uri": "https://oauth2.googleapis.com/token",   "auth_provider_x509_cert_url":
+    "https://www.googleapis.com/oauth2/v1/certs",   "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/artpipeline%40cardgameproject-449211.iam.gserviceaccount.com",  
+    "universe_domain": "googleapis.com" } '

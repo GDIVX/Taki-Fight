@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Runtime.CardGameplay.Card;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
@@ -14,10 +13,11 @@ namespace Runtime.CardGameplay.GemSystem
 
         [SerializeField, Required] private BagView _view;
 
+        public IReadOnlyDictionary<GemType, int> Gems => _gems;
         public event Action OnModifiedEvent;
 
 
-        public void Initialize(GemGroup gems)
+        public void Initialize()
         {
             _gems = new Dictionary<GemType, int>()
             {
@@ -35,10 +35,6 @@ namespace Runtime.CardGameplay.GemSystem
 
         public void OnTurnStart(Action onComplete)
         {
-            // //TODO: 
-            // Add(GemType.Pearl, 3);
-
-
             onComplete?.Invoke();
         }
 
