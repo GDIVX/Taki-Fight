@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Runtime.CardGameplay.Card.CardBehaviour
@@ -6,10 +7,9 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
     [CreateAssetMenu(fileName = "SimpleCardSelect", menuName = "Card/Strategy/Select/SimpleCardSelect")]
     public class SimpleCardSelect : CardSelectStrategy
     {
-        public override Task<bool> SelectAsync(CardController card)
+        public override void Select(CardController card, Action<bool> onSelectionComplete)
         {
-            // Simple case where no additional selection is required
-            return Task.FromResult(true);
+            onSelectionComplete?.Invoke(true);
         }
     }
 }

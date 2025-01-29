@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Sirenix.OdinInspector;
 using UnityEngine;
+using Sirenix.OdinInspector;
 using Utilities;
 
 namespace Runtime.Combat.Pawn.Targeting
@@ -11,66 +9,47 @@ namespace Runtime.Combat.Pawn.Targeting
     {
         [ShowInInspector, ReadOnly] public bool IsLookingForTarget { get; private set; }
         [ShowInInspector, ReadOnly] public PawnTarget TargetedPawn { get; private set; }
-        private TaskCompletionSource<PawnTarget> _targetCompletionSource;
         private PawnTarget _lastTargetedPawn;
 
         public event Action<PawnTarget> OnTargetFound;
         public event Action OnLookingForTarget;
+        public event Action OnTargetSelectionCanceled;
 
         [Button]
-        public async Task<PawnTarget> RequestTargetAsync()
+        public void RequestTarget()
         {
             if (IsLookingForTarget)
             {
-                throw new InvalidOperationException("A target selection is already in progress." );
+                throw new InvalidOperationException("A target selection is already in progress.");
             }
 
             IsLookingForTarget = true;
-            _targetCompletionSource = new TaskCompletionSource<PawnTarget>();
-            GameManager.Instance.BannerViewManager.WriteMessage(0, "Select Target" , Color.yellow);
+            GameManager.Instance.BannerViewManager.WriteMessage(0, "Select Target", Color.yellow);
             OnLookingForTarget?.Invoke();
-
-            try
-            {
-                // Wait until a target is selected or the action is canceled
-                PawnTarget target = await _targetCompletionSource.Task;
-                _lastTargetedPawn = target;
-                TargetedPawn = target;
-                GameManager.Instance.BannerViewManager.Clear();
-                OnTargetFound?.Invoke(target);
-                return target;
-            }
-            catch (TaskCanceledException)
-            {
-                return null;
-            }
-            finally
-            {
-                IsLookingForTarget = false;
-            }
         }
 
         public void SelectTarget(PawnTarget target)
         {
-            if (!IsLookingForTarget || _targetCompletionSource == null || _targetCompletionSource.Task.IsCompleted)
+            if (!IsLookingForTarget)
             {
-                UnityEngine.Debug.LogWarning(
-                    "Attempted to set target while targeting service is not looking for a target or the task is already completed.");
+                Debug.LogWarning("Attempted to set target while targeting service is not looking for a target.");
                 return;
             }
 
             TargetedPawn = target;
-            _targetCompletionSource.SetResult(target);
+            _lastTargetedPawn = target;
             IsLookingForTarget = false;
+            GameManager.Instance.BannerViewManager.Clear();
+            OnTargetFound?.Invoke(target);
         }
 
         public void CancelTargeting()
         {
-            if (IsLookingForTarget && _targetCompletionSource != null && !_targetCompletionSource.Task.IsCompleted)
+            if (IsLookingForTarget)
             {
-                _targetCompletionSource.TrySetCanceled();
                 IsLookingForTarget = false;
-                _targetCompletionSource = null;
+                GameManager.Instance.BannerViewManager.Clear();
+                OnTargetSelectionCanceled?.Invoke();
             }
         }
 

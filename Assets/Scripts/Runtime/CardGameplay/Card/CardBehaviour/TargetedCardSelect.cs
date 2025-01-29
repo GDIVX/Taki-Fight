@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+﻿using System;
 using Runtime.Combat.Pawn.Targeting;
 using UnityEngine;
 
@@ -7,20 +7,33 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
     [CreateAssetMenu(fileName = "TargetedCardSelect", menuName = "Card/Strategy/Select/TargetedCardSelect")]
     public class TargetedCardSelect : CardSelectStrategy
     {
-        public override async Task<bool> SelectAsync(CardController card)
+        public override void Select(CardController card, Action<bool> onSelectionComplete)
         {
-            try
-            {
-                // Start looking for a pawn target
-                PawnTarget target = await PawnTargetingService.Instance.RequestTargetAsync();
+            // Start looking for a pawn target
+            PawnTargetingService.Instance.RequestTarget();
 
-                // If a target is selected, return true, otherwise return false
-                return target != null;
-            }
-            catch (TaskCanceledException)
+            // Subscribe to events
+            PawnTargetingService.Instance.OnTargetFound += OnTargetFound;
+            PawnTargetingService.Instance.OnTargetSelectionCanceled += OnTargetSelectionCanceled;
+
+            void OnTargetFound(PawnTarget target)
             {
-                // Handle cancellation gracefully
-                return false;
+                // Clean up event subscriptions
+                PawnTargetingService.Instance.OnTargetFound -= OnTargetFound;
+                PawnTargetingService.Instance.OnTargetSelectionCanceled -= OnTargetSelectionCanceled;
+
+                // Notify completion
+                onSelectionComplete(true);
+            }
+
+            void OnTargetSelectionCanceled()
+            {
+                // Clean up event subscriptions
+                PawnTargetingService.Instance.OnTargetFound -= OnTargetFound;
+                PawnTargetingService.Instance.OnTargetSelectionCanceled -= OnTargetSelectionCanceled;
+
+                // Notify completion
+                onSelectionComplete(false);
             }
         }
     }

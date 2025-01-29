@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 521503e9616b43a9bf737f91e35ba979, type: 3}
   m_Name: ArtImporterSettings
   m_EditorClassIdentifier: 
-  OutputFolderPath: Assets/Sprites/Card Art
+  ImportFolderPath: Assets/Import
   GoogleDriveFolderId: 1GYUfr06DhOAryb-ikSU99xNx9AAM7ocV
   GoogleDriveCredentialsJson: '{   "type": "service_account",   "project_id": "cardgameproject-449211",  
     "private_key_id": "3b6658a5312cb45979ea57e5754a350b9ac7069a",   "private_key":
@@ -22,3 +22,7 @@ MonoBehaviour:
     "token_uri": "https://oauth2.googleapis.com/token",   "auth_provider_x509_cert_url":
     "https://www.googleapis.com/oauth2/v1/certs",   "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/artpipeline%40cardgameproject-449211.iam.gserviceaccount.com",  
     "universe_domain": "googleapis.com" } '
+  ImportRules:
+  - Type: 0
+    FileNameSuffixOrPattern: _artwork
+    ExportFolder: Assets/Sprites/Card Art

@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Runtime.CardGameplay.Card.CardBehaviour;
 using Runtime.CardGameplay.Card.CardBehaviour.Feedback;
 using Runtime.CardGameplay.Card.View;
@@ -34,7 +33,6 @@ namespace Runtime.CardGameplay.Card
         public Transform Transform => gameObject.transform;
         public CardView View { get; private set; }
 
-
         public CardData Data { get; private set; }
 
         public HandController HandController { get; private set; }
@@ -43,6 +41,8 @@ namespace Runtime.CardGameplay.Card
         public GemGroup Group => Instance.Group;
 
         private CardFactory _cardFactory;
+
+        private bool _isSelecting;
 
         [Button]
         public void Init(CardData data, CardDependencies dependencies)
@@ -69,10 +69,9 @@ namespace Runtime.CardGameplay.Card
             _feedbackStrategy = data.FeedbackStrategy;
             _playStrategies = CreatePlayStrategyTupletList(data.PlayStrategies);
 
-
             View = GetComponent<CardView>();
 
-            //Card is selectable only when it can be played
+            // Card is selectable only when it can be played
             IsPlayable = new TrackedProperty<bool>()
             {
                 Value = true
@@ -119,7 +118,7 @@ namespace Runtime.CardGameplay.Card
             Init(cardInstance.Data, dependencies);
         }
 
-        private async void Select(CardSelectStrategy selectStrategy)
+        private void Select(CardSelectStrategy selectStrategy)
         {
             if (!IsPlayable.Value)
             {
@@ -133,17 +132,26 @@ namespace Runtime.CardGameplay.Card
                 return;
             }
 
+            if (_isSelecting)
+            {
+                Debug.LogWarning("Already selecting a card.");
+                return;
+            }
 
-            if (await HandleSelectionStrategyAsync(selectStrategy))
+            _isSelecting = true;
+
+            // Start the selection process
+            selectStrategy.Select(this, OnSelectionComplete);
+        }
+
+        private void OnSelectionComplete(bool success)
+        {
+            _isSelecting = false;
+
+            if (success)
             {
                 TryToPlay();
             }
-        }
-
-
-        private async Task<bool> HandleSelectionStrategyAsync(CardSelectStrategy selectStrategy)
-        {
-            return HandController.Has(this) && await selectStrategy.SelectAsync(this);
         }
 
         private void Play()
@@ -216,7 +224,6 @@ namespace Runtime.CardGameplay.Card
             }
         }
 
-
         public void OnDiscard()
         {
         }
@@ -234,7 +241,6 @@ namespace Runtime.CardGameplay.Card
             UpdateAffordability();
         }
 
-
         private void TryToPlay()
         {
             if (!IsPlayable.Value)
@@ -242,10 +248,8 @@ namespace Runtime.CardGameplay.Card
                 return;
             }
 
-
             Play();
         }
-
 
         private void Select()
         {
