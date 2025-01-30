@@ -6,10 +6,6 @@ using Runtime.CardGameplay.Card;
 
 namespace Editor.ArtAssetsPipeline
 {
-    /// <summary>
-    /// An implementation of IArtImportHandler that handles card artwork.
-    /// Follows the naming convention "CardName_Artwork".
-    /// </summary>
     public class CardDataImportHandler : IArtImportHandler
     {
         private readonly ArtImporterSettings _settings;
@@ -21,17 +17,18 @@ namespace Editor.ArtAssetsPipeline
 
         public bool CanHandle(string assetPath)
         {
-            // Ensure the path belongs to a file with the "_Artwork" suffix
-            // Example file name: "Warrior_Artwork.png"
             string fileName = Path.GetFileNameWithoutExtension(assetPath);
-            return !string.IsNullOrEmpty(fileName) &&
-                   // We'll do a simple check: does it end with "_Artwork" (case-insensitive)?
-                   fileName.ToLower().EndsWith(_settings.ImportRules
-                       .Find(r => r.Type == ArtImportRule.ImportType.Artwork).FileNameSuffixOrPattern);
+            Debug.Log($"CardDataImportHandler: Checking if can handle file: {fileName}");
+            var fileNameSuffixOrPattern = _settings.ImportRules
+                .Find(r => r.Type == ArtImportRule.ImportType.Artwork)?.FileNameSuffixOrPattern;
+            return fileNameSuffixOrPattern != null &&
+                   !string.IsNullOrEmpty(fileName) &&
+                   fileName.ToLower().EndsWith(fileNameSuffixOrPattern);
         }
 
         public void Handle(string assetPath)
         {
+            Debug.Log($"CardDataImportHandler: Handling file: {assetPath}");
             string fileName = Path.GetFileNameWithoutExtension(assetPath);
             if (string.IsNullOrEmpty(fileName))
             {
@@ -48,6 +45,7 @@ namespace Editor.ArtAssetsPipeline
             }
 
             string cardName = parts[0];
+            Debug.Log($"CardDataImportHandler: Extracted card name '{cardName}'");
 
             string[] guids = AssetDatabase.FindAssets($"t:{nameof(CardData)}");
             CardData cardData = null;
@@ -55,10 +53,12 @@ namespace Editor.ArtAssetsPipeline
             foreach (string guid in guids)
             {
                 string path = AssetDatabase.GUIDToAssetPath(guid);
+                Debug.Log($"CardDataImportHandler: Checking asset at {path}");
                 CardData data = AssetDatabase.LoadAssetAtPath<CardData>(path);
                 if (data != null && data.Title == cardName)
                 {
                     cardData = data;
+                    Debug.Log($"CardDataImportHandler: Found matching CardData for '{cardName}' at {path}");
                     break;
                 }
             }
@@ -70,46 +70,51 @@ namespace Editor.ArtAssetsPipeline
             }
 
             string extension = Path.GetExtension(assetPath);
-            string outputPath = Path.Combine(_settings.ImportRules
-                        .Find(r => r.Type == ArtImportRule.ImportType.Artwork).ExportFolder, $"{fileName}{extension}")
-                .Replace('\\', '/');
-            string normalizedAssetPath = assetPath.Replace('\\', '/');
+            var exportFolder = _settings.ImportRules
+                .Find(r => r.Type == ArtImportRule.ImportType.Artwork)?.ExportFolder;
+            if (exportFolder != null)
+            {
+                string outputPath = Path.Combine(exportFolder, $"{fileName}{extension}")
+                    .Replace('\\', '/');
+                string normalizedAssetPath = assetPath.Replace('\\', '/');
 
-            if (normalizedAssetPath.Equals(outputPath, System.StringComparison.OrdinalIgnoreCase))
-            {
-                Debug.Log($"CardDataImportHandler: Asset is already in the correct location: {outputPath}");
-            }
-            else
-            {
-                // Check if the file already exists at the destination
-                if (File.Exists(outputPath))
+                Debug.Log($"CardDataImportHandler: Output path resolved to '{outputPath}'");
+
+                if (normalizedAssetPath.Equals(outputPath, System.StringComparison.OrdinalIgnoreCase))
                 {
-                    Debug.LogWarning(
-                        $"CardDataImportHandler: File already exists at '{outputPath}', deleting old file.");
-                    AssetDatabase.DeleteAsset(outputPath);
+                    Debug.Log($"CardDataImportHandler: Asset is already in the correct location: {outputPath}");
+                }
+                else
+                {
+                    if (File.Exists(outputPath))
+                    {
+                        Debug.LogWarning(
+                            $"CardDataImportHandler: File already exists at '{outputPath}', deleting old file.");
+                        AssetDatabase.DeleteAsset(outputPath);
+                    }
+
+                    string moveError = AssetDatabase.MoveAsset(assetPath, outputPath);
+                    if (!string.IsNullOrEmpty(moveError))
+                    {
+                        Debug.LogError($"CardDataImportHandler: Failed to move asset: {moveError}");
+                        return;
+                    }
                 }
 
-                string moveError = AssetDatabase.MoveAsset(assetPath, outputPath);
-                if (!string.IsNullOrEmpty(moveError))
+                Sprite sprite = AssetDatabase.LoadAssetAtPath<Sprite>(outputPath);
+                if (sprite == null)
                 {
-                    Debug.LogError($"CardDataImportHandler: Failed to move asset: {moveError}");
+                    Debug.LogError($"CardDataImportHandler: Failed to load sprite at '{outputPath}'.");
                     return;
                 }
+
+                SerializedObject serializedCardData = new SerializedObject(cardData);
+                SerializedProperty imageProperty = serializedCardData.FindProperty("_image");
+                imageProperty.objectReferenceValue = sprite;
+                serializedCardData.ApplyModifiedProperties();
             }
 
-            Sprite sprite = AssetDatabase.LoadAssetAtPath<Sprite>(outputPath);
-            if (sprite == null)
-            {
-                Debug.LogError($"CardDataImportHandler: Failed to load sprite at '{outputPath}'.");
-                return;
-            }
-
-            SerializedObject serializedCardData = new SerializedObject(cardData);
-            SerializedProperty imageProperty = serializedCardData.FindProperty("_image");
-            imageProperty.objectReferenceValue = sprite;
-            serializedCardData.ApplyModifiedProperties();
-
-            Debug.Log($"CardDataImportHandler: Successfully injected artwork into CardData '{cardName}'.");
+            Debug.Log($"CardDataImportHandler: Successfully injected artwork into CardData '{cardName}'");
         }
     }
 }
