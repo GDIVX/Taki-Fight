@@ -3,6 +3,7 @@ using System.Linq;
 using Runtime.CardGameplay.Card;
 using UnityEditor;
 using UnityEngine;
+using EditorWindow = UnityEditor.EditorWindow;
 
 namespace Editor
 {

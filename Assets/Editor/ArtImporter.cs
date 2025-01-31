@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Editor.ArtAssetsPipeline;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Drive.v3;
-using Google.Apis.Drive.v3.Data;
 using Google.Apis.Services;
 using UnityEditor;
 using UnityEngine;
 using File = System.IO.File;
 
-namespace Editor.ArtAssetsPipeline
+namespace Editor
 {
     /// <summary>
     /// A simplified importer that does not rely on OnPostprocessAllAssets.
