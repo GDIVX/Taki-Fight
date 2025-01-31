@@ -165,7 +165,6 @@ namespace Runtime.CardGameplay.Card
 
             if (_feedbackStrategy)
             {
-                Debug.Log("Starting feedback");
                 _feedbackStrategy.Animate(Pawn, RunPlayLogic);
             }
             else
