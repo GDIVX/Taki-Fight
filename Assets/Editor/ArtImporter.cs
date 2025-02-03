@@ -13,10 +13,7 @@ using File = System.IO.File;
 
 namespace Editor
 {
-    /// <summary>
-    /// A simplified importer that does not rely on OnPostprocessAllAssets.
-    /// We manually download files, import them, and apply handlers.
-    /// </summary>
+
     public static class ArtImporter
     {
         private static ArtImporterSettings _settings;
