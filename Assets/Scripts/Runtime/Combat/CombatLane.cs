@@ -34,6 +34,11 @@ namespace Runtime.Combat
         private void RemovePawn(PawnController pawn)
         {
             _pawns.Remove(pawn);
+            if (pawn.isActiveAndEnabled)
+            {
+                Destroy(pawn.gameObject);
+            }
+
             OnPawnRemoved?.Invoke();
         }
 
