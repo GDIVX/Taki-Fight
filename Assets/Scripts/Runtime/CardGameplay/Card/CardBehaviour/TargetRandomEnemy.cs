@@ -9,7 +9,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
     {
         public override PawnController GetTarget()
         {
-            var enemies = GameManager.Instance.Enemies.Pawns;
+            var enemies = GameManager.Instance.CombatManager.Enemies.Pawns;
 
             return enemies.SelectRandom();
         }

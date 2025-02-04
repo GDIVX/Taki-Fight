@@ -8,18 +8,15 @@ using UnityEngine;
 
 namespace Runtime
 {
-    public class CombatManager
+    public class CombatManager : MonoBehaviour
     {
-        private GameManager _gameManager;
         [SerializeField, Required] private CombatLane _enemiesLane;
+
+        private static GameManager GameManager => GameManager.Instance;
 
         [SerializeField, TabGroup("Dependencies"), Required]
         private PawnController _heroPawn;
 
-        public CombatManager(GameManager gameManager)
-        {
-            _gameManager = gameManager;
-        }
 
         public PawnController Hero
         {
@@ -29,26 +26,26 @@ namespace Runtime
 
         public CombatLane Enemies => _enemiesLane;
 
-        private void SetupOnEnemyRemove()
+        public void SetupOnEnemyRemove()
         {
             _enemiesLane.OnPawnRemoved += () =>
             {
                 if (!_heroPawn.isActiveAndEnabled) return;
                 if (_enemiesLane.Pawns.Count > 0) return;
 
-                _gameManager.BannerViewManager.WriteMessage(0, "Victory", Color.green);
-                _gameManager.GameOver();
+                GameManager.BannerViewManager.WriteMessage(0, "Victory", Color.green);
+                GameManager.GameOver();
             };
         }
 
-        private void InitializeHero(PawnData data)
+        public void InitializeHero(PawnData data)
         {
             _heroPawn.gameObject.SetActive(true);
             _heroPawn.Init(data);
             _heroPawn.Health.OnDead += (sender, args) =>
             {
-                _gameManager.BannerViewManager.WriteMessage(0, "Defeat", Color.red);
-                _gameManager.GameOver();
+                GameManager.BannerViewManager.WriteMessage(0, "Defeat", Color.red);
+                GameManager.GameOver();
             };
         }
 
@@ -56,7 +53,7 @@ namespace Runtime
         public void StartCombat(CombatConfig combatConfig)
         {
             _enemiesLane.SpawnPawnsForCombat(combatConfig);
-            _gameManager.SetupCardGameplay();
+            GameManager.SetupCardGameplay();
         }
 
         [Button]
@@ -66,16 +63,16 @@ namespace Runtime
             _heroPawn.gameObject.SetActive(false);
         }
 
-        private void StartTurn()
+        public void StartTurn()
         {
-            _gameManager.BannerViewManager.WriteMessage(1, "Player Turn", Color.white);
-            _gameManager.GemsBag.OnTurnStart(() =>
+            GameManager.BannerViewManager.WriteMessage(1, "Player Turn", Color.white);
+            GameManager.GemsBag.OnTurnStart(() =>
             {
-                _gameManager.BannerViewManager.Clear();
+                GameManager.BannerViewManager.Clear();
                 _heroPawn.OnTurnStart();
                 SetupEnemies();
 
-                _gameManager.Hand.DrawHand();
+                GameManager.Hand.DrawHand();
             });
         }
 
@@ -83,13 +80,13 @@ namespace Runtime
         public void EndTurn()
         {
             _heroPawn.OnTurnEnd();
-            _gameManager.GemsBag.OnTurnEnd();
+            GameManager.GemsBag.OnTurnEnd();
 
             PlayEnemiesTurn(() =>
             {
                 //Reset the player defense 
                 Hero.Defense.Value = 0;
-                _gameManager.BannerViewManager.Clear();
+                GameManager.BannerViewManager.Clear();
                 StartTurn();
             });
         }
@@ -113,7 +110,7 @@ namespace Runtime
         {
             if (Hero.Health.IsDead()) return;
 
-            _gameManager.BannerViewManager.WriteMessage(1, "Enemies Turn", Color.yellow);
+            GameManager.BannerViewManager.WriteMessage(1, "Enemies Turn", Color.yellow);
 
             var enemies = new Queue<PawnController>(_enemiesLane.Pawns);
             ProcessNextEnemy(enemies, onComplete);
