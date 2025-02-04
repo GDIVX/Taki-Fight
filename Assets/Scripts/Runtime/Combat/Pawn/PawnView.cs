@@ -17,10 +17,8 @@ namespace Runtime.Combat.Pawn
 
         [SerializeField, BoxGroup("Health")] private Image defenseImage;
         [SerializeField, BoxGroup("Health")] private TextMeshProUGUI defenseCount;
-        [SerializeField, BoxGroup("Damage")] private Color _damageTakenColor;
-        [SerializeField, BoxGroup("Damage")] private Color _damageBlockedColor;
-        [SerializeField, BoxGroup("Damage")] private float _damageFadeAnimTime;
-        [SerializeField, BoxGroup("Damage")] private Ease _damageFadeAnimEase;
+        [SerializeField, BoxGroup("Damage")] private float _flashTime;
+        [SerializeField, BoxGroup("Damage")] private Ease _flashEase;
 
         [SerializeField, BoxGroup("Health")] private HealthBarUI healthBar;
         [SerializeField, BoxGroup("Health")] private HealthBarTextUI healthBarText;
@@ -28,6 +26,9 @@ namespace Runtime.Combat.Pawn
 
         private PawnController _controller;
         private TrackedProperty<int> _defense;
+        private static readonly int IsFlashing = Shader.PropertyToID("_IsFlashing");
+        private static readonly int FlashColor = Shader.PropertyToID("_FlashColor");
+        private static readonly int FlashAmount = Shader.PropertyToID("_FlashAmount");
 
         public void Init(PawnController controller, TrackedProperty<int> defense, PawnData data)
         {
@@ -43,11 +44,10 @@ namespace Runtime.Combat.Pawn
         [Button]
         private void OnPawnBeingAttacked(int attackPoints, int realDamage)
         {
-            var color = realDamage > 0 ? _damageTakenColor : _damageBlockedColor;
-
-            var tween = spriteRenderer.DOColor(color, _damageFadeAnimTime)
-                .SetEase(_damageFadeAnimEase)
-                .SetLoops(2, LoopType.Yoyo);
+            DOTween.To((x) => spriteRenderer.material.SetFloat(FlashAmount, x),
+                0f,
+                1,
+                _flashTime).SetEase(_flashEase).SetLoops(2, LoopType.Yoyo);
         }
 
 

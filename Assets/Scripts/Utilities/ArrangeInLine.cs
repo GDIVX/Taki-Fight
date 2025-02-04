@@ -59,7 +59,6 @@ namespace Utilities
             {
                 if (gameObjectsToArrange[i] == null)
                 {
-                    Debug.LogWarning("One of the GameObjects in the list is null. Removing it from the list.");
                     gameObjectsToArrange.RemoveAt(i);
                     i--;
                     continue;
