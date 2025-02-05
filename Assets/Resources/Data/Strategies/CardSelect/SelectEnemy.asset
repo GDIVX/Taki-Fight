@@ -10,5 +10,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2ba7a5776f834fa5bce721f41cfcdcfb, type: 3}
-  m_Name: TargetedCardSelect
+  m_Name: SelectEnemy
   m_EditorClassIdentifier: 
+  TargetType: 1

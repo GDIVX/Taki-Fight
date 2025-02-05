@@ -7,10 +7,12 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
     [CreateAssetMenu(fileName = "TargetedCardSelect", menuName = "Card/Strategy/Select/TargetedCardSelect")]
     public class TargetedCardSelect : CardSelectStrategy
     {
+        [SerializeField] private PawnTargetType TargetType;
+
         public override void Select(CardController card, Action<bool> onSelectionComplete)
         {
             // Start looking for a pawn target
-            PawnTargetingService.Instance.RequestTarget();
+            PawnTargetingService.Instance.RequestTarget(TargetType);
 
             // Subscribe to events
             PawnTargetingService.Instance.OnTargetFound += OnTargetFound;

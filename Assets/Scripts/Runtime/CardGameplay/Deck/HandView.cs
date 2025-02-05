@@ -8,16 +8,16 @@ using Utilities;
 
 namespace Runtime.CardGameplay.Deck
 {
+    [RequireComponent(typeof(CanvasGroup))]
     public class HandView : HorizontalCardListView
     {
         [SerializeField, Required, TabGroup("Dependencies")]
         private HandController _handController;
 
-        [SerializeField, TabGroup("Modal")] private Vector3 _moveToWhenHiding;
-        [SerializeField, TabGroup("Modal")] private float _hideMovementDuration;
-        [SerializeField, TabGroup("Modal")] private Ease _ease;
+        [SerializeField, TabGroup("Modal")] private float _fadeDuration;
+        [SerializeField, TabGroup("Modal")] private Ease _fadeEase;
+        [SerializeField] private CanvasGroup _canvasGroup;
 
-        private Vector3 _originalPosition;
 
         private void Awake()
         {
@@ -28,19 +28,25 @@ namespace Runtime.CardGameplay.Deck
             PawnTargetingService.Instance.OnLookingForTarget +=
                 Hide;
             PawnTargetingService.Instance.OnTargetFound += _ => { Show(); };
+
+            GameManager.Instance.CombatManager.OnStartTurn += Show;
+            GameManager.Instance.CombatManager.OnEndTurn += Hide;
+
+            _canvasGroup ??= GetComponent<CanvasGroup>();
         }
 
         [Button]
         private void Show()
         {
-            transform.DOLocalMove(_originalPosition, _hideMovementDuration).SetEase(_ease);
+            _canvasGroup.DOFade(1, _fadeDuration).SetEase(_fadeEase);
+            _canvasGroup.interactable = true;
         }
 
         [Button]
         private void Hide()
         {
-            _originalPosition = transform.localPosition;
-            transform.DOLocalMove(_moveToWhenHiding, _hideMovementDuration).SetEase(_ease);
+            _canvasGroup.DOFade(0, _fadeDuration).SetEase(_fadeEase);
+            _canvasGroup.interactable = false;
         }
     }
 }

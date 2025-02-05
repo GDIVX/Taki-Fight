@@ -36,6 +36,10 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _DissolveTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 2800000, guid: aed436a776763734a89aee3e3e9de32c, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -54,13 +58,25 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _Dissolve: 0
+    - _DissolveOutlineThickness: 0.1
+    - _DissolveSpiralStreanght: 5
+    - _DistortionAmount: 0.1
+    - _FIreDissolveAmount: 2
+    - _FireUVAmount: 0
     - _FlashAmmount: 0
     - _FlashAmount: 0
     - _IsFlashing: 0
+    - _NoiseScale: 150
     - _Normal_Offset: 0.5
     - _Normal_Strength: 8
+    - _WavyAmount: 0
     m_Colors:
-    - _FlashColor: {r: 11.98431, g: 11.98431, b: 11.98431, a: 1}
+    - _DissolveDistortionVelocity: {r: 0, g: -0.3, b: 0, a: 0}
+    - _DissolveOutlineColor: {r: 2.807843, g: 0.8941176, b: 0.8941176, a: 1}
+    - _FireDissolveVelocity: {r: -0.15, g: -0.3, b: 0, a: 0}
+    - _FireVelocity: {r: 0, g: -0.3, b: 0, a: 0}
+    - _FlashColor: {r: 2.9960775, g: 2.9960775, b: 2.9960775, a: 1}
     - _Flash_Color: {r: 11.98431, g: 11.98431, b: 11.98431, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

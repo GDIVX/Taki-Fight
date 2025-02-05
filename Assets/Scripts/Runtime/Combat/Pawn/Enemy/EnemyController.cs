@@ -18,12 +18,8 @@ namespace Runtime.Combat.Pawn.Enemy
         {
             _table = playTable;
             _isPlaying = false;
-            Health.OnDead += OnDead;
-        }
 
-        private void OnDead(object sender, EventArgs args)
-        {
-            Destroy(gameObject, WaitBeforeDestroyingObjectOnDeath);
+            _intentionsList ??= GetComponentInChildren<IntentionsList>();
         }
 
 

@@ -17,6 +17,8 @@ namespace Runtime.Combat.Pawn
 
         [SerializeField, BoxGroup("Health")] private Image defenseImage;
         [SerializeField, BoxGroup("Health")] private TextMeshProUGUI defenseCount;
+        [SerializeField, BoxGroup("Health")] private float _dissolveTime;
+        [SerializeField, BoxGroup("Health")] private Ease _dissolveEase;
         [SerializeField, BoxGroup("Damage")] private float _flashTime;
         [SerializeField, BoxGroup("Damage")] private Ease _flashEase;
 
@@ -29,6 +31,7 @@ namespace Runtime.Combat.Pawn
         private static readonly int IsFlashing = Shader.PropertyToID("_IsFlashing");
         private static readonly int FlashColor = Shader.PropertyToID("_FlashColor");
         private static readonly int FlashAmount = Shader.PropertyToID("_FlashAmount");
+        private static readonly int Dissolve = Shader.PropertyToID("_Dissolve");
 
         public void Init(PawnController controller, TrackedProperty<int> defense, PawnData data)
         {
@@ -39,6 +42,15 @@ namespace Runtime.Combat.Pawn
 
             _controller = controller;
             _controller.OnBeingAttacked += OnPawnBeingAttacked;
+        }
+        
+
+        public void OnDead(Action onComplete)
+        {
+            DOTween.To((x) => spriteRenderer.material.SetFloat(Dissolve, x),
+                0,
+                1,
+                _dissolveTime).SetEase(_dissolveEase).onComplete += () => { onComplete?.Invoke(); };
         }
 
         [Button]

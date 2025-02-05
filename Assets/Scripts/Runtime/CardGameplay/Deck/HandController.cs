@@ -9,7 +9,7 @@ namespace Runtime.CardGameplay.Deck
 {
     public class HandController : MonoBehaviour
     {
-        [SerializeField] private int _cardToDrawPerTurn;
+        [SerializeField] private int _targetHandSize;
         [SerializeField] private int _maxHandSize;
         [SerializeField, Required] private CardFactory _cardFactory;
         [SerializeField] private float _cardMovementDelay;
@@ -23,10 +23,10 @@ namespace Runtime.CardGameplay.Deck
 
         public int DrawPerTurn
         {
-            get => _cardToDrawPerTurn;
+            get => _targetHandSize;
             set
             {
-                _cardToDrawPerTurn = value;
+                _targetHandSize = value;
                 OnCardDrawPerTurnUpdated?.Invoke(value);
             }
         }
@@ -97,7 +97,13 @@ namespace Runtime.CardGameplay.Deck
 
         private IEnumerator DrawWithDelay()
         {
-            for (int i = 0; i < _cardToDrawPerTurn; i++)
+            var cardsToDraw = _targetHandSize - _cards.Count;
+            if (cardsToDraw <= 0)
+            {
+                yield break;
+            }
+
+            for (int i = 0; i < cardsToDraw; i++)
             {
                 yield return new WaitForSeconds(_cardMovementDelay);
                 DrawCard();

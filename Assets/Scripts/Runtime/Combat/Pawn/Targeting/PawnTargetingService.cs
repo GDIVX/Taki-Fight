@@ -9,6 +9,8 @@ namespace Runtime.Combat.Pawn.Targeting
     {
         [ShowInInspector, ReadOnly] public bool IsLookingForTarget { get; private set; }
         [ShowInInspector, ReadOnly] public PawnTarget TargetedPawn { get; private set; }
+        public PawnTargetType TargetTypeLookingFor { get; private set; }
+
         private PawnTarget _lastTargetedPawn;
 
         public event Action<PawnTarget> OnTargetFound;
@@ -16,7 +18,7 @@ namespace Runtime.Combat.Pawn.Targeting
         public event Action OnTargetSelectionCanceled;
 
         [Button]
-        public void RequestTarget()
+        public void RequestTarget(PawnTargetType targetType)
         {
             if (IsLookingForTarget)
             {
@@ -24,6 +26,7 @@ namespace Runtime.Combat.Pawn.Targeting
             }
 
             IsLookingForTarget = true;
+            TargetTypeLookingFor = targetType;
             GameManager.Instance.BannerViewManager.WriteMessage(0, "Select Target", Color.yellow);
             OnLookingForTarget?.Invoke();
         }

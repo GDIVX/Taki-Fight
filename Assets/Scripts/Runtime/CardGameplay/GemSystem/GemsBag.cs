@@ -33,10 +33,6 @@ namespace Runtime.CardGameplay.GemSystem
             _view.Initialize(this);
         }
 
-        public void OnTurnStart(Action onComplete)
-        {
-            onComplete?.Invoke();
-        }
 
         public void OnTurnEnd()
         {

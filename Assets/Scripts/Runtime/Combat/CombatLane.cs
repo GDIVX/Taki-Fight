@@ -11,34 +11,36 @@ namespace Runtime.Combat
     {
         [SerializeField] private ArrangeInLine _arrangeInLine;
 
-        [SerializeField, Required, TabGroup("Enemies")]
-        private PawnFactory _pawnFactory;
+        [SerializeField, Required] private PawnFactory _pawnFactory;
 
         [SerializeField] private List<PawnController> _pawns = new List<PawnController>();
 
         public event Action OnPawnRemoved;
 
-        public List<PawnController> Pawns => new List<PawnController>(_pawns);
+        public List<PawnController> Pawns => new(_pawns);
 
-        public void SpawnPawnsForCombat(CombatConfig combatConfig)
+        public void SpawnPawnsForCombat(CombatConfig combatConfig, Action onComplete)
         {
             foreach (var data in combatConfig.Enemies)
             {
-                var pawn = _pawnFactory.SpawnEnemy(data);
-                _arrangeInLine.Add(pawn.gameObject);
-                _pawns.Add(pawn);
-                pawn.Health.OnDead += (sender, args) => { RemovePawn(pawn); };
+                AddPawn(data);
             }
+
+            onComplete?.Invoke();
+        }
+
+        public PawnController AddPawn(PawnData data)
+        {
+            var pawn = _pawnFactory.Spawn(data);
+            _arrangeInLine.Add(pawn.gameObject);
+            _pawns.Add(pawn);
+            pawn.Health.OnDead += (_, _) => { RemovePawn(pawn); };
+            return pawn;
         }
 
         private void RemovePawn(PawnController pawn)
         {
             _pawns.Remove(pawn);
-            if (pawn.isActiveAndEnabled)
-            {
-                Destroy(pawn.gameObject);
-            }
-
             OnPawnRemoved?.Invoke();
         }
 

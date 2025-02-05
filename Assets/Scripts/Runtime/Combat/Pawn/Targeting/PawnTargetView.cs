@@ -6,12 +6,16 @@ namespace Runtime.Combat.Pawn.Targeting
     [RequireComponent(typeof(Collider2D))]
     public class PawnTargetView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
+        [SerializeField] private PawnTarget _pawnTarget;
         [SerializeField] private SpriteRenderer _spriteRenderer;
         [SerializeField] private Material _highlightMaterial;
         private Material _originalMaterial;
 
+        public bool IsValidTarget { get; set; }
+
         private void Awake()
         {
+            _pawnTarget ??= GetComponent<PawnTarget>();
             if (_spriteRenderer == null)
             {
                 _spriteRenderer = GetComponent<SpriteRenderer>();
@@ -41,7 +45,7 @@ namespace Runtime.Combat.Pawn.Targeting
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            if (!PawnTargetingService.Instance.IsLookingForTarget)
+            if (!_pawnTarget.IsValidTarget())
             {
                 ResetMaterial();
                 return;

@@ -6,39 +6,45 @@ namespace Runtime.Combat.Pawn.Targeting
 {
     public class PawnTarget : MonoBehaviour, IPointerClickHandler
     {
-        [SerializeField, Required] private PawnController _controller;
+        private PawnTargetType PawnTargetType { get; set; }
+        public PawnController Controller { get; private set; }
 
-        public PawnController Controller => _controller;
+        public void Init(PawnController controller, PawnTargetType targetType)
+        {
+            Controller = controller;
+            PawnTargetType = targetType;
+        }
 
-        private bool IsValidTarget(out string errorMessage)
+        public bool IsValidTarget()
         {
             if (!PawnTargetingService.Instance.IsLookingForTarget)
             {
-                errorMessage = "Attempted to set target while no target selection is in progress.";
                 return false;
             }
 
-            if (_controller == null)
+            if (PawnTargetingService.Instance.TargetTypeLookingFor != PawnTargetType)
             {
-                errorMessage = $"Pawn Target {name} has no {nameof(PawnController)} assigned.";
                 return false;
             }
 
-            errorMessage = $"Attempted to select a dead pawn {name}";
-            return !_controller.Health.IsDead();
+            if (Controller == null)
+            {
+                return false;
+            }
+
+            return !Controller.Health.IsDead();
         }
 
         private void OnValidate()
         {
-            _controller ??= GetComponentInChildren<PawnController>();
+            Controller ??= GetComponentInChildren<PawnController>();
         }
 
         [Button]
         public void SetAsTarget()
         {
-            if (!IsValidTarget(out string errorMessage))
+            if (!IsValidTarget())
             {
-                Debug.LogWarning(errorMessage);
                 return;
             }
 
@@ -49,5 +55,11 @@ namespace Runtime.Combat.Pawn.Targeting
         {
             SetAsTarget();
         }
+    }
+
+    public enum PawnTargetType
+    {
+        Hero,
+        Enemy
     }
 }

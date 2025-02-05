@@ -10,12 +10,17 @@ namespace Runtime
 {
     public class CombatManager : MonoBehaviour
     {
-        [SerializeField, Required] private CombatLane _enemiesLane;
+        [SerializeField, Required] private CombatLane _enemiesLane, _heroLane;
 
         private static GameManager GameManager => GameManager.Instance;
 
+
         [SerializeField, TabGroup("Dependencies"), Required]
+        private PawnData _heroData;
+
         private PawnController _heroPawn;
+
+        public event Action OnStartTurn, OnEndTurn;
 
 
         public PawnController Hero
@@ -40,8 +45,7 @@ namespace Runtime
 
         public void InitializeHero(PawnData data)
         {
-            _heroPawn.gameObject.SetActive(true);
-            _heroPawn.Init(data);
+            _heroPawn = _heroLane.AddPawn(_heroData);
             _heroPawn.Health.OnDead += (sender, args) =>
             {
                 GameManager.BannerViewManager.WriteMessage(0, "Defeat", Color.red);
@@ -52,8 +56,7 @@ namespace Runtime
         [Button]
         public void StartCombat(CombatConfig combatConfig)
         {
-            _enemiesLane.SpawnPawnsForCombat(combatConfig);
-            GameManager.SetupCardGameplay();
+            _enemiesLane.SpawnPawnsForCombat(combatConfig, () => { GameManager.SetupCardGameplay(); });
         }
 
         [Button]
@@ -66,14 +69,13 @@ namespace Runtime
         public void StartTurn()
         {
             GameManager.BannerViewManager.WriteMessage(1, "Player Turn", Color.white);
-            GameManager.GemsBag.OnTurnStart(() =>
-            {
-                GameManager.BannerViewManager.Clear();
-                _heroPawn.OnTurnStart();
-                SetupEnemies();
+            GameManager.BannerViewManager.Clear();
+            _heroPawn.OnTurnStart();
+            SetupEnemies();
 
-                GameManager.Hand.DrawHand();
-            });
+            GameManager.Hand.DrawHand();
+
+            OnStartTurn?.Invoke();
         }
 
         [Button]
@@ -81,6 +83,7 @@ namespace Runtime
         {
             _heroPawn.OnTurnEnd();
             GameManager.GemsBag.OnTurnEnd();
+            OnEndTurn?.Invoke();
 
             PlayEnemiesTurn(() =>
             {

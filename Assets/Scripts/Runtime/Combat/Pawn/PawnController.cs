@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using CodeMonkey.HealthSystemCM;
 using JetBrains.Annotations;
+using Runtime.Combat.Pawn.Targeting;
 using Runtime.Combat.StatusEffects;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -13,13 +14,12 @@ namespace Runtime.Combat.Pawn
     {
         [SerializeField, Required] private PawnView _view;
         [SerializeField, Required] private StatusEffectHandler _statusEffectHandler;
-        [SerializeField] protected float WaitBeforeDestroyingObjectOnDeath;
 
 
         public TrackedProperty<int> Defense;
-        public TrackedProperty<int> DefenseModifier;
-        public TrackedProperty<int> AttackModifier;
-        public TrackedProperty<int> HealingModifier;
+        public TrackedProperty<int> DefenseModifier = new();
+        public TrackedProperty<int> AttackModifier = new();
+        public TrackedProperty<int> HealingModifier = new();
 
         public HealthSystem Health { get; private set; }
 
@@ -31,17 +31,44 @@ namespace Runtime.Combat.Pawn
 
 
         [Button]
-        public void Init([NotNull] PawnData data)
+        public PawnController Init([NotNull] PawnData data)
         {
             if (data == null) throw new ArgumentNullException(nameof(data));
-            Health = new HealthSystem(data.Health);
-            _statusEffectHandler ??= GetComponent<StatusEffectHandler>();
+            AddHealth(data);
+            AddStatusEffectHandler();
 
             Defense = new TrackedProperty<int>
             {
                 Value = data.Defense
             };
+
+            _view ??= GetComponent<PawnView>();
             _view.Init(this, Defense, data);
+
+            return this;
+        }
+
+        public PawnController AddTargeting(PawnTargetType targetType)
+        {
+            GetComponentInChildren<PawnTarget>().Init(this, targetType);
+            return this;
+        }
+
+        private void AddStatusEffectHandler()
+        {
+            _statusEffectHandler ??= GetComponent<StatusEffectHandler>();
+            _statusEffectHandler.Init(this);
+        }
+
+        private void AddHealth(PawnData data)
+        {
+            Health = new HealthSystem(data.Health);
+            Health.OnDead += OnDead;
+        }
+
+        private void OnDead(object sender, EventArgs e)
+        {
+            _view.OnDead(() => { Destroy(gameObject); });
         }
 
         private void OnValidate()

@@ -13,7 +13,7 @@ namespace Runtime.Combat.StatusEffects
     {
         [ShowInInspector, ReadOnly] private List<IStatusEffect> _statusEffects;
         [SerializeField] private StatusEffectListView _statusEffectView;
-        [SerializeField] private PawnController _pawn;
+        private PawnController _pawn;
 
         private void OnValidate()
         {
@@ -21,9 +21,10 @@ namespace Runtime.Combat.StatusEffects
             _pawn ??= GetComponentInChildren<PawnController>();
         }
 
-        private void Start()
+        public void Init(PawnController pawnController)
         {
             _statusEffects = new List<IStatusEffect>();
+            _pawn = pawnController;
         }
 
         public void Add(IStatusEffect newEffect, Sprite icon, TooltipData tooltipData)
