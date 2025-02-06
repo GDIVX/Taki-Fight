@@ -11,7 +11,6 @@ namespace Runtime
         public RunBuilder CreateNewRun()
         {
             Data = ScriptableObject.CreateInstance<RunData>();
-            AssetDatabase.CreateAsset(Data, "Assets/Resources/Data");
             return this;
         }
 

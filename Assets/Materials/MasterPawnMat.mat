@@ -70,6 +70,8 @@ Material:
     - _NoiseScale: 150
     - _Normal_Offset: 0.5
     - _Normal_Strength: 8
+    - _PixelResolution: 32
+    - _Pixelate: 0
     - _WavyAmount: 0
     m_Colors:
     - _DissolveDistortionVelocity: {r: 0, g: -0.3, b: 0, a: 0}
