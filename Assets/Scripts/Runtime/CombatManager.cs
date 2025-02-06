@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Runtime.Combat;
 using Runtime.Combat.Pawn;
 using Runtime.Combat.Pawn.Enemy;
+using Runtime.Events;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -15,13 +16,10 @@ namespace Runtime
         private static GameManager GameManager => GameManager.Instance;
 
 
-        [SerializeField, TabGroup("Dependencies"), Required]
-        private PawnData _heroData;
-
         private PawnController _heroPawn;
 
         public event Action OnStartTurn, OnEndTurn;
-
+        private EventListener<GameStateEvent> _onGameStateChanged;
 
         public PawnController Hero
         {
@@ -31,6 +29,45 @@ namespace Runtime
 
         public CombatLane Enemies => _enemiesLane;
 
+        public void OnEnable()
+        {
+            _onGameStateChanged = new EventListener<GameStateEvent>(e =>
+            {
+                switch (e.GameState)
+                {
+                    case GameState.Menu:
+                        break;
+                    case GameState.RunStart:
+                        break;
+                    case GameState.Pause:
+                        break;
+                    case GameState.Exploration:
+                        break;
+                    case GameState.RoomEntered:
+                        break;
+                    case GameState.RoomResolved:
+                        break;
+                    case GameState.Combat:
+                        break;
+                    case GameState.CombatEnd:
+                        EndCombat();
+                        break;
+                    case GameState.RunEnd:
+                        EndCombat();
+                        break;
+                    case GameState.Hub:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            });
+        }
+
+        private void OnDisable()
+        {
+            _onGameStateChanged.Disable();
+        }
+
         public void SetupOnEnemyRemove()
         {
             _enemiesLane.OnPawnRemoved += () =>
@@ -39,24 +76,30 @@ namespace Runtime
                 if (_enemiesLane.Pawns.Count > 0) return;
 
                 GameManager.BannerViewManager.WriteMessage(0, "Victory", Color.green);
-                GameManager.GameOver();
+                GameManager.Instance.SetGameState(GameState.CombatEnd);
             };
         }
 
         public void InitializeHero(PawnData data)
         {
-            _heroPawn = _heroLane.AddPawn(_heroData);
+            _heroPawn = _heroLane.AddPawn(data);
             _heroPawn.Health.OnDead += (sender, args) =>
             {
                 GameManager.BannerViewManager.WriteMessage(0, "Defeat", Color.red);
-                GameManager.GameOver();
+                GameManager.SetGameState(GameState.RunEnd);
             };
         }
 
         [Button]
         public void StartCombat(CombatConfig combatConfig)
         {
-            _enemiesLane.SpawnPawnsForCombat(combatConfig, () => { GameManager.SetupCardGameplay(); });
+            _enemiesLane.SpawnPawnsForCombat(combatConfig, () =>
+            {
+                SetupOnEnemyRemove();
+                GameManager.SetupCardGameplay();
+                StartTurn();
+                GameManager.Instance.SetGameState(GameState.Combat);
+            });
         }
 
         [Button]
@@ -66,7 +109,7 @@ namespace Runtime
             _heroPawn.gameObject.SetActive(false);
         }
 
-        public void StartTurn()
+        private void StartTurn()
         {
             GameManager.BannerViewManager.WriteMessage(1, "Player Turn", Color.white);
             GameManager.BannerViewManager.Clear();
@@ -82,7 +125,7 @@ namespace Runtime
         public void EndTurn()
         {
             _heroPawn.OnTurnEnd();
-            GameManager.GemsBag.OnTurnEnd();
+            GameManager.GemsBag.Clear();
             OnEndTurn?.Invoke();
 
             PlayEnemiesTurn(() =>

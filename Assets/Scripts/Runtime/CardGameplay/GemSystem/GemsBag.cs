@@ -34,7 +34,7 @@ namespace Runtime.CardGameplay.GemSystem
         }
 
 
-        public void OnTurnEnd()
+        public void Clear()
         {
             _gems[GemType.Pearl] = 0;
             _gems[GemType.Quartz] = 0;
