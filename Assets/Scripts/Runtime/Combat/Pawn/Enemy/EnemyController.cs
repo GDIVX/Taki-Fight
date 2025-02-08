@@ -43,7 +43,7 @@ namespace Runtime.Combat.Pawn.Enemy
             }
 
             _currPotency = finalPotency;
-            _intentionsList.Add(_playTableEntry.Sprite, _playTableEntry.Color, finalPotency.ToString());
+            _intentionsList.Add(_playTableEntry.IntentionType, finalPotency, _playTableEntry.Repeats);
         }
 
         public void PlayTurn(Action onComplete)
@@ -60,24 +60,16 @@ namespace Runtime.Combat.Pawn.Enemy
                 OnTurnStart();
 
                 var feedbackStrategy = _playTableEntry.FeedbackStrategy;
-                if (feedbackStrategy)
+                for (int i = 0; i < _playTableEntry.Repeats; i++)
                 {
-                    feedbackStrategy.Animate(this, () =>
+                    if (feedbackStrategy)
                     {
-                        _playTableEntry.Strategy.Play(this, _currPotency);
-                        _intentionsList.RemoveNext();
-                        OnTurnEnd();
-                        _isPlaying = false;
-                        onComplete?.Invoke();
-                    });
-                }
-                else
-                {
-                    _playTableEntry.Strategy.Play(this, _currPotency);
-                    _intentionsList.RemoveNext();
-                    OnTurnEnd();
-                    _isPlaying = false;
-                    onComplete?.Invoke();
+                        feedbackStrategy.Animate(this, () => { Play(onComplete); });
+                    }
+                    else
+                    {
+                        Play(onComplete);
+                    }
                 }
             }
             catch (Exception e)
@@ -86,6 +78,15 @@ namespace Runtime.Combat.Pawn.Enemy
                 _isPlaying = false;
                 onComplete?.Invoke();
             }
+        }
+
+        private void Play(Action onComplete)
+        {
+            _playTableEntry.Strategy.Play(this, _currPotency);
+            _intentionsList.RemoveNext();
+            OnTurnEnd();
+            _isPlaying = false;
+            onComplete?.Invoke();
         }
     }
 }

@@ -6,7 +6,7 @@ namespace Runtime.Combat.Pawn.Targeting
 {
     public class PawnTarget : MonoBehaviour, IPointerClickHandler
     {
-        private PawnTargetType PawnTargetType { get; set; }
+        public PawnTargetType PawnTargetType { get; private set; }
         public PawnController Controller { get; private set; }
 
         public void Init(PawnController controller, PawnTargetType targetType)

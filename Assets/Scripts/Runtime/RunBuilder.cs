@@ -10,7 +10,6 @@ namespace Runtime
 
         public RunBuilder CreateNewRun()
         {
-            Data = ScriptableObject.CreateInstance<RunData>();
             return this;
         }
 

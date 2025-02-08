@@ -10,10 +10,10 @@ namespace Runtime.Combat.Pawn.Enemy
         public CardPlayStrategy Strategy;
         public FeedbackStrategy FeedbackStrategy;
         public int Potency;
+        public IntentionType IntentionType;
         public bool AddAttackMod, AddDefenseMod;
         public bool AddHealingMod;
         public float Weight;
-        public Sprite Sprite;
-        public Color Color;
+        public int Repeats;
     }
 }

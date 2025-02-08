@@ -12,6 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18046fc9ff3e4c409d1abb5f65cb6f70, type: 3}
   m_Name: PowerStatusEffect
   m_EditorClassIdentifier: 
-  _effectType: 1
-  _icon: {fileID: 21300000, guid: 2f0a9d9bf58fc2b47954e70d13c5f2bd, type: 3}
+  _icon: {fileID: -773697859, guid: aaf06ea70717cc643b5453f87d2e7c1f, type: 3}
   _tooltip: {fileID: 11400000, guid: 8d6d7d0af7ca7f04e9a042c81ff18dff, type: 2}

@@ -12,11 +12,11 @@ namespace Runtime.Combat.Pawn.Enemy
         [ShowInInspector, ReadOnly] private Queue<Intention> _shownIntentions = new();
         [ShowInInspector, ReadOnly] private Queue<Intention> _hiddenIntentions = new();
 
-        public void Add(Sprite sprite, Color color, string text)
+        public void Add(IntentionType intentionType, int potency, int repeats)
         {
             Intention intention = GetIntention();
             _shownIntentions.Enqueue(intention);
-            intention.Draw(sprite, color, text);
+            intention.ShowIntention(intentionType, potency, repeats);
         }
 
         public void RemoveNext()
@@ -38,5 +38,14 @@ namespace Runtime.Combat.Pawn.Enemy
             _shownIntentions.Clear();
             _hiddenIntentions.Clear();
         }
+    }
+
+    public enum IntentionType
+    {
+        Attack,
+        Defense,
+        Buff,
+        Debuff,
+        Unknown
     }
 }

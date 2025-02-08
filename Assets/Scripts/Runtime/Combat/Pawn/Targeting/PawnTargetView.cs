@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using DG.Tweening;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace Runtime.Combat.Pawn.Targeting
@@ -8,10 +9,22 @@ namespace Runtime.Combat.Pawn.Targeting
     {
         [SerializeField] private PawnTarget _pawnTarget;
         [SerializeField] private SpriteRenderer _spriteRenderer;
-        [SerializeField] private Material _highlightMaterial;
-        private Material _originalMaterial;
+        [SerializeField] private float _blendTime;
+        [SerializeField] private Ease _blendEase;
+        [SerializeField] private float _colorBlendTime;
+        [SerializeField] private Ease _colorbBlendEase;
 
-        public bool IsValidTarget { get; set; }
+        [SerializeField, ColorUsage(true, true)]
+        private Color _outlineColorForHeroA, _outLineColorForEnemyA;
+
+        [SerializeField, ColorUsage(true, true)]
+        private Color _outlineColorForHeroB, _outLineColorForEnemyB;
+
+        private static readonly int OutlineBlend = Shader.PropertyToID("_OutlineBlend");
+        private static readonly int OutlineColorA = Shader.PropertyToID("_OutlineColorA");
+        private static readonly int OutlineColorB = Shader.PropertyToID("_OutlineColorB");
+        private static readonly int OutlineColorLerp = Shader.PropertyToID("_OutlineColorLerp");
+
 
         private void Awake()
         {
@@ -21,13 +34,9 @@ namespace Runtime.Combat.Pawn.Targeting
                 _spriteRenderer = GetComponent<SpriteRenderer>();
             }
 
-            if (_spriteRenderer == null)
-            {
-                Debug.LogError("SpriteRenderer component is missing.");
-                return;
-            }
-
-            _originalMaterial = _spriteRenderer.material;
+            if (_spriteRenderer != null) return;
+            Debug.LogError("SpriteRenderer component is missing.");
+            return;
         }
 
         private void OnValidate()
@@ -35,11 +44,6 @@ namespace Runtime.Combat.Pawn.Targeting
             if (_spriteRenderer == null)
             {
                 _spriteRenderer = GetComponent<SpriteRenderer>();
-            }
-
-            if (_highlightMaterial == null)
-            {
-                Debug.LogWarning("Highlight material is not assigned.");
             }
         }
 
@@ -57,13 +61,23 @@ namespace Runtime.Combat.Pawn.Targeting
                 return;
             }
 
-            if (_highlightMaterial == null)
-            {
-                Debug.LogError($"Highlight material was not assigned");
-                return;
-            }
+            var colorA = _pawnTarget.PawnTargetType == PawnTargetType.Hero
+                ? _outlineColorForHeroA
+                : _outLineColorForEnemyA;
 
-            _spriteRenderer.material = _highlightMaterial;
+            var colorB = _pawnTarget.PawnTargetType == PawnTargetType.Hero
+                ? _outlineColorForHeroB
+                : _outLineColorForEnemyB;
+
+            _spriteRenderer.material.SetColor(OutlineColorA, colorA);
+            _spriteRenderer.material.SetColor(OutlineColorB, colorB);
+            DOTween.To((x) => _spriteRenderer.material.SetFloat(OutlineBlend, x), 0, 1, _blendTime)
+                .SetEase(_blendEase).onComplete += () =>
+            {
+                DOTween.To(
+                        (x) => _spriteRenderer.material.SetFloat(OutlineColorLerp, x), 0, 1, _colorBlendTime)
+                    .SetEase(_colorbBlendEase);
+            };
         }
 
         public void OnPointerExit(PointerEventData eventData)
@@ -75,8 +89,9 @@ namespace Runtime.Combat.Pawn.Targeting
 
         private void ResetMaterial()
         {
-            if (_spriteRenderer.material != _originalMaterial)
-                _spriteRenderer.material = _originalMaterial;
+            DOTween.To((x) => _spriteRenderer.material.SetFloat(OutlineBlend, x),
+                    _spriteRenderer.material.GetFloat(OutlineBlend), 0, _blendTime)
+                .SetEase(_blendEase);
         }
     }
 }

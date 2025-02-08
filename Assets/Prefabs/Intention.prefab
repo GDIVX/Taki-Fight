@@ -36,7 +36,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0.1, y: 0.1}
+  m_SizeDelta: {x: 1.5, y: 1.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7476769673483210750
 MonoBehaviour:
@@ -54,6 +54,36 @@ MonoBehaviour:
   _text: {fileID: 2661453283166264927}
   _animDuration: 1
   _ease: 4
+  _viewConfigs:
+  - Type: 0
+    Sprites:
+    - {fileID: 619970954, guid: aaf06ea70717cc643b5453f87d2e7c1f, type: 3}
+    - {fileID: -1963923965, guid: aaf06ea70717cc643b5453f87d2e7c1f, type: 3}
+    - {fileID: -294685349, guid: aaf06ea70717cc643b5453f87d2e7c1f, type: 3}
+    - {fileID: -531347455, guid: aaf06ea70717cc643b5453f87d2e7c1f, type: 3}
+    PotencyStepSize: 5
+  - Type: 1
+    Sprites:
+    - {fileID: -1481100380, guid: aaf06ea70717cc643b5453f87d2e7c1f, type: 3}
+    - {fileID: 131437322, guid: aaf06ea70717cc643b5453f87d2e7c1f, type: 3}
+    - {fileID: -153121929, guid: aaf06ea70717cc643b5453f87d2e7c1f, type: 3}
+    - {fileID: 455213709, guid: aaf06ea70717cc643b5453f87d2e7c1f, type: 3}
+    PotencyStepSize: 5
+  - Type: 2
+    Sprites:
+    - {fileID: -70513145, guid: aaf06ea70717cc643b5453f87d2e7c1f, type: 3}
+    PotencyStepSize: 5
+  - Type: 3
+    Sprites:
+    - {fileID: 453932980, guid: aaf06ea70717cc643b5453f87d2e7c1f, type: 3}
+    PotencyStepSize: 5
+  - Type: 4
+    Sprites:
+    - {fileID: -2062925582, guid: aaf06ea70717cc643b5453f87d2e7c1f, type: 3}
+    PotencyStepSize: 5
+  _bobAmplitude: 0.3
+  _bobDuration: 1
+  _bobEase: 4
 --- !u!1 &3532371669707413195
 GameObject:
   m_ObjectHideFlags: 0
@@ -87,10 +117,10 @@ RectTransform:
   m_Father: {fileID: 1731040790625083871}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_SizeDelta: {x: 1, y: 1}
+  m_Pivot: {x: 0, y: 0}
 --- !u!222 &6254104031422919282
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -146,15 +176,15 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 0.05
-  m_fontSizeBase: 36
+  m_fontSize: 0.5
+  m_fontSizeBase: 0.5
   m_fontWeight: 400
-  m_enableAutoSizing: 1
+  m_enableAutoSizing: 0
   m_fontSizeMin: 0
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 2
-  m_VerticalAlignment: 512
+  m_VerticalAlignment: 4096
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -162,15 +192,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -220,11 +252,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1731040790625083871}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0.050000004, y: -0.05}
-  m_SizeDelta: {x: 0.10000001, y: 0.1}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 1, y: 1}
+  m_Pivot: {x: 1, y: 1}
 --- !u!222 &1661921551390731349
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -246,14 +278,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.7019608, g: 0.22352941, b: 0.22352941, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 1687138246783984b90b6ee36ed95603, type: 3}
+  m_Sprite: {fileID: -311148965, guid: aaf06ea70717cc643b5453f87d2e7c1f, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
