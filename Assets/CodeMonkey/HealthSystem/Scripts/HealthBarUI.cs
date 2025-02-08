@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using DG.Tweening;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace CodeMonkey.HealthSystemCM
@@ -16,11 +17,17 @@ namespace CodeMonkey.HealthSystemCM
 
         [Tooltip("Image to show the Health Bar, should be set as Fill, the script modifies fillAmount")]
         [SerializeField]
-        private Image image;
+        private Image _colorImage, _fillImage, _trailFillImage;
 
-        [SerializeField] private Gradient colorGradient;
+        [SerializeField] private float _trailDelay, _trailFillTime, _animationTime;
+        [SerializeField] private Ease _trailEase, _fillEase, _colorEase;
+
+        [SerializeField] private Gradient _colorGradientA;
+        [SerializeField] private Gradient _colorGradientB;
 
         private HealthSystem healthSystem;
+        private static readonly int HealthColorA = Shader.PropertyToID("_HealthColorA");
+        private static readonly int HealthColorB = Shader.PropertyToID("_HealthColorB");
 
 
         // private void Start() {
@@ -60,9 +67,26 @@ namespace CodeMonkey.HealthSystemCM
         private void UpdateHealthBar()
         {
             var healthNormalized = healthSystem.GetHealthNormalized();
-            image.fillAmount = healthNormalized;
-            image.color = colorGradient.Evaluate(healthNormalized);
+            var colorA = _colorGradientA.Evaluate(healthNormalized);
+            var colorB = _colorGradientB.Evaluate(healthNormalized);
+
+            var sequence = DOTween.Sequence();
+            sequence.Append(DOTween
+                .To((x) => _fillImage.fillAmount = x, _fillImage.fillAmount, healthNormalized, _animationTime)
+                .SetEase(_fillEase));
+            sequence.Append(DOTween.To(() => _colorImage.material.GetColor(HealthColorA),
+                c => _colorImage.material.SetColor(HealthColorA, c), colorA,
+                _animationTime).SetEase(_colorEase));
+            sequence.Append(DOTween.To(() => _colorImage.material.GetColor(HealthColorB),
+                c => _colorImage.material.SetColor(HealthColorB, c), colorB,
+                _animationTime).SetEase(_colorEase));
+            sequence.AppendInterval(_trailDelay);
+            sequence.Append(DOTween
+                .To((x) => _trailFillImage.fillAmount = x, _fillImage.fillAmount, healthNormalized, _trailFillTime)
+                .SetEase(_trailEase));
+            sequence.Play();
         }
+
 
         /// <summary>
         /// Clean up events when this Game Object is destroyed
