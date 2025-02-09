@@ -15,6 +15,11 @@ namespace Runtime.CardGameplay.Card.View
         [SerializeField, TabGroup("Draw")] private Image _image;
         [SerializeField, TabGroup("Draw")] private TextMeshProUGUI _pearlsCount, _quartzCount, _brimstoneCount;
 
+        [SerializeField, TabGroup("Dissolve")] private Image _mask;
+        [SerializeField, TabGroup("Dissolve")] private CanvasGroup _canvasGroup;
+        [SerializeField, TabGroup("Dissolve")] private float _dissolveTime;
+        [SerializeField, TabGroup("Dissolve")] private Ease _dissolveEase;
+
         [SerializeField, TabGroup("Dependencies")]
         private CardTextParser _cardTextParser;
 
@@ -83,6 +88,9 @@ namespace Runtime.CardGameplay.Card.View
             _pearlsCount.transform.parent.gameObject.SetActive(cost.Pearls > 0);
             _quartzCount.transform.parent.gameObject.SetActive(cost.Quartz > 0);
             _brimstoneCount.transform.parent.gameObject.SetActive(cost.Brimstone > 0);
+
+            _mask.fillAmount = 1;
+            _canvasGroup.alpha = 1;
 
             _cardData = data;
 
@@ -200,10 +208,18 @@ namespace Runtime.CardGameplay.Card.View
                 });
         }
 
+        [Button]
         public void OnBurn()
         {
-            //TODO: Dissolve Shader
-            _controller.Disable();
+            AnimateHoverEnter();
+            _mask.DOFillAmount(0, _dissolveTime).SetEase(_dissolveEase);
+            _canvasGroup.DOFade(0, _dissolveTime).SetEase(_dissolveEase).onComplete += () =>
+            {
+                _controller.Disable();
+                transform.localPosition = _originalPosition;
+                transform.localRotation = Quaternion.Euler(_originalRotation);
+                transform.localScale = _originalScale;
+            };
         }
     }
 }

@@ -1405,8 +1405,8 @@
     "m_ObjectId": "0db0d10cdf75471984936cf76a05d4c7",
     "m_Title": "Dissolve",
     "m_Position": {
-        "x": -1673.00048828125,
-        "y": -758.0000610351563
+        "x": -1673.0,
+        "y": -758.0
     }
 }
 
@@ -2235,8 +2235,8 @@
     "m_ObjectId": "336e9541e31149c7b7ef5cfcf2dc3cf3",
     "m_Title": "Flash",
     "m_Position": {
-        "x": -2206.000244140625,
-        "y": 283.999755859375
+        "x": -2206.0,
+        "y": 284.0
     }
 }
 
@@ -2798,8 +2798,8 @@
     "m_ObjectId": "4fdfdcd8657b4644bec7807d3fd67269",
     "m_Title": "Outline",
     "m_Position": {
-        "x": -3053.000244140625,
-        "y": -2999.000244140625
+        "x": -3053.0,
+        "y": -2999.0
     }
 }
 
@@ -3079,8 +3079,8 @@
     "m_ObjectId": "5d72c33807964295918ff06d71c6fc8d",
     "m_Title": "Color",
     "m_Position": {
-        "x": -1479.0003662109375,
-        "y": -92.000244140625
+        "x": -1479.0,
+        "y": -92.0
     }
 }
 
@@ -3242,10 +3242,10 @@
     "m_Type": "UnityEditor.ShaderGraph.Vector4MaterialSlot",
     "m_ObjectId": "649fb5a62a844791aafb25a144848177",
     "m_Id": 1865429116,
-    "m_DisplayName": "Vector4",
+    "m_DisplayName": "UV",
     "m_SlotType": 0,
     "m_Hidden": false,
-    "m_ShaderOutputName": "_Vector4",
+    "m_ShaderOutputName": "_UV",
     "m_StageCapability": 3,
     "m_Value": {
         "x": 0.0,
@@ -3633,10 +3633,10 @@
     "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
     "m_ObjectId": "7e404894a36e41e1b2720b7534880d0f",
     "m_Id": 1466912238,
-    "m_DisplayName": "Vector1",
+    "m_DisplayName": "DissolveStreanght",
     "m_SlotType": 0,
     "m_Hidden": false,
-    "m_ShaderOutputName": "_Vector1",
+    "m_ShaderOutputName": "_DissolveStreanght",
     "m_StageCapability": 3,
     "m_Value": 0.0,
     "m_DefaultValue": 0.0,
@@ -4081,7 +4081,7 @@
     "m_Title": "Main Texture",
     "m_Position": {
         "x": -3205.0,
-        "y": 472.99993896484377
+        "y": 473.0
     }
 }
 
@@ -4970,7 +4970,7 @@
     "m_Title": "Distortion",
     "m_Position": {
         "x": -3694.0,
-        "y": 743.9996948242188
+        "y": 744.0
     }
 }
 
@@ -5193,7 +5193,7 @@
     "m_Title": "Alpha",
     "m_Position": {
         "x": -1028.0,
-        "y": -1060.000244140625
+        "y": -1060.0
     }
 }
 
@@ -5219,7 +5219,7 @@
     "m_Title": "Normal",
     "m_Position": {
         "x": -704.0,
-        "y": 905.9996337890625
+        "y": 906.0
     }
 }
 
