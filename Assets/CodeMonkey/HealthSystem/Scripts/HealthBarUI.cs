@@ -22,12 +22,7 @@ namespace CodeMonkey.HealthSystemCM
         [SerializeField] private float _trailDelay, _trailFillTime, _animationTime;
         [SerializeField] private Ease _trailEase, _fillEase, _colorEase;
 
-        [SerializeField] private Gradient _colorGradientA;
-        [SerializeField] private Gradient _colorGradientB;
-
         private HealthSystem healthSystem;
-        private static readonly int HealthColorA = Shader.PropertyToID("_HealthColorA");
-        private static readonly int HealthColorB = Shader.PropertyToID("_HealthColorB");
 
 
         // private void Start() {
@@ -67,19 +62,12 @@ namespace CodeMonkey.HealthSystemCM
         private void UpdateHealthBar()
         {
             var healthNormalized = healthSystem.GetHealthNormalized();
-            var colorA = _colorGradientA.Evaluate(healthNormalized);
-            var colorB = _colorGradientB.Evaluate(healthNormalized);
+
 
             var sequence = DOTween.Sequence();
             sequence.Append(DOTween
                 .To((x) => _fillImage.fillAmount = x, _fillImage.fillAmount, healthNormalized, _animationTime)
                 .SetEase(_fillEase));
-            sequence.Append(DOTween.To(() => _colorImage.material.GetColor(HealthColorA),
-                c => _colorImage.material.SetColor(HealthColorA, c), colorA,
-                _animationTime).SetEase(_colorEase));
-            sequence.Append(DOTween.To(() => _colorImage.material.GetColor(HealthColorB),
-                c => _colorImage.material.SetColor(HealthColorB, c), colorB,
-                _animationTime).SetEase(_colorEase));
             sequence.AppendInterval(_trailDelay);
             sequence.Append(DOTween
                 .To((x) => _trailFillImage.fillAmount = x, _fillImage.fillAmount, healthNormalized, _trailFillTime)

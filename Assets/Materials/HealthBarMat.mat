@@ -42,6 +42,8 @@ Material:
     m_Ints: []
     m_Floats:
     - _ColorMask: 15
+    - _GradientSample: 0.398
+    - _Scale: 9.3
     - _Stencil: 0
     - _StencilComp: 8
     - _StencilOp: 0
@@ -51,5 +53,12 @@ Material:
     - _UIMaskSoftnessY: 1
     m_Colors:
     - _ClipRect: {r: 0, g: 0, b: 0, a: 0}
+    - _HealthColorA: {r: 1.8679246, g: 0.026432846, b: 0.026432846, a: 1}
+    - _HealthColorB: {r: 0.16037738, g: 0.003782485, b: 0.003782485, a: 1}
+    - _HealthColorMaxA: {r: 0, g: 2.1915438, b: 0.022016782, a: 1}
+    - _HealthColorMaxB: {r: 0.02291783, g: 0.16078432, b: 0, a: 0}
+    - _HealthColorMimB: {r: 0.3207547, g: 0.05598078, b: 0.07410239, a: 0}
+    - _HealthColorMinA: {r: 0.5566038, g: 0.06563723, b: 0.1211766, a: 1}
+    - _TwirlOffsetSpeed: {r: 0.3, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
