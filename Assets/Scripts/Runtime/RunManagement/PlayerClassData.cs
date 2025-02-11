@@ -11,6 +11,10 @@ namespace Runtime.RunManagement
     {
         [SerializeField] private List<CardData> _starterCards;
         [SerializeField] private List<CardData> _collectableCards;
-        [SerializeField]  private PawnData _pawn;
+        [SerializeField] private PawnData _pawn;
+
+        public List<CardData> StarterCards => _starterCards;
+        public List<CardData> CollectableCards => _collectableCards;
+        public PawnData Pawn => _pawn;
     }
 }

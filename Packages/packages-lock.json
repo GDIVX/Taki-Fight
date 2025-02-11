@@ -7,6 +7,13 @@
       "dependencies": {},
       "hash": "5764d44d4232c8ea628549137559050ea6f6dc10"
     },
+    "com.omnix.scene_management": {
+      "version": "https://github.com/thevaishnav/SceneManagement.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "391f8ec1ab6588cbcfb0b13286f4747f5ce9b6e4"
+    },
     "com.unity.2d.animation": {
       "version": "10.1.4",
       "depth": 1,
@@ -166,7 +173,7 @@
       }
     },
     "com.unity.ide.rider": {
-      "version": "3.0.31",
+      "version": "3.0.34",
       "depth": 0,
       "source": "registry",
       "dependencies": {

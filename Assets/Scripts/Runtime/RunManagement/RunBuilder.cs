@@ -19,19 +19,26 @@ namespace Runtime.RunManagement
             Data.Hero = null;
             Data.Cards.Clear();
             Data.IsRunInProgress = false;
-        } 
+        }
 
-        public RunBuilder AddHeroData(PawnData pawnData)
+        public void NewRunFromPlayerClass(PlayerClassData playerClassData)
+        {
+            AddHeroData(playerClassData.Pawn);
+            Data.Cards = playerClassData.StarterCards;
+            AddDeck();
+            Data.IsRunInProgress = true;
+        }
+
+        private RunBuilder AddHeroData(PawnData pawnData)
         {
             Data.Hero = pawnData;
             return this;
         }
 
-        public void SetupNewDeckDependencies(HandController controller, DeckView deckView)
+        private void AddDeck()
         {
             var deck = CreateDeck();
-            controller.Deck = deck;
-            deckView.Setup(deck);
+            Data.Deck = deck;
         }
 
         private Deck CreateDeck()

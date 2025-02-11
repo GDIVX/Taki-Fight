@@ -2,6 +2,7 @@
 using Runtime.CardGameplay.Card;
 using Runtime.CardGameplay.Deck;
 using Runtime.CardGameplay.GemSystem;
+using Runtime.Combat;
 using Runtime.Combat.Pawn;
 using Runtime.Events;
 using Runtime.RunManagement;
@@ -10,6 +11,7 @@ using Runtime.UI.Tooltip;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
+using EventBus = Runtime.Events.EventBus;
 
 namespace Runtime
 {
@@ -46,7 +48,6 @@ namespace Runtime
         public RunBuilder RunBuilder { get; private set; }
         public BannerViewManager BannerViewManager => _bannerViewManager;
         public GemsBag GemsBag => _gemsBag;
-        public EventBus EventBus { get; private set; }
 
         public HandController Hand => _handController;
 
@@ -56,6 +57,7 @@ namespace Runtime
             get => _combatManager.Hero;
         }
 
+        public EventBus EventBus { get; private set; }
 
         public TooltipPool TooltipPool => _tooltipPool;
 
@@ -67,11 +69,16 @@ namespace Runtime
         //event listeners
         private EventListener<GameStateEvent> _onGameStateChange;
 
+        //TODO: TEMP
+        [SerializeField] private PlayerClassData _tempClassData;
+
         private void Awake()
         {
             EventBus = new EventBus();
-            OnEventBusCreated?.Invoke();
+            ServiceLocator.Register(EventBus);
             RunBuilder = new RunBuilder(_runData);
+            ServiceLocator.Register(RunBuilder);
+            OnEventBusCreated?.Invoke();
         }
 
         private void OnEnable()
@@ -115,6 +122,9 @@ namespace Runtime
         /// </summary>
         public void StartRun()
         {
+            //TODO: TEMP
+            RunBuilder.NewRunFromPlayerClass(_tempClassData);
+
             SetGameState(GameState.RunStart);
         }
 
@@ -135,8 +145,6 @@ namespace Runtime
         private void OnStartRun()
         {
             CombatManager.InitializeHero(_runData.Hero);
-            RunBuilder.SetupNewDeckDependencies(_handController, _deckView);
-            _gemsBag.Initialize();
             _cardFactory.Init(CombatManager.Hero);
         }
 
@@ -150,6 +158,10 @@ namespace Runtime
         [Button]
         public void SetupCardGameplay()
         {
+            var deck = _runData.Deck;
+            _handController.Deck = deck;
+            _deckView.Setup(deck);
+            _gemsBag.Initialize();
             _handController.gameObject.SetActive(true);
             _handController.DiscardHand();
             _gemsBag.Clear();

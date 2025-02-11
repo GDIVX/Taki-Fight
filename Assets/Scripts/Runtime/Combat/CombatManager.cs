@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using Runtime.Combat;
 using Runtime.Combat.Pawn;
 using Runtime.Combat.Pawn.Enemy;
 using Runtime.Events;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace Runtime
+namespace Runtime.Combat
 {
     public class CombatManager : MonoBehaviour
     {
