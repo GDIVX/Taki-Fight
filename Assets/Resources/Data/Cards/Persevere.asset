@@ -16,8 +16,9 @@ MonoBehaviour:
   _description: 'Gain {defense:0} Defense.
 
     Gain {potency:1} Power.'
-  _image: {fileID: 21300000, guid: 8421d7eb0e5f0d94aa6d4c400f01b755, type: 3}
-  _cardType: 0
+  _image: {fileID: -238933454, guid: aaf06ea70717cc643b5453f87d2e7c1f, type: 3}
+  _cardType: 2
+  _rarity: 2
   _selectStrategy: {fileID: 11400000, guid: 6488691d3e5b1734fbf184a753c30823, type: 2}
   _playStrategies:
   - PlayStrategy: {fileID: 11400000, guid: 549e43c006aaa9548b773fde947c00f5, type: 2}

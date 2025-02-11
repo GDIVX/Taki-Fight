@@ -12,6 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfa7d1474d204cdf97cff19db736ba13, type: 3}
   m_Name: FighterClass
   m_EditorClassIdentifier: 
-  _starterCards: []
-  _collectableCards: []
-  _pawn: {fileID: 0}
+  _starterCards:
+  - {fileID: 11400000, guid: c991fad572efdee44b0d6993abbb32cb, type: 2}
+  - {fileID: 11400000, guid: c991fad572efdee44b0d6993abbb32cb, type: 2}
+  - {fileID: 11400000, guid: c991fad572efdee44b0d6993abbb32cb, type: 2}
+  - {fileID: 11400000, guid: cc83e7a0de1799c468a5904ea1e305d3, type: 2}
+  - {fileID: 11400000, guid: d7abef7bd65a4d7438f0c8eef0ea7173, type: 2}
+  - {fileID: 11400000, guid: d7abef7bd65a4d7438f0c8eef0ea7173, type: 2}
+  - {fileID: 11400000, guid: d7abef7bd65a4d7438f0c8eef0ea7173, type: 2}
+  - {fileID: 11400000, guid: b550abefa3890804f844acfb1af0847d, type: 2}
+  - {fileID: 11400000, guid: a43c849c990c2ed4b9e9f1f2e33ea415, type: 2}
+  - {fileID: 11400000, guid: a43c849c990c2ed4b9e9f1f2e33ea415, type: 2}
+  - {fileID: 11400000, guid: a43c849c990c2ed4b9e9f1f2e33ea415, type: 2}
+  - {fileID: 11400000, guid: a43c849c990c2ed4b9e9f1f2e33ea415, type: 2}
+  _collectableCards:
+  - {fileID: 11400000, guid: be9874eea8665cf4883a1120654a141e, type: 2}
+  - {fileID: 11400000, guid: cc83e7a0de1799c468a5904ea1e305d3, type: 2}
+  - {fileID: 11400000, guid: 3d3688b991b42cd4aa1080b9a64fbd78, type: 2}
+  _pawn: {fileID: 11400000, guid: 8a1754766491ef942a64eede784d3e84, type: 2}

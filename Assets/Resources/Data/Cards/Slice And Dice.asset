@@ -18,6 +18,7 @@ MonoBehaviour:
 '
   _image: {fileID: -83631272, guid: aaf06ea70717cc643b5453f87d2e7c1f, type: 3}
   _cardType: 0
+  _rarity: 1
   _selectStrategy: {fileID: 11400000, guid: 693626e501b6ec2438a4e251d9c1a4e4, type: 2}
   _playStrategies:
   - PlayStrategy: {fileID: 11400000, guid: 583361563f3967d4197a25e441f0dc35, type: 2}

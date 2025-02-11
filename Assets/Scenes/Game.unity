@@ -219,6 +219,7 @@ MonoBehaviour:
   _tooltipPool: {fileID: 1878048109}
   _keywordDictionary: {fileID: 11400000, guid: 66d450156de073643a2a3a33c7bc17b1, type: 2}
   _runData: {fileID: 11400000, guid: ce455a740ebf7f44890ed8d2ed9bf6e9, type: 2}
+  _tempClassData: {fileID: 11400000, guid: 64dabf46a45808846b034bd293550d88, type: 2}
 --- !u!114 &51308176
 MonoBehaviour:
   m_ObjectHideFlags: 0
