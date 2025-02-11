@@ -42,12 +42,12 @@ Material:
     m_Ints: []
     m_Floats:
     - _ColorMask: 15
-    - _DissolveBlend: 0.5
+    - _DissolveBlend: 1
     - _DissolveOutlineThickness: 0.1
     - _DissolveScale: 30
     - _OutlineAnimSpeed: 0.3
-    - _OutlineBlend: 0
-    - _OutlineThickness: 3
+    - _OutlineBlend: 1
+    - _OutlineThickness: 5
     - _Stencil: 0
     - _StencilComp: 8
     - _StencilOp: 0

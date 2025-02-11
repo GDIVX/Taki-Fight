@@ -12,4 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd0186fa4cca46958a9618085b1d74f3, type: 3}
   m_Name: Run Save File
   m_EditorClassIdentifier: 
+  Cards:
+  - {fileID: 11400000, guid: c991fad572efdee44b0d6993abbb32cb, type: 2}
+  - {fileID: 11400000, guid: c991fad572efdee44b0d6993abbb32cb, type: 2}
+  - {fileID: 11400000, guid: c991fad572efdee44b0d6993abbb32cb, type: 2}
   Hero: {fileID: 11400000, guid: 8a1754766491ef942a64eede784d3e84, type: 2}

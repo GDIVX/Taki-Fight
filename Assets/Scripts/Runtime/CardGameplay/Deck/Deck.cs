@@ -24,7 +24,7 @@ namespace Runtime.CardGameplay.Deck
             Setup(cards);
         }
 
-        public void Setup(List<CardInstance> cards)
+        private void Setup(List<CardInstance> cards)
         {
             _drawPile = new Stack<CardInstance>(cards);
             _discardPile = new Stack<CardInstance>();

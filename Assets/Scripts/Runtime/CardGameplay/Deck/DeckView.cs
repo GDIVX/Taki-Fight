@@ -34,12 +34,6 @@ namespace Runtime.CardGameplay.Deck
         }
 
 
-        private void OnCardDiscarded(CardInstance cardInstance)
-        {
-            var controller = cardInstance.Controller;
-            var view = controller.View;
-        }
-
         private void OnDeckOnOnDiscardPileUpdated(Stack<CardInstance> pile)
         {
             _discardPileCounter.text = pile.Count.ToString();

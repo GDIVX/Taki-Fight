@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _title: Bombardment
   _description: Attack a random enemy for {attack:0} per stack of Power.
-  _image: {fileID: 21300000, guid: 2f0a9d9bf58fc2b47954e70d13c5f2bd, type: 3}
+  _image: {fileID: 1445151120, guid: aaf06ea70717cc643b5453f87d2e7c1f, type: 3}
   _cardType: 0
   _selectStrategy: {fileID: 11400000, guid: 6488691d3e5b1734fbf184a753c30823, type: 2}
   _playStrategies:

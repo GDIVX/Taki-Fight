@@ -208,9 +208,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d0709aa8cc44d77bd3f2202ccadaa1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cardCollection: {fileID: 662599563}
   _gemsBag: {fileID: 1763573683}
   _handController: {fileID: 303423372}
+  _deckView: {fileID: 1192004592}
   _initialReelsCount: 3
   _cardFactory: {fileID: 1877293996}
   _bannerViewManager: {fileID: 1672194227}
@@ -1542,60 +1542,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 775273450}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &662599562
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 662599564}
-  - component: {fileID: 662599563}
-  m_Layer: 0
-  m_Name: Card Collection
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &662599563
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 662599562}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c3569e3c011c4be49036a3374a94debc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _cards: []
-  _sizeLimitMin: 0
-  _sizeLimitMax: 10
-  _starterDeck: {fileID: 11400000, guid: fac3175e7a8fb554daef26dcffafcb75, type: 2}
-  _deckView: {fileID: 1192004592}
-  _handController: {fileID: 303423372}
-  Gems:
-    Pearls: 0
-    Quartz: 0
-    Brimstone: 0
---- !u!4 &662599564
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 662599562}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 757540969}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &663773858
 GameObject:
   m_ObjectHideFlags: 0
@@ -1823,7 +1769,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 662599564}
   - {fileID: 1877293997}
   - {fileID: 51308174}
   - {fileID: 49008647}

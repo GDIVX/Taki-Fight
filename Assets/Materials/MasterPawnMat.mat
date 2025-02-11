@@ -84,6 +84,7 @@ Material:
     - _Saturation: 1
     - _ShadowStreanght: 0
     - _ShowOutline: 0
+    - _Stencil: 0
     - _Temperature: 0
     - _Tint: 0
     - _WavyAmount: 0

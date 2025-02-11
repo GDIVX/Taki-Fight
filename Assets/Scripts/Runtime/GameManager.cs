@@ -4,6 +4,7 @@ using Runtime.CardGameplay.Deck;
 using Runtime.CardGameplay.GemSystem;
 using Runtime.Combat.Pawn;
 using Runtime.Events;
+using Runtime.RunManagement;
 using Runtime.UI;
 using Runtime.UI.Tooltip;
 using Sirenix.OdinInspector;
@@ -15,13 +16,13 @@ namespace Runtime
     public class GameManager : Singleton<GameManager>, IGameManager
     {
         [SerializeField, Required, TabGroup("Dependencies")]
-        private CardCollection _cardCollection;
-
-        [SerializeField, Required, TabGroup("Dependencies")]
         private GemsBag _gemsBag;
 
         [SerializeField, Required, TabGroup("Dependencies")]
         private HandController _handController;
+
+        [SerializeField, Required, TabGroup("Dependencies")]
+        private DeckView _deckView;
 
 
         [SerializeField, TabGroup("Settings")] private int _initialReelsCount;
@@ -38,14 +39,15 @@ namespace Runtime
 
         [SerializeField, TabGroup("Tempt")] private GameObject _newGameButtonObject;
 
-        private EventBus _eventBus;
         [SerializeField] private TooltipPool _tooltipPool;
         [SerializeField] private KeywordDictionary _keywordDictionary;
         [SerializeField] private RunData _runData;
 
+        public RunBuilder RunBuilder { get; private set; }
         public BannerViewManager BannerViewManager => _bannerViewManager;
         public GemsBag GemsBag => _gemsBag;
-        public EventBus EventBus => _eventBus;
+        public EventBus EventBus { get; private set; }
+
         public HandController Hand => _handController;
 
         public PawnController Hero
@@ -67,8 +69,9 @@ namespace Runtime
 
         private void Awake()
         {
-            _eventBus = new EventBus();
+            EventBus = new EventBus();
             OnEventBusCreated?.Invoke();
+            RunBuilder = new RunBuilder(_runData);
         }
 
         private void OnEnable()
@@ -82,7 +85,7 @@ namespace Runtime
                     case GameState.Menu:
                         break;
                     case GameState.RunStart:
-                        StartSession();
+                        OnStartRun();
                         break;
                     case GameState.Pause:
                         break;
@@ -124,15 +127,15 @@ namespace Runtime
         [Button]
         public void SetGameState(GameState gameState)
         {
-            _eventBus.Publish(new GameStateEvent(gameState));
+            EventBus.Publish(new GameStateEvent(gameState));
             Debug.Log($"Set state to {gameState}");
         }
 
 
-        private void StartSession()
+        private void OnStartRun()
         {
             CombatManager.InitializeHero(_runData.Hero);
-            _cardCollection.Init();
+            RunBuilder.SetupNewDeckDependencies(_handController, _deckView);
             _gemsBag.Initialize();
             _cardFactory.Init(CombatManager.Hero);
         }
@@ -149,7 +152,6 @@ namespace Runtime
         {
             _handController.gameObject.SetActive(true);
             _handController.DiscardHand();
-            _cardCollection.CreateDeck();
             _gemsBag.Clear();
         }
     }
