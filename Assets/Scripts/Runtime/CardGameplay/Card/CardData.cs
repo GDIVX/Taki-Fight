@@ -31,7 +31,6 @@ namespace Runtime.CardGameplay.Card
         private bool _destroyCardAfterUse = false;
 
         [SerializeField, BoxGroup("Economy")] private GemGroup _cost;
-        [SerializeField, BoxGroup("Economy")] private bool _extractGems = false;
         [SerializeField] private FeedbackStrategy _feedbackStrategy;
 
 

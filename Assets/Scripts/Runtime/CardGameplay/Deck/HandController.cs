@@ -149,10 +149,12 @@ namespace Runtime.CardGameplay.Deck
 
         private IEnumerator DiscardHandWithDelay()
         {
-            for (var index = _cards.Count - 1; index >= 0; index--)
+            // Create a copy of the list to avoid modifying it while iterating
+            List<CardController> cardsToDiscard = new List<CardController>(_cards);
+
+            foreach (var card in cardsToDiscard)
             {
                 yield return new WaitForSeconds(_cardMovementDelay);
-                var card = _cards[index];
                 DiscardCard(card);
             }
         }

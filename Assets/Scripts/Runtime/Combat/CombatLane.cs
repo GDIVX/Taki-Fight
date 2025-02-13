@@ -38,12 +38,18 @@ namespace Runtime.Combat
             return pawn;
         }
 
-        private void RemovePawn(PawnController pawn)
+        public void RemovePawn(PawnController pawn)
         {
+            // if (!pawn.Health.IsDead())
+            // {
+            //     pawn.Health.Die();
+            // }
+
             _pawns.Remove(pawn);
             OnPawnRemoved?.Invoke();
         }
 
+        [Button]
         public void Clear()
         {
             var snapshot = new List<PawnController>(_pawns);

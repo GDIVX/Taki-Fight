@@ -132,5 +132,10 @@ namespace Runtime.Combat.Pawn
 
             return 0;
         }
+
+        public void ClearStatusEffects()
+        {
+            _statusEffectHandler.Clear();
+        }
     }
 }

@@ -80,5 +80,13 @@ namespace Runtime.Combat.StatusEffects
                 Remove(effect);
             }
         }
+
+        public void Clear()
+        {
+            foreach (IStatusEffect effect in _statusEffects)
+            {
+                Remove(effect);
+            }
+        }
     }
 }

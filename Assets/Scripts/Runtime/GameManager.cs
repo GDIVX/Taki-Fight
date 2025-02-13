@@ -5,6 +5,7 @@ using Runtime.CardGameplay.GemSystem;
 using Runtime.Combat;
 using Runtime.Combat.Pawn;
 using Runtime.Events;
+using Runtime.Rewards;
 using Runtime.RunManagement;
 using Runtime.UI;
 using Runtime.UI.Tooltip;
@@ -31,6 +32,9 @@ namespace Runtime
 
         [SerializeField, Required, TabGroup("Dependencies")]
         private CardFactory _cardFactory;
+
+        [SerializeField, Required, TabGroup("Dependencies")]
+        private RewardsOfferController _rewardsOfferController;
 
         [SerializeField, TabGroup("Dependencies"), Required]
         private BannerViewManager _bannerViewManager;
@@ -68,6 +72,7 @@ namespace Runtime
 
         //event listeners
         private EventListener<GameStateEvent> _onGameStateChange;
+
 
         //TODO: TEMP
         [SerializeField] private PlayerClassData _tempClassData;
@@ -117,6 +122,15 @@ namespace Runtime
             });
         }
 
+        private void OfferCardReward()
+        {
+            _rewardsOfferController.OfferRewards(() =>
+            {
+                //TODO: replace with exploration and progression
+                _combatManager.StartCombat(_runData.Combats.SelectRandom());
+            });
+        }
+
         /// <summary>
         /// We are going to use the currently saved run. For a new run, create a new file
         /// </summary>
@@ -146,6 +160,7 @@ namespace Runtime
         {
             CombatManager.InitializeHero(_runData.Hero);
             _cardFactory.Init(CombatManager.Hero);
+            _rewardsOfferController.Init();
         }
 
 
@@ -156,15 +171,25 @@ namespace Runtime
         }
 
         [Button]
-        public void SetupCardGameplay()
+        public void OnCombatStart()
         {
             var deck = _runData.Deck;
             _handController.Deck = deck;
             _deckView.Setup(deck);
+            _handController.Deck.MergeAndShuffle();
+
             _gemsBag.Initialize();
+            _gemsBag.Clear();
+
             _handController.gameObject.SetActive(true);
             _handController.DiscardHand();
-            _gemsBag.Clear();
+        }
+
+        public void OnCombatEnd()
+        {
+            SetGameState(GameState.CombatEnd);
+            _handController.DiscardHand();
+            OfferCardReward();
         }
     }
 }

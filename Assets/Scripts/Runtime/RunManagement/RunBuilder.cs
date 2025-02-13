@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Runtime.CardGameplay.Card;
 using Runtime.CardGameplay.Deck;
 using Runtime.Combat.Pawn;
@@ -7,11 +9,11 @@ namespace Runtime.RunManagement
 {
     public class RunBuilder
     {
-        public RunData Data { get; private set; }
+        private RunData Data { get; }
 
         public RunBuilder(RunData data)
         {
-            Data = data;
+            Data = data ?? throw new ArgumentNullException(nameof(data));
         }
 
         public void Reset()
@@ -23,29 +25,38 @@ namespace Runtime.RunManagement
 
         public void NewRunFromPlayerClass(PlayerClassData playerClassData)
         {
+            if (playerClassData == null) throw new ArgumentNullException(nameof(playerClassData));
+
             AddHeroData(playerClassData.Pawn);
-            Data.Cards = playerClassData.StarterCards;
-            AddDeck();
+            Data.Cards = new List<CardData>(playerClassData.StarterCards);
+            Data.CollectableCards = new List<CardData>(playerClassData.CollectableCards);
+            SetDeck();
             Data.IsRunInProgress = true;
         }
 
-        private RunBuilder AddHeroData(PawnData pawnData)
+        public void AddCard(CardData cardData)
         {
+            if (cardData == null) throw new ArgumentNullException(nameof(cardData));
+            Data.Cards.Add(cardData);
+            SetDeck();
+        }
+
+        public void RemoveCard(CardData cardData)
+        {
+            if (cardData == null) throw new ArgumentNullException(nameof(cardData));
+            Data.Cards.Remove(cardData);
+            SetDeck();
+        }
+
+        private void AddHeroData(PawnData pawnData)
+        {
+            if (pawnData == null) throw new ArgumentNullException(nameof(pawnData));
             Data.Hero = pawnData;
-            return this;
         }
 
-        private void AddDeck()
+        private void SetDeck()
         {
-            var deck = CreateDeck();
-            Data.Deck = deck;
-        }
-
-        private Deck CreateDeck()
-        {
-            var cards = Data.Cards.Select(data => new CardInstance(data)).ToList();
-            var deck = new Deck(cards);
-            return deck;
+            Data.Deck = new Deck(Data.Cards.Select(data => new CardInstance(data)).ToList());
         }
     }
 }

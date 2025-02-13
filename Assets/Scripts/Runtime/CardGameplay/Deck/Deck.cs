@@ -13,7 +13,7 @@ namespace Runtime.CardGameplay.Deck
     {
         [ShowInInspector, ReadOnly, TableList] private Stack<CardInstance> _drawPile;
         [ShowInInspector, ReadOnly, TableList] private Stack<CardInstance> _discardPile;
-        [ShowInInspector, ReadOnly, TableList] private Stack<CardInstance> _burnPile;
+        [ShowInInspector, ReadOnly, TableList] private Stack<CardInstance> _consumePile;
 
         public event Action<Stack<CardInstance>> OnDrawPileUpdated;
         public event Action<Stack<CardInstance>> OnDiscardPileUpdated;
@@ -28,12 +28,12 @@ namespace Runtime.CardGameplay.Deck
         {
             _drawPile = new Stack<CardInstance>(cards);
             _discardPile = new Stack<CardInstance>();
-            _burnPile = new Stack<CardInstance>();
-            Reshuffle();
+            _consumePile = new Stack<CardInstance>();
+            MergeAndShuffle();
 
             OnDrawPileUpdated?.Invoke(_drawPile);
             OnDiscardPileUpdated?.Invoke(_discardPile);
-            OnBurnPileUpdated?.Invoke(_burnPile);
+            OnBurnPileUpdated?.Invoke(_consumePile);
         }
 
         public bool Draw(out CardInstance cardInstance)
@@ -85,11 +85,11 @@ namespace Runtime.CardGameplay.Deck
 
         public void Burn(CardInstance card)
         {
-            _burnPile.Push(card);
-            OnBurnPileUpdated?.Invoke(_burnPile);
+            _consumePile.Push(card);
+            OnBurnPileUpdated?.Invoke(_consumePile);
         }
 
-        public void Reshuffle()
+        public void MergeAndShuffle()
         {
             MergePiles();
             var cards = ShuffleCards();
@@ -113,9 +113,16 @@ namespace Runtime.CardGameplay.Deck
 
         private void MergePiles()
         {
+            //merge discard pile
             while (_discardPile.Count > 0)
             {
                 _drawPile.Push(_discardPile.Pop());
+            }
+
+            //merge consume pile
+            while (_consumePile.Count > 0)
+            {
+                _drawPile.Push(_consumePile.Pop());
             }
         }
 
@@ -136,7 +143,7 @@ namespace Runtime.CardGameplay.Deck
 
         public bool IsBurnt(CardInstance card)
         {
-            return _burnPile.Contains(card);
+            return _consumePile.Contains(card);
         }
     }
 }

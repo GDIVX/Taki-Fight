@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Runtime.Combat.Pawn;
 using Runtime.Combat.Pawn.Enemy;
 using Runtime.Events;
@@ -67,7 +68,7 @@ namespace Runtime.Combat
             _onGameStateChanged.Disable();
         }
 
-        public void SetupOnEnemyRemove()
+        private void SetupOnEnemyRemove()
         {
             _enemiesLane.OnPawnRemoved += () =>
             {
@@ -75,7 +76,7 @@ namespace Runtime.Combat
                 if (_enemiesLane.Pawns.Count > 0) return;
 
                 GameManager.BannerViewManager.WriteMessage(0, "Victory", Color.green);
-                GameManager.Instance.SetGameState(GameState.CombatEnd);
+                GameManager.Instance.OnCombatEnd();
             };
         }
 
@@ -95,7 +96,7 @@ namespace Runtime.Combat
             _enemiesLane.SpawnPawnsForCombat(combatConfig, () =>
             {
                 SetupOnEnemyRemove();
-                GameManager.SetupCardGameplay();
+                GameManager.OnCombatStart();
                 StartTurn();
                 GameManager.Instance.SetGameState(GameState.Combat);
             });
@@ -105,7 +106,14 @@ namespace Runtime.Combat
         public void EndCombat()
         {
             _enemiesLane.Clear();
-            _heroPawn.gameObject.SetActive(false);
+
+            //Clear all status effects from the player
+            _heroPawn.ClearStatusEffects();
+            //remove all allies pawns
+            foreach (var pawnController in _heroLane.Pawns.Where(pawn => pawn != _heroPawn))
+            {
+                _heroLane.RemovePawn(pawnController);
+            }
         }
 
         private void StartTurn()

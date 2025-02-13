@@ -136,7 +136,7 @@ namespace Runtime.CardGameplay.Deck
             if (float.IsNaN(radius) || float.IsInfinity(radius)) return;
 
             // Kill any existing arrangement animation
-            if (_currentArrangeSequence != null && _currentArrangeSequence.IsPlaying())
+            if (_currentArrangeSequence.IsActive() && _currentArrangeSequence.IsPlaying())
             {
                 _currentArrangeSequence.Kill();
             }
