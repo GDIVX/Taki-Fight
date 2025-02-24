@@ -2,12 +2,11 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Runtime.Combat.Pawn.Targeting
+namespace Runtime.Selection
 {
     [RequireComponent(typeof(Collider2D))]
-    public class PawnTargetView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    public class Highlight : MonoBehaviour
     {
-        [SerializeField] private PawnTarget _pawnTarget;
         [SerializeField] private SpriteRenderer _spriteRenderer;
         [SerializeField] private float _blendTime;
         [SerializeField] private Ease _blendEase;
@@ -28,7 +27,6 @@ namespace Runtime.Combat.Pawn.Targeting
 
         private void Awake()
         {
-            _pawnTarget ??= GetComponent<PawnTarget>();
             if (_spriteRenderer == null)
             {
                 _spriteRenderer = GetComponent<SpriteRenderer>();
@@ -47,30 +45,17 @@ namespace Runtime.Combat.Pawn.Targeting
             }
         }
 
-        public void OnPointerEnter(PointerEventData eventData)
-        {
-            if (!_pawnTarget.IsValidTarget())
-            {
-                ResetMaterial();
-                return;
-            }
 
+        public void Show()
+        {
             if (_spriteRenderer == null)
             {
                 Debug.LogError($"{nameof(SpriteRenderer)} was not assigned");
                 return;
             }
 
-            var colorA = _pawnTarget.PawnTargetType == PawnTargetType.Hero
-                ? _outlineColorForHeroA
-                : _outLineColorForEnemyA;
-
-            var colorB = _pawnTarget.PawnTargetType == PawnTargetType.Hero
-                ? _outlineColorForHeroB
-                : _outLineColorForEnemyB;
-
-            _spriteRenderer.material.SetColor(OutlineColorA, colorA);
-            _spriteRenderer.material.SetColor(OutlineColorB, colorB);
+            _spriteRenderer.material.SetColor(OutlineColorA, _outlineColorForHeroA);
+            _spriteRenderer.material.SetColor(OutlineColorB, _outlineColorForHeroB);
             DOTween.To((x) => _spriteRenderer.material.SetFloat(OutlineBlend, x), 0, 1, _blendTime)
                 .SetEase(_blendEase).onComplete += () =>
             {
@@ -80,7 +65,7 @@ namespace Runtime.Combat.Pawn.Targeting
             };
         }
 
-        public void OnPointerExit(PointerEventData eventData)
+        public void Hide()
         {
             if (_spriteRenderer == null) return;
 

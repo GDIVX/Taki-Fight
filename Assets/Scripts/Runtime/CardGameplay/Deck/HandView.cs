@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using DG.Tweening;
 using Runtime.CardGameplay.Card;
-using Runtime.Combat.Pawn.Targeting;
+using Runtime.Selection;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
@@ -25,9 +25,6 @@ namespace Runtime.CardGameplay.Deck
             _handController.OnCardAdded += AddCard;
             _handController.OnCardRemoved += RemoveCard;
 
-            PawnTargetingService.Instance.OnLookingForTarget +=
-                Hide;
-            PawnTargetingService.Instance.OnTargetFound += _ => { Show(); };
 
             GameManager.Instance.CombatManager.OnStartTurn += Show;
             GameManager.Instance.CombatManager.OnEndTurn += Hide;

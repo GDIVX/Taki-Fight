@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Runtime.CardGameplay.Card.CardBehaviour;
 using Runtime.CardGameplay.Card.CardBehaviour.Feedback;
 using Runtime.CardGameplay.Card.View;
 using Runtime.CardGameplay.Deck;
 using Runtime.CardGameplay.GemSystem;
 using Runtime.Combat.Pawn;
+using Runtime.Selection;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -15,15 +14,11 @@ using Utilities;
 
 namespace Runtime.CardGameplay.Card
 {
-    /// <summary>
-    /// Handle the behaviour of a card.
-    /// </summary>
-    public class CardController : MonoBehaviour, IPointerClickHandler
+    public class CardController : MonoBehaviour, IPointerClickHandler, ISelectableEntity
     {
         public CardType CardType { get; private set; }
         [ShowInInspector, ReadOnly] public TrackedProperty<bool> IsPlayable;
 
-        [ShowInInspector, ReadOnly] private CardSelectStrategy _selectStrategy;
         [ShowInInspector, ReadOnly] private List<(CardPlayStrategy, int)> _playStrategies;
         [ShowInInspector, ReadOnly] private FeedbackStrategy _feedbackStrategy;
 
@@ -41,7 +36,6 @@ namespace Runtime.CardGameplay.Card
         public GemGroup Group => Instance.Group;
 
         private CardFactory _cardFactory;
-
         private bool _isSelecting;
 
         [Button]
@@ -65,13 +59,11 @@ namespace Runtime.CardGameplay.Card
 
             CardType = data.CardType;
 
-            _selectStrategy = data.SelectStrategy;
             _feedbackStrategy = data.FeedbackStrategy;
             _playStrategies = CreatePlayStrategyTupletList(data.PlayStrategies);
 
             View = GetComponent<CardView>();
 
-            // Card is selectable only when it can be played
             IsPlayable = new TrackedProperty<bool>()
             {
                 Value = true
@@ -117,32 +109,7 @@ namespace Runtime.CardGameplay.Card
 
             Init(cardInstance.Data, dependencies);
         }
-
-        private void Select(CardSelectStrategy selectStrategy)
-        {
-            if (!IsPlayable.Value)
-            {
-                Debug.LogWarning($"Trying to select card {name} who is not selectable");
-                return;
-            }
-
-            if (selectStrategy == null)
-            {
-                Debug.LogError("CardSelectStrategy cannot be null.");
-                return;
-            }
-
-            if (_isSelecting)
-            {
-                Debug.LogWarning("Already selecting a card.");
-                return;
-            }
-
-            _isSelecting = true;
-
-            // Start the selection process
-            selectStrategy.Select(this, OnSelectionComplete);
-        }
+        
 
         private void OnSelectionComplete(bool success)
         {
@@ -215,11 +182,25 @@ namespace Runtime.CardGameplay.Card
                 return;
             }
 
-            switch (eventData.button)
+            if (SelectionService.Instance.CurrentState == SelectionState.InProgress)
             {
-                case PointerEventData.InputButton.Left:
+                // If selection is in progress, validate card selection instead of playing it
+                if (SelectionService.Instance.IsValid(this))
+                {
+                    SelectionService.Instance.Select(this);
+                }
+                else
+                {
+                    SelectionService.Instance.CancelSelection(); // Cancel if invalid
+                }
+            }
+            else
+            {
+                // Normal card play logic when selection is NOT active
+                if (eventData.button == PointerEventData.InputButton.Left)
+                {
                     Select();
-                    break;
+                }
             }
         }
 
@@ -249,11 +230,7 @@ namespace Runtime.CardGameplay.Card
 
             Play();
         }
-
-        private void Select()
-        {
-            Select(_selectStrategy);
-        }
+        
     }
 
     [Serializable]

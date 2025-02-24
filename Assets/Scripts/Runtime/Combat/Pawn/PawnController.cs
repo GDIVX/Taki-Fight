@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using CodeMonkey.HealthSystemCM;
 using JetBrains.Annotations;
-using Runtime.Combat.Pawn.Targeting;
 using Runtime.Combat.StatusEffects;
+using Runtime.Selection;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
@@ -22,6 +22,7 @@ namespace Runtime.Combat.Pawn
         public TrackedProperty<int> HealingModifier = new();
 
         public HealthSystem Health { get; private set; }
+        public bool IsFriendly { get; private set; }
 
 
         /// <summary>
@@ -45,12 +46,6 @@ namespace Runtime.Combat.Pawn
             _view ??= GetComponent<PawnView>();
             _view.Init(this, Defense, data);
 
-            return this;
-        }
-
-        public PawnController AddTargeting(PawnTargetType targetType)
-        {
-            GetComponentInChildren<PawnTarget>().Init(this, targetType);
             return this;
         }
 

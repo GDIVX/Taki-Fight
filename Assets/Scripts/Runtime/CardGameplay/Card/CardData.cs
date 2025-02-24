@@ -20,8 +20,7 @@ namespace Runtime.CardGameplay.Card
         [SerializeField, BoxGroup("Stats")] private CardType _cardType;
         [SerializeField, BoxGroup("Stats")] private Rarity _rarity;
 
-        [SerializeField, BoxGroup("Behaviour")]
-        private CardSelectStrategy _selectStrategy;
+
 
         [SerializeField, BoxGroup("Behaviour")]
         private List<PlayStrategyData> _playStrategies;
@@ -37,7 +36,6 @@ namespace Runtime.CardGameplay.Card
         public string Title => _title;
         public string Description => _description;
         public Sprite Image => _image;
-        public CardSelectStrategy SelectStrategy => _selectStrategy;
         public List<PlayStrategyData> PlayStrategies => _playStrategies;
 
 

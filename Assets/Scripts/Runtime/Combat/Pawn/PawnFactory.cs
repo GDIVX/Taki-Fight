@@ -1,5 +1,4 @@
 ﻿using Runtime.Combat.Pawn.Enemy;
-using Runtime.Combat.Pawn.Targeting;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -17,7 +16,6 @@ namespace Runtime.Combat.Pawn
             {
                 var enemyController = instance.AddComponent<EnemyController>();
                 enemyController.Init(enemyData.PlayTable);
-                enemyController.AddTargeting(PawnTargetType.Enemy);
                 controller = enemyController;
 
                 //TODO TEMP
@@ -25,7 +23,7 @@ namespace Runtime.Combat.Pawn
             }
             else
             {
-                controller = instance.AddComponent<PawnController>().AddTargeting(PawnTargetType.Hero);
+                controller = instance.AddComponent<PawnController>();
             }
 
             controller.Init(data);
