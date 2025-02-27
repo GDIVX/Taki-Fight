@@ -1,20 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
 using CodeMonkey.HealthSystemCM;
-using JetBrains.Annotations;
 using Runtime.Combat.StatusEffects;
 using Runtime.Selection;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using Utilities;
 
 namespace Runtime.Combat.Pawn
 {
-    public class PawnController : MonoBehaviour
+    public class PawnController : MonoBehaviour, ISelectableEntity, IPointerClickHandler
     {
         [SerializeField, Required] private PawnView _view;
         [SerializeField, Required] private StatusEffectHandler _statusEffectHandler;
-
 
         public TrackedProperty<int> Defense;
         public TrackedProperty<int> DefenseModifier = new();
@@ -22,29 +20,24 @@ namespace Runtime.Combat.Pawn
         public TrackedProperty<int> HealingModifier = new();
 
         public HealthSystem Health { get; private set; }
-        public bool IsFriendly { get; private set; }
 
-
-        /// <summary>
-        /// Invoked when a pawn is attacked. First value is incoming attack points, second value is the damage taken
-        /// </summary>
         public event Action<int, int> OnBeingAttacked;
 
-
         [Button]
-        public PawnController Init([NotNull] PawnData data)
+        public PawnController Init(PawnData data)
         {
             if (data == null) throw new ArgumentNullException(nameof(data));
+
             AddHealth(data);
             AddStatusEffectHandler();
 
-            Defense = new TrackedProperty<int>
-            {
-                Value = data.Defense
-            };
+            Defense = new TrackedProperty<int> { Value = data.Defense };
 
             _view ??= GetComponent<PawnView>();
             _view.Init(this, Defense, data);
+
+            SelectionService.Instance.OnSelectionComplete += _ => OnDeselected();
+            SelectionService.Instance.Register(this);
 
             return this;
         }
@@ -63,7 +56,7 @@ namespace Runtime.Combat.Pawn
 
         private void OnDead(object sender, EventArgs e)
         {
-            _view.OnDead(() => { Destroy(gameObject); });
+            _view.OnDead(() => Destroy(gameObject));
         }
 
         private void OnValidate()
@@ -76,15 +69,12 @@ namespace Runtime.Combat.Pawn
         {
             if (attackPoints <= 0)
             {
-                //We still want to call damage to invoke UI updates
                 OnBeingAttacked?.Invoke(attackPoints, 0);
                 return;
             }
 
             var finalDamage = CalculateDamage(attackPoints);
-
             Health.Damage(finalDamage);
-
             ReduceDefense(attackPoints);
             OnBeingAttacked?.Invoke(attackPoints, finalDamage);
         }
@@ -95,7 +85,6 @@ namespace Runtime.Combat.Pawn
             var statusEffect = statusEffectData.CreateStatusEffect(stack);
             _statusEffectHandler.Add(statusEffect, statusEffectData.Icon, statusEffectData.Tooltip);
         }
-
 
         private int CalculateDamage(int attackPoints)
         {
@@ -120,17 +109,55 @@ namespace Runtime.Combat.Pawn
         public int GetStatusEffectStacks(Type type)
         {
             var effect = _statusEffectHandler.Get(type);
-            if (effect != null)
-            {
-                return effect.Stack.Value;
-            }
-
-            return 0;
+            return effect?.Stack.Value ?? 0;
         }
 
         public void ClearStatusEffects()
         {
             _statusEffectHandler.Clear();
+        }
+
+        // =======================================
+        //  SELECTION SERVICE INTEGRATION
+        // =======================================
+
+        public void TryToSelect()
+        {
+            if (SelectionService.Instance.CurrentState != SelectionState.InProgress)
+            {
+                return;
+            }
+
+            var predicate = SelectionService.Instance.Predicate;
+            if (predicate.Invoke(this))
+            {
+                SelectionService.Instance.Select(this);
+            }
+        }
+
+        public void OnSelected()
+        {
+            _view.OnSelected();
+        }
+
+        public void OnDeselected()
+        {
+            _view.ClearSelection();
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (eventData.button != PointerEventData.InputButton.Left)
+            {
+                return;
+            }
+
+            if (SelectionService.Instance.CurrentState != SelectionState.InProgress)
+            {
+                return;
+            }
+
+            TryToSelect();
         }
     }
 }

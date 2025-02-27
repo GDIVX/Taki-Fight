@@ -1,4 +1,5 @@
-﻿using Runtime.Combat.Pawn;
+﻿using System;
+using Runtime.Combat.Pawn;
 using Runtime.Combat.StatusEffects;
 using UnityEngine;
 
@@ -9,9 +10,10 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
     {
         [SerializeField] private StatusEffectData _effectData;
 
-        public override void Play(PawnController caller, int potency)
+        public override void Play(PawnController caller, int potency, Action onComplete)
         {
             caller.ApplyStatusEffect(_effectData, potency);
+            onComplete?.Invoke();
         }
     }
 }

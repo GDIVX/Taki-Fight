@@ -71,6 +71,8 @@ namespace Runtime.CardGameplay.Card
             OnCardPlayedEvent += _ => UpdateAffordability();
             GemsBag.OnModifiedEvent += UpdateAffordability;
             Data = data;
+
+            SelectionService.Instance.Register(this);
         }
 
         private void UpdateAffordability()
@@ -99,27 +101,6 @@ namespace Runtime.CardGameplay.Card
             _playStrategies.Insert(index, tuple);
         }
 
-        public void Init(CardInstance cardInstance, CardDependencies dependencies)
-        {
-            if (cardInstance == null)
-            {
-                Debug.LogError("CardInstance cannot be null during initialization.");
-                return;
-            }
-
-            Init(cardInstance.Data, dependencies);
-        }
-        
-
-        private void OnSelectionComplete(bool success)
-        {
-            _isSelecting = false;
-
-            if (success)
-            {
-                TryToPlay();
-            }
-        }
 
         private void Play()
         {
@@ -132,6 +113,7 @@ namespace Runtime.CardGameplay.Card
 
             if (_feedbackStrategy)
             {
+                //TODO: First play the card and then animate
                 _feedbackStrategy.Animate(Pawn, RunPlayLogic);
             }
             else
@@ -143,11 +125,25 @@ namespace Runtime.CardGameplay.Card
         [Button]
         private void RunPlayLogic()
         {
-            foreach (var tuple in _playStrategies)
+            int remainingPlays = _playStrategies.Count;
+
+            void OnStrategyComplete()
             {
-                tuple.Item1.Play(Pawn, tuple.Item2);
+                remainingPlays--;
+                if (remainingPlays <= 0)
+                {
+                    HandlePostPlay();
+                }
             }
 
+            foreach (var tuple in _playStrategies)
+            {
+                tuple.Item1.Play(Pawn, tuple.Item2, OnStrategyComplete);
+            }
+        }
+
+        private void HandlePostPlay()
+        {
             HandleGemCost();
 
             if (Data.DestroyCardAfterUse)
@@ -161,6 +157,7 @@ namespace Runtime.CardGameplay.Card
 
             OnCardPlayedEvent?.Invoke(this);
         }
+
 
         private void HandleGemCost()
         {
@@ -182,25 +179,20 @@ namespace Runtime.CardGameplay.Card
                 return;
             }
 
+            if (eventData.button != PointerEventData.InputButton.Left)
+            {
+                return;
+            }
+
             if (SelectionService.Instance.CurrentState == SelectionState.InProgress)
             {
                 // If selection is in progress, validate card selection instead of playing it
-                if (SelectionService.Instance.IsValid(this))
-                {
-                    SelectionService.Instance.Select(this);
-                }
-                else
-                {
-                    SelectionService.Instance.CancelSelection(); // Cancel if invalid
-                }
+                TryToSelect();
             }
             else
             {
                 // Normal card play logic when selection is NOT active
-                if (eventData.button == PointerEventData.InputButton.Left)
-                {
-                    Select();
-                }
+                TryToPlay();
             }
         }
 
@@ -230,7 +222,28 @@ namespace Runtime.CardGameplay.Card
 
             Play();
         }
-        
+
+        public void TryToSelect()
+        {
+            if (SelectionService.Instance.CurrentState != SelectionState.InProgress)
+            {
+                return;
+            }
+
+            var predicate = SelectionService.Instance.Predicate;
+            if (predicate.Invoke(this))
+            {
+                SelectionService.Instance.Select(this);
+            }
+        }
+
+        public void OnSelected()
+        {
+        }
+
+        public void OnDeselected()
+        {
+        }
     }
 
     [Serializable]

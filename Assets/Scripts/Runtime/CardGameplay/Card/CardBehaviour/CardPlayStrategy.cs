@@ -1,11 +1,14 @@
-﻿using Runtime.Combat.Pawn;
-using Sirenix.OdinInspector;
+﻿using System;
+using Runtime.Combat.Pawn;
 using UnityEngine;
 
 namespace Runtime.CardGameplay.Card.CardBehaviour
 {
     public abstract class CardPlayStrategy : ScriptableObject
     {
-        public abstract void Play(PawnController caller, int potency);
+        /// <summary>
+        /// Executes the card effect. If the effect requires player input (e.g., selecting a target), it should call onComplete once finished.
+        /// </summary>
+        public abstract void Play(PawnController caller, int potency, Action onComplete);
     }
 }

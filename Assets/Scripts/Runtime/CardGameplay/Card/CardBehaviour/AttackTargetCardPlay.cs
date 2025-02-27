@@ -1,5 +1,6 @@
-﻿using Runtime.Combat.Pawn;
-using Runtime.Events;
+﻿using System;
+using Runtime.Combat.Pawn;
+using Runtime.Selection;
 using UnityEngine;
 
 namespace Runtime.CardGameplay.Card.CardBehaviour
@@ -7,29 +8,39 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
     [CreateAssetMenu(fileName = "Attack Play", menuName = "Card/Strategy/Play/Attack", order = 0)]
     public class AttackTargetCardPlay : CardPlayStrategy
     {
-        [SerializeField] private TargetingStrategy _targetingStrategy;
-
-
-        public override void Play(PawnController caller, int potency)
+        public override void Play(PawnController caller, int potency, Action onComplete)
         {
-            HandleAttack(caller, potency);
+            SelectionService.Instance.RequestSelection(
+                target => target is PawnController, // Ensure we select a valid PawnController
+                1, // Expect exactly one selection
+                selectedEntities =>
+                {
+                    if (selectedEntities.Count > 0 && selectedEntities[0] is PawnController target)
+                    {
+                        HandleAttack(caller, target, potency);
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"Card '{name}' selection was canceled or invalid.");
+                    }
+
+                    // Notify that play execution is complete (even if canceled)
+                    onComplete?.Invoke();
+                }
+            );
         }
 
-        protected virtual void HandleAttack(PawnController caller, int potency)
+        private void HandleAttack(PawnController caller, PawnController target, int potency)
         {
-            var target = _targetingStrategy.GetTarget();
-
-            // It is possible that the target is dead or has no controller. Fire a warning to the log to be safe
             if (target == null)
             {
-                Debug.LogError($"Card '{name}' tried to play on a target that has no controller.");
+                Debug.LogError($"Card '{name}' tried to attack a null target.");
                 return;
             }
 
             if (target.Health.IsDead())
             {
-                Debug.LogWarning(
-                    $"Card '{name}' tried to play on a target that is dead. This could indicate a normal gameplay situation.");
+                Debug.LogWarning($"Card '{name}' tried to attack a dead target. Might be expected.");
                 return;
             }
 

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using Runtime.Combat.Pawn;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -9,12 +11,14 @@ namespace Runtime.Selection
 {
     public class SelectionService : Singleton<SelectionService>
     {
-        public SelectionState CurrentState { get; private set; } = SelectionState.None;
-        public List<ISelectableEntity> SelectedEntities { get; private set; } = new();
+        [ShowInInspector, ReadOnly] public SelectionState CurrentState { get; private set; } = SelectionState.None;
+        [ShowInInspector, ReadOnly] public List<ISelectableEntity> SelectedEntities { get; private set; } = new();
+        public event Action<List<ISelectableEntity>> OnSelectionComplete;
+        public event Action<Predicate<ISelectableEntity>> OnSearchInitialized;
 
-        private Predicate<ISelectableEntity> _predicate;
-        private Action<List<ISelectableEntity>> _onSelectionComplete;
-        private int _requiredSelections;
+        public Predicate<ISelectableEntity> Predicate { get; private set; }
+        [ShowInInspector, ReadOnly] private int _requiredSelections;
+        [ShowInInspector, ReadOnly] private List<ISelectableEntity> _allSelectable = new();
 
         private void Update()
         {
@@ -22,56 +26,34 @@ namespace Runtime.Selection
 
             if (Input.GetMouseButtonUp(1)) // Right-click cancels selection
             {
-                CancelSelection();
-            }
-            else if (Input.GetMouseButtonUp(0)) // Left-click attempts selection
-            {
-                TrySelectEntityUnderMouse();
+                var cancelSelection = CancelSelection();
+                StartCoroutine(cancelSelection);
             }
         }
 
         [Button]
-        public void RequestSelection(Predicate<ISelectableEntity> predicate, int count, Action<List<ISelectableEntity>> onComplete)
+        public void RequestSelection(Predicate<ISelectableEntity> predicate, int count,
+            Action<List<ISelectableEntity>> onComplete)
         {
             if (CurrentState == SelectionState.InProgress)
             {
                 throw new InvalidOperationException("A selection is already in progress.");
             }
 
-            _predicate = predicate ?? throw new ArgumentNullException(nameof(predicate));
-            _onSelectionComplete = onComplete;
+            Predicate = predicate ?? throw new ArgumentNullException(nameof(predicate));
+            OnSelectionComplete = onComplete;
             _requiredSelections = count;
             SelectedEntities.Clear();
             CurrentState = SelectionState.InProgress;
 
             if (_requiredSelections == 0)
             {
-                CompleteSelection(); // Immediately resolve if no selections are required
+                var completeSelection = CompleteSelection();
+                StartCoroutine(completeSelection);
+                return;
             }
-        }
 
-        private void TrySelectEntityUnderMouse()
-        {
-            // If clicking on UI, do nothing (prevents false positives)
-            if (EventSystem.current.IsPointerOverGameObject()) return;
-
-            if (Camera.main == null) return;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit))
-            {
-                if (hit.collider.TryGetComponent(out ISelectableEntity entity))
-                {
-                    Select(entity);
-                }
-                else
-                {
-                    CancelSelection(); // Clicked on something invalid
-                }
-            }
-            else
-            {
-                CancelSelection(); // Clicked on empty space
-            }
+            OnSearchInitialized?.Invoke(predicate);
         }
 
 
@@ -80,36 +62,47 @@ namespace Runtime.Selection
             if (CurrentState != SelectionState.InProgress) return;
             if (!IsValid(entity) || SelectedEntities.Contains(entity))
             {
-                CancelSelection(); // Clicking an invalid entity cancels the selection
+                var cancelSelection = CancelSelection();
+                StartCoroutine(cancelSelection);
                 return;
             }
 
             SelectedEntities.Add(entity);
+            entity.OnSelected();
 
             if (SelectedEntities.Count >= _requiredSelections)
             {
-                CompleteSelection();
+                var completeSelection = CompleteSelection();
+                StartCoroutine(completeSelection);
             }
         }
 
-        public bool IsValid(ISelectableEntity entity) => _predicate?.Invoke(entity) ?? false;
+        private bool IsValid(ISelectableEntity entity) => Predicate?.Invoke(entity) ?? false;
 
-        public void CancelSelection()
+        private IEnumerator CancelSelection()
         {
-            if (CurrentState != SelectionState.InProgress) return;
+            if (CurrentState != SelectionState.InProgress) yield break;
 
+            yield return new WaitForEndOfFrame();
             CurrentState = SelectionState.Canceled;
+            _allSelectable.ForEach(e => e.OnDeselected());
             SelectedEntities.Clear();
-            _predicate = null;
-            _onSelectionComplete = null;
+            Predicate = null;
+            OnSelectionComplete?.Invoke(SelectedEntities);
         }
 
-        private void CompleteSelection()
+        private IEnumerator CompleteSelection()
         {
+            yield return new WaitForEndOfFrame();
             CurrentState = SelectionState.Complete;
-            _onSelectionComplete?.Invoke(SelectedEntities);
-            _predicate = null;
-            _onSelectionComplete = null;
+            _allSelectable.ForEach(e => e.OnDeselected());
+            OnSelectionComplete?.Invoke(SelectedEntities);
+            Predicate = null;
+        }
+
+        public void Register(ISelectableEntity entity)
+        {
+            _allSelectable.Add(entity);
         }
     }
 }
