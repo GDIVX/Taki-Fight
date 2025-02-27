@@ -82,11 +82,13 @@ namespace Runtime.Combat.Pawn.Enemy
 
         private void Play(Action onComplete)
         {
-            _playTableEntry.Strategy.Play(this, _currPotency);
-            _intentionsList.RemoveNext();
-            OnTurnEnd();
-            _isPlaying = false;
-            onComplete?.Invoke();
+            _playTableEntry.Strategy.Play(this, _currPotency, () =>
+            {
+                _intentionsList.RemoveNext();
+                OnTurnEnd();
+                _isPlaying = false;
+                onComplete?.Invoke();
+            });
         }
     }
 }
