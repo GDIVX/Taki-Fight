@@ -1197,10 +1197,10 @@ MonoBehaviour:
   _blendEase: 7
   _colorBlendTime: 1
   _colorBlendEase: 1
-  _lowerPassiveColor: {r: 1, g: 0.85490197, b: 0.4745098, a: 1}
-  _upperPassiveColor: {r: 0.8, g: 0.5568628, b: 0.20784314, a: 1}
-  _lowerActiveColor: {r: 1, g: 0.85490197, b: 0.4745098, a: 1}
-  _upperActiveColor: {r: 3.2, g: 2.227451, b: 0.83137256, a: 1}
+  _lowerPassiveColor: {r: 0.17254902, g: 0.17254902, b: 0.32941177, a: 1}
+  _upperPassiveColor: {r: 0.2, g: 0.8509804, b: 0.69803923, a: 1}
+  _lowerActiveColor: {r: 0.34509805, g: 0.34509805, b: 0.65882355, a: 1}
+  _upperActiveColor: {r: 4, g: 3.4196079, b: 1.8980392, a: 1}
 --- !u!1 &7769541161473441226
 GameObject:
   m_ObjectHideFlags: 0
