@@ -48,47 +48,47 @@ namespace Runtime.Combat.Pawn.Enemy
 
         public void PlayTurn(Action onComplete)
         {
-            if (_isPlaying)
-            {
-                onComplete?.Invoke();
-                return;
-            }
-
-            try
-            {
-                _isPlaying = true;
-                OnTurnStart();
-
-                var feedbackStrategy = _playTableEntry.FeedbackStrategy;
-                for (int i = 0; i < _playTableEntry.Repeats; i++)
-                {
-                    if (feedbackStrategy)
-                    {
-                        feedbackStrategy.Animate(this, () => { Play(onComplete); });
-                    }
-                    else
-                    {
-                        Play(onComplete);
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Debug.LogError($"Error during enemy turn: {e}");
-                _isPlaying = false;
-                onComplete?.Invoke();
-            }
+            // if (_isPlaying)
+            // {
+            //     onComplete?.Invoke();
+            //     return;
+            // }
+            //
+            // try
+            // {
+            //     _isPlaying = true;
+            //     OnTurnStart();
+            //
+            //     var feedbackStrategy = _playTableEntry.FeedbackStrategy;
+            //     for (int i = 0; i < _playTableEntry.Repeats; i++)
+            //     {
+            //         if (feedbackStrategy)
+            //         {
+            //             feedbackStrategy.Animate(this, () => { Play(onComplete); });
+            //         }
+            //         else
+            //         {
+            //             Play(onComplete);
+            //         }
+            //     }
+            // }
+            // catch (Exception e)
+            // {
+            //     Debug.LogError($"Error during enemy turn: {e}");
+            //     _isPlaying = false;
+            //     onComplete?.Invoke();
+            // }
         }
 
         private void Play(Action onComplete)
         {
-            _playTableEntry.Strategy.Play(this, _currPotency, () =>
-            {
-                _intentionsList.RemoveNext();
-                OnTurnEnd();
-                _isPlaying = false;
-                onComplete?.Invoke();
-            });
+            // _playTableEntry.Strategy.Play(this, _currPotency, () =>
+            // {
+            //     _intentionsList.RemoveNext();
+            //     OnTurnEnd();
+            //     _isPlaying = false;
+            //     onComplete?.Invoke();
+            // });
         }
     }
 }

@@ -6,6 +6,6 @@ namespace Runtime.CardGameplay.Card.CardBehaviour.Feedback
 {
     public abstract class FeedbackStrategy : ScriptableObject
     {
-        public abstract void Animate(PawnController caller, Action onComplete);
+        public abstract void Animate(Action onComplete);
     }
 }

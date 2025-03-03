@@ -9,6 +9,6 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
         /// <summary>
         /// Executes the card effect. If the effect requires player input (e.g., selecting a target), it should call onComplete once finished.
         /// </summary>
-        public abstract void Play(PawnController caller, int potency, Action onComplete);
+        public abstract void Play(CardController caller, int potency, Action<bool> onComplete );
     }
 }

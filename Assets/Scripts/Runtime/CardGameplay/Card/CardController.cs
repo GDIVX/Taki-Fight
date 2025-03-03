@@ -32,7 +32,6 @@ namespace Runtime.CardGameplay.Card
 
         public HandController HandController { get; private set; }
         public GemsBag GemsBag { get; private set; }
-        public PawnController Pawn { get; private set; }
         public GemGroup Group => Instance.Group;
 
         private CardFactory _cardFactory;
@@ -54,7 +53,6 @@ namespace Runtime.CardGameplay.Card
 
             HandController = dependencies.HandController;
             GemsBag = dependencies.GemsBag;
-            Pawn = dependencies.Pawn;
             _cardFactory = dependencies.CardFactory;
 
             CardType = data.CardType;
@@ -114,7 +112,7 @@ namespace Runtime.CardGameplay.Card
             if (_feedbackStrategy)
             {
                 //TODO: First play the card and then animate
-                _feedbackStrategy.Animate(Pawn, RunPlayLogic);
+                _feedbackStrategy.Animate(RunPlayLogic);
             }
             else
             {
@@ -127,18 +125,22 @@ namespace Runtime.CardGameplay.Card
         {
             int remainingPlays = _playStrategies.Count;
 
-            void OnStrategyComplete()
+
+            foreach (var tuple in _playStrategies)
             {
+                tuple.Item1.Play(this, tuple.Item2, OnStrategyComplete);
+            }
+
+            return;
+
+            void OnStrategyComplete(bool isResolved)
+            {
+                if (!isResolved) return;
                 remainingPlays--;
                 if (remainingPlays <= 0)
                 {
                     HandlePostPlay();
                 }
-            }
-
-            foreach (var tuple in _playStrategies)
-            {
-                tuple.Item1.Play(Pawn, tuple.Item2, OnStrategyComplete);
             }
         }
 

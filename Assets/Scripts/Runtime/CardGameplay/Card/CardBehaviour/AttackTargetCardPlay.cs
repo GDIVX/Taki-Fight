@@ -8,7 +8,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
     [CreateAssetMenu(fileName = "Attack Play", menuName = "Card/Strategy/Play/Attack", order = 0)]
     public class AttackTargetCardPlay : CardPlayStrategy
     {
-        public override void Play(PawnController caller, int potency, Action onComplete)
+        public override void Play(CardController caller, int potency, Action<bool> onComplete)
         {
             SelectionService.Instance.RequestSelection(
                 target => target is PawnController, // Ensure we select a valid PawnController
@@ -17,7 +17,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                 {
                     if (selectedEntities.Count > 0 && selectedEntities[0] is PawnController target)
                     {
-                        HandleAttack(caller, target, potency);
+                        HandleAttack(target, potency);
                     }
                     else
                     {
@@ -25,13 +25,17 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                     }
 
                     // Notify that play execution is complete (even if canceled)
-                    onComplete?.Invoke();
-                }
+                    onComplete?.Invoke(true);
+                },
+                () => onComplete?.Invoke(false)
+                ,
+                caller.transform.position
             );
         }
 
-        private void HandleAttack(PawnController caller, PawnController target, int potency)
+        private void HandleAttack(PawnController target, int potency)
         {
+            //TODO: Magic power stat
             if (target == null)
             {
                 Debug.LogError($"Card '{name}' tried to attack a null target.");
@@ -44,7 +48,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                 return;
             }
 
-            var finalDamage = potency + caller.AttackModifier.Value;
+            var finalDamage = potency;
             target.ReceiveAttack(finalDamage);
         }
     }

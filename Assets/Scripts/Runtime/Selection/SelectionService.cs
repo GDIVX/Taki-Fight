@@ -5,15 +5,19 @@ using Runtime.Combat.Pawn;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 using Utilities;
 
 namespace Runtime.Selection
 {
     public class SelectionService : Singleton<SelectionService>
     {
+        [SerializeField] private SelectionLinePointer _linePointer;
+        [SerializeField] private List<Button> _buttonsToDisableDuringSearch;
         [ShowInInspector, ReadOnly] public SelectionState CurrentState { get; private set; } = SelectionState.None;
         [ShowInInspector, ReadOnly] public List<ISelectableEntity> SelectedEntities { get; private set; } = new();
         public event Action<List<ISelectableEntity>> OnSelectionComplete;
+        public event Action OnSearchCanceled;
         public event Action<Predicate<ISelectableEntity>> OnSearchInitialized;
 
         public Predicate<ISelectableEntity> Predicate { get; private set; }
@@ -33,7 +37,7 @@ namespace Runtime.Selection
 
         [Button]
         public void RequestSelection(Predicate<ISelectableEntity> predicate, int count,
-            Action<List<ISelectableEntity>> onComplete)
+            Action<List<ISelectableEntity>> onComplete, Action onCanceled, Vector3 pointerOrigin)
         {
             if (CurrentState == SelectionState.InProgress)
             {
@@ -42,6 +46,7 @@ namespace Runtime.Selection
 
             Predicate = predicate ?? throw new ArgumentNullException(nameof(predicate));
             OnSelectionComplete = onComplete;
+            OnSearchCanceled = onCanceled;
             _requiredSelections = count;
             SelectedEntities.Clear();
             CurrentState = SelectionState.InProgress;
@@ -52,6 +57,10 @@ namespace Runtime.Selection
                 StartCoroutine(completeSelection);
                 return;
             }
+
+            _buttonsToDisableDuringSearch.ForEach(button => button.interactable = false);
+
+            _linePointer.Show(pointerOrigin);
 
             OnSearchInitialized?.Invoke(predicate);
         }
@@ -88,7 +97,9 @@ namespace Runtime.Selection
             _allSelectable.ForEach(e => e.OnDeselected());
             SelectedEntities.Clear();
             Predicate = null;
-            OnSelectionComplete?.Invoke(SelectedEntities);
+            OnSearchCanceled?.Invoke();
+            _linePointer.Hide();
+            _buttonsToDisableDuringSearch.ForEach(button => button.interactable = true);
         }
 
         private IEnumerator CompleteSelection()
@@ -98,6 +109,8 @@ namespace Runtime.Selection
             _allSelectable.ForEach(e => e.OnDeselected());
             OnSelectionComplete?.Invoke(SelectedEntities);
             Predicate = null;
+            _linePointer.Hide();
+            _buttonsToDisableDuringSearch.ForEach(button => button.interactable = true);
         }
 
         public void Register(ISelectableEntity entity)

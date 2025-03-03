@@ -30,10 +30,10 @@ namespace Runtime.CardGameplay.Card.View
                     "attack", (controller, index) =>
                     {
                         int baseValue = controller.GetPotency(index);
-                        int modifier = controller.Pawn?.AttackModifier.Value ?? 0;
+                        // int modifier = controller.Pawn?.AttackModifier.Value ?? 0;
                         return (
-                            (baseValue + modifier).ToString(),
-                            modifier != 0
+                            (baseValue).ToString(),
+                            false
                         );
                     }
                 },
@@ -41,63 +41,21 @@ namespace Runtime.CardGameplay.Card.View
                     "defense", (controller, index) =>
                     {
                         int baseValue = controller.GetPotency(index);
-                        int modifier = controller.Pawn?.DefenseModifier.Value ?? 0;
+                        // int modifier = controller.Pawn?.DefenseModifier.Value ?? 0;
                         return (
-                            (baseValue + modifier).ToString(),
-                            modifier != 0
-                        );
-                    }
-                },
-                {
-                    "overheal", (controller, index) =>
-                    {
-                        var health = controller.Pawn?.Health;
-                        var currHealth = health.GetHealth();
-                        var healing = controller.GetPotency(index);
-                        var maxHealth = health.GetHealthMax();
-
-                        var missingHealth = maxHealth - currHealth;
-                        var modifier = controller.Pawn?.HealingModifier.Value ?? 0;
-
-                        var overHealValue = (healing + modifier) - missingHealth;
-                        overHealValue = overHealValue > 0 ? overHealValue : 0;
-
-                        return (
-                            overHealValue.ToString(),
-                            modifier != 0
+                            (baseValue).ToString(),
+                            false
                         );
                     }
                 },
 
-                {
-                    "overheal_attack", (controller, index) =>
-                    {
-                        var health = controller.Pawn?.Health;
-                        var currHealth = health.GetHealth();
-                        var healing = controller.GetPotency(index);
-                        var maxHealth = health.GetHealthMax();
-
-                        var missingHealth = maxHealth - currHealth;
-                        var modifier = controller.Pawn?.HealingModifier.Value ??
-                                       0 + controller.Pawn?.AttackModifier.Value ?? 0;
-
-                        var overHealValue = (healing + modifier) - missingHealth;
-                        overHealValue = overHealValue > 0 ? overHealValue : 0;
-
-                        return (
-                            overHealValue.ToString(),
-                            modifier != 0
-                        );
-                    }
-                },
                 {
                     "heal", (controller, index) =>
                     {
                         int baseValue = controller.GetPotency(index);
-                        int modifier = controller.Pawn?.HealingModifier.Value ?? 0;
                         return (
-                            (baseValue + modifier).ToString(),
-                            modifier != 0
+                            (baseValue).ToString(),
+                            false
                         );
                     }
                 }
