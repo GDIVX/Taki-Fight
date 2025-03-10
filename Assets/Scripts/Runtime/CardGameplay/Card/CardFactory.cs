@@ -27,14 +27,14 @@ namespace Runtime.CardGameplay.Card
 
         private readonly Stack<CardController> _objectPool = new();
 
-        public void Init(PawnController heroPawn)
+        public void Init()
         {
-            FetchDependencies(heroPawn);
+            FetchDependencies();
         }
 
-        private void FetchDependencies(PawnController heroPawn)
+        private void FetchDependencies()
         {
-            _cardDependencies = new CardDependencies(_handController, _gemsBag, heroPawn, this);
+            _cardDependencies = new CardDependencies(_handController, _gemsBag, this);
         }
 
         [Button]

@@ -6,28 +6,19 @@ using Runtime.Combat.Pawn.Enemy;
 using Runtime.Events;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using Utilities;
 
 namespace Runtime.Combat
 {
     public class CombatManager : MonoBehaviour
     {
-        [SerializeField, Required] private CombatLane _enemiesLane, _heroLane;
-
+        [SerializeField, Required] private PawnFactory _pawnFactory;
+        [SerializeField, Required] private Battlefield _battlefield;
         private static GameManager GameManager => GameManager.Instance;
 
-
-        private PawnController _heroPawn;
-
+        public Battlefield Battlefield => _battlefield;
         public event Action OnStartTurn, OnEndTurn;
         private EventListener<GameStateEvent> _onGameStateChanged;
-
-        public PawnController Hero
-        {
-            get => _heroPawn;
-            set => _heroPawn = value;
-        }
-
-        public CombatLane Enemies => _enemiesLane;
 
         public void OnEnable()
         {
@@ -68,22 +59,16 @@ namespace Runtime.Combat
             _onGameStateChanged.Disable();
         }
 
-        private void SetupOnEnemyRemove()
+        private void Awake()
         {
-            _enemiesLane.OnPawnRemoved += () =>
-            {
-                if (!_heroPawn.isActiveAndEnabled) return;
-                if (_enemiesLane.Pawns.Count > 0) return;
-
-                GameManager.BannerViewManager.WriteMessage(0, "Victory", Color.green);
-                GameManager.Instance.OnCombatEnd();
-            };
+            ServiceLocator.Register(_pawnFactory);
         }
 
         public void InitializeHero(PawnData data)
         {
-            _heroPawn = _heroLane.AddPawn(data);
-            _heroPawn.Health.OnDead += (sender, args) =>
+            //TEMPT for testing
+            var hero = Battlefield.GetLaneSide(true, 0).AddPawn(data);
+            hero.Health.OnDead += (sender, args) =>
             {
                 GameManager.BannerViewManager.WriteMessage(0, "Defeat", Color.red);
                 GameManager.SetGameState(GameState.RunEnd);
@@ -93,9 +78,9 @@ namespace Runtime.Combat
         [Button]
         public void StartCombat(CombatConfig combatConfig)
         {
-            _enemiesLane.SpawnPawnsForCombat(combatConfig, () =>
+            //TEMPT for testing
+            Battlefield.GetLaneSide(false, 0).SpawnPawnsForCombat(combatConfig, () =>
             {
-                SetupOnEnemyRemove();
                 GameManager.OnCombatStart();
                 StartTurn();
                 GameManager.Instance.SetGameState(GameState.Combat);
@@ -105,22 +90,16 @@ namespace Runtime.Combat
         [Button]
         public void EndCombat()
         {
-            _enemiesLane.Clear();
+            Battlefield.Clear(false);
 
             //Clear all status effects from the player
-            _heroPawn.ClearStatusEffects();
-            //remove all allies pawns
-            foreach (var pawnController in _heroLane.Pawns.Where(pawn => pawn != _heroPawn))
-            {
-                _heroLane.RemovePawn(pawnController);
-            }
+            Battlefield.Hero.ClearStatusEffects();
         }
 
         private void StartTurn()
         {
             GameManager.BannerViewManager.WriteMessage(1, "Player Turn", Color.white);
             GameManager.BannerViewManager.Clear();
-            _heroPawn.OnTurnStart();
             SetupEnemies();
 
             GameManager.Hand.DrawHand();
@@ -131,14 +110,12 @@ namespace Runtime.Combat
         [Button]
         public void EndTurn()
         {
-            _heroPawn.OnTurnEnd();
             GameManager.GemsBag.Clear();
             OnEndTurn?.Invoke();
 
             PlayEnemiesTurn(() =>
             {
                 //Reset the player defense 
-                Hero.Defense.Value = 0;
                 GameManager.BannerViewManager.Clear();
                 StartTurn();
             });
@@ -146,7 +123,8 @@ namespace Runtime.Combat
 
         private void SetupEnemies()
         {
-            foreach (var enemy in _enemiesLane.Pawns)
+            //TEMPT
+            foreach (var enemy in Battlefield.GetLaneSide(false, 0).Pawns)
             {
                 if (enemy is EnemyController enemyController)
                 {
@@ -161,11 +139,10 @@ namespace Runtime.Combat
 
         private void PlayEnemiesTurn(Action onComplete)
         {
-            if (Hero.Health.IsDead()) return;
-
             GameManager.BannerViewManager.WriteMessage(1, "Enemies Turn", Color.yellow);
 
-            var enemies = new Queue<PawnController>(_enemiesLane.Pawns);
+            //TODO:
+            var enemies = new Queue<PawnController>(Battlefield.GetLaneSide(false, 0).Pawns);
             ProcessNextEnemy(enemies, onComplete);
         }
 

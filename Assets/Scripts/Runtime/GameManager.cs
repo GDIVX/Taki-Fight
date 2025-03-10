@@ -16,7 +16,7 @@ using EventBus = Runtime.Events.EventBus;
 
 namespace Runtime
 {
-    public class GameManager : Singleton<GameManager>, IGameManager
+    public class GameManager : Singleton<GameManager>
     {
         [SerializeField, Required, TabGroup("Dependencies")]
         private GemsBag _gemsBag;
@@ -54,12 +54,6 @@ namespace Runtime
         public GemsBag GemsBag => _gemsBag;
 
         public HandController Hand => _handController;
-
-        public PawnController Hero
-        {
-            set => _combatManager.Hero = value;
-            get => _combatManager.Hero;
-        }
 
         public EventBus EventBus { get; private set; }
 
@@ -159,7 +153,7 @@ namespace Runtime
         private void OnStartRun()
         {
             CombatManager.InitializeHero(_runData.Hero);
-            _cardFactory.Init(CombatManager.Hero);
+            _cardFactory.Init();
             _rewardsOfferController.Init();
         }
 
