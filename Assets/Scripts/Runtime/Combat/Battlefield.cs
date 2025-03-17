@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using Runtime.Combat.Pawn;
 using UnityEngine;
 
@@ -17,7 +19,7 @@ namespace Runtime.Combat
         {
             if (index < 0 || index >= _combatLanes.Count)
             {
-                Debug.LogError($"Index out or range.\n" +
+                Debug.LogError($"Index out of range.\n" +
                                $" Index given:{index} \n" +
                                $" Allowed range is between 0 to {_combatLanes.Count - 1}\n" +
                                $"Returning first lane");
@@ -31,8 +33,27 @@ namespace Runtime.Combat
         public void Clear(bool includeHero)
         {
             _combatLanes.ForEach(lane => lane.Clear());
-            Boss.gameObject.SetActive(false);
-            Hero.gameObject.SetActive(includeHero);
+            // Boss.gameObject.SetActive(false);
+            // Hero.gameObject.SetActive(includeHero);
+        }
+
+        public void PlayTurn(Action onComplete)
+        {
+            StartCoroutine(HandleBattlefieldTurnCoroutine(onComplete));
+        }
+
+        private IEnumerator HandleBattlefieldTurnCoroutine(Action onComplete)
+        {
+            foreach (var lane in _combatLanes)
+            {
+                bool isTurnComplete = false;
+
+                lane.StartTurn(() => isTurnComplete = true);
+
+                yield return new WaitUntil(() => isTurnComplete);
+            }
+
+            onComplete?.Invoke();
         }
     }
 }

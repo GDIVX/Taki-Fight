@@ -62,15 +62,17 @@ namespace Runtime.Combat.StatusEffects
             _statusEffectView.Remove(effect);
         }
 
-        public void OnTurnStart()
+        public void Apply()
         {
             foreach (IStatusEffect statusEffect in _statusEffects)
             {
                 statusEffect.OnTurnStart(_pawn);
             }
+
+            HandleDecay();
         }
 
-        public void OnTurnEnd()
+        private void HandleDecay()
         {
             // We copy the list because we might remove effects as we go
             var effectsSnapshot = new List<IStatusEffect>(_statusEffects);

@@ -1,5 +1,4 @@
-﻿using Runtime.Combat.Pawn.Enemy;
-using Unity.Mathematics;
+﻿using Unity.Mathematics;
 using UnityEngine;
 
 namespace Runtime.Combat.Pawn
@@ -12,19 +11,8 @@ namespace Runtime.Combat.Pawn
         {
             var instance = Instantiate(_prefab, Vector3.zero, quaternion.identity);
             PawnController controller;
-            if (data is EnemyData enemyData)
-            {
-                var enemyController = instance.AddComponent<EnemyController>();
-                enemyController.Init(enemyData.PlayTable);
-                controller = enemyController;
 
-                //TODO TEMP
-                instance.GetComponent<SpriteRenderer>().flipX = true;
-            }
-            else
-            {
-                controller = instance.AddComponent<PawnController>();
-            }
+            controller = instance.AddComponent<PawnController>();
 
             controller.Init(data);
             return controller;

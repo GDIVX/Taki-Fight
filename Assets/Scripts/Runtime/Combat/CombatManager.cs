@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Runtime.Combat.Pawn;
-using Runtime.Combat.Pawn.Enemy;
 using Runtime.Events;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -67,12 +65,12 @@ namespace Runtime.Combat
         public void InitializeHero(PawnData data)
         {
             //TEMPT for testing
-            var hero = Battlefield.GetLaneSide(true, 0).AddPawn(data);
-            hero.Health.OnDead += (sender, args) =>
-            {
-                GameManager.BannerViewManager.WriteMessage(0, "Defeat", Color.red);
-                GameManager.SetGameState(GameState.RunEnd);
-            };
+            // var hero = Battlefield.GetLaneSide(true, 0).AddPawn(data);
+            // hero.Health.OnDead += (sender, args) =>
+            // {
+            //     GameManager.BannerViewManager.WriteMessage(0, "Defeat", Color.red);
+            //     GameManager.SetGameState(GameState.RunEnd);
+            // };
         }
 
         [Button]
@@ -93,14 +91,13 @@ namespace Runtime.Combat
             Battlefield.Clear(false);
 
             //Clear all status effects from the player
-            Battlefield.Hero.ClearStatusEffects();
+            // Battlefield.Hero.ClearStatusEffects();
         }
 
         private void StartTurn()
         {
             GameManager.BannerViewManager.WriteMessage(1, "Player Turn", Color.white);
             GameManager.BannerViewManager.Clear();
-            SetupEnemies();
 
             GameManager.Hand.DrawHand();
             GameManager.Energy.GainEnergyPerIncome();
@@ -114,59 +111,7 @@ namespace Runtime.Combat
             GameManager.Energy.Clear();
             OnEndTurn?.Invoke();
 
-            PlayEnemiesTurn(() =>
-            {
-                //Reset the player defense 
-                GameManager.BannerViewManager.Clear();
-                StartTurn();
-            });
-        }
-
-        private void SetupEnemies()
-        {
-            //TEMPT
-            foreach (var enemy in Battlefield.GetLaneSide(false, 0).Pawns)
-            {
-                if (enemy is EnemyController enemyController)
-                {
-                    enemyController.ChoosePlayStrategy();
-                }
-                else
-                {
-                    Debug.LogError($"Failed to cast enemy {enemy} into interface {nameof(EnemyController)}");
-                }
-            }
-        }
-
-        private void PlayEnemiesTurn(Action onComplete)
-        {
-            GameManager.BannerViewManager.WriteMessage(1, "Enemies Turn", Color.yellow);
-
-            //TODO:
-            var enemies = new Queue<PawnController>(Battlefield.GetLaneSide(false, 0).Pawns);
-            ProcessNextEnemy(enemies, onComplete);
-        }
-
-        private void ProcessNextEnemy(Queue<PawnController> enemies, Action onComplete)
-        {
-            if (enemies.Count == 0)
-            {
-                onComplete?.Invoke();
-                return;
-            }
-
-            var enemy = enemies.Dequeue();
-            enemy.Defense.Value = 0;
-
-            if (enemy is EnemyController enemyController)
-            {
-                enemyController.PlayTurn(() => ProcessNextEnemy(enemies, onComplete));
-            }
-            else
-            {
-                Debug.LogError($"Failed to cast enemy {enemy} into interface {nameof(EnemyController)}");
-                ProcessNextEnemy(enemies, onComplete);
-            }
+            Battlefield.PlayTurn(StartTurn);
         }
     }
 }

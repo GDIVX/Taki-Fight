@@ -156,7 +156,7 @@ namespace Runtime
 
         private void OnStartRun()
         {
-            CombatManager.InitializeHero(_runData.Hero);
+            // CombatManager.InitializeHero(_runData.Hero);
             _cardFactory.Init();
             _rewardsOfferController.Init();
         }

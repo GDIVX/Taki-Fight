@@ -27,7 +27,7 @@ namespace Runtime.RunManagement
         {
             if (playerClassData == null) throw new ArgumentNullException(nameof(playerClassData));
 
-            AddHeroData(playerClassData.Pawn);
+            // AddHeroData(playerClassData.Pawn);
             Data.Cards = new List<CardData>(playerClassData.StarterCards);
             Data.CollectableCards = new List<CardData>(playerClassData.CollectableCards);
             SetDeck();
@@ -48,11 +48,11 @@ namespace Runtime.RunManagement
             SetDeck();
         }
 
-        private void AddHeroData(PawnData pawnData)
-        {
-            if (pawnData == null) throw new ArgumentNullException(nameof(pawnData));
-            Data.Hero = pawnData;
-        }
+        // private void AddHeroData(PawnData pawnData)
+        // {
+        //     if (pawnData == null) throw new ArgumentNullException(nameof(pawnData));
+        //     Data.Hero = pawnData;
+        // }
 
         private void SetDeck()
         {

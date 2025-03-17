@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using CodeMonkey.HealthSystemCM;
 using Runtime.Combat.StatusEffects;
 using Runtime.Selection;
@@ -13,13 +15,16 @@ namespace Runtime.Combat.Pawn
     {
         [SerializeField, Required] private PawnView _view;
         [SerializeField, Required] private StatusEffectHandler _statusEffectHandler;
+        [ShowInInspector, ReadOnly] private CombatLane _lane;
+        [ShowInInspector, ReadOnly] private LaneSide _side;
 
         public TrackedProperty<int> Defense;
-        public TrackedProperty<int> Damage = new(0);
-        public TrackedProperty<int> Attacks = new(0);
+        public TrackedProperty<int> Damage;
+        public TrackedProperty<int> Attacks;
 
         public HealthSystem Health { get; private set; }
-
+        public bool IsAgile { get; private set; }
+        public bool IsProcessingTurn { get; private set; }
         public event Action<int, int> OnBeingAttacked;
 
         [Button]
@@ -31,12 +36,16 @@ namespace Runtime.Combat.Pawn
             AddStatusEffectHandler();
 
             Defense = new TrackedProperty<int>(data.Defense);
+            Damage = new TrackedProperty<int>(data.Damage);
+            Attacks = new TrackedProperty<int>(data.Attacks);
 
             _view ??= GetComponent<PawnView>();
             _view.Init(this, Defense, data);
 
             SelectionService.Instance.OnSelectionComplete += _ => OnDeselected();
             SelectionService.Instance.Register(this);
+
+            IsAgile = data.IsAgile;
 
             return this;
         }
@@ -78,12 +87,6 @@ namespace Runtime.Combat.Pawn
             OnBeingAttacked?.Invoke(damage, finalDamage);
         }
 
-        [Button]
-        public void ApplyStatusEffect(StatusEffectData statusEffectData, int stack)
-        {
-            var statusEffect = statusEffectData.CreateStatusEffect(stack);
-            _statusEffectHandler.Add(statusEffect, statusEffectData.Icon, statusEffectData.Tooltip);
-        }
 
         private int CalculateDamage(int attackPoints)
         {
@@ -95,14 +98,48 @@ namespace Runtime.Combat.Pawn
             Defense.Value = Mathf.Max(0, Defense.Value - attackPoints);
         }
 
-        public void OnTurnStart()
+        public void OnTurn()
         {
-            _statusEffectHandler.OnTurnStart();
+            IsProcessingTurn = true;
+
+            _statusEffectHandler.Apply();
+            //If this can attack, find the first pawn on the other side and attack it
+            if (Attacks.Value <= 0 || Damage.Value <= 0)
+            {
+                IsProcessingTurn = false;
+                return;
+            }
+
+            //find an opponent and attack
+            var opponent = _side.Other().First();
+            if (!opponent)
+            {
+                IsProcessingTurn = false;
+                return;
+            }
+
+            StartCoroutine(Attack(opponent, () => IsProcessingTurn = false));
         }
 
-        public void OnTurnEnd()
+        private IEnumerator Attack(PawnController target, Action onComplete)
         {
-            _statusEffectHandler.OnTurnEnd();
+            for (int i = 0; i < Attacks.Value; i++)
+            {
+                target.ReceiveAttack(Damage.Value);
+                yield return null;
+            }
+
+            onComplete?.Invoke();
+        }
+
+
+        #region Status Effects
+
+        [Button]
+        public void ApplyStatusEffect(StatusEffectData statusEffectData, int stack)
+        {
+            var statusEffect = statusEffectData.CreateStatusEffect(stack);
+            _statusEffectHandler.Add(statusEffect, statusEffectData.Icon, statusEffectData.Tooltip);
         }
 
         public int GetStatusEffectStacks(Type type)
@@ -116,9 +153,9 @@ namespace Runtime.Combat.Pawn
             _statusEffectHandler.Clear();
         }
 
-        // =======================================
-        //  SELECTION SERVICE INTEGRATION
-        // =======================================
+        #endregion
+
+        #region Selection
 
         public void TryToSelect()
         {
@@ -157,6 +194,19 @@ namespace Runtime.Combat.Pawn
             }
 
             TryToSelect();
+        }
+
+        #endregion
+
+        /// <summary>
+        /// For internal use only           
+        /// </summary>
+        /// <param name="lane"></param>
+        /// <param name="laneSide"></param>
+        internal void SetPosition(CombatLane lane, LaneSide laneSide)
+        {
+            _lane = lane;
+            _side = laneSide;
         }
     }
 }

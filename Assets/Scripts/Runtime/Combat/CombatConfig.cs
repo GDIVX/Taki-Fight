@@ -7,8 +7,8 @@ namespace Runtime.Combat
     [CreateAssetMenu(fileName = "Combat", menuName = "Combat")]
     public class CombatConfig : ScriptableObject
     {
-        [SerializeField] private List<EnemyData> enemies;
+        [SerializeField] private List<PawnData> enemies;
 
-        public EnemyData[] Enemies => enemies.ToArray();
+        public PawnData[] Enemies => enemies.ToArray();
     }
 }
