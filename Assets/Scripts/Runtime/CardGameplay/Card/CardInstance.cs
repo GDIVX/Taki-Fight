@@ -9,16 +9,16 @@ namespace Runtime.CardGameplay.Card
     public class CardInstance
     {
         public CardData Data;
-        [ShowInInspector] public GemGroup Group { get; set; }
 
         public CardController Controller { get; set; }
+        public int Cost { get; set; }
 
 
         public CardInstance(CardData data)
         {
             Data = data;
             Controller = null;
-            Group = data.Cost;
+            Cost = data.Cost;
         }
     }
 }

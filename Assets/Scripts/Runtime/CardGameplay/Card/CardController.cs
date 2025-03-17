@@ -31,8 +31,8 @@ namespace Runtime.CardGameplay.Card
         public CardData Data { get; private set; }
 
         public HandController HandController { get; private set; }
-        public GemsBag GemsBag { get; private set; }
-        public GemGroup Group => Instance.Group;
+        public Energy Energy { get; private set; }
+        public int Cost => Instance.Cost;
 
         private CardFactory _cardFactory;
         private bool _isSelecting;
@@ -51,23 +51,20 @@ namespace Runtime.CardGameplay.Card
                 Controller = this
             };
 
-            HandController = dependencies.HandController;
-            GemsBag = dependencies.GemsBag;
-            _cardFactory = dependencies.CardFactory;
-
             CardType = data.CardType;
 
             _feedbackStrategy = data.FeedbackStrategy;
             _playStrategies = CreatePlayStrategyTupletList(data.PlayStrategies);
 
+            _cardFactory = ServiceLocator.Get<CardFactory>();
+            Energy = ServiceLocator.Get<Energy>();
+            HandController = ServiceLocator.Get<HandController>();
+
             View = GetComponent<CardView>();
 
-            IsPlayable = new TrackedProperty<bool>()
-            {
-                Value = true
-            };
+            IsPlayable = new TrackedProperty<bool>(true);
             OnCardPlayedEvent += _ => UpdateAffordability();
-            GemsBag.OnModifiedEvent += UpdateAffordability;
+            Energy.OnAmountChanged += _ => UpdateAffordability();
             Data = data;
 
             SelectionService.Instance.Register(this);
@@ -146,7 +143,7 @@ namespace Runtime.CardGameplay.Card
 
         private void HandlePostPlay()
         {
-            HandleGemCost();
+            HandleCost();
 
             if (Data.DestroyCardAfterUse)
             {
@@ -161,16 +158,14 @@ namespace Runtime.CardGameplay.Card
         }
 
 
-        private void HandleGemCost()
+        private void HandleCost()
         {
-            GemsBag.Remove(GemType.Pearl, Group.Pearls);
-            GemsBag.Remove(GemType.Quartz, Group.Quartz);
-            GemsBag.Remove(GemType.Brimstone, Group.Brimstone);
+            Energy.Remove(Cost);
         }
 
         private bool CanAfford()
         {
-            return GemsBag.Has(Group.Pearls, Group.Quartz, Group.Brimstone);
+            return Energy.Amount >= Cost;
         }
 
         public void OnPointerClick(PointerEventData eventData)

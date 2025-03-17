@@ -11,7 +11,7 @@ namespace Runtime.CardGameplay.Card.View
         [SerializeField] private TextMeshProUGUI _title;
         [SerializeField] private TextMeshProUGUI _description;
         [SerializeField] private Image _image;
-        [SerializeField] private TextMeshProUGUI _pearlsCount, _quartzCount, _brimstoneCount;
+        [SerializeField] private TextMeshProUGUI _costText;
 
         private System.Action<RewardCardView> _onSelect;
 
@@ -26,13 +26,9 @@ namespace Runtime.CardGameplay.Card.View
 
             _description.text = data.Description;
 
-            _pearlsCount.text = data.Cost.Pearls.ToString();
-            _quartzCount.text = data.Cost.Quartz.ToString();
-            _brimstoneCount.text = data.Cost.Brimstone.ToString();
+            _costText.text = data.Cost.ToString();
 
-            _pearlsCount.transform.parent.gameObject.SetActive(data.Cost.Pearls > 0);
-            _quartzCount.transform.parent.gameObject.SetActive(data.Cost.Quartz > 0);
-            _brimstoneCount.transform.parent.gameObject.SetActive(data.Cost.Brimstone > 0);
+            _costText.transform.parent.gameObject.SetActive(data.Cost > 0);
 
             _onSelect = onSelect;
         }

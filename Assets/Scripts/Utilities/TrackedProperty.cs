@@ -8,17 +8,24 @@ namespace Utilities
     public class TrackedProperty<T>
     {
         public event Action<T> OnValueChanged;
-        [SerializeField] private T value;
+        [SerializeField] private T _value;
+
+        public TrackedProperty(T initialValue)
+        {
+            _value = initialValue;
+        }
 
         [Button]
         public T Value
         {
-            get => value;
+            get => _value;
             set
             {
-                this.value = value;
+                this._value = value;
                 OnValueChanged?.Invoke(Value);
             }
         }
+
+        public T ReadOnlyValue => Value;
     }
 }

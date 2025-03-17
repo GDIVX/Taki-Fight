@@ -20,7 +20,7 @@ namespace Editor.ArtAssetsPipeline
             string fileName = Path.GetFileNameWithoutExtension(assetPath);
             Debug.Log($"CardDataImportHandler: Checking if can handle file: {fileName}");
             var fileNameSuffixOrPattern = _settings.ImportRules
-                .Find(r => r.Type == ArtImportRule.ImportType.Artwork)?.FileNameSuffixOrPattern;
+                .Find(r => r.Type == ArtImportRule.ImportType.CardArt)?.FileNameSuffixOrPattern;
             return fileNameSuffixOrPattern != null &&
                    !string.IsNullOrEmpty(fileName) &&
                    fileName.ToLower().EndsWith(fileNameSuffixOrPattern);
@@ -71,7 +71,7 @@ namespace Editor.ArtAssetsPipeline
 
             string extension = Path.GetExtension(assetPath);
             var exportFolder = _settings.ImportRules
-                .Find(r => r.Type == ArtImportRule.ImportType.Artwork)?.ExportFolder;
+                .Find(r => r.Type == ArtImportRule.ImportType.CardArt)?.ExportFolder;
             if (exportFolder != null)
             {
                 string outputPath = Path.Combine(exportFolder, $"{fileName}{extension}")

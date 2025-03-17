@@ -15,9 +15,8 @@ namespace Runtime.Combat.Pawn
         [SerializeField, Required] private StatusEffectHandler _statusEffectHandler;
 
         public TrackedProperty<int> Defense;
-        public TrackedProperty<int> DefenseModifier = new();
-        public TrackedProperty<int> AttackModifier = new();
-        public TrackedProperty<int> HealingModifier = new();
+        public TrackedProperty<int> Damage = new(0);
+        public TrackedProperty<int> Attacks = new(0);
 
         public HealthSystem Health { get; private set; }
 
@@ -31,7 +30,7 @@ namespace Runtime.Combat.Pawn
             AddHealth(data);
             AddStatusEffectHandler();
 
-            Defense = new TrackedProperty<int> { Value = data.Defense };
+            Defense = new TrackedProperty<int>(data.Defense);
 
             _view ??= GetComponent<PawnView>();
             _view.Init(this, Defense, data);
@@ -65,18 +64,18 @@ namespace Runtime.Combat.Pawn
         }
 
         [Button]
-        public void ReceiveAttack(int attackPoints)
+        public void ReceiveAttack(int damage)
         {
-            if (attackPoints <= 0)
+            if (damage <= 0)
             {
-                OnBeingAttacked?.Invoke(attackPoints, 0);
+                OnBeingAttacked?.Invoke(damage, 0);
                 return;
             }
 
-            var finalDamage = CalculateDamage(attackPoints);
+            var finalDamage = CalculateDamage(damage);
             Health.Damage(finalDamage);
-            ReduceDefense(attackPoints);
-            OnBeingAttacked?.Invoke(attackPoints, finalDamage);
+            ReduceDefense(damage);
+            OnBeingAttacked?.Invoke(damage, finalDamage);
         }
 
         [Button]

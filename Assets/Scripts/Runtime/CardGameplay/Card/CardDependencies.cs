@@ -9,14 +9,14 @@ namespace Runtime.CardGameplay.Card
     {
         public HandController HandController { get; }
         public CardFactory CardFactory { get; }
-        public GemsBag GemsBag { get; }
+        public Energy Energy { get; }
 
 
-        public CardDependencies(HandController handController, GemsBag gemsBag,
+        public CardDependencies(HandController handController, Energy energy,
             CardFactory cardFactory)
         {
             HandController = handController ?? throw new ArgumentNullException(nameof(handController));
-            GemsBag = gemsBag ?? throw new ArgumentNullException(nameof(gemsBag));
+            Energy = energy ?? throw new ArgumentNullException(nameof(energy));
             CardFactory = cardFactory ?? throw new ArgumentNullException(nameof(cardFactory));
         }
     }

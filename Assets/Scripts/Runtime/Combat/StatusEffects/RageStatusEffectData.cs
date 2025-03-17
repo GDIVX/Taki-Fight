@@ -12,10 +12,7 @@ namespace Runtime.Combat.StatusEffects
         {
             return new RageStatusEffect()
             {
-                Stack = new TrackedProperty<int>()
-                {
-                    Value = stacks
-                }
+                Stack = new TrackedProperty<int>(stacks)
             };
         }
 
@@ -33,21 +30,21 @@ namespace Runtime.Combat.StatusEffects
 
         public void OnAdded(PawnController pawn)
         {
-            pawn.AttackModifier.Value += Stack.Value;
+            pawn.Attacks.Value += Stack.Value;
             _previousStack = Stack.Value;
         }
 
         public void OnTurnStart(PawnController pawn)
         {
             // Remove the old bonus and apply the new one
-            pawn.AttackModifier.Value -= _previousStack;
-            pawn.AttackModifier.Value += Stack.Value;
+            pawn.Attacks.Value -= _previousStack;
+            pawn.Attacks.Value += Stack.Value;
             _previousStack = Stack.Value;
         }
 
         public void Remove(PawnController pawn)
         {
-            pawn.AttackModifier.Value -= Stack.Value;
+            pawn.Attacks.Value -= Stack.Value;
         }
     }
 }

@@ -103,6 +103,7 @@ namespace Runtime.Combat
             SetupEnemies();
 
             GameManager.Hand.DrawHand();
+            GameManager.Energy.GainEnergyPerIncome();
 
             OnStartTurn?.Invoke();
         }
@@ -110,7 +111,7 @@ namespace Runtime.Combat
         [Button]
         public void EndTurn()
         {
-            GameManager.GemsBag.Clear();
+            GameManager.Energy.Clear();
             OnEndTurn?.Invoke();
 
             PlayEnemiesTurn(() =>

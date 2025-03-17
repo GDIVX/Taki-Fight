@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using DG.Tweening;
 using Runtime.CardGameplay.Card;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -112,6 +113,7 @@ namespace Runtime.CardGameplay.Deck
 
         private int GetIndex(CardController card) => card.Transform.GetSiblingIndex();
 
+        [Button]
         public void ArrangeCardsInArch()
         {
             int count = _cards.Count;

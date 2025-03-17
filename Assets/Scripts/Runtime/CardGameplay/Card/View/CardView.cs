@@ -13,7 +13,7 @@ namespace Runtime.CardGameplay.Card.View
         [SerializeField, TabGroup("Draw")] private TextMeshProUGUI _title;
         [SerializeField, TabGroup("Draw")] private TextMeshProUGUI _description;
         [SerializeField, TabGroup("Draw")] private Image _image;
-        [SerializeField, TabGroup("Draw")] private TextMeshProUGUI _pearlsCount, _quartzCount, _brimstoneCount;
+        [SerializeField, TabGroup("Draw")] private TextMeshProUGUI _costText;
 
         [SerializeField, TabGroup("Dissolve")] private Image _mask;
         [SerializeField, TabGroup("Dissolve")] private CanvasGroup _canvasGroup;
@@ -81,13 +81,9 @@ namespace Runtime.CardGameplay.Card.View
             _image.sprite = data.Image;
 
             var cost = data.Cost;
-            _pearlsCount.text = cost.Pearls.ToString();
-            _quartzCount.text = cost.Quartz.ToString();
-            _brimstoneCount.text = cost.Brimstone.ToString();
+            _costText.text = cost.ToString();
 
-            _pearlsCount.transform.parent.gameObject.SetActive(cost.Pearls > 0);
-            _quartzCount.transform.parent.gameObject.SetActive(cost.Quartz > 0);
-            _brimstoneCount.transform.parent.gameObject.SetActive(cost.Brimstone > 0);
+            _costText.transform.parent.gameObject.SetActive(cost > 0);
 
             _mask.fillAmount = 1;
             _canvasGroup.alpha = 1;

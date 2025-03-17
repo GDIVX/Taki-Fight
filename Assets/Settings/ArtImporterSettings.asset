@@ -24,5 +24,17 @@ MonoBehaviour:
     "universe_domain": "googleapis.com" } '
   ImportRules:
   - Type: 0
-    FileNameSuffixOrPattern: _artwork
+    FileNameSuffixOrPattern: _card
     ExportFolder: Assets/Sprites/Card Art
+  - Type: 1
+    FileNameSuffixOrPattern: _ui
+    ExportFolder: Assets/Sprites/UI
+  - Type: 3
+    FileNameSuffixOrPattern: _char
+    ExportFolder: Assets/Sprites/Characters
+  - Type: 2
+    FileNameSuffixOrPattern: _icon
+    ExportFolder: Assets/Sprites/Icons
+  - Type: 4
+    FileNameSuffixOrPattern: _extra
+    ExportFolder: Assets/Sprites/Extras

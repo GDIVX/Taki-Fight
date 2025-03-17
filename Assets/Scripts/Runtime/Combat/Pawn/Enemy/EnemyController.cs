@@ -19,31 +19,31 @@ namespace Runtime.Combat.Pawn.Enemy
             _table = playTable;
             _isPlaying = false;
 
-            _intentionsList ??= GetComponentInChildren<IntentionsList>();
+            // _intentionsList ??= GetComponentInChildren<IntentionsList>();
         }
 
 
         public void ChoosePlayStrategy()
         {
-            _playTableEntry = _table.ChoseRandomPlayStrategy();
-            var finalPotency = _playTableEntry.Potency;
-            if (_playTableEntry.AddAttackMod)
-            {
-                finalPotency += AttackModifier.Value;
-            }
-
-            if (_playTableEntry.AddDefenseMod)
-            {
-                finalPotency += DefenseModifier.Value;
-            }
-
-            if (_playTableEntry.AddHealingMod)
-            {
-                finalPotency += HealingModifier.Value;
-            }
-
-            _currPotency = finalPotency;
-            _intentionsList.Add(_playTableEntry.IntentionType, finalPotency, _playTableEntry.Repeats);
+            // _playTableEntry = _table.ChoseRandomPlayStrategy();
+            // var finalPotency = _playTableEntry.Potency;
+            // if (_playTableEntry.AddAttackMod)
+            // {
+            //     finalPotency += AttackModifier.Value;
+            // }
+            //
+            // if (_playTableEntry.AddDefenseMod)
+            // {
+            //     finalPotency += DefenseModifier.Value;
+            // }
+            //
+            // if (_playTableEntry.AddHealingMod)
+            // {
+            //     finalPotency += HealingModifier.Value;
+            // }
+            //
+            // _currPotency = finalPotency;
+            // _intentionsList.Add(_playTableEntry.IntentionType, finalPotency, _playTableEntry.Repeats);
         }
 
         public void PlayTurn(Action onComplete)

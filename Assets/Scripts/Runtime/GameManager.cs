@@ -19,7 +19,7 @@ namespace Runtime
     public class GameManager : Singleton<GameManager>
     {
         [SerializeField, Required, TabGroup("Dependencies")]
-        private GemsBag _gemsBag;
+        private Energy _energy;
 
         [SerializeField, Required, TabGroup("Dependencies")]
         private HandController _handController;
@@ -51,7 +51,7 @@ namespace Runtime
 
         public RunBuilder RunBuilder { get; private set; }
         public BannerViewManager BannerViewManager => _bannerViewManager;
-        public GemsBag GemsBag => _gemsBag;
+        public Energy Energy => _energy;
 
         public HandController Hand => _handController;
 
@@ -78,6 +78,10 @@ namespace Runtime
             RunBuilder = new RunBuilder(_runData);
             ServiceLocator.Register(RunBuilder);
             OnEventBusCreated?.Invoke();
+
+            ServiceLocator.Register(Energy);
+            ServiceLocator.Register(_cardFactory);
+            ServiceLocator.Register(_handController);
         }
 
         private void OnEnable()
@@ -172,8 +176,8 @@ namespace Runtime
             _deckView.Setup(deck);
             _handController.Deck.MergeAndShuffle();
 
-            _gemsBag.Initialize();
-            _gemsBag.Clear();
+            _energy.Initialize();
+            _energy.Reset();
 
             _handController.gameObject.SetActive(true);
             _handController.DiscardHand();

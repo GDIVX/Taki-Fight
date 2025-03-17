@@ -1,9 +1,9 @@
-﻿using Sirenix.OdinInspector;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace Editor.ArtAssetsPipeline
+namespace Editor
 {
     [Serializable]
     public class ArtImportRule
@@ -21,9 +21,11 @@ namespace Editor.ArtAssetsPipeline
         
         public enum ImportType
         {
-            Artwork,
+            CardArt,
             UI,
-            Icon
+            Icon,
+            Character,
+            Extras
         }
     }
 

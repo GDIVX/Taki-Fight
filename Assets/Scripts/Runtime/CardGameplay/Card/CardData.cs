@@ -29,7 +29,7 @@ namespace Runtime.CardGameplay.Card
         [SerializeField, BoxGroup("Behaviour")]
         private bool _destroyCardAfterUse = false;
 
-        [SerializeField, BoxGroup("Economy")] private GemGroup _cost;
+        [SerializeField, BoxGroup("Economy")] private int _cost;
         [SerializeField] private FeedbackStrategy _feedbackStrategy;
 
 
@@ -44,7 +44,7 @@ namespace Runtime.CardGameplay.Card
 
         public bool DestroyCardAfterUse => _destroyCardAfterUse;
 
-        public GemGroup Cost => _cost;
+        public int Cost => _cost;
 
         public FeedbackStrategy FeedbackStrategy => _feedbackStrategy;
     }

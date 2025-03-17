@@ -17,7 +17,7 @@ namespace Runtime.CardGameplay.Card
         private HandController _handController;
 
         [SerializeField, TabGroup("Dependencies")]
-        private GemsBag _gemsBag;
+        private Energy _energy;
 
         [SerializeField, TabGroup("Dependencies")]
         private Transform _discardToLocation, _drawFromLocation;
@@ -29,12 +29,6 @@ namespace Runtime.CardGameplay.Card
 
         public void Init()
         {
-            FetchDependencies();
-        }
-
-        private void FetchDependencies()
-        {
-            _cardDependencies = new CardDependencies(_handController, _gemsBag, this);
         }
 
         [Button]
