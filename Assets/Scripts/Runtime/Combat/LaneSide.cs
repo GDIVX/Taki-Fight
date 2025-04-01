@@ -54,6 +54,8 @@ namespace Runtime.Combat
             _pawns.Add(pawn);
             pawn.SetPosition(_lane, this);
             pawn.Health.OnDead += (_, _) => { RemovePawn(pawn); };
+
+            pawn.GetComponent<SpriteRenderer>().flipX = !IsAllySide;
             return pawn;
         }
 
