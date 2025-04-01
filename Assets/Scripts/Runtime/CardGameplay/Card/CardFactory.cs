@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Runtime.CardGameplay.Card.View;
 using Runtime.CardGameplay.Deck;
-using Runtime.CardGameplay.GemSystem;
 using Runtime.Combat.Pawn;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -17,7 +16,7 @@ namespace Runtime.CardGameplay.Card
         private HandController _handController;
 
         [SerializeField, TabGroup("Dependencies")]
-        private Energy _energy;
+        private Energy.Energy _energy;
 
         [SerializeField, TabGroup("Dependencies")]
         private Transform _discardToLocation, _drawFromLocation;

@@ -1,9 +1,9 @@
 ﻿using System;
-using UnityEngine;
 using Sirenix.OdinInspector;
+using UnityEngine;
 using Utilities;
 
-namespace Runtime.CardGameplay.GemSystem
+namespace Runtime.CardGameplay.Energy
 {
     public class Energy : MonoBehaviour
     {

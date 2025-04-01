@@ -1,8 +1,7 @@
-﻿using System;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 
-namespace Runtime.CardGameplay.GemSystem
+namespace Runtime.CardGameplay.Energy
 {
     public class EnergyView : MonoBehaviour
     {

@@ -1,6 +1,5 @@
 ﻿using System;
 using Runtime.CardGameplay.Deck;
-using Runtime.CardGameplay.GemSystem;
 using Runtime.Combat.Pawn;
 
 namespace Runtime.CardGameplay.Card
@@ -9,10 +8,10 @@ namespace Runtime.CardGameplay.Card
     {
         public HandController HandController { get; }
         public CardFactory CardFactory { get; }
-        public Energy Energy { get; }
+        public Energy.Energy Energy { get; }
 
 
-        public CardDependencies(HandController handController, Energy energy,
+        public CardDependencies(HandController handController, Energy.Energy energy,
             CardFactory cardFactory)
         {
             HandController = handController ?? throw new ArgumentNullException(nameof(handController));

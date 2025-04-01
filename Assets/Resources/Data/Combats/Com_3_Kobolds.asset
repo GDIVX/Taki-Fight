@@ -13,6 +13,5 @@ MonoBehaviour:
   m_Name: Com_3_Kobolds
   m_EditorClassIdentifier: 
   enemies:
-  - {fileID: 11400000, guid: 1c78d20103a0d0f409c16e18ed4e8354, type: 2}
-  - {fileID: 11400000, guid: 1c78d20103a0d0f409c16e18ed4e8354, type: 2}
-  - {fileID: 11400000, guid: 1c78d20103a0d0f409c16e18ed4e8354, type: 2}
+  - {fileID: 11400000, guid: 6bc48239aa4a309469da7eec9b69bc0b, type: 2}
+  - {fileID: 11400000, guid: 6bc48239aa4a309469da7eec9b69bc0b, type: 2}

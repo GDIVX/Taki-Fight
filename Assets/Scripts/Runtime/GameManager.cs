@@ -1,7 +1,7 @@
 ﻿using System;
 using Runtime.CardGameplay.Card;
 using Runtime.CardGameplay.Deck;
-using Runtime.CardGameplay.GemSystem;
+using Runtime.CardGameplay.Energy;
 using Runtime.Combat;
 using Runtime.Combat.Pawn;
 using Runtime.Events;

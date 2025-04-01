@@ -4,7 +4,6 @@ using Runtime.CardGameplay.Card.CardBehaviour;
 using Runtime.CardGameplay.Card.CardBehaviour.Feedback;
 using Runtime.CardGameplay.Card.View;
 using Runtime.CardGameplay.Deck;
-using Runtime.CardGameplay.GemSystem;
 using Runtime.Combat.Pawn;
 using Runtime.Selection;
 using Sirenix.OdinInspector;
@@ -31,7 +30,7 @@ namespace Runtime.CardGameplay.Card
         public CardData Data { get; private set; }
 
         public HandController HandController { get; private set; }
-        public Energy Energy { get; private set; }
+        public Energy.Energy Energy { get; private set; }
         public int Cost => Instance.Cost;
 
         private CardFactory _cardFactory;
@@ -57,7 +56,7 @@ namespace Runtime.CardGameplay.Card
             _playStrategies = CreatePlayStrategyTupletList(data.PlayStrategies);
 
             _cardFactory = ServiceLocator.Get<CardFactory>();
-            Energy = ServiceLocator.Get<Energy>();
+            Energy = ServiceLocator.Get<Energy.Energy>();
             HandController = ServiceLocator.Get<HandController>();
 
             View = GetComponent<CardView>();
