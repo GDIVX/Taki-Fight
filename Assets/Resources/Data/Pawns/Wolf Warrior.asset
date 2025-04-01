@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Wolf Warrior
   m_EditorClassIdentifier: 
   _sprite: {fileID: -4232371963121305725, guid: 0e58604c38ef60b49b6a55fd3049a056, type: 3}
-  _health: 0
-  _defense: 0
-  _damage: 0
-  _attacks: 0
+  _health: 10
+  _defense: 1
+  _damage: 3
+  _attacks: 1
   _isAgile: 0
