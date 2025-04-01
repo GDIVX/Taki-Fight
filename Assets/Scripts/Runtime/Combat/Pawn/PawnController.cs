@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using CodeMonkey.HealthSystemCM;
+using Runtime.Combat.Arena;
 using Runtime.Combat.StatusEffects;
 using Runtime.Selection;
 using Sirenix.OdinInspector;

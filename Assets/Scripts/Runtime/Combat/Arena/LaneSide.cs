@@ -2,18 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using Runtime.Combat.Pawn;
+using Runtime.Selection;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using Utilities;
 
-namespace Runtime.Combat
+namespace Runtime.Combat.Arena
 {
     [Serializable]
-    public class LaneSide
+    public class LaneSide : ISelectableEntity, IPointerClickHandler
     {
         [SerializeField] private ArrangeInLine _arrangeInLine;
         [SerializeField] private List<PawnController> _pawns = new List<PawnController>();
         [ShowInInspector, ReadOnly] private CombatLane _lane;
+        [SerializeField] private LaneView _view;
         private PawnFactory PawnFactory => ServiceLocator.Get<PawnFactory>();
 
         public int PawnsLimit { get; set; } = 3;
@@ -24,6 +27,7 @@ namespace Runtime.Combat
         public event Action OnPawnRemoved;
 
         public List<PawnController> Pawns => new(_pawns);
+        public int Count => Pawns.Count;
 
         public LaneSide Other()
         {
@@ -87,5 +91,48 @@ namespace Runtime.Combat
             _lane = combatLane;
             IsAllySide = isAllySide;
         }
+
+        #region Selection
+
+        public void TryToSelect()
+        {
+            if (SelectionService.Instance.CurrentState != SelectionState.InProgress)
+            {
+                return;
+            }
+
+            var predicate = SelectionService.Instance.Predicate;
+            if (predicate.Invoke(this))
+            {
+                SelectionService.Instance.Select(this);
+            }
+        }
+
+        public void OnSelected()
+        {
+            _view.OnSelected();
+        }
+
+        public void OnDeselected()
+        {
+            _view.ClearSelection();
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (eventData.button != PointerEventData.InputButton.Left)
+            {
+                return;
+            }
+
+            if (SelectionService.Instance.CurrentState != SelectionState.InProgress)
+            {
+                return;
+            }
+
+            TryToSelect();
+        }
+
+        #endregion
     }
 }

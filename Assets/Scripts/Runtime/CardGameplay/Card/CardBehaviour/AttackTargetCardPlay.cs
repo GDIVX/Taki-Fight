@@ -8,16 +8,22 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
     [CreateAssetMenu(fileName = "Attack Play", menuName = "Card/Strategy/Play/Attack", order = 0)]
     public class AttackTargetCardPlay : CardPlayStrategy
     {
-        public override void Play(CardController caller, int potency, Action<bool> onComplete)
+        [SerializeField] private int _targetsCount = 1;
+
+        public override void Play(CardController cardController, int potency, Action<bool> onComplete)
         {
             SelectionService.Instance.RequestSelection(
                 target => target is PawnController, // Ensure we select a valid PawnController
-                1, // Expect exactly one selection
+                _targetsCount,
                 selectedEntities =>
                 {
-                    if (selectedEntities.Count > 0 && selectedEntities[0] is PawnController target)
+                    if (selectedEntities.Count > 0)
                     {
-                        HandleAttack(target, potency);
+                        selectedEntities.ForEach(entity =>
+                        {
+                            if (entity is not PawnController target) return;
+                            HandleAttack(target, potency);
+                        });
                     }
                     else
                     {
@@ -29,7 +35,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                 },
                 () => onComplete?.Invoke(false)
                 ,
-                caller.transform.position
+                cardController.transform.position
             );
         }
 
