@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using Runtime.Combat.Arena;
 using Runtime.Combat.Pawn;
 using UnityEngine;
 
-namespace Runtime.Combat
+namespace Runtime.Combat.Arena
 {
     public class Battlefield : MonoBehaviour
     {

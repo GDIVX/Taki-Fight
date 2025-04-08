@@ -15,7 +15,10 @@ namespace Runtime.Rewards
         public CardRewardManager(List<CardData> allCards, Dictionary<Rarity, float> weights)
         {
             if (allCards == null || allCards.Count == 0)
+            {
+                
                 throw new ArgumentException("Card pool cannot be null or empty.", nameof(allCards));
+            }
 
             if (weights == null || weights.Count == 0)
                 throw new ArgumentException("Weights cannot be null or empty.", nameof(weights));

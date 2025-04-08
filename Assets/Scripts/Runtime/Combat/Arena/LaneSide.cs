@@ -11,9 +11,8 @@ using Utilities;
 namespace Runtime.Combat.Arena
 {
     [Serializable]
-    public class LaneSide : ISelectableEntity, IPointerClickHandler
+    public class LaneSide : ArrangeInLine, ISelectableEntity, IPointerClickHandler
     {
-        [SerializeField] private ArrangeInLine _arrangeInLine;
         [SerializeField] private List<PawnController> _pawns = new List<PawnController>();
         [ShowInInspector, ReadOnly] private CombatLane _lane;
         [SerializeField] private LaneView _view;
@@ -54,7 +53,7 @@ namespace Runtime.Combat.Arena
             if (_pawns.Count >= PawnsLimit) return null;
 
             var pawn = PawnFactory.Spawn(data);
-            _arrangeInLine.Add(pawn.gameObject);
+            Add(pawn.gameObject);
             _pawns.Add(pawn);
             pawn.SetPosition(_lane, this);
             pawn.Health.OnDead += (_, _) => { RemovePawn(pawn); };
@@ -71,7 +70,7 @@ namespace Runtime.Combat.Arena
             // }
 
             _pawns.Remove(pawn);
-            _arrangeInLine.Remove(pawn.gameObject);
+            Remove(pawn.gameObject);
             OnPawnRemoved?.Invoke();
         }
 

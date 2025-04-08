@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1d2ef38cff22425f823e1e531fce8b36, type: 3}
+  m_Script: {fileID: 11500000, guid: 18046fc9ff3e4c409d1abb5f65cb6f70, type: 3}
   m_Name: Gain Rage
   m_EditorClassIdentifier: 
-  _duration: 0.2
-  _effectData: {fileID: 11400000, guid: 54cb4099e45e5da4688d9a3d913a1ef2, type: 2}
+  _icon: {fileID: -1075237379, guid: aaf06ea70717cc643b5453f87d2e7c1f, type: 3}
+  _tooltip: {fileID: 11400000, guid: 8d6d7d0af7ca7f04e9a042c81ff18dff, type: 2}

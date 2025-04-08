@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfa7d1474d204cdf97cff19db736ba13, type: 3}
+  m_Name: Wolf Clan Deck
+  m_EditorClassIdentifier: 
+  _starterCards:
+  - {fileID: 11400000, guid: 5fa5f3df0490195488ccbd18a6e07518, type: 2}
+  - {fileID: 11400000, guid: 5fa5f3df0490195488ccbd18a6e07518, type: 2}
+  - {fileID: 11400000, guid: 5fa5f3df0490195488ccbd18a6e07518, type: 2}
+  - {fileID: 11400000, guid: 5fa5f3df0490195488ccbd18a6e07518, type: 2}
+  _collectableCards:
+  - {fileID: 11400000, guid: 5fa5f3df0490195488ccbd18a6e07518, type: 2}
+  _pawn: {fileID: 11400000, guid: 8a1754766491ef942a64eede784d3e84, type: 2}

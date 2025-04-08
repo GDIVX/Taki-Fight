@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -21,14 +22,14 @@ namespace Utilities
 
         [SerializeField] private ArrangementMode _arrangementMode = ArrangementMode.EvenSpread;
 
-        public void Add(GameObject child)
+        protected void Add(GameObject child)
         {
             if (child == null) return;
             _gameObjectsToArrange.Add(child);
             ArrangeObjects();
         }
 
-        public void Remove(GameObject child)
+        protected void Remove(GameObject child)
         {
             if (child == null) return;
             _gameObjectsToArrange.Remove(child);
@@ -71,6 +72,8 @@ namespace Utilities
                 case ArrangementMode.EndToStart:
                     ArrangeSequential(unitDirection, fromStart: false);
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
