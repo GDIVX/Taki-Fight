@@ -13,6 +13,9 @@ namespace Runtime.Combat
     {
         [SerializeField, Required] private PawnFactory _pawnFactory;
         [SerializeField, Required] private Battlefield _battlefield;
+
+        [SerializeField, BoxGroup("Settings")] private bool _discardHandOnTurnEnd = true;
+
         private static GameManager GameManager => GameManager.Instance;
 
         public Battlefield Battlefield => _battlefield;
@@ -110,6 +113,11 @@ namespace Runtime.Combat
         public void EndTurn()
         {
             GameManager.Energy.Clear();
+            if (_discardHandOnTurnEnd)
+            {
+                GameManager.Hand.DiscardHand();
+            }
+
             OnEndTurn?.Invoke();
 
             Battlefield.PlayTurn(StartTurn);

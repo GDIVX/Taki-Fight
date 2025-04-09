@@ -374,6 +374,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _pawnFactory: {fileID: 51308177}
   _battlefield: {fileID: 1377694101}
+  _discardHandOnTurnEnd: 1
 --- !u!114 &51308177
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -742,7 +743,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17579f31fccb44fc8db39012bce2bbe3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _targetHandSize: 8
+  _cardsToDrawPerTurn: 5
   _maxHandSize: 10
   _cardFactory: {fileID: 1877293996}
   _cardMovementDelay: 0.1

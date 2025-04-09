@@ -146,7 +146,7 @@ namespace Runtime.CardGameplay.Card
 
             if (Data.DestroyCardAfterUse)
             {
-                HandController.BurnCard(this);
+                HandController.ConsumeCard(this);
             }
             else
             {

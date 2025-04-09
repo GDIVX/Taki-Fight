@@ -24,7 +24,6 @@ namespace Runtime.Selection
         private static readonly int OutlineColorB = Shader.PropertyToID("_OutlineColorB");
         private static readonly int OutlineColorLerp = Shader.PropertyToID("_OutlineColorLerp");
 
-        private Material _instanceMaterial;
         private Tween _outlineTween;
         private Tween _colorTween;
         private bool _isHovered;
@@ -43,16 +42,8 @@ namespace Runtime.Selection
                 return;
             }
 
-            _instanceMaterial = _spriteRenderer.material;
         }
 
-        private void OnDestroy()
-        {
-            if (_instanceMaterial != null)
-            {
-                Destroy(_instanceMaterial);
-            }
-        }
 
         private void OnValidate()
         {
@@ -83,20 +74,20 @@ namespace Runtime.Selection
             Color colorA = _isHovered ? _lowerActiveColor : _lowerPassiveColor;
             Color colorB = _isHovered ? _upperActiveColor : _upperPassiveColor;
 
-            _instanceMaterial.SetColor(OutlineColorA, colorA);
-            _instanceMaterial.SetColor(OutlineColorB, colorB);
+            _spriteRenderer.material.SetColor(OutlineColorA, colorA);
+            _spriteRenderer.material.SetColor(OutlineColorB, colorB);
 
             _outlineTween?.Kill();
             _colorTween?.Kill();
 
             _outlineTween = DOTween.To(
-                    (x) => _instanceMaterial.SetFloat(OutlineBlend, x),
+                    (x) => _spriteRenderer.material.SetFloat(OutlineBlend, x),
                     0, 1, _blendTime)
                 .SetEase(_blendEase)
                 .OnComplete(() =>
                 {
                     _colorTween = DOTween.To(
-                            (x) => _instanceMaterial.SetFloat(OutlineColorLerp, x),
+                            (x) => _spriteRenderer.material.SetFloat(OutlineColorLerp, x),
                             0, 1, _colorBlendTime)
                         .SetEase(_colorBlendEase);
                 });
@@ -105,8 +96,8 @@ namespace Runtime.Selection
         private void ResetMaterial()
         {
             DOTween.To(
-                    (x) => _instanceMaterial.SetFloat(OutlineBlend, x),
-                    _instanceMaterial.GetFloat(OutlineBlend), 0, _blendTime)
+                    (x) => _spriteRenderer.material.SetFloat(OutlineBlend, x),
+                    _spriteRenderer.material.GetFloat(OutlineBlend), 0, _blendTime)
                 .SetEase(_blendEase);
         }
 

@@ -9,12 +9,21 @@ namespace Runtime.CardGameplay.Deck
 {
     public class HandController : MonoBehaviour
     {
-        [SerializeField] private int _targetHandSize;
+        [SerializeField] private int _cardsToDrawPerTurn;
         [SerializeField] private int _maxHandSize;
         [SerializeField, Required] private CardFactory _cardFactory;
         [SerializeField] private float _cardMovementDelay;
         public Deck Deck { get; set; }
         [ShowInInspector, ReadOnly] private List<CardController> _cards = new();
+
+        public int CardsToDrawPerTurn
+        {
+            get => _cardsToDrawPerTurn;
+            set => _cardsToDrawPerTurn = value;
+        }
+
+
+
 
         public event Action<CardController> OnCardAdded;
         public event Action<CardController> OnCardRemoved;
@@ -23,10 +32,10 @@ namespace Runtime.CardGameplay.Deck
 
         public int DrawPerTurn
         {
-            get => _targetHandSize;
+            get => _cardsToDrawPerTurn;
             set
             {
-                _targetHandSize = value;
+                _cardsToDrawPerTurn = value;
                 OnCardDrawPerTurnUpdated?.Invoke(value);
             }
         }
@@ -89,15 +98,13 @@ namespace Runtime.CardGameplay.Deck
 
         public void DrawHand()
         {
-            if (isActiveAndEnabled)
-            {
-                StartCoroutine(DrawWithDelay());
-            }
+            if (!isActiveAndEnabled) return;
+            StartCoroutine(DrawWithDelay());
         }
 
         private IEnumerator DrawWithDelay()
         {
-            var cardsToDraw = _targetHandSize - _cards.Count;
+            var cardsToDraw = _cardsToDrawPerTurn;
             if (cardsToDraw <= 0)
             {
                 yield break;
@@ -126,7 +133,7 @@ namespace Runtime.CardGameplay.Deck
             cardController.View.OnDiscard();
         }
 
-        public void BurnCard(CardController cardController)
+        public void ConsumeCard(CardController cardController)
         {
             if (Deck.IsBurnt(cardController.Instance)) return;
 

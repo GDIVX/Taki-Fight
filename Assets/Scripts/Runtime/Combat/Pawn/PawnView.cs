@@ -30,7 +30,7 @@ namespace Runtime.Combat.Pawn
         [SerializeField, BoxGroup("Sprite")] private SpriteRenderer spriteRenderer;
 
         [SerializeField, BoxGroup("Selection")]
-        private Highlight highlightEffect; // 🔥 Highlight component for selection
+        private Highlight highlightEffect; 
 
         private bool _showHighligh = false;
 
