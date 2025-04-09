@@ -25,8 +25,8 @@ Transform:
   m_GameObject: {fileID: 2450532670973470882}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.9405795, y: 0, z: 0}
-  m_LocalScale: {x: 0.26662686, y: 1, z: 1}
+  m_LocalPosition: {x: 0.8, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 297520732091947264}
@@ -56,7 +56,7 @@ Transform:
   m_GameObject: {fileID: 5977062219168715585}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.9405795, y: 0, z: 0}
+  m_LocalPosition: {x: -0.783, y: 0, z: 0}
   m_LocalScale: {x: 0.26662686, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -87,8 +87,8 @@ Transform:
   m_GameObject: {fileID: 7010466431597232992}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.9258086, y: 0, z: 0}
-  m_LocalScale: {x: 0.26662686, y: 1, z: 1}
+  m_LocalPosition: {x: -0.805, y: 0, z: 0}
+  m_LocalScale: {x: 0, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 297520732091947264}
@@ -118,7 +118,7 @@ Transform:
   m_GameObject: {fileID: 7480840522529480945}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.9258086, y: 0, z: 0}
+  m_LocalPosition: {x: 0.802, y: 0, z: 0}
   m_LocalScale: {x: 0.26662686, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -360,7 +360,7 @@ MonoBehaviour:
   _pointB: {fileID: 6204805173459691437}
   _gameObjectsToArrange: []
   _padding: 0.2
-  _arrangementMode: 2
+  _arrangementMode: 1
   _pawns: []
   _view: {fileID: 7822558711787930880}
 --- !u!212 &7653339910965024680
