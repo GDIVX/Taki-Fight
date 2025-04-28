@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Runtime.UI.Tooltip;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
+using Utilities;
 
 namespace Runtime.CardGameplay.Card.View
 {
@@ -142,7 +144,7 @@ namespace Runtime.CardGameplay.Card.View
         /// </summary>
         private string FormatKeywords(string text)
         {
-            var keywordDictionary = GameManager.Instance.KeywordDictionary;
+            var keywordDictionary = ServiceLocator.Get<KeywordDictionary>();
             if (keywordDictionary?.Keywords == null || !keywordDictionary.Keywords.Any())
             {
                 Debug.LogWarning("KeywordDictionary is empty or not assigned.");

@@ -1,4 +1,6 @@
-﻿using Unity.Mathematics;
+﻿using Assets.Scripts.Runtime.Combat.Arena;
+using System;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Runtime.Combat.Pawn
@@ -7,14 +9,15 @@ namespace Runtime.Combat.Pawn
     {
         [SerializeField] private GameObject _prefab;
 
-        public PawnController Spawn(PawnData data)
+        internal PawnController CreatePawn(PawnData unit, Tile tile)
         {
             var instance = Instantiate(_prefab, Vector3.zero, quaternion.identity);
             PawnController controller;
 
             controller = instance.AddComponent<PawnController>();
 
-            controller.Init(data);
+            controller.Init(unit);
+            controller.SetPosition(tile);
             return controller;
         }
     }

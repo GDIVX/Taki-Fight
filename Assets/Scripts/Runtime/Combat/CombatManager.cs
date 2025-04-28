@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using Assets.Scripts.Runtime.Combat.Arena;
+using Runtime.CardGameplay.Deck;
+using Runtime.CardGameplay.Energy;
 using Runtime.Combat.Arena;
 using Runtime.Combat.Pawn;
 using Runtime.Events;
+using Runtime.UI;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
@@ -11,100 +15,48 @@ namespace Runtime.Combat
 {
     public class CombatManager : MonoBehaviour
     {
-        [SerializeField, Required] private PawnFactory _pawnFactory;
-        [SerializeField, Required] private Battlefield _battlefield;
 
+        [SerializeField, BoxGroup("Settings")] private Vector2Int _arenaSize;
         [SerializeField, BoxGroup("Settings")] private bool _discardHandOnTurnEnd = true;
+        [SerializeField, Required] ArenaView _arenaView;
 
         private static GameManager GameManager => GameManager.Instance;
 
-        public Battlefield Battlefield => _battlefield;
-        public event Action OnStartTurn, OnEndTurn;
-        private EventListener<GameStateEvent> _onGameStateChanged;
+        public ArenaController ArenaController { get; private set; }
+        public event Action OnStartTurn, OnEndTurn, OnCombatStart;
 
-        public void OnEnable()
-        {
-            _onGameStateChanged = new EventListener<GameStateEvent>(e =>
-            {
-                switch (e.GameState)
-                {
-                    case GameState.Menu:
-                        break;
-                    case GameState.RunStart:
-                        break;
-                    case GameState.Pause:
-                        break;
-                    case GameState.Exploration:
-                        break;
-                    case GameState.RoomEntered:
-                        break;
-                    case GameState.RoomResolved:
-                        break;
-                    case GameState.Combat:
-                        break;
-                    case GameState.CombatEnd:
-                        EndCombat();
-                        break;
-                    case GameState.RunEnd:
-                        EndCombat();
-                        break;
-                    case GameState.Hub:
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            });
-        }
 
-        private void OnDisable()
+        internal void Init()
         {
-            _onGameStateChanged.Disable();
-        }
-
-        private void Awake()
-        {
-            ServiceLocator.Register(_pawnFactory);
-        }
-
-        public void InitializeHero(PawnData data)
-        {
-            //TEMPT for testing
-            // var hero = Battlefield.GetLaneSide(true, 0).AddPawn(data);
-            // hero.Health.OnDead += (sender, args) =>
-            // {
-            //     GameManager.BannerViewManager.WriteMessage(0, "Defeat", Color.red);
-            //     GameManager.SetGameState(GameState.RunEnd);
-            // };
+            ArenaController = new ArenaController(_arenaSize.x, _arenaSize.y, _arenaView);
+            //ArenaController.Clear();
+            ServiceLocator.Register(ArenaController);
         }
 
         [Button]
         public void StartCombat(CombatConfig combatConfig)
         {
-            //TEMPT for testing
-            Battlefield.GetLaneSide(false, 0).SpawnPawnsForCombat(combatConfig, () =>
-            {
-                GameManager.OnCombatStart();
-                StartTurn();
-                GameManager.Instance.SetGameState(GameState.Combat);
-            });
+            ArenaController.Enable();
+            GameManager.OnCombatStart();
+            StartTurn();
+            OnCombatStart?.Invoke();
         }
 
         [Button]
         public void EndCombat()
         {
-            Battlefield.Clear(false);
+            ArenaController.Clear();
 
-            //Clear all status effects from the player
-            // Battlefield.Hero.ClearStatusEffects();
         }
 
         private void StartTurn()
         {
-            GameManager.BannerViewManager.WriteMessage(1, "Player Turn", Color.white);
-            GameManager.BannerViewManager.Clear();
+            var bannerView = ServiceLocator.Get<BannerViewManager>();
+            bannerView.WriteMessage(1, "Player Turn", Color.white);
+            bannerView.Clear();
 
-            GameManager.Hand.DrawHand();
-            GameManager.Energy.GainEnergyPerIncome();
+            ServiceLocator.Get<HandController>().DrawHand();
+            ServiceLocator.Get<Energy>().GainEnergyPerIncome();
 
             OnStartTurn?.Invoke();
         }
@@ -112,15 +64,17 @@ namespace Runtime.Combat
         [Button]
         public void EndTurn()
         {
-            GameManager.Energy.Clear();
+            ServiceLocator.Get<Energy>().Clear();
             if (_discardHandOnTurnEnd)
             {
-                GameManager.Hand.DiscardHand();
+                ServiceLocator.Get<HandController>().DiscardHand();
             }
 
             OnEndTurn?.Invoke();
 
-            Battlefield.PlayTurn(StartTurn);
+            //ArenaController.PlayTurn(StartTurn);
+            //TODO have a dedicated turn manager
         }
+
     }
 }

@@ -145,5 +145,10 @@ namespace Runtime.Combat.Pawn
             yield return new WaitForEndOfFrame();
             highlightEffect.Hide();
         }
+
+        internal void SetPosition(Vector2Int position)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

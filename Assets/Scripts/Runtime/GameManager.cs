@@ -3,12 +3,9 @@ using Runtime.CardGameplay.Card;
 using Runtime.CardGameplay.Deck;
 using Runtime.CardGameplay.Energy;
 using Runtime.Combat;
-using Runtime.Combat.Pawn;
 using Runtime.Events;
 using Runtime.Rewards;
 using Runtime.RunManagement;
-using Runtime.UI;
-using Runtime.UI.Tooltip;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
@@ -18,58 +15,23 @@ namespace Runtime
 {
     public class GameManager : Singleton<GameManager>
     {
-        [SerializeField, Required, TabGroup("Dependencies")]
-        private Energy _energy;
-
-        [SerializeField, Required, TabGroup("Dependencies")]
-        private HandController _handController;
-
-        [SerializeField, Required, TabGroup("Dependencies")]
-        private DeckView _deckView;
-
-
-        [SerializeField, TabGroup("Settings")] private int _initialReelsCount;
-
-        [SerializeField, Required, TabGroup("Dependencies")]
-        private CardFactory _cardFactory;
-
-        [SerializeField, Required, TabGroup("Dependencies")]
-        private RewardsOfferController _rewardsOfferController;
-
-        [SerializeField, TabGroup("Dependencies"), Required]
-        private BannerViewManager _bannerViewManager;
-
-        [SerializeField, TabGroup("Dependencies"), Required]
-        private CombatManager _combatManager;
-
 
         [SerializeField, TabGroup("Tempt")] private GameObject _newGameButtonObject;
-
-        [SerializeField] private TooltipPool _tooltipPool;
-        [SerializeField] private KeywordDictionary _keywordDictionary;
         [SerializeField] private RunData _runData;
 
         public RunBuilder RunBuilder { get; private set; }
-        public BannerViewManager BannerViewManager => _bannerViewManager;
-        public Energy Energy => _energy;
-
-        public HandController Hand => _handController;
-
         public EventBus EventBus { get; private set; }
 
-        public TooltipPool TooltipPool => _tooltipPool;
-
-        public KeywordDictionary KeywordDictionary => _keywordDictionary;
-
-        public CombatManager CombatManager => _combatManager;
         public event Action OnEventBusCreated;
-
-        //event listeners
-        private EventListener<GameStateEvent> _onGameStateChange;
 
 
         //TODO: TEMP
         [SerializeField] private PlayerClassData _tempClassData;
+
+        private RewardsOfferController _rewardsOfferController;
+        private CombatManager _combatManager;
+        private CardFactory _cardFactory;
+        private HandController _handController;
 
         private void Awake()
         {
@@ -78,47 +40,16 @@ namespace Runtime
             RunBuilder = new RunBuilder(_runData);
             ServiceLocator.Register(RunBuilder);
             OnEventBusCreated?.Invoke();
-
-            ServiceLocator.Register(Energy);
-            ServiceLocator.Register(_cardFactory);
-            ServiceLocator.Register(_handController);
         }
 
-        private void OnEnable()
+        private void Start()
         {
-            _onGameStateChange = new EventListener<GameStateEvent>(e =>
-            {
-                var gameState = e.GameState;
-
-                switch (gameState)
-                {
-                    case GameState.Menu:
-                        break;
-                    case GameState.RunStart:
-                        OnStartRun();
-                        break;
-                    case GameState.Pause:
-                        break;
-                    case GameState.Exploration:
-                        break;
-                    case GameState.RoomEntered:
-                        break;
-                    case GameState.RoomResolved:
-                        break;
-                    case GameState.Combat:
-                        break;
-                    case GameState.CombatEnd:
-                        break;
-                    case GameState.RunEnd:
-                        GameOver();
-                        break;
-                    case GameState.Hub:
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            });
+            _rewardsOfferController = ServiceLocator.Get<RewardsOfferController>();
+            _combatManager = ServiceLocator.Get<CombatManager>();
+            _cardFactory = ServiceLocator.Get<CardFactory>();
+            _handController = ServiceLocator.Get<HandController>();
         }
+
 
         private void OfferCardReward()
         {
@@ -137,33 +68,14 @@ namespace Runtime
             //TODO: TEMP
             RunBuilder.NewRunFromPlayerClass(_tempClassData);
 
-            SetGameState(GameState.RunStart);
-        }
-
-        private void OnDisable()
-        {
-            _onGameStateChange.Disable();
-        }
-
-
-        [Button]
-        public void SetGameState(GameState gameState)
-        {
-            EventBus.Publish(new GameStateEvent(gameState));
-            Debug.Log($"Set state to {gameState}");
-        }
-
-
-        private void OnStartRun()
-        {
-            // CombatManager.InitializeHero(_runData.Hero);
             _cardFactory.Init();
             _rewardsOfferController.Init();
+            _combatManager.Init();
         }
-
 
         private void GameOver()
         {
+
             _handController.gameObject.SetActive(false);
             _newGameButtonObject.SetActive(true);
         }
@@ -171,21 +83,26 @@ namespace Runtime
         [Button]
         public void OnCombatStart()
         {
+
+            var deckView = ServiceLocator.Get<DeckView>();
+            var energy = ServiceLocator.Get<Energy>();
+
             var deck = _runData.Deck;
             _handController.Deck = deck;
-            _deckView.Setup(deck);
+            deckView.Setup(deck);
             _handController.Deck.MergeAndShuffle();
 
-            _energy.Initialize();
-            _energy.Reset();
+            energy.Initialize();
+            energy.Reset();
 
             _handController.gameObject.SetActive(true);
-            _handController.DiscardHand();
+            _handController.DrawHand();
+            //_handController.DiscardHand();
         }
 
         public void OnCombatEnd()
         {
-            SetGameState(GameState.CombatEnd);
+            _combatManager.EndCombat();
             _handController.DiscardHand();
             OfferCardReward();
         }

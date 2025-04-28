@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using Assets.Scripts.Runtime.Combat.Arena;
 using Runtime.Combat.Arena;
 using Runtime.Combat.Pawn;
 using Runtime.Selection;
 using UnityEngine;
+using Utilities;
 
 namespace Runtime.CardGameplay.Card.CardBehaviour
 {
@@ -11,31 +13,33 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
     public class SummonUnitPlay : CardPlayStrategy
     {
         [SerializeField] private List<PawnData> _units;
-        [SerializeField] private LaneFilterHelper.LaneSelectionMode _laneSelectionMode;
+        private TileSelectionMode _tileSelectionMode;
 
         public override void Play(CardController cardController, int potency, Action<bool> onComplete)
         {
-            //select lane
-
+            // Select tile
             SelectionService.Instance.RequestSelection
             (
-                target => target is LaneSide laneSide && LaneFilterHelper.FilterLaneSide(laneSide, _laneSelectionMode),
+                target => target is Tile tile && TileFilterHelper.FilterTile(tile, _tileSelectionMode),
                 1,
                 selectedEntities =>
                 {
-                    //summon unit
+                    // Summon unit
                     foreach (var selectableEntity in selectedEntities)
                     {
-                        if (selectableEntity is not LaneSide laneSide) return;
+                        if (selectableEntity is not Tile tile) return;
+
                         foreach (var unit in _units)
                         {
-                            if (laneSide.Count >= laneSide.PawnsLimit)
+                            if (tile.IsOccupied)
                             {
                                 onComplete?.Invoke(true);
                                 return;
                             }
 
-                            laneSide.AddPawn(unit);
+                            //Use the pawn factory to create the unit
+                            var pawnFactory = ServiceLocator.Get<PawnFactory>();
+                            var pawn = pawnFactory.CreatePawn(unit, tile);
                         }
 
                         onComplete?.Invoke(true);

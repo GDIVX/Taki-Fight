@@ -3,6 +3,7 @@ using DG.Tweening;
 using Runtime.CardGameplay.Card;
 using TMPro;
 using UnityEngine;
+using Utilities;
 
 namespace Runtime.CardGameplay.Deck
 {
@@ -23,14 +24,17 @@ namespace Runtime.CardGameplay.Deck
             _drawPileCounter.text = "0";
             _discardPileCounter.text = "0";
             _cardDrawCounter.text = "0";
-            _cardDrawCounter.text = "+" +GameManager.Instance.Hand.DrawPerTurn;
+
+            var hand = ServiceLocator.Get<HandController>();
+
+            _cardDrawCounter.text = "+" + hand.DrawPerTurn;
 
 
             _deck.OnDrawPileUpdated += pile => _drawPileCounter.text = pile.Count.ToString();
             _deck.OnDiscardPileUpdated += OnDeckOnOnDiscardPileUpdated;
             _deck.OnBurnPileUpdated += consumePile => consumePile.Count.ToString();
 
-            GameManager.Instance.Hand.OnCardDrawPerTurnUpdated += (count) => _cardDrawCounter.text = "+" + count;
+            hand.OnCardDrawPerTurnUpdated += (count) => _cardDrawCounter.text = "+" + count;
         }
 
 

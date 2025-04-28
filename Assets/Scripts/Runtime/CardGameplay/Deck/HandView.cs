@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using DG.Tweening;
 using Runtime.CardGameplay.Card;
+using Runtime.Combat;
 using Runtime.Selection;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -25,9 +26,10 @@ namespace Runtime.CardGameplay.Deck
             _handController.OnCardAdded += AddCard;
             _handController.OnCardRemoved += RemoveCard;
 
+            var combatManager = ServiceLocator.Get<CombatManager>();
 
-            GameManager.Instance.CombatManager.OnStartTurn += Show;
-            GameManager.Instance.CombatManager.OnEndTurn += Hide;
+            combatManager.OnStartTurn += Show;
+            combatManager.OnEndTurn += Hide;
 
             _canvasGroup ??= GetComponent<CanvasGroup>();
         }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Assets.Scripts.Runtime.Combat.Arena;
 using CodeMonkey.HealthSystemCM;
 using Runtime.Combat.Arena;
 using Runtime.Combat.StatusEffects;
@@ -8,6 +9,7 @@ using Runtime.Selection;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UIElements;
 using Utilities;
 
 namespace Runtime.Combat.Pawn
@@ -16,8 +18,8 @@ namespace Runtime.Combat.Pawn
     {
         [SerializeField, Required] private PawnView _view;
         [SerializeField, Required] private StatusEffectHandler _statusEffectHandler;
-        [ShowInInspector, ReadOnly] private CombatLane _lane;
-        [ShowInInspector, ReadOnly] private LaneSide _side;
+        [ShowInInspector, ReadOnly] private Tile _tile;
+        [ShowInInspector, ReadOnly] private PawnOwner _owner;
 
         public TrackedProperty<int> Defense;
         public TrackedProperty<int> Damage;
@@ -104,22 +106,25 @@ namespace Runtime.Combat.Pawn
             IsProcessingTurn = true;
 
             _statusEffectHandler.Apply();
-            //If this can attack, find the first pawn on the other side and attack it
-            if (Attacks.Value <= 0 || Damage.Value <= 0)
-            {
-                IsProcessingTurn = false;
-                return;
-            }
 
-            //find an opponent and attack
-            var opponent = _side.Other().First();
-            if (!opponent)
-            {
-                IsProcessingTurn = false;
-                return;
-            }
+            //TODO: Refactor attack to work with the new tile system
 
-            StartCoroutine(Attack(opponent, () => IsProcessingTurn = false));
+            ////If this can attack, find the first pawn on the other side and attack it
+            //if (Attacks.Value <= 0 || Damage.Value <= 0)
+            //{
+            //    IsProcessingTurn = false;
+            //    return;
+            //}
+
+            ////find an opponent and attack
+            //var opponent = _side.Other().First();
+            //if (!opponent)
+            //{
+            //    IsProcessingTurn = false;
+            //    return;
+            //}
+
+            //StartCoroutine(Attack(opponent, () => IsProcessingTurn = false));
         }
 
         private IEnumerator Attack(PawnController target, Action onComplete)
@@ -199,15 +204,24 @@ namespace Runtime.Combat.Pawn
 
         #endregion
 
-        /// <summary>
-        /// For internal use only           
-        /// </summary>
-        /// <param name="lane"></param>
-        /// <param name="laneSide"></param>
-        internal void SetPosition(CombatLane lane, LaneSide laneSide)
+        internal void SetPosition(Vector2Int position)
         {
-            _lane = lane;
-            _side = laneSide;
+            var arenaController = ServiceLocator.Get<ArenaController>();
+            if (arenaController == null)
+            {
+                Debug.LogError("ArenaController not found");
+                return;
+            }
+            var tile = arenaController.GetTile(position);
+            SetPosition(tile);
+
+        }
+
+        internal void SetPosition(Tile tile)
+        {
+            _tile = tile;
+            _view.SetPosition(_tile.Position);
+            _tile.SetPawn(this);
         }
     }
 }

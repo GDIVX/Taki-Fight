@@ -12,7 +12,12 @@ namespace Runtime.UI.Tooltip
         protected TooltipController CurrentTooltip;
         [SerializeField] private float _delayTime;
 
-        protected TooltipPool TooltipPool => GameManager.Instance.TooltipPool;
+        protected TooltipPool TooltipPool { get; private set; }
+
+        private void Start()
+        {
+            TooltipPool = ServiceLocator.Get<TooltipPool>();
+        }
 
 
         public virtual void OnPointerEnter(PointerEventData eventData)

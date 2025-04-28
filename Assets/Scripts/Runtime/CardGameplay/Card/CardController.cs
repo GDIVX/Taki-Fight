@@ -6,6 +6,7 @@ using Runtime.CardGameplay.Card.View;
 using Runtime.CardGameplay.Deck;
 using Runtime.Combat.Pawn;
 using Runtime.Selection;
+using Runtime.UI;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -100,8 +101,9 @@ namespace Runtime.CardGameplay.Card
         {
             if (!CanAfford())
             {
-                GameManager.Instance.BannerViewManager.WriteMessage(1, "Can't Afford to Play This Card", Color.red);
-                this.Timer(1f, () => GameManager.Instance.BannerViewManager.Clear());
+                var bannerView = ServiceLocator.Get<BannerViewManager>();
+                bannerView.WriteMessage(1, "Can't Afford to Play This Card", Color.red);
+                this.Timer(1f, () => bannerView.Clear());
                 return;
             }
 
