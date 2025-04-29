@@ -29,7 +29,7 @@ namespace Runtime.CardGameplay.Deck
         private bool _isSwapping;
         private Sequence _currentArrangeSequence;
 
-        private void Start()
+        private void Awake()
         {
             _rectTransform = GetComponent<RectTransform>();
         }

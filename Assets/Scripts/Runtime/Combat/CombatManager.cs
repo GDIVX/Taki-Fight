@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using Assets.Scripts.Runtime.Combat.Arena;
+using Assets.Scripts.Runtime.Combat.Tilemap;
 using Runtime.CardGameplay.Deck;
 using Runtime.CardGameplay.Energy;
-using Runtime.Combat.Arena;
+using Runtime.Combat.Tilemap;
 using Runtime.Combat.Pawn;
 using Runtime.Events;
 using Runtime.UI;
@@ -18,17 +18,17 @@ namespace Runtime.Combat
 
         [SerializeField, BoxGroup("Settings")] private Vector2Int _arenaSize;
         [SerializeField, BoxGroup("Settings")] private bool _discardHandOnTurnEnd = true;
-        [SerializeField, Required] ArenaView _arenaView;
+        [SerializeField, Required] TilemapView _arenaView;
 
         private static GameManager GameManager => GameManager.Instance;
 
-        public ArenaController ArenaController { get; private set; }
+        public TilemapController ArenaController { get; private set; }
         public event Action OnStartTurn, OnEndTurn, OnCombatStart;
 
 
         internal void Init()
         {
-            ArenaController = new ArenaController(_arenaSize.x, _arenaSize.y, _arenaView);
+            ArenaController = new TilemapController(_arenaSize.x, _arenaSize.y, _arenaView);
             //ArenaController.Clear();
             ServiceLocator.Register(ArenaController);
         }

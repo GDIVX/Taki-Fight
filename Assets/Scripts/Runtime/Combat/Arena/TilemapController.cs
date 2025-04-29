@@ -1,22 +1,23 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using Assets.Scripts.Runtime.Combat.Arena;
+using Assets.Scripts.Runtime.Combat.Tilemap;
 using Runtime.Combat.Pawn;
 using UnityEngine;
 
-namespace Runtime.Combat.Arena
+namespace Runtime.Combat.Tilemap
 {
-    public class ArenaController
+    public class TilemapController
     {
         private Tile[,] _tiles;
-        private ArenaView _arenaView;
+        private TilemapView _view;
+        public TilemapView View { get => _view; private set => _view = value; }
 
 
-        public ArenaController(int width, int height, ArenaView arenaView)
+        public TilemapController(int width, int height, TilemapView arenaView)
         {
             _tiles = new Tile[width, height];
-            _arenaView = arenaView;
+            View = arenaView;
             for (int x = 0; x < width; x++)
             {
                 for (int y = 0; y < height; y++)
@@ -25,8 +26,9 @@ namespace Runtime.Combat.Arena
                 }
             }
 
-            _arenaView.CreateTiles(_tiles);
+            View.CreateTiles(_tiles);
         }
+
 
         public void Clear()
         {
@@ -35,12 +37,12 @@ namespace Runtime.Combat.Arena
                 tile.Clear();
             }
 
-            _arenaView.Disable();
+            View.Disable();
         }
 
         public void Enable()
         {
-            _arenaView.Enable();
+            View.Enable();
         }
 
         internal Tile GetTile(Vector2Int position)

@@ -7,14 +7,14 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Assets.Scripts.Runtime.Combat.Arena
+namespace Assets.Scripts.Runtime.Combat.Tilemap
 {
     [Serializable]
-    public class Tile
+    public struct Tile
     {
         [ShowInInspector, ReadOnly] private Vector2Int position;
         [ShowInInspector, ReadOnly] private PawnController pawn;
-        [ShowInInspector, ReadOnly] private TileOwner owner = TileOwner.None;
+        [ShowInInspector, ReadOnly] private TileOwner owner;
         [ShowInInspector, ReadOnly] private TileView view;
 
         public Vector2Int Position { get => position; private set => position = value; }
@@ -27,7 +27,10 @@ namespace Assets.Scripts.Runtime.Combat.Arena
 
         public Tile(Vector2Int position)
         {
-            Position = position;
+            this.position = position;
+            this.pawn = null;        
+            this.owner = TileOwner.None;
+            this.view = null;
         }
 
         public void SetPawn(PawnController pawn)
@@ -39,7 +42,6 @@ namespace Assets.Scripts.Runtime.Combat.Arena
         {
             Owner = owner;
         }
-
 
         internal void Clear()
         {

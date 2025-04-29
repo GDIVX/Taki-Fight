@@ -20,7 +20,7 @@ namespace Runtime.CardGameplay.Deck
         [SerializeField] private CanvasGroup _canvasGroup;
 
 
-        private void Awake()
+        private void Start()
         {
             // Subscribe to events for card addition and removal if needed
             _handController.OnCardAdded += AddCard;

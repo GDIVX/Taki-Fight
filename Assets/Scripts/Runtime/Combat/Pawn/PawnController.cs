@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using Assets.Scripts.Runtime.Combat.Arena;
+using Assets.Scripts.Runtime.Combat.Tilemap;
 using CodeMonkey.HealthSystemCM;
-using Runtime.Combat.Arena;
+using Runtime.Combat.Tilemap;
 using Runtime.Combat.StatusEffects;
 using Runtime.Selection;
 using Sirenix.OdinInspector;
@@ -206,7 +206,7 @@ namespace Runtime.Combat.Pawn
 
         internal void SetPosition(Vector2Int position)
         {
-            var arenaController = ServiceLocator.Get<ArenaController>();
+            var arenaController = ServiceLocator.Get<TilemapController>();
             if (arenaController == null)
             {
                 Debug.LogError("ArenaController not found");

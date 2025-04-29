@@ -4,7 +4,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Assets.Scripts.Runtime.Combat.Arena
+namespace Assets.Scripts.Runtime.Combat.Tilemap
 {
     public class TileView : MonoBehaviour, ISelectableEntity, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
     {
@@ -12,10 +12,13 @@ namespace Assets.Scripts.Runtime.Combat.Arena
     
         [SerializeField] private SpriteRenderer spriteRenderer; // Reference to the sprite renderer
 
-        private Tile tile; // Reference to the Tile object
+        private Tile tile;
+
+        public Tile Tile { get => tile; private set => tile = value; }
+
         internal void SetTile(Tile tile)
         {
-            this.tile = tile; // Set the Tile object
+            Tile = tile; // Set the Tile object
             spriteRenderer ??= GetComponent<SpriteRenderer>(); // Get the sprite renderer if not assigned
         }
 

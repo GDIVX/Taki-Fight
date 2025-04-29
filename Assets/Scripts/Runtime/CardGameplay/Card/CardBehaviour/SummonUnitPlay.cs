@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Assets.Scripts.Runtime.Combat.Arena;
-using Runtime.Combat.Arena;
+using Assets.Scripts.Runtime.Combat.Tilemap;
+using Runtime.Combat.Tilemap;
 using Runtime.Combat.Pawn;
 using Runtime.Selection;
 using UnityEngine;
@@ -13,21 +13,35 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
     public class SummonUnitPlay : CardPlayStrategy
     {
         [SerializeField] private List<PawnData> _units;
-        private TileSelectionMode _tileSelectionMode;
+        [SerializeField] private TileSelectionMode _tileSelectionMode;
 
         public override void Play(CardController cardController, int potency, Action<bool> onComplete)
         {
-            // Select tile
+            // Select TileView
             SelectionService.Instance.RequestSelection
             (
-                target => target is Tile tile && TileFilterHelper.FilterTile(tile, _tileSelectionMode),
+                target =>
+                {
+                    if (target is not TileView tileView)
+                    {
+                        return false;
+                    }
+
+                    var tile = tileView.Tile;
+                    return TileFilterHelper.FilterTile(tile, _tileSelectionMode);
+                },
                 1,
                 selectedEntities =>
                 {
                     // Summon unit
                     foreach (var selectableEntity in selectedEntities)
                     {
-                        if (selectableEntity is not Tile tile) return;
+                        if (selectableEntity is not TileView tileView)
+                        {
+                            continue;
+                        }
+
+                        var tile = tileView.Tile;
 
                         foreach (var unit in _units)
                         {
@@ -37,17 +51,29 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                                 return;
                             }
 
-                            //Use the pawn factory to create the unit
+                            // Use the pawn factory to create the unit
                             var pawnFactory = ServiceLocator.Get<PawnFactory>();
+                            if (pawnFactory == null)
+                            {
+                                Debug.LogError("SummonUnitPlay: PawnFactory not found in ServiceLocator. Aborting summoning.");
+                                onComplete?.Invoke(false);
+                                return;
+                            }
+
                             var pawn = pawnFactory.CreatePawn(unit, tile);
                         }
 
                         onComplete?.Invoke(true);
                     }
                 },
-                () => onComplete?.Invoke(false),
+                () =>
+                {
+                    onComplete?.Invoke(false);
+                },
                 cardController.transform.position
             );
         }
     }
 }
+
+

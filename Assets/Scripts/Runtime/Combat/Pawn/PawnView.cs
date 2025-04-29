@@ -10,6 +10,7 @@ using UnityEngine.UI;
 using Utilities;
 using Runtime.Selection;
 using UnityEngine.EventSystems;
+using Runtime.Combat.Tilemap;
 
 namespace Runtime.Combat.Pawn
 {
@@ -30,7 +31,7 @@ namespace Runtime.Combat.Pawn
         [SerializeField, BoxGroup("Sprite")] private SpriteRenderer spriteRenderer;
 
         [SerializeField, BoxGroup("Selection")]
-        private Highlight highlightEffect; 
+        private Highlight highlightEffect;
 
         private bool _showHighligh = false;
 
@@ -148,7 +149,13 @@ namespace Runtime.Combat.Pawn
 
         internal void SetPosition(Vector2Int position)
         {
-            throw new NotImplementedException();
+            //Get the world position from the tilemap
+            var tilemap = ServiceLocator.Get<TilemapController>();
+            var worldPosition = tilemap.View.MapToWorldPoint(position);
+
+            //Set the position of the pawn
+            transform.position = worldPosition;
+
         }
     }
 }

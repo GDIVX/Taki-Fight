@@ -41,6 +41,9 @@ TagManager:
   - name: Background
     uniqueID: 1462676263
     locked: 0
+  - name: Tilemap
+    uniqueID: 406213007
+    locked: 0
   - name: Pawns
     uniqueID: 3447358137
     locked: 0

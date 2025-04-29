@@ -1,4 +1,4 @@
-﻿using Assets.Scripts.Runtime.Combat.Arena;
+﻿using Assets.Scripts.Runtime.Combat.Tilemap;
 using System;
 
 namespace Runtime.CardGameplay.Card.CardBehaviour
@@ -7,25 +7,17 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
     {
         internal static bool FilterTile(Tile tile, TileSelectionMode tileSelectionMode)
         {
-            switch (tileSelectionMode)
+            return tileSelectionMode switch
             {
-                case TileSelectionMode.All:
-                    return true;
-                case TileSelectionMode.Empty:
-                    return tile.IsEmpty;
-                case TileSelectionMode.Occupied:
-                    return tile.IsOccupied;
-                case TileSelectionMode.EnemyOccupied:
-                    return tile.IsOccupied && tile.Owner == TileOwner.Enemy;
-                case TileSelectionMode.FriendlyOccupied:
-                    return tile.IsOccupied && IsFriendly(tile);
-                case TileSelectionMode.FriendlyEmpty:
-                    return tile.IsEmpty && IsFriendly(tile);
-                case TileSelectionMode.EnemyEmpty:
-                    return tile.IsEmpty && tile.Owner == TileOwner.Enemy;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(tileSelectionMode), tileSelectionMode, null);
-            }
+                TileSelectionMode.All => true,
+                TileSelectionMode.Empty => tile.IsEmpty,
+                TileSelectionMode.Occupied => tile.IsOccupied,
+                TileSelectionMode.EnemyOccupied => tile.IsOccupied && tile.Owner == TileOwner.Enemy,
+                TileSelectionMode.FriendlyOccupied => tile.IsOccupied && IsFriendly(tile),
+                TileSelectionMode.FriendlyEmpty => tile.IsEmpty && IsFriendly(tile),
+                TileSelectionMode.EnemyEmpty => tile.IsEmpty && tile.Owner == TileOwner.Enemy,
+                _ => throw new ArgumentOutOfRangeException(nameof(tileSelectionMode), tileSelectionMode, null),
+            };
         }
 
         private static bool IsFriendly(Tile tile)
