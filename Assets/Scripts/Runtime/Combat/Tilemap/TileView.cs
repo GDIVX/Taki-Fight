@@ -1,4 +1,5 @@
 ﻿using Runtime.Selection;
+using Sirenix.OdinInspector;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -9,18 +10,25 @@ namespace Runtime.Combat.Tilemap
     public class TileView : MonoBehaviour, ISelectableEntity, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
     {
 
-    
+
         [SerializeField] private SpriteRenderer spriteRenderer; // Reference to the sprite renderer
 
-        private Tile tile;
+        [ShowInInspector, ReadOnly] private Tile tile;
 
         public Tile Tile { get => tile; private set => tile = value; }
 
-        internal void SetTile(Tile tile)
+        internal void Init(Tile tile)
         {
             Tile = tile; // Set the Tile object
-            spriteRenderer ??= GetComponent<SpriteRenderer>(); // Get the sprite renderer if not assigned
+            Tile.SetView(this);
+            spriteRenderer ??= GetComponent<SpriteRenderer>();
+
+            //name the gameobject after the tile's coordinates
+            gameObject.name = $"Tile({tile.Position.x},{tile.Position.y})";
+
+            OnOwnerModified(); // Call the method to set the initial color based on the owner
         }
+
 
         public void TryToSelect()
         {
@@ -74,5 +82,35 @@ namespace Runtime.Combat.Tilemap
             //reset color
             spriteRenderer.color = Color.white;
         }
+
+        internal void OnOwnerModified()
+        {
+            // Change color based on the owner using a shader or color assignment
+            var owner = tile.Owner;
+
+            switch (owner)
+            {
+                case TileOwner.None:
+                    spriteRenderer.color = Color.white; // Default color for no owner
+                    break;
+                case TileOwner.Player:
+                    spriteRenderer.color = Color.blue; // Color for player-owned tiles
+                    break;
+                case TileOwner.Heartland:
+                    spriteRenderer.color = Color.cyan; // Color for Heartland tiles
+                    break;
+                case TileOwner.castle:
+                    spriteRenderer.color = Color.magenta; // Color for castle tiles
+                    break;
+                case TileOwner.Enemy:
+                    spriteRenderer.color = Color.red; // Color for enemy-owned tiles
+                    break;
+                default:
+                    Debug.LogWarning("Unknown TileOwner type.");
+                    spriteRenderer.color = Color.white; // Fallback color
+                    break;
+            }
+        }
+
     }
 }

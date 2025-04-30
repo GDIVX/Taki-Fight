@@ -11,7 +11,7 @@ using Utilities;
 namespace Runtime.Combat.Tilemap
 {
     [Serializable]
-    public struct Tile : IEquatable<Tile>
+    public class Tile : IEquatable<Tile>
     {
         [ShowInInspector, ReadOnly] private Vector2Int position;
         [ShowInInspector, ReadOnly] private PawnController pawn;
@@ -20,7 +20,18 @@ namespace Runtime.Combat.Tilemap
 
         public Vector2Int Position { get => position; private set => position = value; }
         public PawnController Pawn { get => pawn; private set => pawn = value; }
-        public TileOwner Owner { get => owner; private set => owner = value; }
+        public TileOwner Owner
+        {
+            get => owner;
+            set
+            {
+                owner = value;
+                if (view != null)
+                {
+                    view.OnOwnerModified();
+                }
+            }
+        }
         public TileView View { get => view; internal set => view = value; }
 
         public bool IsOccupied => Pawn != null;
@@ -51,10 +62,6 @@ namespace Runtime.Combat.Tilemap
             }
         }
 
-        public void SetOwner(TileOwner owner)
-        {
-            Owner = owner;
-        }
 
         internal void Clear()
         {
@@ -68,21 +75,45 @@ namespace Runtime.Combat.Tilemap
 
         public bool Equals(Tile other)
         {
+            if (other == null)
+            {
+                return false;
+            }
             return position.Equals(other.position);
         }
 
-        public override readonly int GetHashCode()
+
+        internal void SetView(TileView tileView)
         {
-            return HashCode.Combine(position, owner);
+            if (tileView == null)
+            {
+                Debug.LogError("TileView is null");
+                return;
+            }
+            View = tileView;
+        }
+
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(position);
         }
 
         public static bool operator ==(Tile left, Tile right)
         {
+            if (left is null && right is null)
+            {
+                return true;
+            }
             return left.Equals(right);
         }
 
         public static bool operator !=(Tile left, Tile right)
         {
+            if (left is null && right is null)
+            {
+                return false;
+            }
             return !(left == right);
         }
     }

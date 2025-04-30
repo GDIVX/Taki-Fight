@@ -62,6 +62,9 @@ namespace Runtime.Combat.Pawn
 
             IsAgile = data.IsAgile;
 
+            //name the gameobject after the data's name and unique id
+            gameObject.name = $"{data.name}_{Guid.NewGuid()}";
+
             return this;
         }
 
@@ -101,7 +104,6 @@ namespace Runtime.Combat.Pawn
             ReduceDefense(damage);
             OnBeingAttacked?.Invoke(damage, finalDamage);
         }
-
 
         private int CalculateDamage(int attackPoints)
         {
@@ -155,20 +157,14 @@ namespace Runtime.Combat.Pawn
 
             var nextTile = GetNextTile();
 
-            // Stop if the next tile is invalid
-            if (nextTile == Tile || nextTile == null)
+            // Stop if the next tile is invalid or the same as the current tile
+            if (nextTile == null || nextTile == Tile)
             {
                 return false;
             }
 
-            // Handle flyer-specific movement logic
-            if (IsFlyer)
-            {
-                return HandleFlyerMovement(nextTile);
-            }
-
             // Stop if the next tile is occupied and the unit is not a flyer
-            if (nextTile.IsOccupied)
+            if (!IsFlyer && nextTile.IsOccupied)
             {
                 return false;
             }
@@ -198,7 +194,6 @@ namespace Runtime.Combat.Pawn
             var tilemap = ServiceLocator.Get<TilemapController>();
             if (tilemap == null)
             {
-                Debug.LogError("Tilemap not found");
                 return Tile;
             }
 
@@ -208,23 +203,26 @@ namespace Runtime.Combat.Pawn
             // Get the next tile
             var nextTile = tilemap.GetTile(nextPosition);
 
-            // Return null if the next tile is out of bounds
+            // Return this tile if the next tile is out of bounds
             if (nextTile == null)
             {
-                Debug.LogWarning($"Next tile at position {nextPosition} is out of bounds.");
+                return Tile;
+            }
+
+            //return this tile if the next tile is occupied
+            if (nextTile.IsOccupied)
+            {
                 return Tile;
             }
 
             return (Tile)nextTile; // Explicitly cast the nullable Tile to Tile
         }
 
-
         public bool IsHostileUnitInAttackRange(out PawnController pawn)
         {
             var tilemap = ServiceLocator.Get<TilemapController>();
             if (tilemap == null)
             {
-                Debug.LogError("Tilemap not found");
                 pawn = null;
                 return false;
             }
@@ -234,17 +232,18 @@ namespace Runtime.Combat.Pawn
                 var targetTile = tilemap.GetTile(_tile.Position + offset);
 
                 // Ensure targetTile is not null before accessing its properties
-                if (targetTile.HasValue && targetTile.Value.IsOccupied && targetTile.Value.Pawn.Owner != Owner)
+                if (targetTile == null || !targetTile.IsOccupied || targetTile.Pawn.Owner == Owner)
                 {
-                    pawn = targetTile.Value.Pawn;
-                    return true;
+                    continue;
                 }
+
+                pawn = targetTile.Pawn;
+                return true;
             }
 
             pawn = null;
             return false;
         }
-
 
         private IEnumerator Attack(PawnController target, Action onComplete)
         {
@@ -256,7 +255,6 @@ namespace Runtime.Combat.Pawn
 
             onComplete?.Invoke();
         }
-
 
         #region Status Effects
 
@@ -323,34 +321,27 @@ namespace Runtime.Combat.Pawn
 
         #endregion
 
-        internal void SetPosition(Vector2Int position)
-        {
-            var arenaController = ServiceLocator.Get<TilemapController>();
-            if (arenaController == null)
-            {
-                Debug.LogError("ArenaController not found");
-                return;
-            }
-            var tile = arenaController.GetTile(position);
-            SetPosition(tile);
 
-        }
-
-        private void SetPosition(Tile? tile)
+        private bool TrySetPosition(Tile tile)
         {
-            if (!tile.HasValue)
+            if (tile == null || (!IsFlyer && tile.IsOccupied))
             {
-                Debug.LogError("Tile is null or out of bounds");
-                return;
+                return false; // Do not change position if the new tile is invalid
             }
 
-            _tile.SetPawn(null);
-            _tile = tile.Value; // Safely access the value of the nullable Tile
+
+            _tile?.SetPawn(null); // Remove the pawn from the current tile
+            _tile = tile; 
             _tile.SetPawn(this);
+            return true;
         }
         internal void SpawnAtPosition(Tile tile)
         {
-            SetPosition(tile);
+            if (!TrySetPosition(tile))
+            {
+                return;
+            }
+            ;
 
             // Call the view's spawn method
             _view.SpawnAtPosition(_tile.Position);
@@ -358,28 +349,30 @@ namespace Runtime.Combat.Pawn
 
         internal void MoveToPosition(Tile tile)
         {
-            SetPosition(tile);
+            if (!TrySetPosition(tile))
+            {
+                return;
+            }
 
             // Call the view's move method
             _view.MoveToPosition(_tile.Position);
         }
-        private bool HandleFlyerMovement(Tile? nextTile)
+        private bool HandleFlyerMovement(Tile nextTile)
         {
             // Flyers skip occupied tiles but cannot end on them
-            if (nextTile.HasValue && nextTile.Value.IsOccupied)
+            if (nextTile != null && nextTile.IsOccupied)
             {
                 // Check if there is enough speed to move to the next tile and that the next tile is empty
                 var tilemap = ServiceLocator.Get<TilemapController>();
                 if (tilemap == null)
                 {
-                    Debug.LogError("Tilemap not found");
                     return false;
                 }
 
-                var nextPosition = nextTile.Value.Position + MovementDirection;
+                var nextPosition = nextTile.Position + MovementDirection;
                 var nextNextTile = tilemap.GetTile(nextPosition);
 
-                if (AvilableSpeed <= 1 || !nextNextTile.HasValue || nextNextTile.Value.IsOccupied)
+                if (AvilableSpeed <= 1 || nextNextTile == null || nextNextTile.IsOccupied)
                 {
                     return false; // Not enough speed or the next tile after is invalid
                 }
@@ -390,9 +383,9 @@ namespace Runtime.Combat.Pawn
             }
 
             // Move to the next tile
-            if (nextTile.HasValue)
+            if (nextTile != null)
             {
-                MoveToPosition(nextTile.Value);
+                MoveToPosition(nextTile);
             }
 
             // Decrement available speed

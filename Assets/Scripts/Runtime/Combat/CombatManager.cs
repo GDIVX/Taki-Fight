@@ -26,8 +26,11 @@ namespace Runtime.Combat
 
         internal void Init()
         {
-            Tilemap = new TilemapController(_arenaSize.x, _arenaSize.y, _arenaView);
+            var tiles = TilemapGenerator.GenerateTilemap(_arenaSize, _arenaView);
+            Tilemap = new TilemapController(tiles, _arenaView);
             ServiceLocator.Register(Tilemap);
+
+
             _endTurnBtn.onClick.AddListener(EndTurn);
         }
 

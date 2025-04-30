@@ -28,7 +28,10 @@ namespace Runtime.Combat.Tilemap
                     var tileObject = Instantiate(tilePrefab, position, Quaternion.identity, transform);
                     tileObject.transform.localScale = new Vector3(tileSize, tileSize, 1);
                     tileObjects[tile.Position] = tileObject;
-                    tileObject.SetTile(tile); // Set the tile data in the TileView
+
+
+                    tileObject.Init(tile); // Set the tile data in the TileView
+
                 }
             }
         }

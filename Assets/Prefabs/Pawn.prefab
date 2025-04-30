@@ -1019,6 +1019,8 @@ MonoBehaviour:
   _dissolveEase: 2
   _flashTime: 0.125
   _flashEase: 32
+  _movementEase: 27
+  _movementDuration: 1
   healthBar: {fileID: 7118177842036355927}
   healthBarText: {fileID: 3054331505081312569}
   spriteRenderer: {fileID: 8051979238734898668}
