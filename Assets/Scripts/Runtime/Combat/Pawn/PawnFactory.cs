@@ -11,12 +11,18 @@ namespace Runtime.Combat.Pawn
         internal PawnController CreatePawn(PawnData unit, Tile tile)
         {
             var instance = Instantiate(_prefab, Vector3.zero, quaternion.identity);
-            PawnController controller;
+            var controller = instance.GetComponent<PawnController>();
 
-            controller = instance.AddComponent<PawnController>();
+            if (controller == null)
+            {
+                Debug.LogError("Pawn prefab is missing PawnController component.");
+                Destroy(instance);
+                return null;
+            }
 
             controller.Init(unit);
             controller.SpawnAtPosition(tile);
+
             return controller;
         }
     }

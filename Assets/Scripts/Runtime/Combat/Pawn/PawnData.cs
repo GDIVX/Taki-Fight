@@ -20,6 +20,22 @@ namespace Runtime.Combat.Pawn
         [SerializeField] private bool _isAgile;
         [SerializeField] private PawnOwner _owner;
 
+        [SerializeField, BoxGroup("Size")] private Vector2Int _size = new Vector2Int(1, 1); // Size of the pawn in tiles
+
+        // Size properties
+        public Vector2Int Size
+        {
+            get => _size;
+            set
+            {
+                if (value.x <= 0 || value.y <= 0)
+                {
+                    throw new System.ArgumentException("Size dimensions must be greater than zero.");
+                }
+                _size = value;
+            }
+        }
+
         public int Health => _health;
         public int Defense => _defense;
         public Sprite Sprite => _sprite;
@@ -35,5 +51,14 @@ namespace Runtime.Combat.Pawn
         // New property
         public List<Vector2Int> AttackRange => _attackRange;
         public PawnOwner Owner => _owner;
+
+        private void OnValidate()
+        {
+            if (_size.x <= 0 || _size.y <= 0)
+            {
+                Debug.LogError("Size dimensions must be greater than zero. Resetting to default (1, 1).");
+                _size = new Vector2Int(1, 1);
+            }
+        }
     }
 }

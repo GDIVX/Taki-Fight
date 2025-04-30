@@ -11,6 +11,7 @@ using Utilities;
 using Runtime.Selection;
 using UnityEngine.EventSystems;
 using Runtime.Combat.Tilemap;
+using System.Linq;
 
 namespace Runtime.Combat.Pawn
 {
@@ -32,10 +33,6 @@ namespace Runtime.Combat.Pawn
         [SerializeField, BoxGroup("Health")] private HealthBarTextUI healthBarText;
         [SerializeField, BoxGroup("Sprite")] private SpriteRenderer spriteRenderer;
 
-        [SerializeField, BoxGroup("Selection")]
-        private Highlight highlightEffect;
-
-
         private PawnController _controller;
         private TrackedProperty<int> _defense;
         private static readonly int FlashAmount = Shader.PropertyToID("_FlashAmount");
@@ -51,7 +48,14 @@ namespace Runtime.Combat.Pawn
             _controller = controller;
             _controller.OnBeingAttacked += Flash;
 
-            SelectionService.Instance.OnSearchInitialized += HandleSelectionHighlight;
+            ApplyFootprintScale(data.Size.x, data.Size.y);
+        }
+
+        private void ApplyFootprintScale(int width, int height)
+        {
+            //var tilemapView = ServiceLocator.Get<TilemapController>().View;
+            float baseUnitSize = 1f;
+            transform.localScale = new Vector3(width * baseUnitSize, height * baseUnitSize, 1f);
         }
 
 
@@ -110,71 +114,42 @@ namespace Runtime.Combat.Pawn
             }
         }
 
-        // =======================================
-        //  SELECTION SERVICE INTEGRATION
-        // =======================================
-
-        private void HandleSelectionHighlight(Predicate<ISelectableEntity> predicate)
+        internal void SpawnAtPosition(Vector2Int anchor)
         {
-            if (predicate.Invoke(_controller))
-            {
-                highlightEffect.Show();
-            }
-            else
-            {
-                highlightEffect.Hide();
-            }
-        }
-
-        /// <summary>
-        /// Called when the selection process is canceled or completed.
-        /// </summary>
-        public void ClearSelection()
-        {
-            highlightEffect.Hide();
-        }
-
-        /// <summary>
-        /// Flash animation when the pawn is selected.
-        /// </summary>
-        public void OnSelected()
-        {
-            StartCoroutine(HideHighlightAfterFrame());
-        }
-
-        IEnumerator HideHighlightAfterFrame()
-        {
-            yield return new WaitForEndOfFrame();
-            highlightEffect.Hide();
+            var targetPosition = CalculateCenterPosition(anchor, _controller);
+            transform.position = targetPosition;
         }
 
 
-        internal void SpawnAtPosition(Vector2Int position)
+
+        internal void MoveToPosition(Vector2Int anchor)
         {
-            // Get the world position from the tilemap
+            var targetPosition = CalculateCenterPosition(anchor, _controller);
+
+            transform.DOMove(targetPosition, _movementDuration)
+                .SetEase(_movementEase)
+                .OnComplete(() => transform.position = targetPosition);
+        }
+
+        private Vector3 CalculateCenterPosition(Vector2Int anchor, PawnController controller)
+        {
             var tilemap = ServiceLocator.Get<TilemapController>();
-            var worldPosition = tilemap.View.MapToWorldPoint(position);
+            var footprint = tilemap.GenerateFootprint(anchor, _controller.Size);
 
-            // Set the position of the pawn instantly
-            transform.position = worldPosition;
+            if (footprint.Length == 0)
+            {
+                tilemap.View.WorldToMapPoint(anchor);
+            }
 
-            // TODO: Add spawn effect in the future
+            Vector2 sum = Vector2.zero;
+            foreach (var tile in footprint)
+            {
+                sum += tilemap.View.MapToWorldPoint(tile.Position);
+            }
+
+            return sum / footprint.Length;
+
         }
 
-        internal void MoveToPosition(Vector2Int position)
-        {
-            // Get the world position from the tilemap
-            var tilemap = ServiceLocator.Get<TilemapController>();
-            var worldPosition = tilemap.View.MapToWorldPoint(position);
-
-            // Use DOTween to animate the position of the pawn
-            transform.DOMove(worldPosition, _movementDuration)
-                    .SetEase(_movementEase)
-                    .OnComplete(() =>
-                    {
-                        // Ensure the position is set precisely after the animation
-                        transform.position = worldPosition;
-                    });
-        }
     }
 }

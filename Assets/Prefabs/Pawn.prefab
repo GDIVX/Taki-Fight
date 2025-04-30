@@ -922,6 +922,7 @@ GameObject:
   - component: {fileID: 3006272120079008127}
   - component: {fileID: 709200774233245652}
   - component: {fileID: 793181902723437664}
+  - component: {fileID: 3104631595752494165}
   m_Layer: 0
   m_Name: Pawn
   m_TagString: Untagged
@@ -1024,7 +1025,6 @@ MonoBehaviour:
   healthBar: {fileID: 7118177842036355927}
   healthBarText: {fileID: 3054331505081312569}
   spriteRenderer: {fileID: 8051979238734898668}
-  highlightEffect: {fileID: 793181902723437664}
 --- !u!95 &8844757576650275160
 Animator:
   serializedVersion: 7
@@ -1127,6 +1127,28 @@ MonoBehaviour:
   _upperPassiveColor: {r: 0.2, g: 0.8509804, b: 0.69803923, a: 1}
   _lowerActiveColor: {r: 0.34509805, g: 0.34509805, b: 0.65882355, a: 1}
   _upperActiveColor: {r: 4, g: 3.4196079, b: 1.8980392, a: 1}
+--- !u!114 &3104631595752494165
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7667745231118676924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86efd91862724484b48d88700a56bfe3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _view: {fileID: 1229084231330852880}
+  _statusEffectHandler: {fileID: 3006272120079008127}
+  Defense:
+    _value: 0
+  Damage:
+    _value: 0
+  Attacks:
+    _value: 0
+  Speed:
+    _value: 0
 --- !u!1 &7769541161473441226
 GameObject:
   m_ObjectHideFlags: 0

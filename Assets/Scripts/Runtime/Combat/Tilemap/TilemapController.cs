@@ -8,7 +8,7 @@ using UnityEngine;
 [Serializable]
 public class TilemapController
 {
-    [ShowInInspector]private Tile[,] _tiles;
+    [ShowInInspector] private Tile[,] _tiles;
     private TilemapView _view;
     private List<PawnController> _activeUnits = new();
     public TilemapView View { get => _view; private set => _view = value; }
@@ -61,5 +61,29 @@ public class TilemapController
     internal void RemoveUnit(PawnController unit)
     {
         _activeUnits.Remove(unit);
+    }
+
+
+    /// <summary>
+    /// generate a list of all tiles that are within the given size and anchored at the given position
+    /// </summary>
+    /// <param name="anchor"></param>
+    /// <param name="size"></param>
+    /// <returns></returns>
+    internal Tile[] GenerateFootprint(Vector2Int anchor, Vector2Int size)
+    {
+        var footprint = new List<Tile>();
+        for (int x = 0; x < size.x; x++)
+        {
+            for (int y = 0; y < size.y; y++)
+            {
+                var tile = GetTile(anchor + new Vector2Int(x, y));
+                if (tile != null)
+                {
+                    footprint.Add(tile);
+                }
+            }
+        }
+        return footprint.ToArray();
     }
 }
