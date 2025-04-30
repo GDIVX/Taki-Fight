@@ -1,4 +1,4 @@
-﻿using Assets.Scripts.Runtime.Combat.Tilemap;
+﻿using Runtime.Combat.Tilemap;
 using System;
 
 namespace Runtime.CardGameplay.Card.CardBehaviour

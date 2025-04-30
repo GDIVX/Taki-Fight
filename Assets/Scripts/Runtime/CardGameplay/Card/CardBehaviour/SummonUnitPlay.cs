@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Assets.Scripts.Runtime.Combat.Tilemap;
 using Runtime.Combat.Tilemap;
 using Runtime.Combat.Pawn;
 using Runtime.Selection;

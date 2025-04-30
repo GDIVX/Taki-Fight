@@ -1,4 +1,4 @@
-﻿namespace Assets.Scripts.Runtime.Combat.Tilemap
+﻿namespace Runtime.Combat.Tilemap
 {
     public enum TileOwner
     {

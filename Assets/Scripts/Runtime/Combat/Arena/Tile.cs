@@ -6,11 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using Utilities;
 
-namespace Assets.Scripts.Runtime.Combat.Tilemap
+namespace Runtime.Combat.Tilemap
 {
     [Serializable]
-    public struct Tile
+    public struct Tile : IEquatable<Tile>
     {
         [ShowInInspector, ReadOnly] private Vector2Int position;
         [ShowInInspector, ReadOnly] private PawnController pawn;
@@ -28,14 +29,26 @@ namespace Assets.Scripts.Runtime.Combat.Tilemap
         public Tile(Vector2Int position)
         {
             this.position = position;
-            this.pawn = null;        
+            this.pawn = null;
             this.owner = TileOwner.None;
             this.view = null;
         }
 
         public void SetPawn(PawnController pawn)
         {
+            if (Pawn != null)
+            {
+                // Notify the TilemapController to remove the unit
+                ServiceLocator.Get<TilemapController>()?.RemoveUnit(Pawn);
+            }
+
             Pawn = pawn;
+
+            if (Pawn != null)
+            {
+                // Notify the TilemapController to add the unit
+                ServiceLocator.Get<TilemapController>()?.AddUnit(Pawn);
+            }
         }
 
         public void SetOwner(TileOwner owner)
@@ -46,6 +59,31 @@ namespace Assets.Scripts.Runtime.Combat.Tilemap
         internal void Clear()
         {
             Pawn = null;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Tile tile && Equals(tile);
+        }
+
+        public bool Equals(Tile other)
+        {
+            return position.Equals(other.position);
+        }
+
+        public override readonly int GetHashCode()
+        {
+            return HashCode.Combine(position, owner);
+        }
+
+        public static bool operator ==(Tile left, Tile right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Tile left, Tile right)
+        {
+            return !(left == right);
         }
     }
 

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Assets.Scripts.Runtime.Combat.Tilemap
+namespace Runtime.Combat.Tilemap
 {
     public class TilemapView : MonoBehaviour
     {

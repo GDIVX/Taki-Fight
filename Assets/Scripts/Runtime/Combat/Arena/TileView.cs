@@ -4,7 +4,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Assets.Scripts.Runtime.Combat.Tilemap
+namespace Runtime.Combat.Tilemap
 {
     public class TileView : MonoBehaviour, ISelectableEntity, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
     {

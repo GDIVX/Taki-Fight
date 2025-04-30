@@ -25,6 +25,8 @@ namespace Runtime.Combat.Pawn
         [SerializeField, BoxGroup("Health")] private Ease _dissolveEase;
         [SerializeField, BoxGroup("Damage")] private float _flashTime;
         [SerializeField, BoxGroup("Damage")] private Ease _flashEase;
+        [SerializeField, BoxGroup("Movement")] private Ease _movementEase;
+        [SerializeField, BoxGroup("Movement")] private float _movementDuration;
 
         [SerializeField, BoxGroup("Health")] private HealthBarUI healthBar;
         [SerializeField, BoxGroup("Health")] private HealthBarTextUI healthBarText;
@@ -33,7 +35,6 @@ namespace Runtime.Combat.Pawn
         [SerializeField, BoxGroup("Selection")]
         private Highlight highlightEffect;
 
-        private bool _showHighligh = false;
 
         private PawnController _controller;
         private TrackedProperty<int> _defense;
@@ -147,15 +148,33 @@ namespace Runtime.Combat.Pawn
             highlightEffect.Hide();
         }
 
-        internal void SetPosition(Vector2Int position)
+
+        internal void SpawnAtPosition(Vector2Int position)
         {
-            //Get the world position from the tilemap
+            // Get the world position from the tilemap
             var tilemap = ServiceLocator.Get<TilemapController>();
             var worldPosition = tilemap.View.MapToWorldPoint(position);
 
-            //Set the position of the pawn
+            // Set the position of the pawn instantly
             transform.position = worldPosition;
 
+            // TODO: Add spawn effect in the future
+        }
+
+        internal void MoveToPosition(Vector2Int position)
+        {
+            // Get the world position from the tilemap
+            var tilemap = ServiceLocator.Get<TilemapController>();
+            var worldPosition = tilemap.View.MapToWorldPoint(position);
+
+            // Use DOTween to animate the position of the pawn
+            transform.DOMove(worldPosition, _movementDuration)
+                    .SetEase(_movementEase)
+                    .OnComplete(() =>
+                    {
+                        // Ensure the position is set precisely after the animation
+                        transform.position = worldPosition;
+                    });
         }
     }
 }

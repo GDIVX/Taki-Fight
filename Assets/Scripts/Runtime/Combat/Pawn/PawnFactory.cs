@@ -1,5 +1,4 @@
-﻿using Assets.Scripts.Runtime.Combat.Tilemap;
-using System;
+﻿using Runtime.Combat.Tilemap;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -17,7 +16,7 @@ namespace Runtime.Combat.Pawn
             controller = instance.AddComponent<PawnController>();
 
             controller.Init(unit);
-            controller.SetPosition(tile);
+            controller.SpawnAtPosition(tile);
             return controller;
         }
     }
