@@ -9,6 +9,7 @@ using Utilities;
 using System.Collections;
 using System.Linq;
 using UnityEngine.UI;
+using Runtime.Combat.Pawn;
 
 namespace Runtime.Combat
 {
@@ -16,6 +17,7 @@ namespace Runtime.Combat
     {
         [SerializeField, BoxGroup("Settings")] private Vector2Int _arenaSize;
         [SerializeField, BoxGroup("Settings")] private bool _discardHandOnTurnEnd = true;
+        [SerializeField, BoxGroup("Settings")] private TilemapConfig _tilemapConfig;
         [SerializeField, Required] Button _endTurnBtn;
         [SerializeField, Required] private TilemapView _arenaView;
 
@@ -26,7 +28,7 @@ namespace Runtime.Combat
 
         internal void Init()
         {
-            var tiles = TilemapGenerator.GenerateTilemap(_arenaSize, _arenaView);
+            var tiles = TilemapGenerator.GenerateTilemap(_tilemapConfig, _arenaView);
             Tilemap = new TilemapController(tiles, _arenaView);
             ServiceLocator.Register(Tilemap);
 

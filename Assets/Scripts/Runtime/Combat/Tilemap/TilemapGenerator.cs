@@ -7,23 +7,37 @@ namespace Runtime.Combat.Tilemap
     [Serializable]
     public static class TilemapGenerator
     {
-        public static Tile[,] GenerateTilemap(Vector2Int arenaSize, TilemapView tilemapView)
+        public static Tile[,] GenerateTilemap(TilemapConfig config, TilemapView tilemapView)
         {
-            var tiles = new Tile[arenaSize.x, arenaSize.y];
-
-            for (int x = 0; x < arenaSize.x; x++)
+            // Validate the configuration
+            if (config == null)
             {
-                for (int y = 0; y < arenaSize.y; y++)
+                throw new ArgumentNullException(nameof(config), "TilemapConfig cannot be null.");
+            }
+
+            if (config.Colums == null || config.Colums.Count == 0)
+            {
+                throw new ArgumentException("TilemapConfig must have at least one TileOwner in the colums list.");
+            }
+
+            // Determine the size of the arena
+            int rows = config.Rows;
+            int cols = config.Colums.Count;
+
+            // Create the tilemap
+            var tiles = new Tile[cols, rows];
+
+            for (int x = 0; x < cols; x++)
+            {
+                for (int y = 0; y < rows; y++)
                 {
                     var position = new Vector2Int(x, y);
                     tiles[x, y] = new Tile(position);
 
-                    // Set the owner of the tile based on its position
-
+                    // Assign the owner of the tile based on the colums list
+                    tiles[x, y].Owner = config.Colums[x];
                 }
             }
-
-
 
             // Create the tiles in the view
             tilemapView.CreateTiles(tiles);

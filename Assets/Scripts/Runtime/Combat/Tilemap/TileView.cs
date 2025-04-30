@@ -80,7 +80,7 @@ namespace Runtime.Combat.Tilemap
         public void OnPointerExit(PointerEventData eventData)
         {
             //reset color
-            spriteRenderer.color = Color.white;
+            OnOwnerModified();
         }
 
         internal void OnOwnerModified()

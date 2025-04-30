@@ -17,8 +17,22 @@ namespace Runtime.Combat.Tilemap
 
         internal void CreateTiles(Tile[,] tiles)
         {
-            Vector3 origin = transform.localPosition; // Use the local position of the GameObject as the origin
+            // Calculate the total width of the tilemap
+            int cols = tiles.GetLength(0);
+            float totalWidth = cols * tileSize + (cols - 1) * tilePadding;
 
+            // Calculate the X offset to center the tilemap on the screen
+            float screenCenterX = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, 0, 0)).x;
+            float tilemapCenterX = totalWidth / 2;
+            float offsetX = screenCenterX - tilemapCenterX;
+
+            // Set the position of the TilemapView GameObject
+            transform.position = new Vector3(offsetX, transform.position.y, transform.position.z);
+
+            // Use the local position of the GameObject as the origin
+            Vector3 origin = transform.localPosition;
+
+            // Create the tiles
             for (int x = 0; x < tiles.GetLength(0); x++)
             {
                 for (int y = 0; y < tiles.GetLength(1); y++)
@@ -29,9 +43,7 @@ namespace Runtime.Combat.Tilemap
                     tileObject.transform.localScale = new Vector3(tileSize, tileSize, 1);
                     tileObjects[tile.Position] = tileObject;
 
-
                     tileObject.Init(tile); // Set the tile data in the TileView
-
                 }
             }
         }

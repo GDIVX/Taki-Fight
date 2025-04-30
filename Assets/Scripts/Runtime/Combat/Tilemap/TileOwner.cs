@@ -8,11 +8,4 @@
         castle,
         Enemy
     }
-
-    public enum PawnOwner
-    {
-        Player,
-        Enemy, 
-        Castle
-    }
 }

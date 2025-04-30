@@ -2887,8 +2887,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tilePrefab: {fileID: 8998116093892140566, guid: efed50a4891ec7a41a518cddff1e5b8f, type: 3}
-  tileSize: 1
-  tilePadding: 0.1
+  tileSize: 1.2
+  tilePadding: 0.2
 --- !u!114 &1377694104
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2916,6 +2916,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _arenaSize: {x: 8, y: 3}
   _discardHandOnTurnEnd: 1
+  _tilemapConfig: {fileID: 11400000, guid: 7f938124a9721b148904c5d558281b5c, type: 2}
   _endTurnBtn: {fileID: 1567978250}
   _arenaView: {fileID: 1377694103}
 --- !u!1 &1385731354

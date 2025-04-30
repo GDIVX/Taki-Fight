@@ -52,7 +52,8 @@ namespace Runtime.Combat.Pawn
 
             IsFlyer = data.IsFlyer;
             MovementDirection = data.Direction;
-            AttackRange = data.AttackRange;
+
+            AttackRange = data.AttackRange.ToArray();
 
             _view ??= GetComponent<PawnView>();
             _view.Init(this, Defense, data);
@@ -62,7 +63,7 @@ namespace Runtime.Combat.Pawn
 
             IsAgile = data.IsAgile;
 
-            //name the gameobject after the data's name and unique id
+            // Name the gameobject after the data's name and unique id
             gameObject.name = $"{data.name}_{Guid.NewGuid()}";
 
             return this;
