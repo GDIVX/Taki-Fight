@@ -16,6 +16,9 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
 
         public override void Play(CardController cardController, int potency, Action<bool> onComplete)
         {
+
+            SelectionService.Instance.SearchSize = _unit.Size;
+
             SelectionService.Instance.RequestSelection
             (
                 target =>

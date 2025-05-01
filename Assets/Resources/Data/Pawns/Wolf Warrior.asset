@@ -22,3 +22,5 @@ MonoBehaviour:
   _direction: {x: 1, y: 0}
   _attackRange: []
   _isAgile: 0
+  _owner: 0
+  _size: {x: 1, y: 1}

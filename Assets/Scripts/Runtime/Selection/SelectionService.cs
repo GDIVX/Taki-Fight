@@ -21,8 +21,11 @@ namespace Runtime.Selection
         public event Action<Predicate<ISelectableEntity>> OnSearchInitialized;
 
         public Predicate<ISelectableEntity> Predicate { get; private set; }
+        public Vector2Int SearchSize { get; internal set; }
+
         [ShowInInspector, ReadOnly] private int _requiredSelections;
         [ShowInInspector, ReadOnly] private List<ISelectableEntity> _allSelectable = new();
+
 
         private void Update()
         {
@@ -100,6 +103,7 @@ namespace Runtime.Selection
             OnSearchCanceled?.Invoke();
             _linePointer.Hide();
             _buttonsToDisableDuringSearch.ForEach(button => button.interactable = true);
+            SearchSize = Vector2Int.zero;
         }
 
         private IEnumerator CompleteSelection()
@@ -111,6 +115,7 @@ namespace Runtime.Selection
             Predicate = null;
             _linePointer.Hide();
             _buttonsToDisableDuringSearch.ForEach(button => button.interactable = true);
+            SearchSize = Vector2Int.zero;
         }
 
         public void Register(ISelectableEntity entity)

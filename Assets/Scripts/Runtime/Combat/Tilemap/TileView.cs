@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Utilities;
 
 namespace Runtime.Combat.Tilemap
 {
@@ -27,6 +28,16 @@ namespace Runtime.Combat.Tilemap
             gameObject.name = $"Tile({tile.Position.x},{tile.Position.y})";
 
             OnOwnerModified(); // Call the method to set the initial color based on the owner
+        }
+
+        public void Highlight(Color color)
+        {
+            spriteRenderer.color = color;
+        }
+
+        public void ClearHighlight()
+        {
+            OnOwnerModified(); // Reset to the default color based on ownership
         }
 
 
@@ -74,14 +85,24 @@ namespace Runtime.Combat.Tilemap
         }
         public void OnPointerEnter(PointerEventData eventData)
         {
-            //change color to indicate hover
-            spriteRenderer.color = Color.yellow;
+            if (SelectionService.Instance.CurrentState == SelectionState.InProgress)
+            {
+                // Trigger AOE visualization on hover
+                AOEHiighlight.HighlightForSelection(tile); // Highlight the tile for AOE selection
+            }
+            else
+            {
+                Highlight(Color.yellow); // Highlight the tile in yellow
+            }
         }
+
         public void OnPointerExit(PointerEventData eventData)
         {
-            //reset color
-            OnOwnerModified();
+            // Clear AOE visualization when hover ends
+            ClearHighlight();
+            AOEHiighlight.ClearHighlights(); // Clear the AOE highlights
         }
+
 
         internal void OnOwnerModified()
         {

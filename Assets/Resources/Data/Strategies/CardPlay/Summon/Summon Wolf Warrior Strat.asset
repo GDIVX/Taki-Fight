@@ -12,6 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bacc48de2fe4c9db18c51dcbdbef93b, type: 3}
   m_Name: Summon Wolf Warrior Strat
   m_EditorClassIdentifier: 
-  _units:
-  - {fileID: 11400000, guid: 6bc48239aa4a309469da7eec9b69bc0b, type: 2}
+  _unit: {fileID: 11400000, guid: 6bc48239aa4a309469da7eec9b69bc0b, type: 2}
   _tileSelectionMode: 5
