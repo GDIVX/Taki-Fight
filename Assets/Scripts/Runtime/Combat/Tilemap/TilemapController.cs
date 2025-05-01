@@ -70,7 +70,7 @@ public class TilemapController
     /// <param name="anchor"></param>
     /// <param name="size"></param>
     /// <returns></returns>
-    internal Tile[] GenerateFootprint(Vector2Int anchor, Vector2Int size)
+    internal Tile[] GenerateFootprintUnbounded(Vector2Int anchor, Vector2Int size)
     {
         var footprint = new List<Tile>();
         for (int x = 0; x < size.x; x++)
@@ -85,5 +85,26 @@ public class TilemapController
             }
         }
         return footprint.ToArray();
+    }
+
+    public bool TryGenerateFootprintBounded(Vector2Int anchor, Vector2Int size, out Tile[] footprint)
+    {
+        footprint = GenerateFootprintUnbounded(anchor, size);
+        // Check if the footprint is valid (i.e., all tiles are not null)
+        if (footprint.Length == size.x * size.y)
+        {
+            return true; // Footprint is valid
+        }
+        else
+        {
+            footprint = null; // Footprint is invalid
+            return false;
+        }
+    }
+
+    internal bool IsInBounds(Vector2Int position)
+    {
+        // Check if the position is within the bounds of the tile array
+        return position.x >= 0 && position.x < _tiles.GetLength(0) && position.y >= 0 && position.y < _tiles.GetLength(1);
     }
 }

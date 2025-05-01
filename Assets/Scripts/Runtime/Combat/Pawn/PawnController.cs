@@ -152,7 +152,7 @@ namespace Runtime.Combat.Pawn
                 var tilemap = ServiceLocator.Get<TilemapController>();
                 if (tilemap != null)
                 {
-                    var footprint = tilemap.GenerateFootprint(nextTile.Position, Size);
+                    var footprint = tilemap.GenerateFootprintUnbounded(nextTile.Position, Size);
                     foreach (var tile in footprint)
                     {
                         if (tile.Owner == TileOwner.Enemy && Owner == PawnOwner.Player) return false;
@@ -179,7 +179,7 @@ namespace Runtime.Combat.Pawn
             var nextTile = tilemap.GetTile(nextAnchor);
             if (nextTile == null) return _anchorTile;
 
-            var footprint = tilemap.GenerateFootprint(nextAnchor, Size);
+            var footprint = tilemap.GenerateFootprintUnbounded(nextAnchor, Size);
             if (footprint.Length != Size.x * Size.y) return _anchorTile;
 
             if (!IsFlyer)
@@ -233,7 +233,7 @@ namespace Runtime.Combat.Pawn
             var tilemap = ServiceLocator.Get<TilemapController>();
             if (tilemap == null) return false;
 
-            var newTiles = tilemap.GenerateFootprint(anchor.Position, Size);
+            var newTiles = tilemap.GenerateFootprintUnbounded(anchor.Position, Size);
             if (newTiles.Length != Size.x * Size.y) return false; // missing tiles
 
             if (!IsFlyer)

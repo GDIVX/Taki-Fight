@@ -134,7 +134,7 @@ namespace Runtime.Combat.Pawn
         private Vector3 CalculateCenterPosition(Vector2Int anchor, PawnController controller)
         {
             var tilemap = ServiceLocator.Get<TilemapController>();
-            var footprint = tilemap.GenerateFootprint(anchor, _controller.Size);
+            var footprint = tilemap.GenerateFootprintUnbounded(anchor, _controller.Size);
 
             if (footprint.Length == 0)
             {
