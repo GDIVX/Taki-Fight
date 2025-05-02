@@ -4,8 +4,6 @@
     {
         None,
         Player,
-        Heartland,
-        castle,
         Enemy
     }
 }

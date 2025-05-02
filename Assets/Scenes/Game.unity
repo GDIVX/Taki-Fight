@@ -2914,7 +2914,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9b5332b135a417596134cf55af954c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _arenaSize: {x: 8, y: 3}
   _discardHandOnTurnEnd: 1
   _tilemapConfig: {fileID: 11400000, guid: 7f938124a9721b148904c5d558281b5c, type: 2}
   _endTurnBtn: {fileID: 1567978250}

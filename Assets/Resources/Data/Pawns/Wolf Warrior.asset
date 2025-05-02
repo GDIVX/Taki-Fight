@@ -18,7 +18,6 @@ MonoBehaviour:
   _damage: 3
   _attacks: 1
   _speed: 1
-  _isFlyer: 0
   _direction: {x: 1, y: 0}
   _attackRange: []
   _isAgile: 0

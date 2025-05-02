@@ -46,7 +46,7 @@ namespace Runtime.Combat.Pawn
             spriteRenderer.sprite = data.Sprite;
 
             _controller = controller;
-            _controller.OnBeingAttacked += Flash;
+            _controller.Combat.OnBeingAttacked += Flash;
 
             ApplyFootprintScale(data.Size.x, data.Size.y);
         }
@@ -105,7 +105,7 @@ namespace Runtime.Combat.Pawn
         {
             if (_controller != null)
             {
-                _controller.OnBeingAttacked -= Flash;
+                _controller.Combat.OnBeingAttacked -= Flash;
             }
 
             if (_defense != null)
@@ -134,7 +134,7 @@ namespace Runtime.Combat.Pawn
         private Vector3 CalculateCenterPosition(Vector2Int anchor, PawnController controller)
         {
             var tilemap = ServiceLocator.Get<TilemapController>();
-            var footprint = tilemap.GenerateFootprintUnbounded(anchor, _controller.Size);
+            var footprint = tilemap.GenerateFootprintUnbounded(anchor, _controller.TilemapHelper.Size);
 
             if (footprint.Length == 0)
             {

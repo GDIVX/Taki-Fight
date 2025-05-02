@@ -14,7 +14,6 @@ namespace Runtime.Combat.Pawn
         [SerializeField, BoxGroup("Combat")] private int _damage;
         [SerializeField, BoxGroup("Combat")] private int _attacks;
         [SerializeField, BoxGroup("Movement")] private int _speed; // Base speed
-        [SerializeField, BoxGroup("Movement")] private bool _isFlyer; // Can the unit fly?
         [SerializeField, BoxGroup("Movement")] private Vector2Int _direction; // Movement direction
         [SerializeField, BoxGroup("Combat")] private List<Vector2Int> _attackRange; // New: Attack range
         [SerializeField] private bool _isAgile;
@@ -45,7 +44,6 @@ namespace Runtime.Combat.Pawn
 
         // Movement properties
         public int Speed => _speed;
-        public bool IsFlyer => _isFlyer;
         public Vector2Int Direction => _direction;
 
         // New property

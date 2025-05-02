@@ -20,15 +20,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
             };
         }
 
-        private static bool IsFriendly(Tile tile)
-        {
-            return
-            (
-            tile.Owner == TileOwner.Player ||
-            tile.Owner == TileOwner.Heartland ||
-            tile.Owner == TileOwner.castle
-            );
-        }
+        private static bool IsFriendly(Tile tile) => tile.Owner == TileOwner.Player;
     }
 
     public enum TileSelectionMode

@@ -117,12 +117,6 @@ namespace Runtime.Combat.Tilemap
                 case TileOwner.Player:
                     spriteRenderer.color = Color.blue; // Color for player-owned tiles
                     break;
-                case TileOwner.Heartland:
-                    spriteRenderer.color = Color.cyan; // Color for Heartland tiles
-                    break;
-                case TileOwner.castle:
-                    spriteRenderer.color = Color.magenta; // Color for castle tiles
-                    break;
                 case TileOwner.Enemy:
                     spriteRenderer.color = Color.red; // Color for enemy-owned tiles
                     break;

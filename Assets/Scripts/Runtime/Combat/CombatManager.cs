@@ -15,7 +15,6 @@ namespace Runtime.Combat
 {
     public class CombatManager : MonoBehaviour
     {
-        [SerializeField, BoxGroup("Settings")] private Vector2Int _arenaSize;
         [SerializeField, BoxGroup("Settings")] private bool _discardHandOnTurnEnd = true;
         [SerializeField, BoxGroup("Settings")] private TilemapConfig _tilemapConfig;
         [SerializeField, Required] Button _endTurnBtn;

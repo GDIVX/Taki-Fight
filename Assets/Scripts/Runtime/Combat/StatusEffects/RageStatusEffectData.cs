@@ -30,21 +30,21 @@ namespace Runtime.Combat.StatusEffects
 
         public void OnAdded(PawnController pawn)
         {
-            pawn.Attacks.Value += Stack.Value;
+            pawn.Combat.Attacks.Value += Stack.Value;
             _previousStack = Stack.Value;
         }
 
         public void OnTurnStart(PawnController pawn)
         {
             // Remove the old bonus and apply the new one
-            pawn.Attacks.Value -= _previousStack;
-            pawn.Attacks.Value += Stack.Value;
+            pawn.Combat.Attacks.Value -= _previousStack;
+            pawn.Combat.Attacks.Value += Stack.Value;
             _previousStack = Stack.Value;
         }
 
         public void Remove(PawnController pawn)
         {
-            pawn.Attacks.Value -= Stack.Value;
+            pawn.Combat.Attacks.Value -= Stack.Value;
         }
     }
 }

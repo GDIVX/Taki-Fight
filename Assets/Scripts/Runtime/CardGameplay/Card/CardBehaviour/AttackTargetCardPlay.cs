@@ -55,7 +55,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
             }
 
             var finalDamage = potency;
-            target.ReceiveAttack(finalDamage);
+            target.Combat.ReceiveAttack(finalDamage);
         }
     }
 }
