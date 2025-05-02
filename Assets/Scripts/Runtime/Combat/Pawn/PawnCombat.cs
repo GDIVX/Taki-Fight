@@ -44,6 +44,7 @@ namespace Runtime.Combat.Pawn
             Defense.Value = Mathf.Max(0, Defense.Value - damage);
 
             OnBeingAttacked?.Invoke(damage, finalDamage);
+            Pawn.ExecuteStrategies(Pawn.Data.OnDamagedStrategies);
         }
 
 
@@ -55,6 +56,7 @@ namespace Runtime.Combat.Pawn
                 yield return null;
             }
             onComplete?.Invoke();
+            Pawn.ExecuteStrategies(Pawn.Data.OnAttackStrategies);
         }
 
         public bool IsHostileUnitInAttackRange(out PawnController pawn)

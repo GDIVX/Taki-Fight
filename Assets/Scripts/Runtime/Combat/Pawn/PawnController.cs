@@ -22,7 +22,7 @@ namespace Runtime.Combat.Pawn
 
         public PawnOwner Owner { get; private set; }
 
-
+        public PawnData Data { get; private set; }
         public HealthSystem Health { get; private set; }
         public bool IsAgile { get; private set; }
         public bool IsProcessingTurn { get; private set; }
@@ -32,7 +32,6 @@ namespace Runtime.Combat.Pawn
         internal PawnTilemapHelper TilemapHelper => _tilemapHelper;
         internal PawnMovement Movement => _movement;
 
-        [Button]
         public PawnController Init(PawnData data)
         {
             if (data == null) throw new ArgumentNullException(nameof(data));
@@ -60,12 +59,19 @@ namespace Runtime.Combat.Pawn
 
             gameObject.name = $"{data.name}_{Guid.NewGuid()}";
 
+            Data = data;
+
+            // Execute onSummon strategies
+            ExecuteStrategies(data.OnSummonStrategies);
+
             return this;
         }
 
         private void OnDead(object sender, EventArgs e)
         {
             _view.OnDead(() => Destroy(gameObject));
+            _statusEffectHandler.Clear();
+            ExecuteStrategies(Data.OnKilledStrategies);
         }
 
 
@@ -74,6 +80,9 @@ namespace Runtime.Combat.Pawn
             IsProcessingTurn = true;
             _statusEffectHandler.Apply();
             _movement.ResetSpeed();
+
+            // Execute onTurnStart strategies
+            ExecuteStrategies(Data.OnTurnStartStrategies);
 
             while (_movement.AvilableSpeed > 0)
             {
@@ -138,6 +147,33 @@ namespace Runtime.Combat.Pawn
         }
 
         public void ClearStatusEffects() => _statusEffectHandler.Clear();
+
+        internal void ExecuteStrategies(List<PawnStrategyData> strategies)
+        {
+            if (strategies == null)
+            {
+                Debug.LogWarning("ExecuteStrategies: The strategies list is null.");
+                return;
+            }
+
+            foreach (var strategyData in strategies)
+            {
+                if (strategyData.Strategy == null)
+                {
+                    Debug.LogWarning("ExecuteStrategies: A strategy in the list is null.");
+                    continue;
+                }
+
+                strategyData.Strategy.Play(this, strategyData.Potency, success =>
+                {
+                    if (!success)
+                    {
+                        Debug.LogWarning($"Strategy {strategyData.Strategy.name} failed.");
+                    }
+                });
+            }
+        }
+
 
     }
 }

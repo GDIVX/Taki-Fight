@@ -68,6 +68,9 @@ namespace Assets.Scripts.Runtime.Combat.Pawn
             _pawn.MoveToPosition(nextTile);
             AvilableSpeed--;
 
+            //execute onMove strategies
+            _pawn.ExecuteStrategies(_pawn.Data.OnMoveStrategies);
+
             return true;
         }
 
