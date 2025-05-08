@@ -988,10 +988,10 @@ MonoBehaviour:
       - m_Target: {fileID: 1377694105}
         m_TargetAssemblyTypeName: Runtime.Combat.CombatManager, Runtime
         m_MethodName: StartCombat
-        m_Mode: 2
+        m_Mode: 1
         m_Arguments:
-          m_ObjectArgument: {fileID: 11400000, guid: e49530ca8faa3e841820991527e9bbec, type: 2}
-          m_ObjectArgumentAssemblyTypeName: Runtime.Combat.CombatConfig, Runtime
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -2918,6 +2918,7 @@ MonoBehaviour:
   _tilemapConfig: {fileID: 11400000, guid: 7f938124a9721b148904c5d558281b5c, type: 2}
   _endTurnBtn: {fileID: 1567978250}
   _arenaView: {fileID: 1377694103}
+  _combatConfig: {fileID: 11400000, guid: bab144abb3286a54f96eeeed670879ff, type: 2}
 --- !u!1 &1385731354
 GameObject:
   m_ObjectHideFlags: 0

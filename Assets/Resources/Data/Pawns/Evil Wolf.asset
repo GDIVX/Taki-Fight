@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: db39779a7d15495786ef0b741b93a144, type: 3}
-  m_Name: Wolf Warrior
+  m_Name: Evil Wolf
   m_EditorClassIdentifier: 
   _sprite: {fileID: -4232371963121305725, guid: 0e58604c38ef60b49b6a55fd3049a056, type: 3}
   _health: 10
@@ -18,11 +18,11 @@ MonoBehaviour:
   _damage: 3
   _attacks: 1
   _speed: 1
-  _direction: {x: 1, y: 0}
+  _direction: {x: -1, y: 0}
   _attackRange:
-  - {x: 1, y: 0}
+  - {x: -1, y: 0}
   _isAgile: 0
-  _owner: 0
+  _owner: 1
   _size: {x: 1, y: 1}
   onTurnStartStrategies: []
   onAttackStrategies: []

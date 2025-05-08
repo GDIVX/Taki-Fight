@@ -107,4 +107,18 @@ public class TilemapController
         // Check if the position is within the bounds of the tile array
         return position.x >= 0 && position.x < _tiles.GetLength(0) && position.y >= 0 && position.y < _tiles.GetLength(1);
     }
+
+    internal List<Tile> GetEnemyOwnedTiles()
+    {
+        var enemyOwnedTiles = new List<Tile>();
+        foreach (var tile in _tiles)
+        {
+            if (tile.Owner == TileOwner.Enemy)
+            {
+                enemyOwnedTiles.Add(tile);
+            }
+        }
+
+        return enemyOwnedTiles;
+    }
 }

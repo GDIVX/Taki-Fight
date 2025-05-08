@@ -56,7 +56,7 @@ namespace Runtime
             _rewardsOfferController.OfferRewards(() =>
             {
                 //TODO: replace with exploration and progression
-                _combatManager.StartCombat(_runData.Combats.SelectRandom());
+                _combatManager.StartCombat();
             });
         }
 

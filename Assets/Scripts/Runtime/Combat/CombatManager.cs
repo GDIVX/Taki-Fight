@@ -10,6 +10,7 @@ using System.Collections;
 using System.Linq;
 using UnityEngine.UI;
 using Runtime.Combat.Pawn;
+using Runtime.Combat.Spawning;
 
 namespace Runtime.Combat
 {
@@ -17,27 +18,44 @@ namespace Runtime.Combat
     {
         [SerializeField, BoxGroup("Settings")] private bool _discardHandOnTurnEnd = true;
         [SerializeField, BoxGroup("Settings")] private TilemapConfig _tilemapConfig;
-        [SerializeField, Required] Button _endTurnBtn;
+        [SerializeField, Required] private Button _endTurnBtn;
         [SerializeField, Required] private TilemapView _arenaView;
+        [SerializeField, BoxGroup("Settings")] private CombatConfig _combatConfig; // Temporary field for testing
 
         private static GameManager GameManager => GameManager.Instance;
 
         public TilemapController Tilemap { get; private set; }
+        private EnemiesWavesManager _wavesManager;
+
         public event Action OnStartTurn, OnEndTurn, OnCombatStart;
 
         internal void Init()
         {
+            // Initialize the tilemap
             var tiles = TilemapGenerator.GenerateTilemap(_tilemapConfig, _arenaView);
             Tilemap = new TilemapController(tiles, _arenaView);
             ServiceLocator.Register(Tilemap);
 
+            // Initialize the waves manager
+            _wavesManager = new EnemiesWavesManager();
+            ServiceLocator.Register(_wavesManager);
 
             _endTurnBtn.onClick.AddListener(EndTurn);
         }
 
         [Button]
-        public void StartCombat(CombatConfig combatConfig)
+        public void StartCombat()
         {
+            if (_combatConfig == null)
+            {
+                Debug.LogError("CombatConfig is not assigned!");
+                return;
+            }
+
+            // Initialize the waves manager with the combat config
+            _wavesManager.Init(_combatConfig);
+
+            // Enable the tilemap and start combat
             Tilemap.Enable();
             GameManager.OnCombatStart();
             StartTurn();
@@ -47,8 +65,10 @@ namespace Runtime.Combat
         [Button]
         public void EndCombat()
         {
+            _wavesManager.StopSpawning(); // Stop spawning waves
             Tilemap.Clear();
         }
+
 
         private void StartTurn()
         {
@@ -58,6 +78,9 @@ namespace Runtime.Combat
 
             ServiceLocator.Get<HandController>().DrawHand();
             ServiceLocator.Get<Energy>().GainEnergyPerIncome();
+
+            // Try spawning a wave at the start of the turn
+            _wavesManager.TrySpawnWave();
 
             OnStartTurn?.Invoke();
         }
