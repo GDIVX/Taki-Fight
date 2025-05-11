@@ -1406,7 +1406,7 @@
     "m_Title": "Dissolve",
     "m_Position": {
         "x": -1673.0,
-        "y": -758.0
+        "y": -757.9999389648438
     }
 }
 
@@ -2236,7 +2236,7 @@
     "m_Title": "Flash",
     "m_Position": {
         "x": -2206.0,
-        "y": 284.0
+        "y": 284.00006103515627
     }
 }
 
@@ -2798,8 +2798,8 @@
     "m_ObjectId": "4fdfdcd8657b4644bec7807d3fd67269",
     "m_Title": "Outline",
     "m_Position": {
-        "x": -3053.0,
-        "y": -2999.0
+        "x": -3052.999755859375,
+        "y": -2998.999755859375
     }
 }
 
@@ -4065,7 +4065,7 @@
     "hlslDeclarationOverride": 2,
     "m_Hidden": false,
     "m_Value": {
-        "m_SerializedTexture": "{\"texture\":{\"fileID\":2800000,\"guid\":\"3fa3725c80e08824797af9acaa6891ab\",\"type\":3}}",
+        "m_SerializedTexture": "{\"texture\":{\"fileID\":2800000,\"guid\":\"0e58604c38ef60b49b6a55fd3049a056\",\"type\":3}}",
         "m_Guid": ""
     },
     "isMainTexture": false,
@@ -4081,7 +4081,7 @@
     "m_Title": "Main Texture",
     "m_Position": {
         "x": -3205.0,
-        "y": 473.0
+        "y": 473.0000305175781
     }
 }
 
@@ -4969,8 +4969,8 @@
     "m_ObjectId": "af4cb79653d043809bdbbbb98eb408fe",
     "m_Title": "Distortion",
     "m_Position": {
-        "x": -3694.0,
-        "y": 744.0
+        "x": -3693.999755859375,
+        "y": 744.0000610351563
     }
 }
 
@@ -5192,7 +5192,7 @@
     "m_ObjectId": "bc263719843446429661d4940c5efc4b",
     "m_Title": "Alpha",
     "m_Position": {
-        "x": -1028.0,
+        "x": -1027.9998779296875,
         "y": -1060.0
     }
 }
@@ -5219,7 +5219,7 @@
     "m_Title": "Normal",
     "m_Position": {
         "x": -704.0,
-        "y": 906.0
+        "y": 906.0000610351563
     }
 }
 

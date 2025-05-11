@@ -61,6 +61,7 @@ namespace Runtime.Combat.Pawn
 
             Data = data;
 
+
             // Execute onSummon strategies
             ExecuteStrategies(data.OnSummonStrategies);
 
@@ -70,6 +71,8 @@ namespace Runtime.Combat.Pawn
         private void OnDead(object sender, EventArgs e)
         {
             _view.OnDead(() => Destroy(gameObject));
+            var tilemap = ServiceLocator.Get<TilemapController>();
+            tilemap.RemoveUnit(this);
             _statusEffectHandler.Clear();
             ExecuteStrategies(Data.OnKilledStrategies);
         }
@@ -77,6 +80,10 @@ namespace Runtime.Combat.Pawn
 
         public void OnTurn()
         {
+            if (IsProcessingTurn) return; // Prevent multiple turns at once
+            if (Health.IsDead()) return; // Prevent dead units from taking turns
+
+
             IsProcessingTurn = true;
             _statusEffectHandler.Apply();
             _movement.ResetSpeed();

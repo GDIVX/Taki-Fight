@@ -12,6 +12,7 @@ using Runtime.Selection;
 using UnityEngine.EventSystems;
 using Runtime.Combat.Tilemap;
 using System.Linq;
+using Sirenix.Utilities;
 
 namespace Runtime.Combat.Pawn
 {
@@ -124,6 +125,8 @@ namespace Runtime.Combat.Pawn
 
         internal void MoveToPosition(Vector2Int anchor)
         {
+            if (transform.SafeIsUnityNull()) return;
+
             var targetPosition = CalculateCenterPosition(anchor, _controller);
 
             transform.DOMove(targetPosition, _movementDuration)

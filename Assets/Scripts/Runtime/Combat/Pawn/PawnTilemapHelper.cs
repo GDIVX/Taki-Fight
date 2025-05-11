@@ -42,6 +42,7 @@ namespace Runtime.Combat.Pawn
 
             _footprint = GenerateFootprint(Size.x, Size.y);
 
+
         }
 
         private Vector2Int[] GenerateFootprint(int width, int height)
