@@ -3,9 +3,9 @@ using Runtime.CardGameplay.Card;
 using Runtime.CardGameplay.Deck;
 using Runtime.CardGameplay.Energy;
 using Runtime.Combat;
-using Runtime.Events;
 using Runtime.Rewards;
 using Runtime.RunManagement;
+using Runtime.UI;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
@@ -15,23 +15,20 @@ namespace Runtime
 {
     public class GameManager : Singleton<GameManager>
     {
-
         [SerializeField, TabGroup("Tempt")] private GameObject _newGameButtonObject;
         [SerializeField] private RunData _runData;
-
-        public RunBuilder RunBuilder { get; private set; }
-        public EventBus EventBus { get; private set; }
-
-        public event Action OnEventBusCreated;
 
 
         //TODO: TEMP
         [SerializeField] private PlayerClassData _tempClassData;
+        private CardFactory _cardFactory;
+        private CombatManager _combatManager;
+        private HandController _handController;
 
         private RewardsOfferController _rewardsOfferController;
-        private CombatManager _combatManager;
-        private CardFactory _cardFactory;
-        private HandController _handController;
+
+        public RunBuilder RunBuilder { get; private set; }
+        public EventBus EventBus { get; private set; }
 
         private void Awake()
         {
@@ -49,6 +46,8 @@ namespace Runtime
             _cardFactory = ServiceLocator.Get<CardFactory>();
             _handController = ServiceLocator.Get<HandController>();
         }
+
+        public event Action OnEventBusCreated;
 
 
         private void OfferCardReward()
@@ -75,7 +74,6 @@ namespace Runtime
 
         private void GameOver()
         {
-
             _handController.gameObject.SetActive(false);
             _newGameButtonObject.SetActive(true);
         }
@@ -83,7 +81,6 @@ namespace Runtime
         [Button]
         public void OnCombatStart()
         {
-
             var deckView = ServiceLocator.Get<DeckView>();
             var energy = ServiceLocator.Get<Energy>();
 
@@ -100,11 +97,25 @@ namespace Runtime
             //_handController.DiscardHand();
         }
 
-        public void OnCombatEnd()
+        private void OnCombatEnd()
         {
             _combatManager.EndCombat();
             _handController.DiscardHand();
+        }
+
+        public void WinCombat()
+        {
+            OnCombatEnd();
             OfferCardReward();
+        }
+
+        public void EndRun()
+        {
+            OnCombatEnd();
+            GameOver();
+
+            //tempt game over message
+            ServiceLocator.Get<BannerViewManager>().WriteMessage(0, "Game Over", Color.red);
         }
     }
 }

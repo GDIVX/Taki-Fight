@@ -5,6 +5,6 @@ namespace Runtime.Combat.Pawn
 {
     public abstract class PawnPlayStrategy : ScriptableObject
     {
-        public abstract void Play(PawnController pawn, int potency, Action<bool> OnComplete);
+        public abstract void Play(PawnController pawn, int potency, Action<bool> onComplete);
     }
 }

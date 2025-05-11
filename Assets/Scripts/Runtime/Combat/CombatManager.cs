@@ -1,16 +1,15 @@
 ﻿using System;
+using System.Collections;
+using System.Linq;
 using Runtime.CardGameplay.Deck;
 using Runtime.CardGameplay.Energy;
+using Runtime.Combat.Pawn;
 using Runtime.Combat.Tilemap;
 using Runtime.UI;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using Utilities;
-using System.Collections;
-using System.Linq;
 using UnityEngine.UI;
-using Runtime.Combat.Pawn;
-using Runtime.Combat.Spawning;
+using Utilities;
 
 namespace Runtime.Combat
 {
@@ -21,11 +20,11 @@ namespace Runtime.Combat
         [SerializeField, Required] private Button _endTurnBtn;
         [SerializeField, Required] private TilemapView _arenaView;
         [SerializeField, BoxGroup("Settings")] private CombatConfig _combatConfig; // Temporary field for testing
+        private EnemiesWavesManager _wavesManager;
 
         private static GameManager GameManager => GameManager.Instance;
 
         public TilemapController Tilemap { get; private set; }
-        private EnemiesWavesManager _wavesManager;
 
         public event Action OnStartTurn, OnEndTurn, OnCombatStart;
 
@@ -84,6 +83,7 @@ namespace Runtime.Combat
 
             OnStartTurn?.Invoke();
         }
+
 
         [Button]
         public void EndTurn()

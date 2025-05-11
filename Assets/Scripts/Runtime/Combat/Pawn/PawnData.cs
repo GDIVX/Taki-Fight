@@ -1,5 +1,6 @@
-﻿using Sirenix.OdinInspector;
+﻿using System;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Runtime.Combat.Pawn
@@ -20,19 +21,32 @@ namespace Runtime.Combat.Pawn
 
         [SerializeField, BoxGroup("Size")] private Vector2Int _size = new Vector2Int(1, 1); // Size of the pawn in tiles
 
-        private List<PawnStrategyData> onSummonStrategies;
-        [SerializeField, BoxGroup("Strategies")] private List<PawnStrategyData> onTurnStartStrategies;
-        [SerializeField, BoxGroup("Strategies")] private List<PawnStrategyData> onAttackStrategies;
-        [SerializeField, BoxGroup("Strategies")] private List<PawnStrategyData> onMoveStrategies;
-        [SerializeField, BoxGroup("Strategies")] private List<PawnStrategyData> onDamagedStrategies;
-        [SerializeField, BoxGroup("Strategies")] private List<PawnStrategyData> onKilledStrategies;
+        [SerializeField] [BoxGroup("Strategies")]
+        private List<PawnStrategyData> _onTurnStartStrategies;
 
-        public List<PawnStrategyData> OnSummonStrategies => onSummonStrategies;
-        public List<PawnStrategyData> OnTurnStartStrategies => onTurnStartStrategies;
-        public List<PawnStrategyData> OnAttackStrategies => onAttackStrategies;
-        public List<PawnStrategyData> OnMoveStrategies => onMoveStrategies;
-        public List<PawnStrategyData> OnDamagedStrategies => onDamagedStrategies;
-        public List<PawnStrategyData> OnKilledStrategies => onKilledStrategies;
+        [SerializeField] [BoxGroup("Strategies")]
+        private List<PawnStrategyData> _onAttackStrategies;
+
+        [SerializeField] [BoxGroup("Strategies")]
+        private List<PawnStrategyData> _onMoveStrategies;
+
+        [SerializeField] [BoxGroup("Strategies")]
+        private List<PawnStrategyData> _onDamagedStrategies;
+
+        [SerializeField] [BoxGroup("Strategies")]
+        private List<PawnStrategyData> _onKilledStrategies;
+
+        [SerializeField] [BoxGroup("Strategies")]
+        private List<PawnStrategyData> _summonStrategies;
+
+
+        public List<PawnStrategyData> OnSummonStrategies => _summonStrategies;
+
+        public List<PawnStrategyData> OnTurnStartStrategies => _onTurnStartStrategies;
+        public List<PawnStrategyData> OnAttackStrategies => _onAttackStrategies;
+        public List<PawnStrategyData> OnMoveStrategies => _onMoveStrategies;
+        public List<PawnStrategyData> OnDamagedStrategies => _onDamagedStrategies;
+        public List<PawnStrategyData> OnKilledStrategies => _onKilledStrategies;
 
 
         // Size properties
@@ -43,8 +57,9 @@ namespace Runtime.Combat.Pawn
             {
                 if (value.x <= 0 || value.y <= 0)
                 {
-                    throw new System.ArgumentException("Size dimensions must be greater than zero.");
+                    throw new ArgumentException("Size dimensions must be greater than zero.");
                 }
+
                 _size = value;
             }
         }
@@ -74,7 +89,7 @@ namespace Runtime.Combat.Pawn
         }
     }
 
-    [System.Serializable]
+    [Serializable]
     public struct PawnStrategyData
     {
         public PawnPlayStrategy Strategy;

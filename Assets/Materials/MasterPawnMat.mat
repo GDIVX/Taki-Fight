@@ -63,7 +63,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _Dissolve: 0
-    - _DissolveOutlineThickness: 0.041
+    - _DissolveOutlineThickness: 0.104
     - _DissolveSpiralStreanght: 5
     - _DistortionAmount: 0.1
     - _FIreDissolveAmount: 2
@@ -91,7 +91,7 @@ Material:
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 0}
     - _DissolveDistortionVelocity: {r: 0, g: -0.3, b: 0, a: 0}
-    - _DissolveOutlineColor: {r: 2.807843, g: 0.8941176, b: 0.8941176, a: 1}
+    - _DissolveOutlineColor: {r: 1.3333334, g: 1.3019608, b: 1.2313726, a: 1}
     - _FireDissolveVelocity: {r: -0.15, g: -0.3, b: 0, a: 0}
     - _FireVelocity: {r: 0, g: -0.3, b: 0, a: 0}
     - _FlashColor: {r: 2.9960775, g: 2.9960775, b: 2.9960775, a: 1}
