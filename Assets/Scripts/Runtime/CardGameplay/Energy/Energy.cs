@@ -5,17 +5,23 @@ using Utilities;
 
 namespace Runtime.CardGameplay.Energy
 {
-    public class Energy : MonoBehaviour
+    public class Energy : MonoService
     {
         [SerializeField, BoxGroup("Settings")] private int _initialIncomePerTurn;
+
+        [SerializeField] [Required] private EnergyView _view;
 
         [ShowInInspector, ReadOnly] private TrackedProperty<int> _currentAmount = new(0);
         [ShowInInspector, ReadOnly] private TrackedProperty<int> _incomePerTurn = new(0);
 
-        [SerializeField, Required] private EnergyView _view;
-
         public int Amount => _currentAmount.ReadOnlyValue;
         public int Income => _incomePerTurn.ReadOnlyValue;
+
+        public void Reset()
+        {
+            Clear();
+            _incomePerTurn.Value = _initialIncomePerTurn;
+        }
 
         public event Action<int> OnAmountChanged
         {
@@ -33,12 +39,6 @@ namespace Runtime.CardGameplay.Energy
         {
             _view.Initialize(this);
             Reset();
-        }
-
-        public void Reset()
-        {
-            Clear();
-            _incomePerTurn.Value = _initialIncomePerTurn;
         }
 
         public void Add(int amount)

@@ -1,10 +1,11 @@
 ﻿using Runtime.Combat.Tilemap;
 using Unity.Mathematics;
 using UnityEngine;
+using Utilities;
 
 namespace Runtime.Combat.Pawn
 {
-    public class PawnFactory : MonoBehaviour
+    public class PawnFactory : MonoService
     {
         [SerializeField] private GameObject _prefab;
 

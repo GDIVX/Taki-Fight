@@ -7,7 +7,7 @@ using Utilities;
 
 namespace Runtime.CardGameplay.Deck
 {
-    public class DeckView : MonoBehaviour
+    public class DeckView : MonoService
     {
         [SerializeField] private TextMeshProUGUI _drawPileCounter;
         [SerializeField] private TextMeshProUGUI _cardDrawCounter;

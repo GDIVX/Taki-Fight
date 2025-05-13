@@ -21,11 +21,11 @@ namespace Runtime
 
         //TODO: TEMP
         [SerializeField] private PlayerClassData _tempClassData;
-        private CardFactory _cardFactory;
-        private CombatManager _combatManager;
-        private HandController _handController;
 
-        private RewardsOfferController _rewardsOfferController;
+        private static CardFactory CardFactory => ServiceLocator.Get<CardFactory>();
+        private static CombatManager CombatManager => ServiceLocator.Get<CombatManager>();
+        private static HandController HandController => ServiceLocator.Get<HandController>();
+        private static RewardsOfferController RewardsOfferController => ServiceLocator.Get<RewardsOfferController>();
 
         public RunBuilder RunBuilder { get; private set; }
         public EventBus EventBus { get; private set; }
@@ -39,23 +39,16 @@ namespace Runtime
             OnEventBusCreated?.Invoke();
         }
 
-        private void Start()
-        {
-            _rewardsOfferController = ServiceLocator.Get<RewardsOfferController>();
-            _combatManager = ServiceLocator.Get<CombatManager>();
-            _cardFactory = ServiceLocator.Get<CardFactory>();
-            _handController = ServiceLocator.Get<HandController>();
-        }
 
         public event Action OnEventBusCreated;
 
 
         private void OfferCardReward()
         {
-            _rewardsOfferController.OfferRewards(() =>
+            RewardsOfferController.OfferRewards(() =>
             {
                 //TODO: replace with exploration and progression
-                _combatManager.StartCombat();
+                CombatManager.StartCombat();
             });
         }
 
@@ -67,14 +60,14 @@ namespace Runtime
             //TODO: TEMP
             RunBuilder.NewRunFromPlayerClass(_tempClassData);
 
-            _cardFactory.Init();
-            _rewardsOfferController.Init();
-            _combatManager.Init();
+            CardFactory.Init();
+            RewardsOfferController.Init();
+            CombatManager.Init();
         }
 
         private void GameOver()
         {
-            _handController.gameObject.SetActive(false);
+            HandController.gameObject.SetActive(false);
             _newGameButtonObject.SetActive(true);
         }
 
@@ -85,22 +78,22 @@ namespace Runtime
             var energy = ServiceLocator.Get<Energy>();
 
             var deck = _runData.Deck;
-            _handController.Deck = deck;
+            HandController.Deck = deck;
             deckView.Setup(deck);
-            _handController.Deck.MergeAndShuffle();
+            HandController.Deck.MergeAndShuffle();
 
             energy.Initialize();
             energy.Reset();
 
-            _handController.gameObject.SetActive(true);
-            _handController.DrawHand();
+            HandController.gameObject.SetActive(true);
+            HandController.DrawHand();
             //_handController.DiscardHand();
         }
 
         private void OnCombatEnd()
         {
-            _combatManager.EndCombat();
-            _handController.DiscardHand();
+            CombatManager.EndCombat();
+            HandController.DiscardHand();
         }
 
         public void WinCombat()

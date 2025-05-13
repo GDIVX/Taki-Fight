@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using Utilities;
 
 namespace Runtime.UI.Tooltip
 {
     [CreateAssetMenu(fileName = "Tooltip Dictionary", menuName = "Game/Tooltip Dictionary", order = 0)]
-    public class KeywordDictionary : ScriptableObject
+    public class KeywordDictionary : ScriptableService
     {
         [SerializeField, AssetList] private List<TooltipData> _tooltipData;
 

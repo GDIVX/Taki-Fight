@@ -1,9 +1,10 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using UnityEngine;
+using Utilities;
 
 namespace Runtime.UI.Tooltip
 {
-    public class TooltipPool : MonoBehaviour
+    public class TooltipPool : MonoService
     {
         [SerializeField] private TooltipController _tooltipPrefab;
         [SerializeField] private int _initialSize = 5;

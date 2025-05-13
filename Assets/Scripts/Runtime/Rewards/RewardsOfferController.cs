@@ -8,7 +8,7 @@ using Utilities;
 
 namespace Runtime.Rewards
 {
-    public class RewardsOfferController : MonoBehaviour
+    public class RewardsOfferController : MonoService
     {
         [SerializeField] private RunData _runData;
         [SerializeField] private RewardsView _rewardsView;
@@ -86,7 +86,8 @@ namespace Runtime.Rewards
         {
             var rarityWeights = new Dictionary<Rarity, float>();
 
-            foreach (var entry in _runData.RarityToWightEntries.Where(entry => !rarityWeights.TryAdd(entry.Rarity, entry.Weight)))
+            foreach (var entry in _runData.RarityToWightEntries.Where(entry =>
+                         !rarityWeights.TryAdd(entry.Rarity, entry.Weight)))
             {
                 Debug.LogWarning($"Duplicate rarity detected: {entry.Rarity}. Using the first assigned weight.");
             }

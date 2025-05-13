@@ -326,12 +326,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 51308173}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 757540969}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &51308175
 MonoBehaviour:
@@ -348,6 +348,53 @@ MonoBehaviour:
   _newGameButtonObject: {fileID: 1495349945}
   _runData: {fileID: 11400000, guid: ce455a740ebf7f44890ed8d2ed9bf6e9, type: 2}
   _tempClassData: {fileID: 11400000, guid: 64dabf46a45808846b034bd293550d88, type: 2}
+--- !u!1 &59270724
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 59270726}
+  - component: {fileID: 59270725}
+  m_Layer: 0
+  m_Name: Game Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &59270725
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 59270724}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d0709aa8cc44d77bd3f2202ccadaa1c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _newGameButtonObject: {fileID: 1495349945}
+  _runData: {fileID: 11400000, guid: ce455a740ebf7f44890ed8d2ed9bf6e9, type: 2}
+  _tempClassData: {fileID: 11400000, guid: 64dabf46a45808846b034bd293550d88, type: 2}
+--- !u!4 &59270726
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 59270724}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 757540969}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &80757749
 GameObject:
   m_ObjectHideFlags: 0
@@ -1667,7 +1714,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 757540969}
-  - component: {fileID: 757540970}
   m_Layer: 0
   m_Name: Services
   m_TagString: Untagged
@@ -1689,34 +1735,12 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1877293997}
-  - {fileID: 51308174}
+  - {fileID: 59270726}
   - {fileID: 49008647}
   - {fileID: 1763573682}
   - {fileID: 670002144}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &757540970
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 757540968}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b1d491806bbff7d4ea96fd86139b5661, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _energy: {fileID: 1763573683}
-  _handController: {fileID: 303423372}
-  _deckView: {fileID: 1192004592}
-  _cardFactory: {fileID: 1877293996}
-  _pawnFactory: {fileID: 1377694104}
-  _rewardsOfferController: {fileID: 670002145}
-  _bannerViewManager: {fileID: 1672194227}
-  _combatManager: {fileID: 1377694105}
-  _tooltipPool: {fileID: 1878048109}
-  _keywordDictionary: {fileID: 11400000, guid: 66d450156de073643a2a3a33c7bc17b1, type: 2}
 --- !u!1 &775273449
 GameObject:
   m_ObjectHideFlags: 0
@@ -3543,7 +3567,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 51308175}
+      - m_Target: {fileID: 59270725}
         m_TargetAssemblyTypeName: Runtime.GameManager, Runtime
         m_MethodName: StartRun
         m_Mode: 1
@@ -5011,3 +5035,4 @@ SceneRoots:
   - {fileID: 958362612}
   - {fileID: 1377694102}
   - {fileID: 1772126920}
+  - {fileID: 51308174}

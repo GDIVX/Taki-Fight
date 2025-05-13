@@ -4,31 +4,24 @@ using System.Collections.Generic;
 using Runtime.CardGameplay.Card;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using Utilities;
 
 namespace Runtime.CardGameplay.Deck
 {
-    public class HandController : MonoBehaviour
+    public class HandController : MonoService
     {
         [SerializeField] private int _cardsToDrawPerTurn;
         [SerializeField] private int _maxHandSize;
         [SerializeField, Required] private CardFactory _cardFactory;
         [SerializeField] private float _cardMovementDelay;
-        public Deck Deck { get; set; }
         [ShowInInspector, ReadOnly] private List<CardController> _cards = new();
+        public Deck Deck { get; set; }
 
         public int CardsToDrawPerTurn
         {
             get => _cardsToDrawPerTurn;
             set => _cardsToDrawPerTurn = value;
         }
-
-
-
-
-        public event Action<CardController> OnCardAdded;
-        public event Action<CardController> OnCardRemoved;
-        public event Action<CardController> OnCardBurnt;
-        public event Action<int> OnCardDrawPerTurnUpdated;
 
         public int DrawPerTurn
         {
@@ -39,6 +32,12 @@ namespace Runtime.CardGameplay.Deck
                 OnCardDrawPerTurnUpdated?.Invoke(value);
             }
         }
+
+
+        public event Action<CardController> OnCardAdded;
+        public event Action<CardController> OnCardRemoved;
+        public event Action<CardController> OnCardBurnt;
+        public event Action<int> OnCardDrawPerTurnUpdated;
 
         /// <summary>
         /// Remove a card from hand

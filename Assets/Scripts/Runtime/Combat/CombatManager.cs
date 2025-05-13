@@ -14,7 +14,7 @@ using Utilities;
 
 namespace Runtime.Combat
 {
-    public class CombatManager : MonoBehaviour
+    public class CombatManager : MonoService
     {
         [SerializeField, BoxGroup("Settings")] private bool _discardHandOnTurnEnd = true;
         [SerializeField, BoxGroup("Settings")] private TilemapConfig _tilemapConfig;

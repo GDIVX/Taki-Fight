@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using Utilities;
 
 namespace Runtime.UI
 {
-    public class BannerViewManager : MonoBehaviour
+    public class BannerViewManager : MonoService
     {
-        [ShowInInspector] private List<BannerView> _banners;
         [SerializeField] private float _fadeDuration;
+        [ShowInInspector] private List<BannerView> _banners;
 
         private void Awake()
         {

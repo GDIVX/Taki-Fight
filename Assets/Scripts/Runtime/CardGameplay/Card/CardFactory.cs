@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Runtime.CardGameplay.Card.View;
 using Runtime.CardGameplay.Deck;
-using Runtime.Combat.Pawn;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using Utilities;
 
 namespace Runtime.CardGameplay.Card
 {
-    public class CardFactory : MonoBehaviour
+    public class CardFactory : MonoService
     {
         [SerializeField] private CardController _prefab;
 
@@ -21,10 +20,10 @@ namespace Runtime.CardGameplay.Card
         [SerializeField, TabGroup("Dependencies")]
         private Transform _discardToLocation, _drawFromLocation;
 
+        private readonly Stack<CardController> _objectPool = new();
+
 
         private CardDependencies _cardDependencies;
-
-        private readonly Stack<CardController> _objectPool = new();
 
         public void Init()
         {
