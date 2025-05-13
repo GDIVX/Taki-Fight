@@ -5,7 +5,7 @@ using Utilities;
 
 namespace Runtime.CardGameplay.Energy
 {
-    public class Energy : MonoService
+    public class Energy : MonoService<Energy>
     {
         [SerializeField, BoxGroup("Settings")] private int _initialIncomePerTurn;
 

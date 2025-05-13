@@ -84,7 +84,7 @@ namespace Runtime.Combat.Tilemap
         internal void Clear()
         {
             if (!Pawn) return;
-            _pawnController.Remove();
+            _pawnController.Remove(false);
             Pawn = null;
         }
 

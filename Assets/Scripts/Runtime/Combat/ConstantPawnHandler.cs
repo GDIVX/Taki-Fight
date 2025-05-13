@@ -40,29 +40,51 @@ namespace Runtime.Combat
             CurrentHealth.Value = MaxHealth.ReadOnlyValue;
         }
 
-        public PawnController CreatePawn(Vector2Int position)
+        public void CreatePawn(Vector2Int position)
         {
+            if (_pawn) return;
             var tilemap = ServiceLocator.Get<TilemapController>();
+            if (tilemap == null)
+            {
+                Debug.LogError("TilemapController is missing. Ensure TilemapController is properly initialized.");
+                return;
+            }
+
             var tile = tilemap.GetTile(position);
+            if (tile == null)
+            {
+                Debug.LogWarning(
+                    $"Tile not found at position {position}. Ensure TilemapController is correctly managing tiles.");
+                return;
+            }
 
             var factory = ServiceLocator.Get<PawnFactory>();
-            var pawn = factory.CreatePawn(_data, tile);
+            if (!factory)
+            {
+                Debug.LogError("PawnFactory is missing. Ensure PawnFactory is properly registered.");
+                return;
+            }
 
-            //set health
+            var pawn = factory.CreatePawn(_data, tile);
+            if (!pawn)
+            {
+                Debug.LogError($"Failed to create pawn at position {position}. Check PawnFactory logic.");
+                return;
+            }
+
+            // Set health
             pawn.Health.SetHealth(CurrentHealth.Value);
-            //track change to health
+            // Track health changes
             pawn.Health.OnHealthChanged += OnHealthChanged;
 
             _pawn = pawn;
-
-            return pawn;
         }
 
         public void RemovePawn()
         {
             if (!_pawn) return;
             _pawn.Health.OnHealthChanged -= OnHealthChanged;
-            _pawn.Remove();
+            _pawn.Remove(false);
             _pawn = null;
         }
 

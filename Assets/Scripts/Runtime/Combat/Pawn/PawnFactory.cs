@@ -5,7 +5,7 @@ using Utilities;
 
 namespace Runtime.Combat.Pawn
 {
-    public class PawnFactory : MonoService
+    public class PawnFactory : MonoService<PawnFactory>
     {
         [SerializeField] private GameObject _prefab;
 
@@ -14,7 +14,7 @@ namespace Runtime.Combat.Pawn
             var instance = Instantiate(_prefab, Vector3.zero, quaternion.identity);
             var controller = instance.GetComponent<PawnController>();
 
-            if (controller == null)
+            if (!controller)
             {
                 Debug.LogError("Pawn prefab is missing PawnController component.");
                 Destroy(instance);

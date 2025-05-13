@@ -73,13 +73,17 @@ namespace Runtime.Combat.Pawn
 
         public void Kill()
         {
-            Remove();
+            Remove(true);
             ExecuteStrategies(Data.OnKilledStrategies);
         }
 
-        public void Remove()
+        public void Remove(bool animate)
         {
-            _view.OnDead(() => Destroy(gameObject));
+            if (animate)
+                _view.OnDead(() => Destroy(gameObject));
+            else
+                Destroy(gameObject);
+
             var tilemap = ServiceLocator.Get<TilemapController>();
             tilemap.RemoveUnit(this);
             _statusEffectHandler.Clear();

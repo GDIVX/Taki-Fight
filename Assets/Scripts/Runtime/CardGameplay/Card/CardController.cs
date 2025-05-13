@@ -4,7 +4,6 @@ using Runtime.CardGameplay.Card.CardBehaviour;
 using Runtime.CardGameplay.Card.CardBehaviour.Feedback;
 using Runtime.CardGameplay.Card.View;
 using Runtime.CardGameplay.Deck;
-using Runtime.Combat.Pawn;
 using Runtime.Selection;
 using Runtime.UI;
 using Sirenix.OdinInspector;
@@ -16,13 +15,14 @@ namespace Runtime.CardGameplay.Card
 {
     public class CardController : MonoBehaviour, IPointerClickHandler, ISelectableEntity
     {
-        public CardType CardType { get; private set; }
         [ShowInInspector, ReadOnly] public TrackedProperty<bool> IsPlayable;
 
-        [ShowInInspector, ReadOnly] private List<(CardPlayStrategy, int)> _playStrategies;
-        [ShowInInspector, ReadOnly] private FeedbackStrategy _feedbackStrategy;
+        private CardFactory _cardFactory;
+        [ShowInInspector] [ReadOnly] private FeedbackStrategy _feedbackStrategy;
+        private bool _isSelecting;
 
-        public static event Action<CardController> OnCardPlayedEvent;
+        [ShowInInspector, ReadOnly] private List<(CardPlayStrategy, int)> _playStrategies;
+        public CardType CardType { get; private set; }
 
         public CardInstance Instance { get; private set; }
         public Transform Transform => gameObject.transform;
@@ -34,8 +34,41 @@ namespace Runtime.CardGameplay.Card
         public Energy.Energy Energy { get; private set; }
         public int Cost => Instance.Cost;
 
-        private CardFactory _cardFactory;
-        private bool _isSelecting;
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (eventData == null)
+            {
+                Debug.LogWarning("OnPointerClick called with null eventData.");
+                return;
+            }
+
+            if (eventData.button != PointerEventData.InputButton.Left) return;
+
+            if (SelectionService.Instance.CurrentState == SelectionState.InProgress)
+                // If selection is in progress, validate card selection instead of playing it
+                TryToSelect();
+            else
+                // Normal card play logic when selection is NOT active
+                TryToPlay();
+        }
+
+        public void TryToSelect()
+        {
+            if (SelectionService.Instance.CurrentState != SelectionState.InProgress) return;
+
+            var predicate = SelectionService.Instance.Predicate;
+            if (predicate.Invoke(this)) SelectionService.Instance.Select(this);
+        }
+
+        public void OnSelected()
+        {
+        }
+
+        public void OnDeselected()
+        {
+        }
+
+        public static event Action<CardController> OnCardPlayedEvent;
 
         [Button]
         public void Init(CardData data, CardDependencies dependencies)
@@ -67,7 +100,7 @@ namespace Runtime.CardGameplay.Card
             Energy.OnAmountChanged += _ => UpdateAffordability();
             Data = data;
 
-            SelectionService.Instance.Register(this);
+            // SelectionService.Instance.Register(this);
         }
 
         private void UpdateAffordability()
@@ -169,31 +202,6 @@ namespace Runtime.CardGameplay.Card
             return Energy.Amount >= Cost;
         }
 
-        public void OnPointerClick(PointerEventData eventData)
-        {
-            if (eventData == null)
-            {
-                Debug.LogWarning("OnPointerClick called with null eventData.");
-                return;
-            }
-
-            if (eventData.button != PointerEventData.InputButton.Left)
-            {
-                return;
-            }
-
-            if (SelectionService.Instance.CurrentState == SelectionState.InProgress)
-            {
-                // If selection is in progress, validate card selection instead of playing it
-                TryToSelect();
-            }
-            else
-            {
-                // Normal card play logic when selection is NOT active
-                TryToPlay();
-            }
-        }
-
         public void OnDiscard()
         {
         }
@@ -219,28 +227,6 @@ namespace Runtime.CardGameplay.Card
             }
 
             Play();
-        }
-
-        public void TryToSelect()
-        {
-            if (SelectionService.Instance.CurrentState != SelectionState.InProgress)
-            {
-                return;
-            }
-
-            var predicate = SelectionService.Instance.Predicate;
-            if (predicate.Invoke(this))
-            {
-                SelectionService.Instance.Select(this);
-            }
-        }
-
-        public void OnSelected()
-        {
-        }
-
-        public void OnDeselected()
-        {
         }
     }
 

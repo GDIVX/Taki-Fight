@@ -7,7 +7,7 @@ using Utilities;
 namespace Runtime.UI.Tooltip
 {
     [CreateAssetMenu(fileName = "Tooltip Dictionary", menuName = "Game/Tooltip Dictionary", order = 0)]
-    public class KeywordDictionary : ScriptableService
+    public class KeywordDictionary : ScriptableService<KeywordDictionary>
     {
         [SerializeField, AssetList] private List<TooltipData> _tooltipData;
 

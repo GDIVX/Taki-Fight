@@ -7,7 +7,7 @@ using Utilities;
 
 namespace Runtime.CardGameplay.Card
 {
-    public class CardFactory : MonoService
+    public class CardFactory : MonoService<CardFactory>
     {
         [SerializeField] private CardController _prefab;
 

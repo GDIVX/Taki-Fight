@@ -1,5 +1,5 @@
 using System;
-using Runtime.Combat.Tilemap;
+using JetBrains.Annotations;
 using UnityEngine;
 
 namespace Runtime.Combat.Tilemap
@@ -7,13 +7,12 @@ namespace Runtime.Combat.Tilemap
     [Serializable]
     public static class TilemapGenerator
     {
-        public static Tile[,] GenerateTilemap(TilemapConfig config, TilemapView tilemapView)
+        public static Tile[,] GenerateTilemap([NotNull] TilemapConfig config, [NotNull] TilemapView tilemapView,
+            Action<Tile[,]> onComplete)
         {
-            // Validate the configuration
-            if (config == null)
-            {
-                throw new ArgumentNullException(nameof(config), "TilemapConfig cannot be null.");
-            }
+            if (config == null) throw new ArgumentNullException(nameof(config));
+
+            if (tilemapView == null) throw new ArgumentNullException(nameof(tilemapView));
 
             if (config.Colums == null || config.Colums.Count == 0)
             {
@@ -42,6 +41,7 @@ namespace Runtime.Combat.Tilemap
             // Create the tiles in the view
             tilemapView.CreateTiles(tiles);
 
+            onComplete?.Invoke(tiles);
             return tiles;
         }
     }

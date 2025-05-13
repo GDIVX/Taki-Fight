@@ -48,6 +48,21 @@ namespace Utilities
             }
         }
 
+        private void Awake()
+        {
+            //ensure that there is only one instance of this class
+            if (_instance && _instance != this)
+            {
+                Debug.LogWarning(
+                    $"[Singleton] Instance of '{typeof(T)}' already exists in scene. Destroying duplicate.");
+                Destroy(gameObject);
+            }
+            else
+            {
+                _instance = this as T;
+            }
+        }
+
         public void OnDestroy()
         {
             _applicationIsQuitting = true;

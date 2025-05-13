@@ -4,7 +4,7 @@ using Utilities;
 
 namespace Runtime.UI.Tooltip
 {
-    public class TooltipPool : MonoService
+    public class TooltipPool : MonoService<TooltipPool>
     {
         [SerializeField] private TooltipController _tooltipPrefab;
         [SerializeField] private int _initialSize = 5;

@@ -1,24 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using Runtime.Combat.Pawn;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using Utilities;
 
 namespace Runtime.Combat.Tilemap
 {
     [Serializable]
-    public class TilemapController
+    public class TilemapController : Service<TilemapController>
     {
         private List<PawnController> _activeUnits = new();
         [ShowInInspector] private Tile[,] _tiles;
         private TilemapView _view;
 
-        public TilemapController(Tile[,] tiles, TilemapView arenaView)
+        public TilemapController([NotNull] Tile[,] tiles, [NotNull] TilemapView arenaView)
         {
-            _tiles = tiles;
-            View = arenaView;
+            _tiles = tiles ?? throw new ArgumentNullException(nameof(tiles));
+            View = arenaView ?? throw new ArgumentNullException(nameof(arenaView));
         }
 
+        [NotNull]
         public TilemapView View
         {
             get => _view;

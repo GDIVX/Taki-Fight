@@ -1,23 +1,23 @@
 ﻿using System;
-using System.Collections;
+using System.Linq;
 using CodeMonkey.HealthSystemCM;
 using DG.Tweening;
+using Runtime.Combat.Tilemap;
 using Sirenix.OdinInspector;
+using Sirenix.Utilities;
 using TMPro;
 using UI;
 using UnityEngine;
 using UnityEngine.UI;
 using Utilities;
-using Runtime.Selection;
-using UnityEngine.EventSystems;
-using Runtime.Combat.Tilemap;
-using System.Linq;
-using Sirenix.Utilities;
 
 namespace Runtime.Combat.Pawn
 {
     public class PawnView : MonoBehaviour
     {
+        private static readonly int FlashAmount = Shader.PropertyToID("_FlashAmount");
+        private static readonly int Dissolve = Shader.PropertyToID("_Dissolve");
+
         [SerializeField, BoxGroup("Animation")]
         private Animator animator;
 
@@ -36,8 +36,13 @@ namespace Runtime.Combat.Pawn
 
         private PawnController _controller;
         private TrackedProperty<int> _defense;
-        private static readonly int FlashAmount = Shader.PropertyToID("_FlashAmount");
-        private static readonly int Dissolve = Shader.PropertyToID("_Dissolve");
+
+        private void OnDestroy()
+        {
+            if (_controller != null) _controller.Combat.OnBeingAttacked -= Flash;
+
+            if (_defense != null) _defense.OnValueChanged -= UpdateDefenseUI;
+        }
 
         public void Init(PawnController controller, TrackedProperty<int> defense, PawnData data)
         {
@@ -81,7 +86,6 @@ namespace Runtime.Combat.Pawn
         }
 
 
-
         private void InitiateDefenseView(TrackedProperty<int> defense)
         {
             _defense = defense;
@@ -102,25 +106,11 @@ namespace Runtime.Combat.Pawn
             defenseCount.text = defensePoints.ToString();
         }
 
-        private void OnDestroy()
-        {
-            if (_controller != null)
-            {
-                _controller.Combat.OnBeingAttacked -= Flash;
-            }
-
-            if (_defense != null)
-            {
-                _defense.OnValueChanged -= UpdateDefenseUI;
-            }
-        }
-
         internal void SpawnAtPosition(Vector2Int anchor)
         {
             var targetPosition = CalculateCenterPosition(anchor, _controller);
             transform.position = targetPosition;
         }
-
 
 
         internal void MoveToPosition(Vector2Int anchor)
@@ -144,15 +134,10 @@ namespace Runtime.Combat.Pawn
                 tilemap.View.WorldToMapPoint(anchor);
             }
 
-            Vector2 sum = Vector2.zero;
-            foreach (var tile in footprint)
-            {
-                sum += tilemap.View.MapToWorldPoint(tile.Position);
-            }
+            var sum = footprint.Aggregate(Vector2.zero,
+                (current, tile) => current + tilemap.View.MapToWorldPoint(tile.Position));
 
             return sum / footprint.Length;
-
         }
-
     }
 }

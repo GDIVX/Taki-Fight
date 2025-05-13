@@ -2,11 +2,11 @@
 
 namespace Utilities
 {
-    public abstract class ScriptableService : ScriptableObject
+    public abstract class ScriptableService<T> : ScriptableObject where T : ScriptableObject
     {
         private void Awake()
         {
-            ServiceLocator.Register(this);
+            ServiceLocator.Register(this as T);
         }
     }
 }

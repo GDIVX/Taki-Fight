@@ -17,31 +17,53 @@ namespace Utilities
 
         public static T Get<T>() where T : class
         {
-            if (Services.TryGetValue(typeof(T), out var instance) && instance is T typedInstance) return typedInstance;
+            // Directly fetch the service if already registered
+            if (Services.TryGetValue(typeof(T), out var instance))
+            {
+                // If it's a Unity Object, ensure that it's not destroyed
+                if (instance is not Object unityObject) return (T)instance;
+                if (unityObject != null) return (T)instance;
 
-            //if T is a unity object, try to find it in the scene and register it
+                // Object has been destroyed, clean up and attempt to find a replacement
+                Services.Remove(typeof(T));
+
+                // Attempt to find a replacement (dynamic lookup)
+                if (Object.FindAnyObjectByType(typeof(T)) is T foundReplacement)
+                {
+                    Register(foundReplacement);
+                    return foundReplacement;
+                }
+
+                Debug.LogWarning($"No replacement found for {typeof(T).Name} in the current scene.");
+                return null;
+
+                // If it's not a Unity object, return the instance safely
+            }
+
+            // If not found, and it's a Unity Object, try finding it in the scene (expensive but safe fallback)
             if (typeof(Object).IsAssignableFrom(typeof(T)))
             {
-                if (Object.FindAnyObjectByType(typeof(T)) is T foundObject)
+                var foundObject = Object.FindAnyObjectByType(typeof(T)) as T;
+                if (foundObject != null)
                 {
-                    Register(foundObject);
+                    Register(foundObject); // Cache it for future use
                     return foundObject;
                 }
 
-                Debug.LogWarning($"Could not find object of type {typeof(T).Name} in the scene.");
+                Debug.LogWarning($"Service of type {typeof(T).Name} not found in the current scene.");
                 return null;
             }
 
-            //else, if it is a standalone class, create a new instance and register it
+            // If it's not a Unity Object, create it dynamically as a fallback
             try
             {
                 var newInstance = Activator.CreateInstance<T>();
-                Register(newInstance);
+                Register(newInstance); // Cache it for future use
                 return newInstance;
             }
             catch (Exception e)
             {
-                Debug.LogError($"Failed to create instance of {typeof(T).Name}: {e.Message}");
+                Debug.LogError($"Failed to create an instance of {typeof(T).Name}: {e.Message}");
                 return null;
             }
         }
@@ -56,6 +78,12 @@ namespace Utilities
 
             service = null;
             return false;
+        }
+
+        public static void Unregister<T>(T service) where T : class
+        {
+            if (Services.TryGetValue(typeof(T), out var instance) && instance is T typedInstance)
+                Services.Remove(typeof(T));
         }
     }
 }

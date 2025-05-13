@@ -14,12 +14,12 @@ using Utilities;
 
 namespace Runtime.Combat
 {
-    public class CombatManager : MonoService
+    public class CombatManager : MonoService<CombatManager>
     {
         [SerializeField, BoxGroup("Settings")] private bool _discardHandOnTurnEnd = true;
         [SerializeField, BoxGroup("Settings")] private TilemapConfig _tilemapConfig;
         [SerializeField, Required] private Button _endTurnBtn;
-        [SerializeField, Required] private TilemapView _arenaView;
+        [SerializeField] [Required] private TilemapView _tilemapView;
         [SerializeField, BoxGroup("Settings")] private CombatConfig _combatConfig; // Temporary field for testing
 
         [SerializeField] [BoxGroup("Objective")]
@@ -27,29 +27,38 @@ namespace Runtime.Combat
 
         private EnemiesWavesManager _wavesManager;
 
-        public ConstantPawnHandler DefensePawn { get; private set; }
+        private ConstantPawnHandler DefensePawn { get; set; }
 
-        private static GameManager GameManager => GameManager.Instance;
+        private static GameManager GameManager => ServiceLocator.Get<GameManager>();
 
-        public TilemapController Tilemap { get; private set; }
+        private TilemapController Tilemap { get; set; }
 
         public event Action OnStartTurn, OnEndTurn, OnCombatStart;
 
         internal void Init()
         {
-            // Initialize the tilemap
-            var tiles = TilemapGenerator.GenerateTilemap(_tilemapConfig, _arenaView);
-            Tilemap = new TilemapController(tiles, _arenaView);
-            ServiceLocator.Register(Tilemap);
-
             // Initialize the waves manager
             _wavesManager = new EnemiesWavesManager();
             ServiceLocator.Register(_wavesManager);
 
+            //end turn btn
             _endTurnBtn.onClick.AddListener(EndTurn);
 
-            //set up the goal
+            //defense target
             DefensePawn = new ConstantPawnHandler(_defenseObjectiveData);
+
+
+            // Recreate TilemapController with the fresh scene tilemap view
+            TilemapGenerator.GenerateTilemap(_tilemapConfig, _tilemapView, tiles =>
+            {
+                Tilemap = new TilemapController(tiles, _tilemapView);
+
+                // Initialize the defense pawn
+                DefensePawn.CreatePawn(new Vector2Int(0, 0));
+
+                // Start combat when ready
+                StartCombat();
+            });
         }
 
         [Button]
@@ -78,8 +87,11 @@ namespace Runtime.Combat
         public void EndCombat()
         {
             _wavesManager.StopSpawning(); // Stop spawning waves
-            Tilemap.Clear();
-            DefensePawn.RemovePawn();
+            DefensePawn?.RemovePawn();
+            Tilemap?.Clear(); // Clear any tilemap references
+
+            // Ensure TilemapController reference is removed
+            ServiceLocator.Unregister(Tilemap);
         }
 
 

@@ -5,7 +5,7 @@ using Utilities;
 
 namespace Runtime.UI
 {
-    public class BannerViewManager : MonoService
+    public class BannerViewManager : MonoService<BannerViewManager>
     {
         [SerializeField] private float _fadeDuration;
         [ShowInInspector] private List<BannerView> _banners;

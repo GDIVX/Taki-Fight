@@ -8,7 +8,7 @@ using Utilities;
 
 namespace Runtime.CardGameplay.Deck
 {
-    public class HandController : MonoService
+    public class HandController : MonoService<HandController>
     {
         [SerializeField] private int _cardsToDrawPerTurn;
         [SerializeField] private int _maxHandSize;

@@ -1,30 +1,27 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using Runtime.Combat.Pawn;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Utilities;
 
 namespace Runtime.Selection
 {
-    public class SelectionService : Singleton<SelectionService>
+    public class SelectionService : MonoService<SelectionService>
     {
         [SerializeField] private SelectionLinePointer _linePointer;
         [SerializeField] private List<Button> _buttonsToDisableDuringSearch;
+
+        [ShowInInspector] [ReadOnly] private int _requiredSelections;
+        public static SelectionService Instance => ServiceLocator.Get<SelectionService>();
         [ShowInInspector, ReadOnly] public SelectionState CurrentState { get; private set; } = SelectionState.None;
         [ShowInInspector, ReadOnly] public List<ISelectableEntity> SelectedEntities { get; private set; } = new();
-        public event Action<List<ISelectableEntity>> OnSelectionComplete;
-        public event Action OnSearchCanceled;
-        public event Action<Predicate<ISelectableEntity>> OnSearchInitialized;
 
         public Predicate<ISelectableEntity> Predicate { get; private set; }
-        public Vector2Int SearchSize { get; internal set; }
 
-        [ShowInInspector, ReadOnly] private int _requiredSelections;
-        [ShowInInspector, ReadOnly] private List<ISelectableEntity> _allSelectable = new();
+        public Vector2Int SearchSize { get; internal set; }
+        // [ShowInInspector, ReadOnly] private List<ISelectableEntity> _allSelectable = new();
 
 
         private void Update()
@@ -37,6 +34,10 @@ namespace Runtime.Selection
                 StartCoroutine(cancelSelection);
             }
         }
+
+        public event Action<List<ISelectableEntity>> OnSelectionComplete;
+        public event Action OnSearchCanceled;
+        public event Action<Predicate<ISelectableEntity>> OnSearchInitialized;
 
         [Button]
         public void RequestSelection(Predicate<ISelectableEntity> predicate, int count,
@@ -97,7 +98,7 @@ namespace Runtime.Selection
 
             yield return new WaitForEndOfFrame();
             CurrentState = SelectionState.Canceled;
-            _allSelectable.ForEach(e => e.OnDeselected());
+            // _allSelectable.ForEach(e => e.OnDeselected());
             SelectedEntities.Clear();
             Predicate = null;
             OnSearchCanceled?.Invoke();
@@ -110,17 +111,17 @@ namespace Runtime.Selection
         {
             yield return new WaitForEndOfFrame();
             CurrentState = SelectionState.Complete;
-            _allSelectable.ForEach(e => e.OnDeselected());
+            // _allSelectable.ForEach(e => e.OnDeselected());
             OnSelectionComplete?.Invoke(SelectedEntities);
             Predicate = null;
             _linePointer.Hide();
             _buttonsToDisableDuringSearch.ForEach(button => button.interactable = true);
             SearchSize = Vector2Int.zero;
         }
-
-        public void Register(ISelectableEntity entity)
-        {
-            _allSelectable.Add(entity);
-        }
+        //
+        // public void Register(ISelectableEntity entity)
+        // {
+        //     _allSelectable.Add(entity);
+        // }
     }
 }

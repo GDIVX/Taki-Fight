@@ -8,7 +8,7 @@ using Utilities;
 
 namespace Runtime.Rewards
 {
-    public class RewardsOfferController : MonoService
+    public class RewardsOfferController : MonoService<RewardsOfferController>
     {
         [SerializeField] private RunData _runData;
         [SerializeField] private RewardsView _rewardsView;
