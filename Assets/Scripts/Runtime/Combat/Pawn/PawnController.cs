@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using Runtime.Combat.Tilemap;
+using Assets.Scripts.Runtime.Combat.Pawn;
 using CodeMonkey.HealthSystemCM;
 using Runtime.Combat.StatusEffects;
+using Runtime.Combat.Tilemap;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using Utilities;
-using Assets.Scripts.Runtime.Combat.Pawn;
 
 namespace Runtime.Combat.Pawn
 {
@@ -70,11 +68,21 @@ namespace Runtime.Combat.Pawn
 
         private void OnDead(object sender, EventArgs e)
         {
+            Kill();
+        }
+
+        public void Kill()
+        {
+            Remove();
+            ExecuteStrategies(Data.OnKilledStrategies);
+        }
+
+        public void Remove()
+        {
             _view.OnDead(() => Destroy(gameObject));
             var tilemap = ServiceLocator.Get<TilemapController>();
             tilemap.RemoveUnit(this);
             _statusEffectHandler.Clear();
-            ExecuteStrategies(Data.OnKilledStrategies);
         }
 
 
@@ -104,7 +112,6 @@ namespace Runtime.Combat.Pawn
 
             IsProcessingTurn = false;
         }
-
 
 
         private bool TrySetMultiTilePosition(Tile anchor)
@@ -177,10 +184,12 @@ namespace Runtime.Combat.Pawn
                     {
                         Debug.LogWarning($"Strategy {strategyData.Strategy.name} failed.");
                     }
+                    else
+                    {
+                        Debug.Log($"Strategy {strategyData.Strategy.name} succeeded.");
+                    }
                 });
             }
         }
-
-
     }
 }

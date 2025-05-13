@@ -20,7 +20,13 @@ namespace Runtime.Combat
         [SerializeField, Required] private Button _endTurnBtn;
         [SerializeField, Required] private TilemapView _arenaView;
         [SerializeField, BoxGroup("Settings")] private CombatConfig _combatConfig; // Temporary field for testing
+
+        [SerializeField] [BoxGroup("Objective")]
+        private PawnData _defenseObjectiveData;
+
         private EnemiesWavesManager _wavesManager;
+
+        public ConstantPawnHandler DefensePawn { get; private set; }
 
         private static GameManager GameManager => GameManager.Instance;
 
@@ -40,6 +46,9 @@ namespace Runtime.Combat
             ServiceLocator.Register(_wavesManager);
 
             _endTurnBtn.onClick.AddListener(EndTurn);
+
+            //set up the goal
+            DefensePawn = new ConstantPawnHandler(_defenseObjectiveData);
         }
 
         [Button]
@@ -50,6 +59,9 @@ namespace Runtime.Combat
                 Debug.LogError("CombatConfig is not assigned!");
                 return;
             }
+
+            //Place the defense objective
+            DefensePawn.CreatePawn(new Vector2Int(0, 0));
 
             // Initialize the waves manager with the combat config
             _wavesManager.Init(_combatConfig);
@@ -66,6 +78,7 @@ namespace Runtime.Combat
         {
             _wavesManager.StopSpawning(); // Stop spawning waves
             Tilemap.Clear();
+            DefensePawn.RemovePawn();
         }
 
 

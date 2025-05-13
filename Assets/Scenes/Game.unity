@@ -997,10 +997,10 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 316831701}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 1672194227}
+        m_TargetAssemblyTypeName: Runtime.UI.BannerViewManager, Scripts.Runtime
+        m_MethodName: Clear
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -1009,10 +1009,10 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1672194227}
-        m_TargetAssemblyTypeName: Runtime.UI.BannerViewManager, Scripts.Runtime
-        m_MethodName: Clear
-        m_Mode: 1
+      - m_Target: {fileID: 316831701}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -2919,6 +2919,7 @@ MonoBehaviour:
   _endTurnBtn: {fileID: 1567978250}
   _arenaView: {fileID: 1377694103}
   _combatConfig: {fileID: 11400000, guid: bab144abb3286a54f96eeeed670879ff, type: 2}
+  _defenseObjectiveData: {fileID: 11400000, guid: cc49c349a77c1e64e875d502da628b47, type: 2}
 --- !u!1 &1385731354
 GameObject:
   m_ObjectHideFlags: 0

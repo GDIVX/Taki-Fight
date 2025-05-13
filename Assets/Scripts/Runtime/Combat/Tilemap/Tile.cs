@@ -1,10 +1,6 @@
-﻿using Runtime.Combat.Pawn;
+﻿using System;
+using Runtime.Combat.Pawn;
 using Sirenix.OdinInspector;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using Utilities;
 
@@ -13,13 +9,31 @@ namespace Runtime.Combat.Tilemap
     [Serializable]
     public class Tile : IEquatable<Tile>
     {
-        [ShowInInspector, ReadOnly] private Vector2Int position;
-        [ShowInInspector, ReadOnly] private PawnController pawn;
         [ShowInInspector, ReadOnly] private TileOwner owner;
+        [ShowInInspector] [ReadOnly] private PawnController pawn;
+        [ShowInInspector] [ReadOnly] private Vector2Int position;
         [ShowInInspector, ReadOnly] private TileView view;
 
-        public Vector2Int Position { get => position; private set => position = value; }
-        public PawnController Pawn { get => pawn; private set => pawn = value; }
+        public Tile(Vector2Int position)
+        {
+            this.position = position;
+            pawn = null;
+            owner = TileOwner.None;
+            view = null;
+        }
+
+        public Vector2Int Position
+        {
+            get => position;
+            private set => position = value;
+        }
+
+        public PawnController Pawn
+        {
+            get => pawn;
+            private set => pawn = value;
+        }
+
         public TileOwner Owner
         {
             get => owner;
@@ -32,17 +46,21 @@ namespace Runtime.Combat.Tilemap
                 }
             }
         }
-        public TileView View { get => view; internal set => view = value; }
+
+        public TileView View
+        {
+            get => view;
+            internal set => view = value;
+        }
 
         public bool IsOccupied => Pawn != null;
         public bool IsEmpty => Pawn == null;
 
-        public Tile(Vector2Int position)
+        public bool Equals(Tile other)
         {
-            this.position = position;
-            this.pawn = null;
-            this.owner = TileOwner.None;
-            this.view = null;
+            if (other == null) return false;
+
+            return position.Equals(other.position);
         }
 
         public void SetPawn(PawnController pawn)
@@ -65,21 +83,13 @@ namespace Runtime.Combat.Tilemap
 
         internal void Clear()
         {
+            pawn.Remove();
             Pawn = null;
         }
 
         public override bool Equals(object obj)
         {
             return obj is Tile tile && Equals(tile);
-        }
-
-        public bool Equals(Tile other)
-        {
-            if (other == null)
-            {
-                return false;
-            }
-            return position.Equals(other.position);
         }
 
 
@@ -90,6 +100,7 @@ namespace Runtime.Combat.Tilemap
                 Debug.LogError("TileView is null");
                 return;
             }
+
             View = tileView;
         }
 
@@ -105,6 +116,7 @@ namespace Runtime.Combat.Tilemap
             {
                 return true;
             }
+
             return left.Equals(right);
         }
 
@@ -114,8 +126,8 @@ namespace Runtime.Combat.Tilemap
             {
                 return false;
             }
+
             return !(left == right);
         }
     }
-
 }

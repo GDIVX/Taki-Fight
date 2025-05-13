@@ -12,20 +12,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db39779a7d15495786ef0b741b93a144, type: 3}
   m_Name: Castle
   m_EditorClassIdentifier: 
-  _sprite: {fileID: -4232371963121305725, guid: 0e58604c38ef60b49b6a55fd3049a056, type: 3}
+  _sprite: {fileID: 2082254032, guid: aaf06ea70717cc643b5453f87d2e7c1f, type: 3}
   _health: 10
   _defense: 1
   _damage: 3
   _attacks: 1
-  _speed: 1
-  _direction: {x: 1, y: 0}
+  _speed: 0
+  _direction: {x: 0, y: 0}
   _attackRange:
   - {x: 1, y: 0}
   _isAgile: 0
   _owner: 0
-  _size: {x: 1, y: 1}
-  onTurnStartStrategies: []
-  onAttackStrategies: []
-  onMoveStrategies: []
-  onDamagedStrategies: []
-  onKilledStrategies: []
+  _size: {x: 1, y: 3}
+  _onTurnStartStrategies: []
+  _onAttackStrategies: []
+  _onMoveStrategies: []
+  _onDamagedStrategies: []
+  _onKilledStrategies: []
+  _summonStrategies:
+  - Strategy: {fileID: 11400000, guid: 06a5ed003995aed4aa0dbac31a7226aa, type: 2}
+    Potency: 0
