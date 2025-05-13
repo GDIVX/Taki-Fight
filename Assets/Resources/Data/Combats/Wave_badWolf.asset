@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6a6ab02a3c3a4ac4ba42990f4eca1037, type: 3}
-  m_Name: Wave_3Wolf
+  m_Name: Wave_badWolf
   m_EditorClassIdentifier: 
   Enemies:
   - {fileID: 11400000, guid: 1fd20c971c16de74d859bf19fc5e021a, type: 2}

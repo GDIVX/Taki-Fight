@@ -9,48 +9,48 @@ namespace Runtime.Combat.Tilemap
     [Serializable]
     public class Tile : IEquatable<Tile>
     {
-        [ShowInInspector, ReadOnly] private TileOwner owner;
-        [ShowInInspector] [ReadOnly] private PawnController pawn;
-        [ShowInInspector] [ReadOnly] private Vector2Int position;
-        [ShowInInspector, ReadOnly] private TileView view;
+        [ShowInInspector] [ReadOnly] private TileOwner _owner;
+        [ShowInInspector] [ReadOnly] private PawnController _pawnController;
+        [ShowInInspector] [ReadOnly] private Vector2Int _position;
+        [ShowInInspector] [ReadOnly] private TileView _view;
 
         public Tile(Vector2Int position)
         {
-            this.position = position;
-            pawn = null;
-            owner = TileOwner.None;
-            view = null;
+            _position = position;
+            _pawnController = null;
+            _owner = TileOwner.None;
+            _view = null;
         }
 
         public Vector2Int Position
         {
-            get => position;
-            private set => position = value;
+            get => _position;
+            private set => _position = value;
         }
 
         public PawnController Pawn
         {
-            get => pawn;
-            private set => pawn = value;
+            get => _pawnController;
+            private set => _pawnController = value;
         }
 
         public TileOwner Owner
         {
-            get => owner;
+            get => _owner;
             set
             {
-                owner = value;
-                if (view != null)
+                _owner = value;
+                if (_view != null)
                 {
-                    view.OnOwnerModified();
+                    _view.OnOwnerModified();
                 }
             }
         }
 
         public TileView View
         {
-            get => view;
-            internal set => view = value;
+            get => _view;
+            internal set => _view = value;
         }
 
         public bool IsOccupied => Pawn != null;
@@ -60,7 +60,7 @@ namespace Runtime.Combat.Tilemap
         {
             if (other == null) return false;
 
-            return position.Equals(other.position);
+            return _position.Equals(other._position);
         }
 
         public void SetPawn(PawnController pawn)
@@ -83,7 +83,8 @@ namespace Runtime.Combat.Tilemap
 
         internal void Clear()
         {
-            pawn.Remove();
+            if (!Pawn) return;
+            _pawnController.Remove();
             Pawn = null;
         }
 
@@ -107,7 +108,7 @@ namespace Runtime.Combat.Tilemap
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(position);
+            return HashCode.Combine(_position);
         }
 
         public static bool operator ==(Tile left, Tile right)

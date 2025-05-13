@@ -1,10 +1,7 @@
-﻿using Sirenix.OdinInspector;
-using System;
+﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Runtime.Combat.Tilemap;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
 
@@ -17,12 +14,6 @@ namespace Runtime.Combat.Pawn
         public TrackedProperty<int> Damage;
         public TrackedProperty<int> Attacks;
 
-        [ShowInInspector, ReadOnly] public Vector2Int[] AttackRange { get; set; }
-
-        public event Action<int, int> OnBeingAttacked;
-
-        public PawnController Pawn { get; private set; }
-
         public PawnCombat(PawnController pawn, PawnData data)
         {
             Pawn = pawn;
@@ -30,6 +21,12 @@ namespace Runtime.Combat.Pawn
             Damage = new(data.Damage);
             Attacks = new(data.Attacks);
         }
+
+        [ShowInInspector] [ReadOnly] public Vector2Int[] AttackRange { get; set; }
+
+        public PawnController Pawn { get; private set; }
+
+        public event Action<int, int> OnBeingAttacked;
 
         public void ReceiveAttack(int damage)
         {
@@ -55,6 +52,7 @@ namespace Runtime.Combat.Pawn
                 target.Combat.ReceiveAttack(Damage.Value);
                 yield return null;
             }
+
             onComplete?.Invoke();
             Pawn.ExecuteStrategies(Pawn.Data.OnAttackStrategies);
         }

@@ -10,34 +10,36 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 22d3d8792d701994898c5b8eb1657ff0, type: 3}
-  m_Name: Combat1
+  m_Name: Combat_wolf
   m_EditorClassIdentifier: 
-  CombatLength: 5
+  CombatLength: 4
   Waves:
   - {fileID: 11400000, guid: f2ef6ecf30505404ca29aa6c3c08e2a9, type: 2}
   - {fileID: 11400000, guid: 6c41902ccb7484b47b1728239619f1bb, type: 2}
-  FinalWave: {fileID: 11400000, guid: e2ac25e3da253bf40ac7a1d2bf9e363f, type: 2}
+  - {fileID: 11400000, guid: e2ac25e3da253bf40ac7a1d2bf9e363f, type: 2}
+  FinalWave: {fileID: 11400000, guid: cd840c2a1d393be4fa614e461e784824, type: 2}
   DifficultyCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 2
-      outSlope: 2
-      tangentMode: 0
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  _turnsDelayBetweenWaves: 1
