@@ -1,6 +1,7 @@
 ﻿using Runtime.Combat.Tilemap;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Utilities;
 
 namespace Runtime.Combat.Pawn
@@ -23,6 +24,7 @@ namespace Runtime.Combat.Pawn
 
             controller.Init(unit);
             controller.SpawnAtPosition(tile);
+            SceneManager.MoveGameObjectToScene(controller.gameObject, SceneManager.GetSceneByName("Combat"));
 
             return controller;
         }
