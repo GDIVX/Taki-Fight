@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Runtime.CardGameplay.Card;
+using Runtime.UI.OnScreenMessages;
 using Sirenix.OdinInspector;
-using UnityEngine;
 using Utilities;
 
 namespace Runtime.CardGameplay.Deck
@@ -11,18 +11,22 @@ namespace Runtime.CardGameplay.Deck
     [Serializable]
     public class Deck
     {
-        [ShowInInspector, ReadOnly, TableList] private Stack<CardInstance> _drawPile;
-        [ShowInInspector, ReadOnly, TableList] private Stack<CardInstance> _discardPile;
         [ShowInInspector, ReadOnly, TableList] private Stack<CardInstance> _consumePile;
 
-        public event Action<Stack<CardInstance>> OnDrawPileUpdated;
-        public event Action<Stack<CardInstance>> OnDiscardPileUpdated;
-        public event Action<Stack<CardInstance>> OnBurnPileUpdated;
+        [ShowInInspector] [ReadOnly] [TableList]
+        private Stack<CardInstance> _discardPile;
+
+        [ShowInInspector] [ReadOnly] [TableList]
+        private Stack<CardInstance> _drawPile;
 
         public Deck(List<CardInstance> cards)
         {
             Setup(cards);
         }
+
+        public event Action<Stack<CardInstance>> OnDrawPileUpdated;
+        public event Action<Stack<CardInstance>> OnDiscardPileUpdated;
+        public event Action<Stack<CardInstance>> OnBurnPileUpdated;
 
         private void Setup(List<CardInstance> cards)
         {
@@ -42,8 +46,8 @@ namespace Runtime.CardGameplay.Deck
             {
                 if (_discardPile.Count == 0)
                 {
-                    Debug.LogWarning("Can't draw more cards");
-                    cardInstance = default;
+                    ServiceLocator.Get<MessageManager>().ShowMessage("Can't Draw More Cards", MessageType.Notification);
+                    cardInstance = null;
                     return false;
                 }
 

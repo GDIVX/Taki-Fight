@@ -5,7 +5,7 @@ using Runtime.CardGameplay.Card.CardBehaviour.Feedback;
 using Runtime.CardGameplay.Card.View;
 using Runtime.CardGameplay.Deck;
 using Runtime.Selection;
-using Runtime.UI;
+using Runtime.UI.OnScreenMessages;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -134,9 +134,8 @@ namespace Runtime.CardGameplay.Card
         {
             if (!CanAfford())
             {
-                var bannerView = ServiceLocator.Get<BannerViewManager>();
-                bannerView.WriteMessage(1, "Can't Afford to Play This Card", Color.red);
-                this.Timer(1f, () => bannerView.Clear());
+                ServiceLocator.Get<MessageManager>()
+                    .ShowMessage("Not enough energy to play this card.", MessageType.Critical);
                 return;
             }
 

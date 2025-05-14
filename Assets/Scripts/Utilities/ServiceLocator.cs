@@ -15,6 +15,7 @@ namespace Utilities
             Services.TryAdd(type, service);
         }
 
+        // ReSharper disable Unity.PerformanceAnalysis
         public static T Get<T>() where T : class
         {
             // Directly fetch the service if already registered
@@ -43,11 +44,26 @@ namespace Utilities
             // If not found, and it's a Unity Object, try finding it in the scene (expensive but safe fallback)
             if (typeof(Object).IsAssignableFrom(typeof(T)))
             {
-                var foundObject = Object.FindAnyObjectByType(typeof(T)) as T;
-                if (foundObject != null)
+                //if it is a game object
+                if (Object.FindAnyObjectByType(typeof(T)) is T foundObject)
                 {
                     Register(foundObject); // Cache it for future use
                     return foundObject;
+                }
+
+                //if it is a scriptable object, try to find it in resources
+                // Attempt to find the service if it's a ScriptableObject
+                if (typeof(ScriptableObject).IsAssignableFrom(typeof(T)))
+                {
+                    // Try to load from Resources using the type name
+
+                    if (Resources.Load(typeof(T).Name) is T resource) // If found in Resources
+                    {
+                        Register(resource); // Cache it for future use
+                        return resource;
+                    }
+
+                    Debug.LogWarning($"ScriptableObject of type {typeof(T).Name} not found in Resources.");
                 }
 
                 Debug.LogWarning($"Service of type {typeof(T).Name} not found in the current scene.");

@@ -6,7 +6,7 @@ using Runtime.CardGameplay.Energy;
 using Runtime.Combat.Pawn;
 using Runtime.Combat.Spawning;
 using Runtime.Combat.Tilemap;
-using Runtime.UI;
+using Runtime.UI.OnScreenMessages;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UI;
@@ -26,6 +26,7 @@ namespace Runtime.Combat
         private PawnData _defenseObjectiveData;
 
         private EnemiesWavesManager _wavesManager;
+        public int CurrentTurn { get; private set; }
 
         private ConstantPawnHandler DefensePawn { get; set; }
 
@@ -70,6 +71,8 @@ namespace Runtime.Combat
                 return;
             }
 
+            CurrentTurn = 0;
+
             //Place the defense objective
             DefensePawn.CreatePawn(new Vector2Int(0, 0));
 
@@ -97,9 +100,10 @@ namespace Runtime.Combat
 
         private void StartTurn()
         {
-            var bannerView = ServiceLocator.Get<BannerViewManager>();
-            bannerView.WriteMessage(1, "Player Turn", Color.white);
-            bannerView.Clear();
+            CurrentTurn++;
+
+
+            ServiceLocator.Get<MessageManager>().ShowMessage($"Turn {CurrentTurn}", MessageType.Notification);
 
             ServiceLocator.Get<HandController>().DrawHand();
             ServiceLocator.Get<Energy>().GainEnergyPerIncome();

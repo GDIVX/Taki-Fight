@@ -14,7 +14,6 @@ namespace Runtime.Combat.Spawning
         private bool _canSpawn = true; // Flag to control spawning
         private int _combatLength;
 
-        private int _currentTurn;
         private AnimationCurve _difficultyCurve;
         private WaveConfig _finalWave;
         private List<WaveConfig> _remainingWaves;
@@ -48,7 +47,6 @@ namespace Runtime.Combat.Spawning
             if (_turnsSinceLastWave <= _turnsDelayBetweenWaves) return;
 
             _turnsSinceLastWave = 0;
-            _currentTurn++;
 
             // Check if it's time to spawn the final wave
             if (_wavesSpawned >= _combatLength && _finalWave != null)
@@ -79,7 +77,8 @@ namespace Runtime.Combat.Spawning
             var maxDifficulty = _waves.Max(w => w.DifficultyLevel);
 
             // Step 2: Calculate turn progress (X-axis: 0 to 1)
-            var turnProgress = (float)_currentTurn / _combatLength;
+            var currentTurn = ServiceLocator.Get<CombatManager>().CurrentTurn;
+            var turnProgress = (float)currentTurn / _combatLength;
 
             // Step 3: Evaluate the curve (Y-axis: 0 to 1)
             var relativeDifficulty = _difficultyCurve.Evaluate(turnProgress);
@@ -158,7 +157,6 @@ namespace Runtime.Combat.Spawning
 
         private void ResetState()
         {
-            _currentTurn = 0;
             _wavesSpawned = 0;
             _turnsSinceLastWave = 0; // Reset the turns delay counter
             _remainingWaves = _waves.OrderBy(w => w.DifficultyLevel).ToList();

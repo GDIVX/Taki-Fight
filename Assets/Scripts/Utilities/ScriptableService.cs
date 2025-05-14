@@ -8,5 +8,10 @@ namespace Utilities
         {
             ServiceLocator.Register(this as T);
         }
+
+        private void OnDestroy()
+        {
+            ServiceLocator.Unregister(this as T);
+        }
     }
 }
