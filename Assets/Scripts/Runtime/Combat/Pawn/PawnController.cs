@@ -21,7 +21,7 @@ namespace Runtime.Combat.Pawn
         public PawnOwner Owner { get; private set; }
 
         public PawnData Data { get; private set; }
-        public HealthSystem Health { get; private set; }
+        [ShowInInspector] public HealthSystem Health { get; private set; }
         public bool IsAgile { get; private set; }
         public bool IsProcessingTurn { get; private set; }
 
@@ -194,6 +194,12 @@ namespace Runtime.Combat.Pawn
                     }
                 });
             }
+        }
+
+        public void OverrideHealthSystem(HealthSystem health)
+        {
+            Health = health;
+            Health.OnDead += OnDead;
         }
     }
 }

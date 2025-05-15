@@ -10,16 +10,16 @@ namespace Runtime.Combat.Pawn
     [Serializable]
     internal class PawnCombat
     {
-        public TrackedProperty<int> Defense;
-        public TrackedProperty<int> Damage;
-        public TrackedProperty<int> Attacks;
+        public Observable<int> Defense;
+        public Observable<int> Damage;
+        public Observable<int> Attacks;
 
         public PawnCombat(PawnController pawn, PawnData data)
         {
             Pawn = pawn;
-            Defense = new(data.Defense);
-            Damage = new(data.Damage);
-            Attacks = new(data.Attacks);
+            Defense = new Observable<int>(data.Defense);
+            Damage = new Observable<int>(data.Damage);
+            Attacks = new Observable<int>(data.Attacks);
         }
 
         [ShowInInspector] [ReadOnly] public Vector2Int[] AttackRange { get; set; }

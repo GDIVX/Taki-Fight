@@ -4,14 +4,26 @@ namespace Utilities
 {
     public abstract class ScriptableService<T> : ScriptableObject where T : ScriptableObject
     {
-        private void Awake()
+        private T Self => this as T;
+
+        protected virtual void OnEnable()
         {
-            ServiceLocator.Register(this as T);
+            RegisterSelf();
         }
 
-        private void OnDestroy()
+        protected virtual void OnDisable()
         {
-            ServiceLocator.Unregister(this as T);
+            UnregisterSelf();
+        }
+
+        private void RegisterSelf()
+        {
+            if (Self && Application.isPlaying) ServiceLocator.Register(Self);
+        }
+
+        private void UnregisterSelf()
+        {
+            if (Self) ServiceLocator.Unregister(Self);
         }
     }
 }

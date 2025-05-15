@@ -28,7 +28,7 @@ namespace Runtime.Combat
         private EnemiesWavesManager _wavesManager;
         public int CurrentTurn { get; private set; }
 
-        private ConstantPawnHandler DefensePawn { get; set; }
+        private CastleHealthManager DefenseCastle { get; set; }
 
         private static GameManager GameManager => ServiceLocator.Get<GameManager>();
 
@@ -46,7 +46,7 @@ namespace Runtime.Combat
             _endTurnBtn.onClick.AddListener(EndTurn);
 
             //defense target
-            DefensePawn = new ConstantPawnHandler(_defenseObjectiveData);
+            DefenseCastle = ServiceLocator.Get<CastleHealthManager>().Init(_defenseObjectiveData);
 
 
             // Recreate TilemapController with the fresh scene tilemap view
@@ -55,7 +55,7 @@ namespace Runtime.Combat
                 Tilemap = new TilemapController(tiles, _tilemapView);
 
                 // Initialize the defense pawn
-                DefensePawn.CreatePawn(new Vector2Int(0, 0));
+                DefenseCastle.CreatePawn(new Vector2Int(0, 0));
 
                 // Start combat when ready
                 StartCombat();
@@ -74,7 +74,7 @@ namespace Runtime.Combat
             CurrentTurn = 0;
 
             //Place the defense objective
-            DefensePawn.CreatePawn(new Vector2Int(0, 0));
+            DefenseCastle.CreatePawn(new Vector2Int(0, 0));
 
             // Initialize the waves manager with the combat config
             _wavesManager.Init(_combatConfig);
@@ -90,7 +90,7 @@ namespace Runtime.Combat
         public void EndCombat()
         {
             _wavesManager.StopSpawning(); // Stop spawning waves
-            DefensePawn?.RemovePawn();
+            DefenseCastle?.RemovePawn();
             Tilemap?.Clear(); // Clear any tilemap references
 
             // Ensure TilemapController reference is removed

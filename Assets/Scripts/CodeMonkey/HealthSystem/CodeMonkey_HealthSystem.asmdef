@@ -1,5 +1,6 @@
 {
     "name": "CodeMonkey_HealthSystem",
+  "rootNamespace": "",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],

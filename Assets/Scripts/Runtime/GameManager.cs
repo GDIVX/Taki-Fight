@@ -5,6 +5,7 @@ using Runtime.CardGameplay.Energy;
 using Runtime.Combat;
 using Runtime.Rewards;
 using Runtime.RunManagement;
+using Runtime.SceneManagementExtend;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -96,7 +97,7 @@ namespace Runtime
         public void EndRun()
         {
             //reboot the game by loading the bootstrap scene single
-            SceneManager.LoadSceneAsync("Bootstrap", LoadSceneMode.Single);
+            SceneManagerExtensions.SafeLoadSceneAsync("Bootstrap", LoadSceneMode.Single);
         }
     }
 }

@@ -1,8 +1,9 @@
-﻿using DG.Tweening;
+﻿using System;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace CodeMonkey.HealthSystemCM
+namespace Runtime.CodeMonkey.HealthSystem.Scripts
 {
     /// <summary>
     /// Simple UI Health Bar, sets the Image fillAmount based on the linked HealthSystem
@@ -22,7 +23,18 @@ namespace CodeMonkey.HealthSystemCM
         [SerializeField] private float _trailDelay, _trailFillTime, _animationTime;
         [SerializeField] private Ease _trailEase, _fillEase, _colorEase;
 
-        private HealthSystem healthSystem;
+
+        private global::CodeMonkey.HealthSystemCM.HealthSystem healthSystem;
+
+
+        /// <summary>
+        ///     Clean up events when this Game Object is destroyed
+        /// </summary>
+        private void OnDestroy()
+        {
+            if (healthSystem == null) return;
+            healthSystem.OnHealthChanged -= HealthSystem_OnHealthChanged;
+        }
 
 
         // private void Start() {
@@ -34,7 +46,7 @@ namespace CodeMonkey.HealthSystemCM
         /// <summary>
         /// Set the Health System for this Health Bar
         /// </summary>
-        public void SetHealthSystem(HealthSystem healthSystem)
+        public void SetHealthSystem(global::CodeMonkey.HealthSystemCM.HealthSystem healthSystem)
         {
             if (this.healthSystem != null)
             {
@@ -51,7 +63,7 @@ namespace CodeMonkey.HealthSystemCM
         /// <summary>
         /// Event fired from the Health System when Health Amount changes, update Health Bar
         /// </summary>
-        private void HealthSystem_OnHealthChanged(object sender, System.EventArgs e)
+        private void HealthSystem_OnHealthChanged(object sender, EventArgs e)
         {
             UpdateHealthBar();
         }
@@ -73,15 +85,6 @@ namespace CodeMonkey.HealthSystemCM
                 .To((x) => _trailFillImage.fillAmount = x, _fillImage.fillAmount, healthNormalized, _trailFillTime)
                 .SetEase(_trailEase));
             sequence.Play();
-        }
-
-
-        /// <summary>
-        /// Clean up events when this Game Object is destroyed
-        /// </summary>
-        private void OnDestroy()
-        {
-            healthSystem.OnHealthChanged -= HealthSystem_OnHealthChanged;
         }
     }
 }

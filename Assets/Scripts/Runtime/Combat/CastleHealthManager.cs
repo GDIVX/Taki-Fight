@@ -1,7 +1,8 @@
-﻿using System;
-using CodeMonkey.HealthSystemCM;
+﻿using CodeMonkey.HealthSystemCM;
 using Runtime.Combat.Pawn;
 using Runtime.Combat.Tilemap;
+using Runtime.Events;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
 
@@ -10,34 +11,30 @@ namespace Runtime.Combat
     /// <summary>
     ///     This class help with creating and tracking pawns that have consistent health between battles
     /// </summary>
-    public class ConstantPawnHandler
+    public class CastleHealthManager : MonoService<CastleHealthManager>, IGetHealthSystem
     {
-        private readonly PawnData _data;
-        private PawnController _pawn;
+        [ShowInInspector] private PawnData _data;
+        [ShowInInspector] private PawnController _pawn;
 
-        public ConstantPawnHandler(PawnData data)
-        {
-            _data = data;
-            MaxHealth = new TrackedProperty<float>(data.Health);
-            CurrentHealth = new TrackedProperty<float>(data.Health);
-        }
+        [ShowInInspector] public HealthSystem Health { get; private set; }
 
-        public TrackedProperty<float> MaxHealth { get; }
-        public TrackedProperty<float> CurrentHealth { get; }
-
-        public void Heal(float amount)
-        {
-            CurrentHealth.Value = Mathf.Clamp(CurrentHealth.Value + amount, 0, MaxHealth.Value);
-        }
-
-        public void Damage(float amount)
-        {
-            CurrentHealth.Value = Mathf.Clamp(CurrentHealth.Value - amount, 0, MaxHealth.Value);
-        }
 
         public void Reset()
         {
-            CurrentHealth.Value = MaxHealth.ReadOnlyValue;
+            Health.SetHealth(Health.GetHealthMax());
+        }
+
+
+        public HealthSystem GetHealthSystem()
+        {
+            return Health;
+        }
+
+        public CastleHealthManager Init(PawnData data)
+        {
+            _data = data;
+            Health = new HealthSystem(data.Health);
+            return this;
         }
 
         public void CreatePawn(Vector2Int position)
@@ -73,24 +70,36 @@ namespace Runtime.Combat
             }
 
             // Set health
-            pawn.Health.SetHealth(CurrentHealth.Value);
-            // Track health changes
-            pawn.Health.OnHealthChanged += OnHealthChanged;
+            pawn.OverrideHealthSystem(Health);
 
             _pawn = pawn;
+
+            NotifyCastlePawnCreated(pawn);
+        }
+
+        private void NotifyCastlePawnCreated(PawnController pawn)
+        {
+            var initializedEvent = new CastlePawnInitializedEvent(Health, pawn);
+            ServiceLocator.Get<EventBus>().Publish(initializedEvent);
         }
 
         public void RemovePawn()
         {
             if (!_pawn) return;
-            _pawn.Health.OnHealthChanged -= OnHealthChanged;
             _pawn.Remove(false);
             _pawn = null;
         }
 
-        private void OnHealthChanged(object sender, EventArgs e)
+        public class CastlePawnInitializedEvent
         {
-            if (sender is HealthSystem health) CurrentHealth.Value = health.GetHealth();
+            public readonly HealthSystem HealthSystem;
+            public readonly PawnController Pawn;
+
+            public CastlePawnInitializedEvent(HealthSystem healthSystem, PawnController pawn)
+            {
+                HealthSystem = healthSystem;
+                Pawn = pawn;
+            }
         }
     }
 }

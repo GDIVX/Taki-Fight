@@ -11,11 +11,11 @@ namespace Runtime.CardGameplay.Energy
 
         [SerializeField] [Required] private EnergyView _view;
 
-        [ShowInInspector, ReadOnly] private TrackedProperty<int> _currentAmount = new(0);
-        [ShowInInspector, ReadOnly] private TrackedProperty<int> _incomePerTurn = new(0);
+        [ShowInInspector] [ReadOnly] private Observable<int> _currentAmount = new();
+        [ShowInInspector] [ReadOnly] private Observable<int> _incomePerTurn = new();
 
-        public int Amount => _currentAmount.ReadOnlyValue;
-        public int Income => _incomePerTurn.ReadOnlyValue;
+        public int Amount => _currentAmount;
+        public int Income => _incomePerTurn;
 
         public void Reset()
         {

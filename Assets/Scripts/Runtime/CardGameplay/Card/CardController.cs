@@ -15,7 +15,7 @@ namespace Runtime.CardGameplay.Card
 {
     public class CardController : MonoBehaviour, IPointerClickHandler, ISelectableEntity
     {
-        [ShowInInspector, ReadOnly] public TrackedProperty<bool> IsPlayable;
+        [ShowInInspector] [ReadOnly] public Observable<bool> IsPlayable;
 
         private CardFactory _cardFactory;
         [ShowInInspector] [ReadOnly] private FeedbackStrategy _feedbackStrategy;
@@ -95,12 +95,14 @@ namespace Runtime.CardGameplay.Card
 
             View = GetComponent<CardView>();
 
-            IsPlayable = new TrackedProperty<bool>(true);
+            IsPlayable = new Observable<bool>(true);
             OnCardPlayedEvent += _ => UpdateAffordability();
             Energy.OnAmountChanged += _ => UpdateAffordability();
             Data = data;
 
             // SelectionService.Instance.Register(this);
+
+            gameObject.name = data.Title + Guid.NewGuid();
         }
 
         private void UpdateAffordability()

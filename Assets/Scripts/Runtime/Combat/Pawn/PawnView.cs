@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Linq;
-using CodeMonkey.HealthSystemCM;
 using DG.Tweening;
 using Runtime.Combat.Tilemap;
+using Runtime.UI;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using TMPro;
-using UI;
 using UnityEngine;
 using UnityEngine.UI;
 using Utilities;
+using HealthBarUI = Runtime.CodeMonkey.HealthSystem.Scripts.HealthBarUI;
 
 namespace Runtime.Combat.Pawn
 {
@@ -35,16 +35,19 @@ namespace Runtime.Combat.Pawn
         [SerializeField, BoxGroup("Sprite")] private SpriteRenderer spriteRenderer;
 
         private PawnController _controller;
-        private TrackedProperty<int> _defense;
+        private Observable<int> _defense;
 
         private void OnDestroy()
         {
             if (_controller != null) _controller.Combat.OnBeingAttacked -= Flash;
 
             if (_defense != null) _defense.OnValueChanged -= UpdateDefenseUI;
+
+            // Kill any active DOTween animations to prevent null reference exceptions
+            DOTween.Kill("FlashTween_" + GetInstanceID());
         }
 
-        public void Init(PawnController controller, TrackedProperty<int> defense, PawnData data)
+        public void Init(PawnController controller, Observable<int> defense, PawnData data)
         {
             InitiateHealthView(controller);
             InitiateDefenseView(defense);
@@ -67,6 +70,8 @@ namespace Runtime.Combat.Pawn
 
         public void OnDead(Action onComplete)
         {
+            if (!spriteRenderer || !spriteRenderer.gameObject.activeInHierarchy) return;
+
             DOTween.To((x) => spriteRenderer.material.SetFloat(Dissolve, x),
                 0,
                 1,
@@ -76,39 +81,50 @@ namespace Runtime.Combat.Pawn
         [Button]
         private void Flash(int attackPoints, int realDamage)
         {
+            if (!spriteRenderer || !spriteRenderer.gameObject.activeInHierarchy)
+                return;
+
             DOTween.To(
-                    x => spriteRenderer.material.SetFloat(FlashAmount, x),
+                    x =>
+                    {
+                        if (spriteRenderer != null && spriteRenderer.material != null)
+                            spriteRenderer.material.SetFloat(FlashAmount, x);
+                    },
                     0f, 1f, _flashTime)
                 .SetEase(_flashEase)
                 .SetLoops(2, LoopType.Yoyo)
-                .SetId("FlashTween")
-                .OnComplete(() => spriteRenderer.material.SetFloat(FlashAmount, 0f));
+                .SetId("FlashTween_" + GetInstanceID())
+                .OnComplete(() =>
+                {
+                    if (spriteRenderer != null && spriteRenderer.material != null)
+                        spriteRenderer.material.SetFloat(FlashAmount, 0f);
+                });
         }
 
 
-        private void InitiateDefenseView(TrackedProperty<int> defense)
+        private void InitiateDefenseView(Observable<int> defense)
         {
-            _defense = defense;
-            _defense.OnValueChanged += UpdateDefenseUI;
-            UpdateDefenseUI(_defense.Value);
+            // _defense = defense;
+            // _defense.OnValueChanged += UpdateDefenseUI;
+            // UpdateDefenseUI(_defense.Value);
         }
 
         private void InitiateHealthView(PawnController controller)
         {
-            var healthSystem = controller.Health;
-            healthBar.SetHealthSystem(healthSystem);
-            healthBarText.SetHealthSystem(healthSystem);
+            // var healthSystem = controller.Health;
+            // // healthBar.SetHealthSystem(healthSystem);
+            // healthBarText.SetHealthSystem(healthSystem);
         }
 
         private void UpdateDefenseUI(int defensePoints)
         {
-            defenseImage.gameObject.SetActive(defensePoints != 0);
-            defenseCount.text = defensePoints.ToString();
+            // defenseImage.gameObject.SetActive(defensePoints != 0);
+            // defenseCount.text = defensePoints.ToString();
         }
 
         internal void SpawnAtPosition(Vector2Int anchor)
         {
-            var targetPosition = CalculateCenterPosition(anchor, _controller);
+            var targetPosition = CalculateCenterPosition(anchor);
             transform.position = targetPosition;
         }
 
@@ -117,14 +133,14 @@ namespace Runtime.Combat.Pawn
         {
             if (transform.SafeIsUnityNull()) return;
 
-            var targetPosition = CalculateCenterPosition(anchor, _controller);
+            var targetPosition = CalculateCenterPosition(anchor);
 
             transform.DOMove(targetPosition, _movementDuration)
                 .SetEase(_movementEase)
                 .OnComplete(() => transform.position = targetPosition);
         }
 
-        private Vector3 CalculateCenterPosition(Vector2Int anchor, PawnController controller)
+        private Vector3 CalculateCenterPosition(Vector2Int anchor)
         {
             var tilemap = ServiceLocator.Get<TilemapController>();
             var footprint = tilemap.GenerateFootprintUnbounded(anchor, _controller.TilemapHelper.Size);

@@ -1,15 +1,37 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using UnityEditor;
+using UnityEngine;
 
-namespace CodeMonkey.HealthSystemCM {
-
+namespace CodeMonkey.HealthSystemCM
+{
     [CustomEditor(typeof(Readme_HealthSystem))]
     [InitializeOnLoad]
-    public class ReadmeEditor_HealthSystem : Editor {
-
+    public class ReadmeEditor_HealthSystem : Editor
+    {
         private static float kSpace = 16f;
+        [SerializeField] private GUIStyle m_LinkStyle;
+        [SerializeField] private GUIStyle m_HeaderStyle;
+        [SerializeField] private GUIStyle m_TitleStyle;
+        [SerializeField] private GUIStyle m_HeadingStyle;
+        [SerializeField] private GUIStyle m_BodyStyle;
+        [SerializeField] private GUIStyle m_BodyStyleSmall;
 
-        protected override void OnHeaderGUI() {
+
+        private bool m_Initialized;
+
+        private GUIStyle LinkStyle => m_LinkStyle;
+
+        private GUIStyle HeaderStyle => m_HeaderStyle;
+
+        private GUIStyle TitleStyle => m_TitleStyle;
+
+        private GUIStyle HeadingStyle => m_HeadingStyle;
+
+        private GUIStyle BodyStyle => m_BodyStyle;
+
+        private GUIStyle BodyStyleSmall => m_BodyStyleSmall;
+
+        protected override void OnHeaderGUI()
+        {
             Readme_HealthSystem readme = (Readme_HealthSystem)target;
             Init();
 
@@ -17,62 +39,54 @@ namespace CodeMonkey.HealthSystemCM {
 
             float headerAspectRatio = (float)readme.codeMonkeyHeader.height / readme.codeMonkeyHeader.width;
             float width = EditorGUIUtility.currentViewWidth - 30f;
-            GUILayout.Label(readme.codeMonkeyHeader, GUILayout.Width(width), GUILayout.Height(width * headerAspectRatio));
+            GUILayout.Label(readme.codeMonkeyHeader, GUILayout.Width(width),
+                GUILayout.Height(width * headerAspectRatio));
 
             GUILayout.EndHorizontal();
 
             GUILayout.Label(readme.title, HeaderStyle);
         }
 
-        public override void OnInspectorGUI() {
+        public override void OnInspectorGUI()
+        {
             Readme_HealthSystem readme = (Readme_HealthSystem)target;
             Init();
 
-            foreach (Readme_HealthSystem.Section section in readme.sections) {
-                if (!string.IsNullOrEmpty(section.heading)) {
+            foreach (var section in readme.sections)
+            {
+                if (!string.IsNullOrEmpty(section.heading))
+                {
                     GUILayout.Label(section.heading, HeadingStyle);
                 }
-                if (section.textLines != null) {
-                    foreach (string textLine in section.textLines) {
-                        if (!string.IsNullOrEmpty(textLine)) {
+
+                if (section.textLines != null)
+                {
+                    foreach (var textLine in section.textLines)
+                    {
+                        if (!string.IsNullOrEmpty(textLine))
+                        {
                             string sectionText = textLine;
                             sectionText = sectionText.Replace("\\n", "\n");
                             GUILayout.Label(sectionText, BodyStyleSmall);
                         }
                     }
                 }
-                if (!string.IsNullOrEmpty(section.linkText)) {
+
+                if (!string.IsNullOrEmpty(section.linkText))
+                {
                     GUILayout.Space(kSpace / 2);
-                    if (LinkLabel(new GUIContent(section.linkText))) {
+                    if (LinkLabel(new GUIContent(section.linkText)))
+                    {
                         Application.OpenURL(section.url);
                     }
                 }
+
                 GUILayout.Space(kSpace);
             }
         }
 
-
-        private bool m_Initialized;
-
-        private GUIStyle LinkStyle { get { return m_LinkStyle; } }
-        [SerializeField] private GUIStyle m_LinkStyle;
-
-        private GUIStyle HeaderStyle { get { return m_HeaderStyle; } }
-        [SerializeField] private GUIStyle m_HeaderStyle;
-
-        private GUIStyle TitleStyle { get { return m_TitleStyle; } }
-        [SerializeField] private GUIStyle m_TitleStyle;
-
-        private GUIStyle HeadingStyle { get { return m_HeadingStyle; } }
-        [SerializeField] private GUIStyle m_HeadingStyle;
-
-        private GUIStyle BodyStyle { get { return m_BodyStyle; } }
-        [SerializeField] private GUIStyle m_BodyStyle;
-
-        private GUIStyle BodyStyleSmall { get { return m_BodyStyleSmall; } }
-        [SerializeField] private GUIStyle m_BodyStyleSmall;
-
-        private void Init() {
+        private void Init()
+        {
             if (m_Initialized)
                 return;
 
@@ -104,7 +118,8 @@ namespace CodeMonkey.HealthSystemCM {
             m_Initialized = true;
         }
 
-        private bool LinkLabel(GUIContent label, params GUILayoutOption[] options) {
+        private bool LinkLabel(GUIContent label, params GUILayoutOption[] options)
+        {
             var position = GUILayoutUtility.GetRect(label, LinkStyle, options);
 
             Handles.BeginGUI();
@@ -117,7 +132,5 @@ namespace CodeMonkey.HealthSystemCM {
 
             return GUI.Button(position, label, LinkStyle);
         }
-
     }
-
 }

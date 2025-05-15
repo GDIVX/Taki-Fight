@@ -1,8 +1,7 @@
-﻿using Runtime.Combat.Pawn;
+﻿using System;
+using Runtime.Combat.Pawn;
 using Runtime.Combat.Tilemap;
 using Sirenix.OdinInspector;
-using System;
-using System.Collections;
 using UnityEngine;
 using Utilities;
 
@@ -11,13 +10,12 @@ namespace Assets.Scripts.Runtime.Combat.Pawn
     [Serializable]
     public class PawnMovement
     {
+        public Observable<int> Speed;
+
+        private PawnController _pawn;
+
         //Reference to the tilemap helper for ease of access
         PawnTilemapHelper _tilemapHelper;
-        PawnController _pawn;
-
-        public TrackedProperty<int> Speed;
-        [ShowInInspector, ReadOnly] public Vector2Int MovementDirection { get; set; }
-        [ShowInInspector, ReadOnly] public int AvilableSpeed { get; private set; }
 
         public PawnMovement(PawnController pawn, PawnTilemapHelper tilemapHelper, int speed)
         {
@@ -25,6 +23,9 @@ namespace Assets.Scripts.Runtime.Combat.Pawn
             _pawn = pawn;
             Speed = new(speed);
         }
+
+        [ShowInInspector] [ReadOnly] public Vector2Int MovementDirection { get; set; }
+        [ShowInInspector] [ReadOnly] public int AvilableSpeed { get; private set; }
 
         internal void ResetSpeed()
         {
@@ -60,6 +61,7 @@ namespace Assets.Scripts.Runtime.Combat.Pawn
                 {
                     return false;
                 }
+
                 // Check ownership rules
                 if (_pawn.Owner == PawnOwner.Player && nextTile.Owner == TileOwner.Enemy) return false;
             }

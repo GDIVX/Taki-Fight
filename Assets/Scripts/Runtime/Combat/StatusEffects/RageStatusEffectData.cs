@@ -12,7 +12,7 @@ namespace Runtime.Combat.StatusEffects
         {
             return new RageStatusEffect()
             {
-                Stack = new TrackedProperty<int>(stacks)
+                Stack = new Observable<int>(stacks)
             };
         }
 
@@ -24,9 +24,8 @@ namespace Runtime.Combat.StatusEffects
 
     public class RageStatusEffect : IStatusEffect
     {
-        public TrackedProperty<int> Stack { get; set; }
-
         private int _previousStack;
+        public Observable<int> Stack { get; set; }
 
         public void OnAdded(PawnController pawn)
         {
