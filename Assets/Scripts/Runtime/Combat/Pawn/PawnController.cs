@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using Assets.Scripts.Runtime.Combat.Pawn;
 using CodeMonkey.HealthSystemCM;
 using Runtime.Combat.StatusEffects;
 using Runtime.Combat.Tilemap;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using Utilities;
 
 namespace Runtime.Combat.Pawn
@@ -42,12 +42,11 @@ namespace Runtime.Combat.Pawn
             Health = new HealthSystem(data.Health);
             Health.OnDead += OnDead;
 
-            Combat.AttackRange = data.AttackRange.ToArray();
+            Combat.AttackRange = data.AttackRange;
 
             _statusEffectHandler ??= GetComponent<StatusEffectHandler>();
             _statusEffectHandler.Init(this);
 
-            _movement.MovementDirection = data.Direction;
 
             _view ??= GetComponent<PawnView>();
             _view.Init(this, Combat.Defense, data);
@@ -73,8 +72,8 @@ namespace Runtime.Combat.Pawn
 
         public void Kill()
         {
-            Remove(true);
             ExecuteStrategies(Data.OnKilledStrategies);
+            Remove(true);
         }
 
         public void Remove(bool animate)
@@ -95,7 +94,6 @@ namespace Runtime.Combat.Pawn
             if (IsProcessingTurn) return; // Prevent multiple turns at once
             if (Health.IsDead()) return; // Prevent dead units from taking turns
 
-
             IsProcessingTurn = true;
             _statusEffectHandler.Apply();
             _movement.ResetSpeed();
@@ -103,15 +101,19 @@ namespace Runtime.Combat.Pawn
             // Execute onTurnStart strategies
             ExecuteStrategies(Data.OnTurnStartStrategies);
 
-            while (_movement.AvilableSpeed > 0)
+            // Check if this unit can attack first
+            while (true)
             {
-                if (Combat.IsHostileUnitInAttackRange(out var target))
+                var target = Combat.ChooseTarget();
+                if (target != null)
                 {
                     StartCoroutine(Combat.Attack(target, () => IsProcessingTurn = false));
                     return;
                 }
 
-                if (!Movement.TryToMove()) break;
+                // If the unit has no available speed or cannot move, break the loop
+                if (_movement.AvilableSpeed <= 0 || !Movement.TryToMove())
+                    break;
             }
 
             IsProcessingTurn = false;
@@ -200,6 +202,11 @@ namespace Runtime.Combat.Pawn
         {
             Health = health;
             Health.OnDead += OnDead;
+        }
+
+        public void OnPinterEnter(PointerEventData eventData)
+        {
+            _view.OnPointerEnter(eventData);
         }
     }
 }

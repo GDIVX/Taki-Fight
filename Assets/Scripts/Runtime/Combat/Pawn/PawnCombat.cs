@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using Runtime.Combat.Tilemap;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -22,7 +23,7 @@ namespace Runtime.Combat.Pawn
             Attacks = new Observable<int>(data.Attacks);
         }
 
-        [ShowInInspector] [ReadOnly] public Vector2Int[] AttackRange { get; set; }
+        [ShowInInspector] [ReadOnly] public int AttackRange { get; set; }
 
         public PawnController Pawn { get; private set; }
 
@@ -57,27 +58,74 @@ namespace Runtime.Combat.Pawn
             Pawn.ExecuteStrategies(Pawn.Data.OnAttackStrategies);
         }
 
-        public bool IsHostileUnitInAttackRange(out PawnController pawn)
+        public List<Tile> GetTilesInAttackRange()
         {
             var tilemap = ServiceLocator.Get<TilemapController>();
-            if (tilemap == null)
+            var tileSet = new HashSet<Tile>();
+            var edgeTiles = Pawn.TilemapHelper.GetEdges();
+
+            foreach (var tile in edgeTiles)
             {
-                pawn = null;
-                return false;
+                if (tile == null) continue;
+                var tilesInRange = tilemap.GetTilesInRange(tile, AttackRange, true);
+                tileSet.UnionWith(tilesInRange);
             }
 
-            foreach (var offset in AttackRange)
-            {
-                var targetTile = tilemap.GetTile(Pawn.TilemapHelper.AnchorTile.Position + offset);
-                if (targetTile == null || !targetTile.IsOccupied || targetTile.Pawn.Owner == Pawn.Owner)
-                    continue;
+            return new List<Tile>(tileSet);
+        }
 
-                pawn = targetTile.Pawn;
-                return true;
+        private List<PawnController> GetTargets()
+        {
+            var targets = new HashSet<PawnController>();
+            var tilesInRange = GetTilesInAttackRange();
+            AddPawnsToTargetList(tilesInRange, targets);
+            return new List<PawnController>(targets);
+        }
+
+        private void AddPawnsToTargetList(IEnumerable<Tile> tiles, HashSet<PawnController> targets)
+        {
+            foreach (var tile in tiles)
+            {
+                var pawnAtTile = tile.Pawn;
+                if (pawnAtTile && pawnAtTile.Owner != Pawn.Owner) targets.Add(pawnAtTile);
+            }
+        }
+
+        public PawnController ChooseTarget()
+        {
+            // Gather all possible targets that are within this pawn’s reach
+            var targets = GetTargets();
+            if (targets == null || targets.Count == 0) return null;
+
+            var isFriendly = Pawn.Owner == PawnOwner.Player; // Friendly = player-controlled
+            var pawnPos = Pawn.transform.position;
+
+            // Try to find a target to the preferred side
+            PawnController preferredTarget = null;
+            var bestDistance = float.MaxValue;
+
+            foreach (var target in targets)
+            {
+                var deltaX = target.transform.position.x - pawnPos.x;
+
+                // If we are friendly, look for targets to the right (positive X);
+                // otherwise look for targets to the left (negative X)
+                var isOnPreferredSide = isFriendly ? deltaX > 0f : deltaX < 0f;
+                if (!isOnPreferredSide) continue;
+
+                var distance = Mathf.Abs(deltaX);
+                if (distance < bestDistance)
+                {
+                    bestDistance = distance;
+                    preferredTarget = target;
+                }
             }
 
-            pawn = null;
-            return false;
+            return preferredTarget
+                ? preferredTarget
+                : // Found something on the preferred side
+                // Nothing found on the preferred side – choose a random target from the list
+                targets.SelectRandom();
         }
     }
 }

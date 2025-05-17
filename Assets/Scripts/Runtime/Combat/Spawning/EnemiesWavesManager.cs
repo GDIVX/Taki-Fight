@@ -2,6 +2,7 @@
 using System.Linq;
 using Runtime.Combat.Pawn;
 using Runtime.Combat.Tilemap;
+using Runtime.UI.OnScreenMessages;
 using UnityEngine;
 using Utilities;
 
@@ -48,13 +49,21 @@ namespace Runtime.Combat.Spawning
 
             _turnsSinceLastWave = 0;
 
+            var onScreenMessageManager = ServiceLocator.Get<MessageManager>();
             // Check if it's time to spawn the final wave
             if (_wavesSpawned >= _combatLength && _finalWave != null)
             {
                 SpawnWave(_finalWave); // Spawn the final wave
                 _finalWave = null; // Ensure it's only spawned once
+                _canSpawn = false; // Disable spawning
+
+                onScreenMessageManager.ShowMessage("Final Wave", MessageType.Notification);
+
                 return;
             }
+
+            var wavesRemaining = _wavesSpawned - _combatLength;
+            onScreenMessageManager.ShowMessage($"Waves Remaining: {wavesRemaining}", MessageType.Notification);
 
             // Select and spawn a random wave with difficulty bias
             var waveToSpawn = SelectWave();

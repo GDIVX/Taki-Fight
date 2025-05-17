@@ -18,14 +18,13 @@ MonoBehaviour:
   _damage: 3
   _attacks: 1
   _speed: 1
-  _direction: {x: -1, y: 0}
-  _attackRange:
-  - {x: -1, y: 0}
+  _attackRange: 1
   _isAgile: 0
   _owner: 1
   _size: {x: 1, y: 1}
-  onTurnStartStrategies: []
-  onAttackStrategies: []
-  onMoveStrategies: []
-  onDamagedStrategies: []
-  onKilledStrategies: []
+  _onTurnStartStrategies: []
+  _onAttackStrategies: []
+  _onMoveStrategies: []
+  _onDamagedStrategies: []
+  _onKilledStrategies: []
+  _summonStrategies: []

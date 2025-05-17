@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Runtime.Combat.Pawn;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -129,6 +130,34 @@ namespace Runtime.Combat.Tilemap
             }
 
             return !(left == right);
+        }
+
+        public IEnumerable<Tile> GetNeighbors()
+        {
+            // Define all 8 possible directions (cardinal + diagonal)
+            var directions = new[]
+            {
+                new Vector2Int(-1, 0), // Left
+                new Vector2Int(1, 0), // Right
+                new Vector2Int(0, -1), // Down
+                new Vector2Int(0, 1), // Up
+                new Vector2Int(-1, -1), // Down-Left
+                new Vector2Int(-1, 1), // Up-Left
+                new Vector2Int(1, -1), // Down-Right
+                new Vector2Int(1, 1) // Up-Right
+            };
+
+            var tilemap = ServiceLocator.Get<TilemapController>();
+            if (tilemap == null) yield break;
+
+            // Check each direction and return valid neighboring tiles
+            foreach (var dir in directions)
+            {
+                var neighborPos = Position + dir;
+                var neighborTile = tilemap.GetTile(neighborPos);
+
+                if (neighborTile != null) yield return neighborTile;
+            }
         }
     }
 }

@@ -1,43 +1,62 @@
-﻿using Runtime.Selection;
+﻿using System;
+using Runtime.Selection;
 using Sirenix.OdinInspector;
-using System;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using Utilities;
 
 namespace Runtime.Combat.Tilemap
 {
-    public class TileView : MonoBehaviour, ISelectableEntity, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
+    public class TileView : MonoBehaviour, ISelectableEntity, IPointerClickHandler, IPointerEnterHandler,
+        IPointerExitHandler
     {
-
-
+        private static Action _onClearHighlights;
         [SerializeField] private SpriteRenderer spriteRenderer; // Reference to the sprite renderer
 
         [ShowInInspector, ReadOnly] private Tile tile;
 
-        public Tile Tile { get => tile; private set => tile = value; }
-
-        internal void Init(Tile tile)
+        public Tile Tile
         {
-            Tile = tile; // Set the Tile object
-            Tile.SetView(this);
-            spriteRenderer ??= GetComponent<SpriteRenderer>();
-
-            //name the gameobject after the tile's coordinates
-            gameObject.name = $"Tile({tile.Position.x},{tile.Position.y})";
-
-            OnOwnerModified(); // Call the method to set the initial color based on the owner
+            get => tile;
+            private set => tile = value;
         }
 
-        public void Highlight(Color color)
+        public void OnPointerClick(PointerEventData eventData)
         {
-            spriteRenderer.color = color;
+            if (eventData == null)
+            {
+                Debug.LogWarning("OnPointerClick called with null eventData.");
+                return;
+            }
+
+            if (eventData.button != PointerEventData.InputButton.Left) return;
+
+            if (SelectionService.Instance.CurrentState != SelectionState.InProgress) return;
+
+            TryToSelect();
         }
 
-        public void ClearHighlight()
+        public void OnPointerEnter(PointerEventData eventData)
         {
-            OnOwnerModified(); // Reset to the default color based on ownership
+            if (SelectionService.Instance.CurrentState == SelectionState.InProgress)
+            {
+                // Trigger AOE visualization on hover
+                AOEHiighlight.HighlightForSelection(tile); // Highlight the tile for AOE selection
+            }
+            else if (tile.Pawn)
+            {
+                tile.Pawn.OnPinterEnter(eventData); // Trigger the pawn's OnPointerEnter method if it exists
+                // Highlight the tile in green if the pawn is on it
+                Highlight(Color.green);
+            }
+            else
+            {
+                Highlight(Color.yellow); // Highlight the tile in yellow
+            }
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            ClearHighlights();
         }
 
 
@@ -63,44 +82,38 @@ namespace Runtime.Combat.Tilemap
         {
         }
 
-        public void OnPointerClick(PointerEventData eventData)
+        internal void Init(Tile tile)
         {
-            if (eventData == null)
-            {
-                Debug.LogWarning("OnPointerClick called with null eventData.");
-                return;
-            }
+            Tile = tile; // Set the Tile object
+            Tile.SetView(this);
+            spriteRenderer ??= GetComponent<SpriteRenderer>();
 
-            if (eventData.button != PointerEventData.InputButton.Left)
-            {
-                return;
-            }
+            //name the gameobject after the tile's coordinates
+            gameObject.name = $"Tile({tile.Position.x},{tile.Position.y})";
 
-            if (SelectionService.Instance.CurrentState != SelectionState.InProgress)
-            {
-                return;
-            }
+            OnOwnerModified(); // Call the method to set the initial color based on the owner
 
-            TryToSelect();
-        }
-        public void OnPointerEnter(PointerEventData eventData)
-        {
-            if (SelectionService.Instance.CurrentState == SelectionState.InProgress)
+            _onClearHighlights += () =>
             {
-                // Trigger AOE visualization on hover
-                AOEHiighlight.HighlightForSelection(tile); // Highlight the tile for AOE selection
-            }
-            else
-            {
-                Highlight(Color.yellow); // Highlight the tile in yellow
-            }
+                // Clear AOE visualization when hover ends
+                ClearHighlight();
+                AOEHiighlight.ClearHighlights(); // Clear the AOE highlights
+            };
         }
 
-        public void OnPointerExit(PointerEventData eventData)
+        public void Highlight(Color color)
         {
-            // Clear AOE visualization when hover ends
-            ClearHighlight();
-            AOEHiighlight.ClearHighlights(); // Clear the AOE highlights
+            spriteRenderer.color = color;
+        }
+
+        public void ClearHighlight()
+        {
+            OnOwnerModified(); // Reset to the default color based on ownership
+        }
+
+        private static void ClearHighlights()
+        {
+            _onClearHighlights?.Invoke();
         }
 
 
@@ -126,6 +139,5 @@ namespace Runtime.Combat.Tilemap
                     break;
             }
         }
-
     }
 }

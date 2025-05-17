@@ -23,13 +23,14 @@ namespace Runtime.UI
 
         [ShowInInspector] private HealthSystem _healthSystem;
 
-        public void SetUp(HealthSystem healthSystem)
+        protected void SetUp(HealthSystem healthSystem)
         {
             _healthBarFillImage.fillAmount = 1;
             _healthBarTrailImage.fillAmount = 1;
 
             _healthSystem = healthSystem;
             _healthSystem.OnHealthChanged += (_, _) => UpdateHealth();
+            UpdateHealth();
         }
 
         private void UpdateHealth()
@@ -37,6 +38,7 @@ namespace Runtime.UI
             var currHealth = _healthSystem.GetHealth();
             var maxHealth = _healthSystem.GetHealthMax();
             var ratio = currHealth / maxHealth;
+
 
             //update text
             _healthText.text = $"{currHealth}/{maxHealth}";

@@ -1,11 +1,10 @@
 ﻿using System;
-using Runtime.Combat.Pawn;
 using Runtime.Combat.Tilemap;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
 
-namespace Assets.Scripts.Runtime.Combat.Pawn
+namespace Runtime.Combat.Pawn
 {
     [Serializable]
     public class PawnMovement
@@ -24,7 +23,6 @@ namespace Assets.Scripts.Runtime.Combat.Pawn
             Speed = new(speed);
         }
 
-        [ShowInInspector] [ReadOnly] public Vector2Int MovementDirection { get; set; }
         [ShowInInspector] [ReadOnly] public int AvilableSpeed { get; private set; }
 
         internal void ResetSpeed()
@@ -82,16 +80,20 @@ namespace Assets.Scripts.Runtime.Combat.Pawn
             var tilemap = ServiceLocator.Get<TilemapController>();
             if (tilemap == null) return anchorTile;
 
-            var nextAnchor = anchorTile.Position + MovementDirection;
+            var nextAnchor = anchorTile.Position + GetMovementDirection();
             var nextTile = tilemap.GetTile(nextAnchor);
             if (nextTile == null) return anchorTile;
 
             // Check if the next tile is within bounds
             var footprint = _tilemapHelper.GenerateFootprintUnbounded(nextAnchor);
             var size = _tilemapHelper.Size;
-            if (footprint.Length != size.x * size.y) return anchorTile;
+            return footprint.Length != size.x * size.y ? anchorTile : nextTile;
+        }
 
-            return nextTile;
+        private Vector2Int GetMovementDirection()
+        {
+            //player units goes right, enemies go left
+            return _pawn.Owner == PawnOwner.Player ? Vector2Int.right : Vector2Int.left;
         }
     }
 }

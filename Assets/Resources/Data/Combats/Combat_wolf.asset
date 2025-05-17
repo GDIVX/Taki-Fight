@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22d3d8792d701994898c5b8eb1657ff0, type: 3}
   m_Name: Combat_wolf
   m_EditorClassIdentifier: 
-  CombatLength: 4
+  CombatLength: 3
   Waves:
   - {fileID: 11400000, guid: f2ef6ecf30505404ca29aa6c3c08e2a9, type: 2}
   - {fileID: 11400000, guid: 6c41902ccb7484b47b1728239619f1bb, type: 2}

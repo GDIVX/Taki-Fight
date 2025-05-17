@@ -7,6 +7,7 @@ using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Utilities;
 using HealthBarUI = Runtime.CodeMonkey.HealthSystem.Scripts.HealthBarUI;
@@ -154,6 +155,29 @@ namespace Runtime.Combat.Pawn
                 (current, tile) => current + tilemap.View.MapToWorldPoint(tile.Position));
 
             return sum / footprint.Length;
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            //Show attack range 
+            var tilesInAttackRange = _controller.Combat.GetTilesInAttackRange();
+            foreach (var tile in tilesInAttackRange)
+            {
+                var pawn = tile.Pawn;
+                if (!pawn)
+                {
+                    tile.View.Highlight(Color.yellow);
+                    continue;
+                }
+
+                if (pawn.Owner == _controller.Owner)
+                {
+                    tile.View.Highlight(Color.green);
+                    continue;
+                }
+
+                tile.View.Highlight(Color.red);
+            }
         }
     }
 }

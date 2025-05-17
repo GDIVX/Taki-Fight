@@ -55,7 +55,7 @@ namespace Runtime.Combat
                 Tilemap = new TilemapController(tiles, _tilemapView);
 
                 // Initialize the defense pawn
-                DefenseCastle.CreatePawn(new Vector2Int(0, 0));
+                DefenseCastle.CreatePawn(new Vector2Int(0, 1));
 
                 // Start combat when ready
                 StartCombat();

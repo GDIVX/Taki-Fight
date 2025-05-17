@@ -8,37 +8,53 @@ namespace Runtime.Combat.Pawn
     [CreateAssetMenu(fileName = "Pawn Data", menuName = "Pawns/Regular", order = 0)]
     public class PawnData : ScriptableObject
     {
-        [SerializeField, TabGroup("View")] private Sprite _sprite;
-        [SerializeField, BoxGroup("Health")] private int _health;
-        [SerializeField, BoxGroup("Health")] private int _defense;
-        [SerializeField, BoxGroup("Combat")] private int _damage;
-        [SerializeField, BoxGroup("Combat")] private int _attacks;
-        [SerializeField, BoxGroup("Movement")] private int _speed; // Base speed
-        [SerializeField, BoxGroup("Movement")] private Vector2Int _direction; // Movement direction
-        [SerializeField, BoxGroup("Combat")] private List<Vector2Int> _attackRange; // New: Attack range
-        [SerializeField] private bool _isAgile;
-        [SerializeField] private PawnOwner _owner;
+        [SerializeField] [Tooltip("The primary visual representation of the pawn.")] [TabGroup("View")]
+        private Sprite _sprite;
 
-        [SerializeField, BoxGroup("Size")] private Vector2Int _size = new Vector2Int(1, 1); // Size of the pawn in tiles
+        [SerializeField] [Tooltip("The total health points of the pawn.")] [BoxGroup("Health")]
+        private int _health;
 
-        [SerializeField] [BoxGroup("Strategies")]
+        [SerializeField] [Tooltip("The defense value that reduces incoming damage.")] [BoxGroup("Health")]
+        private int _defense;
+
+        [SerializeField] [Tooltip("The amount of damage this pawn deals in combat.")] [BoxGroup("Combat")]
+        private int _damage;
+
+        [SerializeField] [Tooltip("The number of attacks this pawn can perform per turn.")] [BoxGroup("Combat")]
+        private int _attacks;
+
+        [SerializeField] [Tooltip("The movement speed of the pawn in tiles per turn.")] [BoxGroup("Movement")]
+        private int _speed;
+
+        [SerializeField] [Tooltip("The attack range of the pawn in tiles.")] [BoxGroup("Combat")]
+        private int _attackRange;
+
+        [SerializeField] [Tooltip("Indicates if this pawn is agile and may have agility-based abilities.")]
+        private bool _isAgile;
+
+        [SerializeField] [Tooltip("Specifies the pawn owner's identity.")]
+        private PawnOwner _owner;
+
+        [SerializeField] [Tooltip("The pawn size in tiles.")] [BoxGroup("Size")]
+        private Vector2Int _size = new(1, 1);
+
+        [SerializeField] [Tooltip("Strategies that execute when the turn starts.")] [BoxGroup("Strategies")]
         private List<PawnStrategyData> _onTurnStartStrategies;
 
-        [SerializeField] [BoxGroup("Strategies")]
+        [SerializeField] [Tooltip("Strategies that execute when the pawn attacks.")] [BoxGroup("Strategies")]
         private List<PawnStrategyData> _onAttackStrategies;
 
-        [SerializeField] [BoxGroup("Strategies")]
+        [SerializeField] [Tooltip("Strategies triggered when the pawn moves.")] [BoxGroup("Strategies")]
         private List<PawnStrategyData> _onMoveStrategies;
 
-        [SerializeField] [BoxGroup("Strategies")]
+        [SerializeField] [Tooltip("Strategies triggered when the pawn takes damage.")] [BoxGroup("Strategies")]
         private List<PawnStrategyData> _onDamagedStrategies;
 
-        [SerializeField] [BoxGroup("Strategies")]
+        [SerializeField] [Tooltip("Strategies triggered when the pawn is killed.")] [BoxGroup("Strategies")]
         private List<PawnStrategyData> _onKilledStrategies;
 
-        [SerializeField] [BoxGroup("Strategies")]
+        [SerializeField] [Tooltip("Strategies triggered when the pawn is summoned.")] [BoxGroup("Strategies")]
         private List<PawnStrategyData> _summonStrategies;
-
 
         public List<PawnStrategyData> OnSummonStrategies => _summonStrategies;
 
@@ -47,7 +63,6 @@ namespace Runtime.Combat.Pawn
         public List<PawnStrategyData> OnMoveStrategies => _onMoveStrategies;
         public List<PawnStrategyData> OnDamagedStrategies => _onDamagedStrategies;
         public List<PawnStrategyData> OnKilledStrategies => _onKilledStrategies;
-
 
         // Size properties
         public Vector2Int Size
@@ -73,10 +88,9 @@ namespace Runtime.Combat.Pawn
 
         // Movement properties
         public int Speed => _speed;
-        public Vector2Int Direction => _direction;
 
         // New property
-        public List<Vector2Int> AttackRange => _attackRange;
+        public int AttackRange => _attackRange;
         public PawnOwner Owner => _owner;
 
         private void OnValidate()
@@ -92,7 +106,10 @@ namespace Runtime.Combat.Pawn
     [Serializable]
     public struct PawnStrategyData
     {
+        [Tooltip("The specific strategy applied to the pawn.")]
         public PawnPlayStrategy Strategy;
+
+        [Tooltip("The potency or strength of the applied strategy.")]
         public int Potency;
     }
 }

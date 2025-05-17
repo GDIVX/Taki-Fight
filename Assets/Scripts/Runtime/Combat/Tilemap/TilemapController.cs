@@ -112,5 +112,35 @@ namespace Runtime.Combat.Tilemap
 
             return enemyOwnedTiles;
         }
+
+
+        public IList<Tile> GetTilesInRange([NotNull] Tile anchor, int range, bool useDiagonals = false)
+        {
+            List<Tile> tilesInRange = new();
+
+            var anchorPosition = anchor.Position;
+
+            // Loop through all possible positions in the range
+            for (var x = -range; x <= range; x++)
+            for (var y = -range; y <= range; y++)
+            {
+                // Calculate the position relative to the anchor
+                var currentPosition = anchorPosition + new Vector2Int(x, y);
+
+                // Check distance based on diagonal or manhattan
+                var distance = useDiagonals
+                    ? Mathf.Max(Mathf.Abs(x), Mathf.Abs(y))
+                    : // Chebyshev distance for diagonals
+                    Mathf.Abs(x) + Mathf.Abs(y); // Manhattan distance
+
+                if (distance <= range && IsInBounds(currentPosition))
+                {
+                    var tile = GetTile(currentPosition);
+                    if (tile != null) tilesInRange.Add(tile);
+                }
+            }
+
+            return tilesInRange;
+        }
     }
 }

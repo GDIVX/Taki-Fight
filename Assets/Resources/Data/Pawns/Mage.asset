@@ -10,20 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: db39779a7d15495786ef0b741b93a144, type: 3}
-  m_Name: Castle
+  m_Name: Mage
   m_EditorClassIdentifier: 
   _sprite: {fileID: -4232371963121305725, guid: 0e58604c38ef60b49b6a55fd3049a056, type: 3}
-  _health: 10
-  _defense: 1
-  _damage: 3
+  _health: 50
+  _defense: 0
+  _damage: 10
   _attacks: 1
   _speed: 0
-  _direction: {x: 0, y: 0}
-  _attackRange:
-  - {x: 1, y: 0}
-  _isAgile: 0
+  _attackRange: 3
+  _isAgile: 1
   _owner: 0
-  _size: {x: 1, y: 3}
+  _size: {x: 1, y: 1}
   _onTurnStartStrategies: []
   _onAttackStrategies: []
   _onMoveStrategies: []
