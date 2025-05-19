@@ -2829,7 +2829,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tilePrefab: {fileID: 8998116093892140566, guid: efed50a4891ec7a41a518cddff1e5b8f, type: 3}
   tileSize: 1.2
-  tilePadding: 0.2
+  tilePadding: 0.35
 --- !u!114 &1377694104
 MonoBehaviour:
   m_ObjectHideFlags: 0

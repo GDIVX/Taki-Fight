@@ -18,7 +18,7 @@ namespace Runtime.Combat.Pawn
         private static readonly int FlashAmount = Shader.PropertyToID("_FlashAmount");
         private static readonly int Dissolve = Shader.PropertyToID("_Dissolve");
 
-        [SerializeField] [BoxGroup("Stats")] private RadialLayout _radialLayout;
+        [SerializeField] [BoxGroup("Stats")] private LayoutGroup _layout;
 
         [SerializeField] [BoxGroup("Stats/Health")]
         private Image _defenseImage;
@@ -37,6 +37,16 @@ namespace Runtime.Combat.Pawn
 
         [SerializeField] [BoxGroup("Stats/Damage")]
         private Ease _flashEase;
+
+        [SerializeField] [BoxGroup("Stats/Damage")]
+        private TextMeshProUGUI _damageText;
+
+        [SerializeField] [BoxGroup("Stats/Damage")]
+        private TextMeshProUGUI _attacksText;
+
+        [SerializeField] [BoxGroup("Stats/Damage")]
+        private Image _attacksImage;
+
 
         [SerializeField, BoxGroup("Movement")] private Ease _movementEase;
         [SerializeField, BoxGroup("Movement")] private float _movementDuration;
@@ -64,6 +74,8 @@ namespace Runtime.Combat.Pawn
             InitiateHealthView(controller);
             InitiateDefenseView(defense);
 
+            InitiateAttackView(controller, data);
+
             _spriteRenderer.sprite = data.Sprite;
 
             _controller = controller;
@@ -71,6 +83,41 @@ namespace Runtime.Combat.Pawn
 
             ApplyFootprintScale(data.Size.x, data.Size.y);
             ApplyOrientation(data.Owner);
+        }
+
+        private void InitiateAttackView(PawnController controller, PawnData data)
+        {
+            //damage
+            var damage = controller.Combat.Damage;
+
+            damage.OnValueChanged += UpdateDamageView;
+
+            //attacks 
+            var attacks = controller.Combat.Attacks;
+
+            attacks.OnValueChanged += UpdateAttacksView;
+
+            UpdateDamageView(damage.Value);
+            UpdateAttacksView(attacks.Value);
+        }
+
+        private void UpdateAttacksView(int attacks)
+        {
+            if (attacks <= 1)
+            {
+                _attacksImage.gameObject.SetActive(false);
+                _attacksText.text = "";
+            }
+            else
+            {
+                _attacksImage.gameObject.SetActive(true);
+                _attacksText.text = attacks.ToString();
+            }
+        }
+
+        private void UpdateDamageView(int damage)
+        {
+            _damageText.text = damage.ToString();
         }
 
         private void ApplyOrientation(PawnOwner owner)
@@ -81,7 +128,7 @@ namespace Runtime.Combat.Pawn
                 _spriteRenderer.flipX = true;
 
                 // Use the RadialLayout extension to flip the layout angles
-                _radialLayout.Flip();
+                // _layout.Flip();
             }
             else
             {
@@ -90,7 +137,7 @@ namespace Runtime.Combat.Pawn
             }
 
             // Adjust the anchors and pivot based on ownership
-            if (!_radialLayout.TryGetComponent(out RectTransform rectTransform)) return;
+            if (!_layout.TryGetComponent(out RectTransform rectTransform)) return;
             if (owner == PawnOwner.Enemy)
             {
                 rectTransform.anchorMin = new Vector2(1, 1);
@@ -151,22 +198,28 @@ namespace Runtime.Combat.Pawn
 
         private void InitiateDefenseView(Observable<int> defense)
         {
-            // _defense = defense;
-            // _defense.OnValueChanged += UpdateDefenseUI;
-            // UpdateDefenseUI(_defense.Value);
+            _defense = defense;
+            _defense.OnValueChanged += UpdateDefenseUI;
+            UpdateDefenseUI(_defense.Value);
         }
 
         private void InitiateHealthView(PawnController controller)
         {
-            // var healthSystem = controller.Health;
-            // // healthBar.SetHealthSystem(healthSystem);
-            // healthBarText.SetHealthSystem(healthSystem);
+            _healthBar.SetUp(controller.Health);
         }
 
         private void UpdateDefenseUI(int defensePoints)
         {
-            // defenseImage.gameObject.SetActive(defensePoints != 0);
-            // defenseCount.text = defensePoints.ToString();
+            if (defensePoints <= 0)
+            {
+                _defenseImage.gameObject.SetActive(false);
+                _defenseCount.text = "";
+            }
+            else
+            {
+                _defenseImage.gameObject.SetActive(true);
+                _defenseCount.text = defensePoints.ToString();
+            }
         }
 
         internal void SpawnAtPosition(Vector2Int anchor)

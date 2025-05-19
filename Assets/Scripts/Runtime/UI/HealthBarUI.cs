@@ -23,7 +23,7 @@ namespace Runtime.UI
 
         [ShowInInspector] private HealthSystem _healthSystem;
 
-        protected void SetUp(HealthSystem healthSystem)
+        public void SetUp(HealthSystem healthSystem)
         {
             _healthBarFillImage.fillAmount = 1;
             _healthBarTrailImage.fillAmount = 1;
@@ -35,20 +35,33 @@ namespace Runtime.UI
 
         private void UpdateHealth()
         {
+            if (_healthSystem == null || _healthBarFillImage == null || _healthText == null)
+            {
+                Debug.LogError("HealthBarUI is not properly configured.");
+                return;
+            }
+
             var currHealth = _healthSystem.GetHealth();
             var maxHealth = _healthSystem.GetHealthMax();
+
+            if (maxHealth <= 0)
+            {
+                Debug.LogWarning("Max health cannot be zero or negative.");
+                _healthBarFillImage.fillAmount = 0;
+                _healthText.text = "0/0";
+                return;
+            }
+
             var ratio = currHealth / maxHealth;
 
+            // Update text
+            _healthText.text = $"{Mathf.RoundToInt(currHealth)}/{Mathf.RoundToInt(maxHealth)}";
 
-            //update text
-            _healthText.text = $"{currHealth}/{maxHealth}";
-
-            //animate health bar
+            // Animate health bar
+            DOTween.Kill(_healthBarFillImage); // Prevent overlapping sequences
+            _healthBarFillImage.fillAmount = ratio; // Instant update for health bar front
             var sequence = DOTween.Sequence();
-
-            sequence.Append(_healthBarFillImage.DOFillAmount(ratio, .25f)).SetEase(Ease.InOutSine);
-            sequence.AppendInterval(_trailDelay);
-            sequence.Append(_healthBarFillImage.DOFillAmount(ratio, .3f)).SetEase(Ease.InOutSine);
+            sequence.Append(_healthBarTrailImage.DOFillAmount(ratio, 0.3f).SetEase(Ease.InOutSine));
             sequence.Play();
         }
     }
