@@ -3,7 +3,6 @@
     public enum PawnOwner
     {
         Player,
-        Enemy, 
-        Castle
+        Enemy
     }
 }

@@ -30,7 +30,7 @@ namespace Runtime.Combat.Pawn
             AvilableSpeed = Speed.Value;
         }
 
-        public bool TryToMove()
+        public bool TryToMove(Action onComplete)
         {
             if (AvilableSpeed <= 0) return false;
 
@@ -65,12 +65,14 @@ namespace Runtime.Combat.Pawn
             }
 
 
-            _pawn.MoveToPosition(nextTile);
-            AvilableSpeed--;
+            _pawn.MoveToPosition(nextTile, () =>
+            {
+                AvilableSpeed--;
 
-            //execute onMove strategies
-            _pawn.ExecuteStrategies(_pawn.Data.OnMoveStrategies);
-
+                //execute onMove strategies
+                _pawn.ExecuteStrategies(_pawn.Data.OnMoveStrategies);
+                onComplete?.Invoke();
+            });
             return true;
         }
 

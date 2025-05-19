@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using CodeMonkey.HealthSystemCM;
 using Runtime.Combat.StatusEffects;
@@ -101,24 +102,33 @@ namespace Runtime.Combat.Pawn
             // Execute onTurnStart strategies
             ExecuteStrategies(Data.OnTurnStartStrategies);
 
+            StartCoroutine(ProcessTurn());
+        }
+
+        private IEnumerator ProcessTurn()
+        {
             // Check if this unit can attack first
             while (true)
             {
                 var target = Combat.ChooseTarget();
-                if (target != null)
+                if (target)
                 {
                     StartCoroutine(Combat.Attack(target, () => IsProcessingTurn = false));
-                    return;
+                    yield break;
                 }
 
+                var isWaitingForMovement = true;
                 // If the unit has no available speed or cannot move, break the loop
-                if (_movement.AvilableSpeed <= 0 || !Movement.TryToMove())
+                if (_movement.AvilableSpeed <= 0 || !Movement.TryToMove(() => { isWaitingForMovement = false; }))
+                {
                     break;
+                }
+
+                yield return new WaitUntil(() => !isWaitingForMovement);
             }
 
             IsProcessingTurn = false;
         }
-
 
         private bool TrySetMultiTilePosition(Tile anchor)
         {
@@ -148,10 +158,10 @@ namespace Runtime.Combat.Pawn
             _view.SpawnAtPosition(anchor.Position);
         }
 
-        internal void MoveToPosition(Tile anchor)
+        internal void MoveToPosition(Tile anchor, Action onComplete)
         {
             if (!TrySetMultiTilePosition(anchor)) return;
-            _view.MoveToPosition(anchor.Position);
+            _view.MoveToPosition(anchor.Position, onComplete);
         }
 
         public void ApplyStatusEffect(StatusEffectData data, int stack)

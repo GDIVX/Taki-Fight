@@ -10,7 +10,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Utilities;
-using HealthBarUI = Runtime.CodeMonkey.HealthSystem.Scripts.HealthBarUI;
 
 namespace Runtime.Combat.Pawn
 {
@@ -19,21 +18,31 @@ namespace Runtime.Combat.Pawn
         private static readonly int FlashAmount = Shader.PropertyToID("_FlashAmount");
         private static readonly int Dissolve = Shader.PropertyToID("_Dissolve");
 
-        [SerializeField, BoxGroup("Animation")]
-        private Animator animator;
+        [SerializeField] [BoxGroup("Stats")] private RadialLayout _radialLayout;
 
-        [SerializeField, BoxGroup("Health")] private Image defenseImage;
-        [SerializeField, BoxGroup("Health")] private TextMeshProUGUI defenseCount;
-        [SerializeField, BoxGroup("Health")] private float _dissolveTime;
-        [SerializeField, BoxGroup("Health")] private Ease _dissolveEase;
-        [SerializeField, BoxGroup("Damage")] private float _flashTime;
-        [SerializeField, BoxGroup("Damage")] private Ease _flashEase;
+        [SerializeField] [BoxGroup("Stats/Health")]
+        private Image _defenseImage;
+
+        [SerializeField] [BoxGroup("Stats/Health")]
+        private TextMeshProUGUI _defenseCount;
+
+        [SerializeField] [BoxGroup("Stats/Health")]
+        private float _dissolveTime;
+
+        [SerializeField] [BoxGroup("Stats/Health")]
+        private Ease _dissolveEase;
+
+        [SerializeField] [BoxGroup("Stats/Damage")]
+        private float _flashTime;
+
+        [SerializeField] [BoxGroup("Stats/Damage")]
+        private Ease _flashEase;
+
         [SerializeField, BoxGroup("Movement")] private Ease _movementEase;
         [SerializeField, BoxGroup("Movement")] private float _movementDuration;
 
-        [SerializeField, BoxGroup("Health")] private HealthBarUI healthBar;
-        [SerializeField, BoxGroup("Health")] private HealthBarTextUI healthBarText;
-        [SerializeField, BoxGroup("Sprite")] private SpriteRenderer spriteRenderer;
+        [SerializeField] [BoxGroup("Health")] private HealthBarUI _healthBar;
+        [SerializeField] [BoxGroup("Sprite")] private SpriteRenderer _spriteRenderer;
 
         private PawnController _controller;
         private Observable<int> _defense;
@@ -50,15 +59,52 @@ namespace Runtime.Combat.Pawn
 
         public void Init(PawnController controller, Observable<int> defense, PawnData data)
         {
+            _spriteRenderer ??= GetComponent<SpriteRenderer>();
+
             InitiateHealthView(controller);
             InitiateDefenseView(defense);
 
-            spriteRenderer.sprite = data.Sprite;
+            _spriteRenderer.sprite = data.Sprite;
 
             _controller = controller;
             _controller.Combat.OnBeingAttacked += Flash;
 
             ApplyFootprintScale(data.Size.x, data.Size.y);
+            ApplyOrientation(data.Owner);
+        }
+
+        private void ApplyOrientation(PawnOwner owner)
+        {
+            if (owner == PawnOwner.Enemy)
+            {
+                // Flip the sprite for enemy pawns
+                _spriteRenderer.flipX = true;
+
+                // Use the RadialLayout extension to flip the layout angles
+                _radialLayout.Flip();
+            }
+            else
+            {
+                // Ensure the sprite is not flipped for friendly (Player or Castle) pawns
+                _spriteRenderer.flipY = false;
+            }
+
+            // Adjust the anchors and pivot based on ownership
+            if (!_radialLayout.TryGetComponent(out RectTransform rectTransform)) return;
+            if (owner == PawnOwner.Enemy)
+            {
+                rectTransform.anchorMin = new Vector2(1, 1);
+                rectTransform.anchorMax = new Vector2(1, 1);
+                rectTransform.pivot = new Vector2(1, 1);
+            }
+            else
+            {
+                rectTransform.anchorMin = new Vector2(0, 1);
+                rectTransform.anchorMax = new Vector2(0, 1);
+                rectTransform.pivot = new Vector2(0, 1);
+            }
+
+            rectTransform.anchoredPosition = Vector2.zero;
         }
 
         private void ApplyFootprintScale(int width, int height)
@@ -71,9 +117,9 @@ namespace Runtime.Combat.Pawn
 
         public void OnDead(Action onComplete)
         {
-            if (!spriteRenderer || !spriteRenderer.gameObject.activeInHierarchy) return;
+            if (!_spriteRenderer || !_spriteRenderer.gameObject.activeInHierarchy) return;
 
-            DOTween.To((x) => spriteRenderer.material.SetFloat(Dissolve, x),
+            DOTween.To(x => _spriteRenderer.material.SetFloat(Dissolve, x),
                 0,
                 1,
                 _dissolveTime).SetEase(_dissolveEase).onComplete += () => { onComplete?.Invoke(); };
@@ -82,14 +128,14 @@ namespace Runtime.Combat.Pawn
         [Button]
         private void Flash(int attackPoints, int realDamage)
         {
-            if (!spriteRenderer || !spriteRenderer.gameObject.activeInHierarchy)
+            if (!_spriteRenderer || !_spriteRenderer.gameObject.activeInHierarchy)
                 return;
 
             DOTween.To(
                     x =>
                     {
-                        if (spriteRenderer != null && spriteRenderer.material != null)
-                            spriteRenderer.material.SetFloat(FlashAmount, x);
+                        if (_spriteRenderer && _spriteRenderer.material)
+                            _spriteRenderer.material.SetFloat(FlashAmount, x);
                     },
                     0f, 1f, _flashTime)
                 .SetEase(_flashEase)
@@ -97,8 +143,8 @@ namespace Runtime.Combat.Pawn
                 .SetId("FlashTween_" + GetInstanceID())
                 .OnComplete(() =>
                 {
-                    if (spriteRenderer != null && spriteRenderer.material != null)
-                        spriteRenderer.material.SetFloat(FlashAmount, 0f);
+                    if (_spriteRenderer && _spriteRenderer.material)
+                        _spriteRenderer.material.SetFloat(FlashAmount, 0f);
                 });
         }
 
@@ -130,7 +176,7 @@ namespace Runtime.Combat.Pawn
         }
 
 
-        internal void MoveToPosition(Vector2Int anchor)
+        internal void MoveToPosition(Vector2Int anchor, Action onMoveComplete = null)
         {
             if (transform.SafeIsUnityNull()) return;
 
@@ -138,7 +184,14 @@ namespace Runtime.Combat.Pawn
 
             transform.DOMove(targetPosition, _movementDuration)
                 .SetEase(_movementEase)
-                .OnComplete(() => transform.position = targetPosition);
+                .OnComplete(() =>
+                {
+                    // Snap to the target position for safety
+                    transform.position = targetPosition;
+
+                    // Notify that movement is complete
+                    onMoveComplete?.Invoke();
+                });
         }
 
         private Vector3 CalculateCenterPosition(Vector2Int anchor)
