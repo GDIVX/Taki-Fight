@@ -109,7 +109,7 @@ namespace Runtime.Combat
             ServiceLocator.Get<Energy>().GainEnergyPerIncome();
 
             // Try spawning a wave at the start of the turn
-            _wavesManager.TrySpawnWave();
+            _wavesManager.OnTurnStart();
 
             OnStartTurn?.Invoke();
         }
