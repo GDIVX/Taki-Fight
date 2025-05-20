@@ -16,5 +16,16 @@ namespace Utilities
             yield return new WaitForSeconds(waitTime);
             onTimesUp?.Invoke();
         }
+
+        public static void WaitUntil(this MonoBehaviour gameObject, Func<bool> predicate, Action onConditionMet = null)
+        {
+            gameObject.StartCoroutine(WaitUntilCoroutine(predicate, onConditionMet));
+        }
+
+        private static IEnumerator WaitUntilCoroutine(Func<bool> predicate, Action onConditionMet = null)
+        {
+            yield return new WaitUntil(predicate);
+            onConditionMet?.Invoke();
+        }
     }
 }

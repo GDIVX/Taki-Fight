@@ -102,7 +102,7 @@ namespace Runtime.CardGameplay.Card
 
             // SelectionService.Instance.Register(this);
 
-            gameObject.name = data.Title + Guid.NewGuid();
+            gameObject.name = data.Title + Instance.Guid;
         }
 
         private void UpdateAffordability()

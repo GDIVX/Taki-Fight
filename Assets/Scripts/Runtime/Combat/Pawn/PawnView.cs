@@ -156,9 +156,20 @@ namespace Runtime.Combat.Pawn
 
         private void ApplyFootprintScale(int width, int height)
         {
-            //var tilemapView = ServiceLocator.Get<TilemapController>().View;
-            float baseUnitSize = 1f;
-            transform.localScale = new Vector3(width * baseUnitSize, height * baseUnitSize, 1f);
+            // Get tilemap information
+            var tilemap = ServiceLocator.Get<TilemapController>();
+
+            // Calculate the size of the footprint excluding padding
+            var tileSize = tilemap.View.TileSize; // Size of each tile
+            var totalWidth = width * tileSize;
+            var totalHeight = height * tileSize;
+
+            // Adjust scale of the pawn to fit footprint
+            transform.localScale = new Vector3(
+                totalWidth / _spriteRenderer.bounds.size.x,
+                totalHeight / _spriteRenderer.bounds.size.y,
+                1
+            );
         }
 
 

@@ -2809,7 +2809,7 @@ Transform:
   m_GameObject: {fileID: 1377694100}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6, y: 0, z: 0}
+  m_LocalPosition: {x: -6.5, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2828,8 +2828,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tilePrefab: {fileID: 8998116093892140566, guid: efed50a4891ec7a41a518cddff1e5b8f, type: 3}
-  tileSize: 1.2
-  tilePadding: 0.35
+  tileSize: 1.5
+  tilePadding: 0.125
 --- !u!114 &1377694104
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4339,7 +4339,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _prefab: {fileID: 5188398243834909485, guid: 79de2714e98778e45a8d6f81b5df8b9b, type: 3}
   _handController: {fileID: 303423372}
-  _energy: {fileID: 0}
+  _energy: {fileID: 1763573683}
   _keywordDictionary: {fileID: 11400000, guid: 66d450156de073643a2a3a33c7bc17b1, type: 2}
   _discardToLocation: {fileID: 196735047}
   _drawFromLocation: {fileID: 1103476681}

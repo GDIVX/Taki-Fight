@@ -13,6 +13,7 @@ namespace Runtime.Combat.Tilemap
         private readonly Dictionary<Vector2Int, TileView> tileObjects = new();
 
         public float TileSize => tileSize;
+        private float RealSize => tileSize + tilePadding;
 
         private void OnDestroy()
         {
@@ -23,26 +24,19 @@ namespace Runtime.Combat.Tilemap
         internal void CreateTiles(Tile[,] tiles)
         {
             var cols = tiles.GetLength(0);
-            var totalWidth = cols * tileSize + (cols - 1) * tilePadding;
-
-            var screenCenterX = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, 0, 0)).x;
-            var tilemapCenterX = totalWidth / 2;
-            var offsetX = screenCenterX - tilemapCenterX;
-
-            // Set position of the tilemap in world space
-            transform.position = new Vector3(offsetX, transform.position.y, transform.position.z);
+            var rows = tiles.GetLength(1);
 
             // Use world position as origin now
             var origin = transform.position;
 
-            for (var x = 0; x < tiles.GetLength(0); x++)
+            for (var x = 0; x < cols; x++)
             {
-                for (var y = 0; y < tiles.GetLength(1); y++)
+                for (var y = 0; y < rows; y++)
                 {
                     var tile = tiles[x, y];
-                    var position = origin + new Vector3(x * (tileSize + tilePadding), y * (tileSize + tilePadding), 0);
+                    var position = origin + new Vector3(x * RealSize, y * RealSize, 0);
                     var tileObject = Instantiate(tilePrefab, position, Quaternion.identity, transform);
-                    tileObject.transform.localScale = new Vector3(tileSize, tileSize, 1);
+                    tileObject.transform.localScale = new Vector3(RealSize, RealSize, 1);
                     tileObjects[tile.Position] = tileObject;
 
                     tileObject.Init(tile);
@@ -71,16 +65,16 @@ namespace Runtime.Combat.Tilemap
         public Vector2 MapToWorldPoint(Vector2Int position)
         {
             var origin = transform.position;
-            var x = origin.x + position.x * (tileSize + tilePadding);
-            var y = origin.y + position.y * (tileSize + tilePadding);
+            var x = origin.x + position.x * RealSize;
+            var y = origin.y + position.y * RealSize;
             return new Vector2(x, y);
         }
 
         public Vector2Int WorldToMapPoint(Vector2 worldPosition)
         {
             var origin = transform.position;
-            var x = Mathf.FloorToInt((worldPosition.x - origin.x) / (tileSize + tilePadding));
-            var y = Mathf.FloorToInt((worldPosition.y - origin.y) / (tileSize + tilePadding));
+            var x = Mathf.FloorToInt((worldPosition.x - origin.x) / RealSize);
+            var y = Mathf.FloorToInt((worldPosition.y - origin.y) / RealSize);
             return new Vector2Int(x, y);
         }
     }

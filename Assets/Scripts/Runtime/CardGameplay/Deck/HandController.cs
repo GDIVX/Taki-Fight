@@ -15,7 +15,7 @@ namespace Runtime.CardGameplay.Deck
         [SerializeField, Required] private CardFactory _cardFactory;
         [SerializeField] private float _cardMovementDelay;
         [ShowInInspector, ReadOnly] private List<CardController> _cards = new();
-        public Deck Deck { get; set; }
+        [ShowInInspector] [ReadOnly] public Deck Deck { get; set; }
 
         public int CardsToDrawPerTurn
         {
@@ -73,11 +73,11 @@ namespace Runtime.CardGameplay.Deck
         public void DrawCard()
         {
             if (_cards.Count >= _maxHandSize) return;
-            if (!Deck.Draw(out CardInstance cardInstance)) return;
-            DrawCard(cardInstance);
+            if (!Deck.Draw(out var cardInstance)) return;
+            InstantiateCard(cardInstance);
         }
 
-        private void DrawCard(CardInstance cardInstance)
+        private void InstantiateCard(CardInstance cardInstance)
         {
             var controller = _cardFactory.Create(cardInstance);
             controller.OnDraw();
@@ -91,7 +91,7 @@ namespace Runtime.CardGameplay.Deck
             if (_cards.Count >= _maxHandSize) return;
             if (!Deck.TryToFindAndRemoveCard(cardData, out CardInstance cardInstance)) return;
 
-            DrawCard(cardInstance);
+            InstantiateCard(cardInstance);
         }
 
 
@@ -134,9 +134,13 @@ namespace Runtime.CardGameplay.Deck
 
         public void ConsumeCard(CardController cardController)
         {
-            if (Deck.IsBurnt(cardController.Instance)) return;
+            if (Deck.IsConsumed(cardController.Instance))
+            {
+                Debug.LogWarning("Trying to consume a consumed card");
+                return;
+            }
 
-            Deck.Burn(cardController.Instance);
+            Deck.Consume(cardController.Instance);
             RemoveCard(cardController);
             cardController.OnDiscard();
             cardController.View.OnBurn();

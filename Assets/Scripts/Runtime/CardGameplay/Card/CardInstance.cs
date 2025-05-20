@@ -1,17 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using Sirenix.OdinInspector;
 
 namespace Runtime.CardGameplay.Card
 {
     [Serializable]
-    public class CardInstance
+    public class CardInstance : IEqualityComparer<CardInstance>
     {
         public CardData Data;
-
-        public CardController Controller { get; set; }
-        public int Cost { get; set; }
 
 
         public CardInstance(CardData data)
@@ -19,6 +14,25 @@ namespace Runtime.CardGameplay.Card
             Data = data;
             Controller = null;
             Cost = data.Cost;
+            Guid = Guid.NewGuid();
+        }
+
+        public CardController Controller { get; set; }
+        public int Cost { get; set; }
+        public Guid Guid { get; private set; }
+
+
+        public bool Equals(CardInstance x, CardInstance y)
+        {
+            if (ReferenceEquals(x, y)) return true;
+            if (x is null) return false;
+            if (y is null) return false;
+            return x.GetType() == y.GetType() && x.Guid.Equals(y.Guid);
+        }
+
+        public int GetHashCode(CardInstance obj)
+        {
+            return obj.Guid.GetHashCode();
         }
     }
 }

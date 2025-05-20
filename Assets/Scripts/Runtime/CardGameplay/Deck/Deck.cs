@@ -87,7 +87,7 @@ namespace Runtime.CardGameplay.Deck
             OnDiscardPileUpdated?.Invoke(_discardPile);
         }
 
-        public void Burn(CardInstance card)
+        public void Consume(CardInstance card)
         {
             _consumePile.Push(card);
             OnBurnPileUpdated?.Invoke(_consumePile);
@@ -122,12 +122,6 @@ namespace Runtime.CardGameplay.Deck
             {
                 _drawPile.Push(_discardPile.Pop());
             }
-
-            //merge consume pile
-            while (_consumePile.Count > 0)
-            {
-                _drawPile.Push(_consumePile.Pop());
-            }
         }
 
         public bool IsDiscarded(CardInstance card)
@@ -145,7 +139,7 @@ namespace Runtime.CardGameplay.Deck
             return IsDiscarded(card) || IsInDrawPile(card);
         }
 
-        public bool IsBurnt(CardInstance card)
+        public bool IsConsumed(CardInstance card)
         {
             return _consumePile.Contains(card);
         }

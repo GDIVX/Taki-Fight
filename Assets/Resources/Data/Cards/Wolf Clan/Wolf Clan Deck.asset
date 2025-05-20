@@ -17,6 +17,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 5fa5f3df0490195488ccbd18a6e07518, type: 2}
   - {fileID: 11400000, guid: 5fa5f3df0490195488ccbd18a6e07518, type: 2}
   - {fileID: 11400000, guid: 5fa5f3df0490195488ccbd18a6e07518, type: 2}
+  - {fileID: 11400000, guid: 5fa5f3df0490195488ccbd18a6e07518, type: 2}
+  - {fileID: 11400000, guid: 5fa5f3df0490195488ccbd18a6e07518, type: 2}
+  - {fileID: 11400000, guid: 5fa5f3df0490195488ccbd18a6e07518, type: 2}
+  - {fileID: 11400000, guid: 5fa5f3df0490195488ccbd18a6e07518, type: 2}
   _collectableCards:
   - {fileID: 11400000, guid: 5fa5f3df0490195488ccbd18a6e07518, type: 2}
   _pawn: {fileID: 11400000, guid: 8a1754766491ef942a64eede784d3e84, type: 2}

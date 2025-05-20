@@ -77,7 +77,6 @@ namespace Runtime
             energy.Reset();
 
             HandController.gameObject.SetActive(true);
-            HandController.DrawHand();
         }
 
         private void OnCombatEnd()
