@@ -12,20 +12,17 @@ namespace Runtime.Combat.Spawning
     {
         private readonly Queue<PawnData> _waitList = new();
 
-        private bool _canSpawn = true; // Flag to control spawning
         private int _combatLength;
 
         private AnimationCurve _difficultyCurve;
         private WaveConfig _finalWave;
         private List<WaveConfig> _remainingWaves;
 
-        private int _turnsDelayBetweenWaves = 1; // Configurable turn delay (default: 1)
-        private int _turnsSinceLastWave; // New field to track the delay since the last wave
         private List<WaveConfig> _waves;
         private int _wavesSpawned;
 
-        private PawnFactory _pawnFactory => ServiceLocator.Get<PawnFactory>();
-        private TilemapController _tilemap => ServiceLocator.Get<TilemapController>();
+        private PawnFactory PawnFactory => ServiceLocator.Get<PawnFactory>();
+        private TilemapController Tilemap => ServiceLocator.Get<TilemapController>();
 
         public void Init(CombatConfig combatConfig)
         {
@@ -33,74 +30,82 @@ namespace Runtime.Combat.Spawning
             _waves = combatConfig.Waves;
             _finalWave = combatConfig.FinalWave;
             _difficultyCurve = combatConfig.DifficultyCurve;
-            _turnsDelayBetweenWaves = combatConfig.TurnsDelayBetweenWaves; // Initialize turn delay
 
             ResetState();
-            _canSpawn = true; // Enable spawning when initialized
         }
 
-        public void TrySpawnWave()
+        public void OnTurnStart()
         {
-            if (!_canSpawn) return; // Stop if spawning is disabled 
+            // If the final wave has already been spawned, exit early
+            if (!_finalWave) return;
 
-            _turnsSinceLastWave++;
+            var enemyOwnedTiles = Tilemap.GetEnemyOwnedTiles();
 
-            if (_turnsSinceLastWave <= _turnsDelayBetweenWaves) return;
+            // Check if spawning is allowed based on the number of controlled tiles
+            if (Tilemap.GetUnitsByOwnership(PawnOwner.Enemy).Count < enemyOwnedTiles.Count)
+                // Attempt to spawn a wave
+                SpawnWave();
+            else
+                // If spawning is not possible, attempt tile takeover
+                TakeOverTile();
+        }
 
-            _turnsSinceLastWave = 0;
-
-            var onScreenMessageManager = ServiceLocator.Get<MessageManager>();
+        private void SpawnWave()
+        {
             // Check if it's time to spawn the final wave
-            if (_wavesSpawned >= _combatLength && _finalWave != null)
+            if (_wavesSpawned >= _combatLength && _finalWave)
             {
                 SpawnWave(_finalWave); // Spawn the final wave
-                _finalWave = null; // Ensure it's only spawned once
-                _canSpawn = false; // Disable spawning
-
+                // Display final wave notification
+                var onScreenMessageManager = ServiceLocator.Get<MessageManager>();
                 onScreenMessageManager.ShowMessage("Final Wave", MessageType.Notification);
 
+                // Stop spawning after the final wave has been spawned
+                StopSpawning();
                 return;
             }
 
-            var wavesRemaining = _wavesSpawned - _combatLength;
-            onScreenMessageManager.ShowMessage($"Waves Remaining: {wavesRemaining}", MessageType.Notification);
-
             // Select and spawn a random wave with difficulty bias
             var waveToSpawn = SelectWave();
-            if (waveToSpawn != null)
+            if (waveToSpawn)
             {
                 SpawnWave(waveToSpawn);
                 _wavesSpawned++;
             }
         }
 
-        public void StopSpawning()
+        private void TakeOverTile()
         {
-            _canSpawn = false; // Disable spawning
+            var enemyOwnedTiles = Tilemap.GetEnemyOwnedTiles();
+
+            // Find potential tiles to take over
+            var potentialTiles = enemyOwnedTiles
+                .SelectMany(tile => Tilemap.GetTilesInRange(tile, 1)) // Get adjacent tiles
+                .Where(tile => tile.Owner == TileOwner.None && tile.IsEmpty) // Unowned and unoccupied tiles
+                .ToList();
+
+            // Take over the first available tile
+            if (potentialTiles.Count <= 0) return;
+            var tileToTakeOver = potentialTiles.SelectRandom();
+            tileToTakeOver.Owner = TileOwner.Enemy; // Claim the tile for the enemy
         }
 
         private WaveConfig SelectWave()
         {
-            // Step 1: Get the range of wave difficulties
             var minDifficulty = _waves.Min(w => w.DifficultyLevel);
             var maxDifficulty = _waves.Max(w => w.DifficultyLevel);
 
-            // Step 2: Calculate turn progress (X-axis: 0 to 1)
             var currentTurn = ServiceLocator.Get<CombatManager>().CurrentTurn;
             var turnProgress = (float)currentTurn / _combatLength;
 
-            // Step 3: Evaluate the curve (Y-axis: 0 to 1)
             var relativeDifficulty = _difficultyCurve.Evaluate(turnProgress);
-
-            // Step 4: Map relative difficulty to actual difficulties
             var mappedDifficulty = Mathf.Lerp(minDifficulty, maxDifficulty, relativeDifficulty);
 
-            // Step 5: Assign weights and select a wave based on weighted randomness
             var wavesWithWeights = _waves
                 .Select(wave =>
                 {
                     var weight =
-                        1f / (1f + Mathf.Abs(wave.DifficultyLevel - mappedDifficulty)); // Closer = heavier weight
+                        1f / (1f + Mathf.Abs(wave.DifficultyLevel - mappedDifficulty));
                     return (wave, weight);
                 })
                 .ToList();
@@ -110,12 +115,11 @@ namespace Runtime.Combat.Spawning
 
             foreach (var (wave, weight) in wavesWithWeights)
             {
-                if (randomValue < weight) return wave; // Return the wave matching the random selection
-
+                if (randomValue < weight) return wave;
                 randomValue -= weight;
             }
 
-            return null; // Fallback, should never reach here if `_waves` is defined
+            return null;
         }
 
         private void SpawnWave(WaveConfig wave)
@@ -128,15 +132,15 @@ namespace Runtime.Combat.Spawning
             {
                 var tile = FindValidTileForUnit(pawnData);
                 if (tile != null)
-                    _pawnFactory.CreatePawn(pawnData, tile);
+                    PawnFactory.CreatePawn(pawnData, tile);
                 else
-                    _waitList.Enqueue(pawnData);
+                    _waitList.Enqueue(pawnData); // Add to waitlist if no tile is found
             }
         }
 
         private Tile FindValidTileForUnit(PawnData pawnData)
         {
-            var enemyOwnedTiles = _tilemap.GetEnemyOwnedTiles()
+            var enemyOwnedTiles = Tilemap.GetEnemyOwnedTiles()
                 .OrderByDescending(tile => tile.Position.x)
                 .ToList();
 
@@ -150,25 +154,29 @@ namespace Runtime.Combat.Spawning
         private bool IsFootprintAvailable(Tile startTile, Vector2Int size)
         {
             for (var x = 0; x < size.x; x++)
-            for (var y = 0; y < size.y; y++)
             {
-                var tile = _tilemap.GetTile(startTile.Position + new Vector2Int(x, y));
-                if (tile == null || !tile.IsEmpty || tile.Owner != TileOwner.Enemy) return false;
+                for (var y = 0; y < size.y; y++)
+                {
+                    var tile = Tilemap.GetTile(startTile.Position + new Vector2Int(x, y));
+                    if (tile == null || !tile.IsEmpty || tile.Owner != TileOwner.Enemy) return false;
+                }
             }
 
             return true;
         }
 
-        private void AddWaveToWaitList(WaveConfig wave)
-        {
-            foreach (var pawnData in wave.Enemies) _waitList.Enqueue(pawnData);
-        }
-
         private void ResetState()
         {
             _wavesSpawned = 0;
-            _turnsSinceLastWave = 0; // Reset the turns delay counter
             _remainingWaves = _waves.OrderBy(w => w.DifficultyLevel).ToList();
+            _waitList.Clear();
+        }
+
+        public void StopSpawning()
+        {
+            _finalWave = null;
+            _wavesSpawned = 0;
+            _remainingWaves.Clear();
             _waitList.Clear();
         }
     }

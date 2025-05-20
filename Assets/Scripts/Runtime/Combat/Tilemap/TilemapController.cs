@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using Runtime.Combat.Pawn;
 using Sirenix.OdinInspector;
@@ -141,6 +142,11 @@ namespace Runtime.Combat.Tilemap
             }
 
             return tilesInRange;
+        }
+
+        public List<PawnController> GetUnitsByOwnership(PawnOwner owner)
+        {
+            return _activeUnits.Where(u => u.Owner == owner).ToList();
         }
     }
 }
