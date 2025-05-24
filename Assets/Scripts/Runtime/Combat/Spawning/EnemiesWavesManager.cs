@@ -2,7 +2,6 @@
 using System.Linq;
 using Runtime.Combat.Pawn;
 using Runtime.Combat.Tilemap;
-using Runtime.UI.OnScreenMessages;
 using UnityEngine;
 using Utilities;
 
@@ -16,7 +15,7 @@ namespace Runtime.Combat.Spawning
 
         private AnimationCurve _difficultyCurve;
         private WaveConfig _finalWave;
-        private List<WaveConfig> _remainingWaves;
+        private Queue<WaveConfig> _remainingWaves;
 
         private List<WaveConfig> _waves;
         private int _wavesSpawned;
@@ -32,6 +31,12 @@ namespace Runtime.Combat.Spawning
             _difficultyCurve = combatConfig.DifficultyCurve;
 
             ResetState();
+
+            for (var i = 0; i < _combatLength; i++)
+            {
+                var wave = i < _combatLength - 1 ? SelectWave(i) : _finalWave;
+                _remainingWaves.Enqueue(wave);
+            }
         }
 
         public void OnTurnStart()
@@ -52,26 +57,10 @@ namespace Runtime.Combat.Spawning
 
         private void SpawnWave()
         {
-            // Check if it's time to spawn the final wave
-            if (_wavesSpawned >= _combatLength && _finalWave)
-            {
-                SpawnWave(_finalWave); // Spawn the final wave
-                // Display final wave notification
-                var onScreenMessageManager = ServiceLocator.Get<MessageManager>();
-                onScreenMessageManager.ShowMessage("Final Wave", MessageType.Notification);
-
-                // Stop spawning after the final wave has been spawned
-                StopSpawning();
-                return;
-            }
-
-            // Select and spawn a random wave with difficulty bias
-            var waveToSpawn = SelectWave();
-            if (waveToSpawn)
-            {
-                SpawnWave(waveToSpawn);
-                _wavesSpawned++;
-            }
+            var waveToSpawn = _remainingWaves.Count > 0 ? _remainingWaves.Dequeue() : null;
+            if (!waveToSpawn) return;
+            SpawnWave(waveToSpawn);
+            _wavesSpawned++;
         }
 
         private void TakeOverTile()
@@ -90,13 +79,12 @@ namespace Runtime.Combat.Spawning
             tileToTakeOver.Owner = TileOwner.Enemy; // Claim the tile for the enemy
         }
 
-        private WaveConfig SelectWave()
+        private WaveConfig SelectWave(int turn)
         {
             var minDifficulty = _waves.Min(w => w.DifficultyLevel);
             var maxDifficulty = _waves.Max(w => w.DifficultyLevel);
 
-            var currentTurn = ServiceLocator.Get<CombatManager>().CurrentTurn;
-            var turnProgress = (float)currentTurn / _combatLength;
+            var turnProgress = (float)turn / _combatLength;
 
             var relativeDifficulty = _difficultyCurve.Evaluate(turnProgress);
             var mappedDifficulty = Mathf.Lerp(minDifficulty, maxDifficulty, relativeDifficulty);
@@ -168,16 +156,14 @@ namespace Runtime.Combat.Spawning
         private void ResetState()
         {
             _wavesSpawned = 0;
-            _remainingWaves = _waves.OrderBy(w => w.DifficultyLevel).ToList();
+            _remainingWaves.Clear();
             _waitList.Clear();
         }
 
         public void StopSpawning()
         {
             _finalWave = null;
-            _wavesSpawned = 0;
-            _remainingWaves.Clear();
-            _waitList.Clear();
+            ResetState();
         }
     }
 }

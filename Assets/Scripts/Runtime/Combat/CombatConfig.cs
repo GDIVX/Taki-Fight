@@ -18,9 +18,5 @@ namespace Runtime.Combat
 
         [Tooltip("Defines difficulty progression over turns.")]
         public AnimationCurve DifficultyCurve; // X-axis: Turn, Y-axis: Difficulty
-
-        [SerializeField] private int _turnsDelayBetweenWaves;
-
-        public int TurnsDelayBetweenWaves => _turnsDelayBetweenWaves;
     }
 }
