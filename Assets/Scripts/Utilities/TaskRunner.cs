@@ -5,30 +5,41 @@ using UnityEngine;
 
 namespace Utilities
 {
-    public class Sequence
+    public class TaskRunner : IDisposable
     {
         private readonly Queue<Func<IEnumerator>> _steps = new();
+
+        private bool _executed;
         private Action _onComplete;
 
-        public Sequence Do(Action action)
+        public void Dispose()
+        {
+            // Clear all the steps in the queue
+            _steps.Clear();
+
+            // Cleanup the onComplete callback
+            _onComplete = null;
+        }
+
+        public TaskRunner Do(Action action)
         {
             _steps.Enqueue(() => RunAction(action));
             return this;
         }
 
-        public Sequence Wait(float seconds)
+        public TaskRunner Wait(float seconds)
         {
             _steps.Enqueue(() => WaitCoroutine(seconds));
             return this;
         }
 
-        public Sequence OnComplete(Action action)
+        public TaskRunner OnComplete(Action action)
         {
             _onComplete = action;
             return this;
         }
 
-        public Sequence WaitUntil(Func<bool> condition)
+        public TaskRunner WaitUntil(Func<bool> condition)
         {
             _steps.Enqueue(() => WaitUntilCoroutine(condition));
             return this;
@@ -36,8 +47,16 @@ namespace Utilities
 
         public void Execute()
         {
+            if (_executed)
+            {
+                Debug.LogWarning("Sequence already executed.");
+                return;
+            }
+
+            _executed = true;
             CoroutineRunner.Instance.StartCoroutine(RunSequence());
         }
+
 
         private IEnumerator RunSequence()
         {
@@ -49,6 +68,7 @@ namespace Utilities
 
             _onComplete?.Invoke();
         }
+
 
         private static IEnumerator RunAction(Action action)
         {

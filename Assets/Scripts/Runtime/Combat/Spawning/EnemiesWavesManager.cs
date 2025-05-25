@@ -47,7 +47,7 @@ namespace Runtime.Combat.Spawning
             var enemyOwnedTiles = Tilemap.GetEnemyOwnedTiles();
 
             // Use a fluid sequence to handle animations and gameplay logic step by step
-            var sequence = new Sequence();
+            var sequence = new TaskRunner();
 
             sequence
                 .Do(TakeOverTile)

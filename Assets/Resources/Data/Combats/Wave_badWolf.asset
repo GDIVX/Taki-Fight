@@ -13,7 +13,5 @@ MonoBehaviour:
   m_Name: Wave_badWolf
   m_EditorClassIdentifier: 
   Enemies:
-  - {fileID: 11400000, guid: 1fd20c971c16de74d859bf19fc5e021a, type: 2}
-  - {fileID: 11400000, guid: 1fd20c971c16de74d859bf19fc5e021a, type: 2}
-  - {fileID: 11400000, guid: 1fd20c971c16de74d859bf19fc5e021a, type: 2}
+  - {fileID: 11400000, guid: 365c2676da9b04f488f7cfb4a561b46a, type: 2}
   DifficultyLevel: 0.7
