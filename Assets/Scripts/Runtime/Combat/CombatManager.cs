@@ -108,8 +108,10 @@ namespace Runtime.Combat
             ServiceLocator.Get<HandController>().DrawHand();
             ServiceLocator.Get<Energy>().GainEnergyPerIncome();
 
-            // Try spawning a wave at the start of the turn
-            _wavesManager.OnTurnStart();
+            //if this is the first turn , skip the wave spawning
+            if (CurrentTurn != 1)
+                // Try spawning a wave at the start of the turn
+                _wavesManager.OnTurnStart();
 
             OnStartTurn?.Invoke();
         }

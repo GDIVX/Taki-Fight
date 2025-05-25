@@ -38,14 +38,7 @@ namespace Runtime.Combat.Tilemap
         public TileOwner Owner
         {
             get => _owner;
-            set
-            {
-                _owner = value;
-                if (_view != null)
-                {
-                    _view.OnOwnerModified();
-                }
-            }
+            internal set => _owner = value;
         }
 
         public TileView View
@@ -158,6 +151,12 @@ namespace Runtime.Combat.Tilemap
 
                 if (neighborTile != null) yield return neighborTile;
             }
+        }
+
+        public void SetOwner(TileOwner tileOwner)
+        {
+            Owner = tileOwner;
+            _view.OnOwnerModified();
         }
     }
 }

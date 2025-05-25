@@ -1,4 +1,5 @@
 ﻿using System;
+using DG.Tweening;
 using Runtime.Selection;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -103,7 +104,8 @@ namespace Runtime.Combat.Tilemap
 
         public void Highlight(Color color)
         {
-            spriteRenderer.color = color;
+            spriteRenderer.DOColor(color, 0.3f).SetEase(Ease.InOutSine).onComplete +=
+                () => spriteRenderer.color = color;
         }
 
         public void ClearHighlight()
@@ -122,22 +124,30 @@ namespace Runtime.Combat.Tilemap
             // Change color based on the owner using a shader or color assignment
             var owner = tile.Owner;
 
+            var color = Color.white;
             switch (owner)
             {
                 case TileOwner.None:
-                    spriteRenderer.color = Color.white; // Default color for no owner
+                    color = Color.white; // Default color for no owner
                     break;
                 case TileOwner.Player:
-                    spriteRenderer.color = Color.blue; // Color for player-owned tiles
+                    color = Color.blue; // Color for player-owned tiles
                     break;
                 case TileOwner.Enemy:
-                    spriteRenderer.color = Color.red; // Color for enemy-owned tiles
+                    color = Color.red; // Color for enemy-owned tiles
                     break;
                 default:
                     Debug.LogWarning("Unknown TileOwner type.");
                     spriteRenderer.color = Color.white; // Fallback color
                     break;
             }
+
+            Highlight(color);
+        }
+
+        public bool IsAnimating()
+        {
+            return DOTween.IsTweening(spriteRenderer);
         }
     }
 }

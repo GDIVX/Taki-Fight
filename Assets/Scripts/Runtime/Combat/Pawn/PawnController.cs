@@ -30,6 +30,7 @@ namespace Runtime.Combat.Pawn
         internal PawnCombat Combat => _combat;
         internal PawnTilemapHelper TilemapHelper => _tilemapHelper;
         internal PawnMovement Movement => _movement;
+        public PawnView View => _view;
 
         public PawnController Init(PawnData data)
         {

@@ -9,19 +9,19 @@ namespace Runtime.Combat.Spawning
 {
     public class EnemiesWavesManager
     {
+        private readonly Queue<WaveConfig> _remainingWaves = new();
         private readonly Queue<PawnData> _waitList = new();
 
         private int _combatLength;
 
         private AnimationCurve _difficultyCurve;
         private WaveConfig _finalWave;
-        private Queue<WaveConfig> _remainingWaves;
 
         private List<WaveConfig> _waves;
         private int _wavesSpawned;
 
-        private PawnFactory PawnFactory => ServiceLocator.Get<PawnFactory>();
-        private TilemapController Tilemap => ServiceLocator.Get<TilemapController>();
+        private static PawnFactory PawnFactory => ServiceLocator.Get<PawnFactory>();
+        private static TilemapController Tilemap => ServiceLocator.Get<TilemapController>();
 
         public void Init(CombatConfig combatConfig)
         {
@@ -46,20 +46,36 @@ namespace Runtime.Combat.Spawning
 
             var enemyOwnedTiles = Tilemap.GetEnemyOwnedTiles();
 
-            // Check if spawning is allowed based on the number of controlled tiles
-            if (Tilemap.GetUnitsByOwnership(PawnOwner.Enemy).Count < enemyOwnedTiles.Count)
-                // Attempt to spawn a wave
-                SpawnWave();
-            else
-                // If spawning is not possible, attempt tile takeover
-                TakeOverTile();
+            // Use a fluid sequence to handle animations and gameplay logic step by step
+            var sequence = new Sequence();
+
+            sequence
+                .Do(TakeOverTile)
+                .WaitUntil(AreTileTakeoverAnimationsComplete)
+                .Do(SpawnWave)
+                .WaitUntil(AreSummonAnimationsComplete)
+                .Execute(() => Debug.Log("Wave spawning and animations complete"));
         }
 
         private void SpawnWave()
         {
             var waveToSpawn = _remainingWaves.Count > 0 ? _remainingWaves.Dequeue() : null;
             if (!waveToSpawn) return;
-            SpawnWave(waveToSpawn);
+
+            var unitsToSpawn = new List<PawnData>(_waitList);
+            _waitList.Clear();
+            unitsToSpawn.AddRange(waveToSpawn.Enemies);
+
+            foreach (var pawnData in unitsToSpawn)
+            {
+                var tile = FindValidTileForUnit(pawnData);
+                if (tile != null)
+                    SpawnUnit(pawnData, tile);
+                else
+                    // Add to waitlist if no valid tile is found
+                    _waitList.Enqueue(pawnData);
+            }
+
             _wavesSpawned++;
         }
 
@@ -69,14 +85,28 @@ namespace Runtime.Combat.Spawning
 
             // Find potential tiles to take over
             var potentialTiles = enemyOwnedTiles
-                .SelectMany(tile => Tilemap.GetTilesInRange(tile, 1)) // Get adjacent tiles
-                .Where(tile => tile.Owner == TileOwner.None && tile.IsEmpty) // Unowned and unoccupied tiles
+                .SelectMany(tile => Tilemap.GetTilesInRange(tile, 1))
+                .Where(tile => tile.Owner == TileOwner.None && tile.IsEmpty)
                 .ToList();
 
-            // Take over the first available tile
-            if (potentialTiles.Count <= 0) return;
+            if (potentialTiles.Count <= 0) return; // No tiles available to take over
+
             var tileToTakeOver = potentialTiles.SelectRandom();
-            tileToTakeOver.Owner = TileOwner.Enemy; // Claim the tile for the enemy
+            tileToTakeOver.SetOwner(TileOwner.Enemy);
+        }
+
+        private static void SpawnUnit(PawnData pawnData, Tile spawnTile)
+        {
+            var pawnController = PawnFactory.CreatePawn(pawnData, spawnTile);
+
+            if (!pawnController)
+            {
+                Debug.LogWarning($"Failed to summon {pawnData.name} at tile {spawnTile.Position}.");
+                return;
+            }
+
+            // Play spawn animation
+            pawnController.SpawnAtPosition(spawnTile);
         }
 
         private WaveConfig SelectWave(int turn)
@@ -92,8 +122,7 @@ namespace Runtime.Combat.Spawning
             var wavesWithWeights = _waves
                 .Select(wave =>
                 {
-                    var weight =
-                        1f / (1f + Mathf.Abs(wave.DifficultyLevel - mappedDifficulty));
+                    var weight = 1f / (1f + Mathf.Abs(wave.DifficultyLevel - mappedDifficulty));
                     return (wave, weight);
                 })
                 .ToList();
@@ -110,22 +139,6 @@ namespace Runtime.Combat.Spawning
             return null;
         }
 
-        private void SpawnWave(WaveConfig wave)
-        {
-            var unitsToSpawn = new List<PawnData>(_waitList);
-            _waitList.Clear();
-            unitsToSpawn.AddRange(wave.Enemies);
-
-            foreach (var pawnData in unitsToSpawn)
-            {
-                var tile = FindValidTileForUnit(pawnData);
-                if (tile != null)
-                    PawnFactory.CreatePawn(pawnData, tile);
-                else
-                    _waitList.Enqueue(pawnData); // Add to waitlist if no tile is found
-            }
-        }
-
         private Tile FindValidTileForUnit(PawnData pawnData)
         {
             var enemyOwnedTiles = Tilemap.GetEnemyOwnedTiles()
@@ -133,8 +146,12 @@ namespace Runtime.Combat.Spawning
                 .ToList();
 
             foreach (var tile in enemyOwnedTiles)
+            {
                 if (IsFootprintAvailable(tile, pawnData.Size))
+                {
                     return tile;
+                }
+            }
 
             return null;
         }
@@ -156,14 +173,28 @@ namespace Runtime.Combat.Spawning
         private void ResetState()
         {
             _wavesSpawned = 0;
-            _remainingWaves.Clear();
-            _waitList.Clear();
+            _remainingWaves?.Clear();
+            _waitList?.Clear();
         }
 
         public void StopSpawning()
         {
             _finalWave = null;
             ResetState();
+        }
+
+        private bool AreTileTakeoverAnimationsComplete()
+        {
+            // Ask each TileView directly if its takeover animation is complete
+            return Tilemap.GetEnemyOwnedTiles()
+                .All(tile => !tile.View.IsAnimating());
+        }
+
+        private bool AreSummonAnimationsComplete()
+        {
+            // Ask each PawnView directly if its summon animation is complete
+            return Tilemap.GetUnitsByOwnership(PawnOwner.Enemy)
+                .All(pawn => pawn.View.IsAnimating());
         }
     }
 }

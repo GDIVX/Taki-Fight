@@ -85,6 +85,11 @@ namespace Runtime.Combat.Pawn
             ApplyOrientation(data.Owner);
         }
 
+        public bool IsAnimating()
+        {
+            return DOTween.IsTweening(_spriteRenderer);
+        }
+
         private void InitiateAttackView(PawnController controller, PawnData data)
         {
             //damage
