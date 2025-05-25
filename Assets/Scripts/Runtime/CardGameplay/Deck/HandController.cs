@@ -168,5 +168,10 @@ namespace Runtime.CardGameplay.Deck
                 DiscardCard(card);
             }
         }
+
+        public bool HandIsEmpty()
+        {
+            return _cards.Count == 0;
+        }
     }
 }

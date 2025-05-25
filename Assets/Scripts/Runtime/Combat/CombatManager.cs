@@ -102,13 +102,23 @@ namespace Runtime.Combat
         {
             CurrentTurn++;
 
-
             ServiceLocator.Get<MessageManager>().ShowMessage($"Turn {CurrentTurn}", MessageType.Notification);
 
-            ServiceLocator.Get<HandController>().DrawHand();
+            // Check if the player has cards to play
+            var handController = ServiceLocator.Get<HandController>();
+            handController.DrawHand();
+
+            // Automatically skip if no cards
+            if (handController.HandIsEmpty())
+            {
+                Debug.Log("No cards left – skipping turn.");
+                EndTurn();
+                return;
+            }
+
             ServiceLocator.Get<Energy>().GainEnergyPerIncome();
 
-            //if this is the first turn , skip the wave spawning
+            // If this is the first turn, skip the wave spawning
             if (CurrentTurn != 1)
                 // Try spawning a wave at the start of the turn
                 _wavesManager.OnTurnStart();
