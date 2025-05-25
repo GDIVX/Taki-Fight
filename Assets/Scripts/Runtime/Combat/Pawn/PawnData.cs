@@ -81,7 +81,13 @@ namespace Runtime.Combat.Pawn
 
         public int Health => _health;
         public int Defense => _defense;
-        public Sprite Sprite => _sprite;
+
+        public Sprite Sprite
+        {
+            get => _sprite;
+            set => _sprite = value;
+        }
+
         public bool IsAgile => _isAgile;
         public int Damage => _damage;
         public int Attacks => _attacks;

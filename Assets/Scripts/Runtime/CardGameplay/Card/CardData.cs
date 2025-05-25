@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Runtime.CardGameplay.Card.CardBehaviour;
 using Runtime.CardGameplay.Card.CardBehaviour.Feedback;
 using Sirenix.OdinInspector;
@@ -21,7 +22,6 @@ namespace Runtime.CardGameplay.Card
         [SerializeField, BoxGroup("Stats")] private Rarity _rarity;
 
 
-
         [SerializeField, BoxGroup("Behaviour")]
         private List<PlayStrategyData> _playStrategies;
 
@@ -35,7 +35,13 @@ namespace Runtime.CardGameplay.Card
 
         public string Title => _title;
         public string Description => _description;
-        public Sprite Image => _image;
+
+        public Sprite Image
+        {
+            get => _image;
+            set => _image = value;
+        }
+
         public List<PlayStrategyData> PlayStrategies => _playStrategies;
 
 
@@ -49,7 +55,7 @@ namespace Runtime.CardGameplay.Card
         public FeedbackStrategy FeedbackStrategy => _feedbackStrategy;
     }
 
-    [System.Serializable]
+    [Serializable]
     public struct PlayStrategyData
     {
         public CardPlayStrategy PlayStrategy;

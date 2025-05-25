@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      wodden_baner_0: 4573541227906349632
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
