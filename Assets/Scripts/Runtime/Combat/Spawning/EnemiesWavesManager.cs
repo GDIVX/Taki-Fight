@@ -54,7 +54,7 @@ namespace Runtime.Combat.Spawning
                 .WaitUntil(AreTileTakeoverAnimationsComplete)
                 .Do(SpawnWave)
                 .WaitUntil(AreSummonAnimationsComplete)
-                .Execute(() => Debug.Log("Wave spawning and animations complete"));
+                .Execute();
         }
 
         private void SpawnWave()

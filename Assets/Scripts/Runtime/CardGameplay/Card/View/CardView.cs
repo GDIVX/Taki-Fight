@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using DG.Tweening;
+﻿using DG.Tweening;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
@@ -23,7 +22,6 @@ namespace Runtime.CardGameplay.Card.View
         [SerializeField, TabGroup("Dependencies")]
         private CardTextParser _cardTextParser;
 
-        private Transform _discardToLocation, _drawFromLocation;
         [SerializeField] private float _cardMovementDuration;
         [SerializeField] private float _minScale;
         [SerializeField] private Ease _cardMovementEase;
@@ -40,24 +38,26 @@ namespace Runtime.CardGameplay.Card.View
         [SerializeField, TabGroup("Hover Animation")]
         private Ease _hoverEaseType = Ease.OutQuad;
 
-        [ShowInInspector, ReadOnly] private CardData _cardData;
-
         [SerializeField, TabGroup("Outline")] private UIOutline _uiOutline;
         [SerializeField, TabGroup("Outline")] private float _outlineTransitionDuration;
 
         [SerializeField, TabGroup("Outline")] private float _outlineAlphaMin;
         [SerializeField, TabGroup("Outline")] private float _outlineAlphaMax = 1;
 
-        [ShowInInspector, ReadOnly] private bool _isHoverEnabled;
-
-
-        [ShowInInspector, ReadOnly] private Vector3 _originalScale;
-        [ShowInInspector, ReadOnly] private Vector3 _originalPosition;
-        [ShowInInspector, ReadOnly] private Vector3 _originalRotation;
-        [ShowInInspector, ReadOnly] private int _originalSiblingIndex;
-        [ShowInInspector, ReadOnly] private CardController _controller;
+        [ShowInInspector] [ReadOnly] private CardData _cardData;
+        [ShowInInspector] [ReadOnly] private CardController _controller;
 
         private Tween _currentTween;
+
+        private Transform _discardToLocation, _drawFromLocation;
+
+        [ShowInInspector, ReadOnly] private bool _isHoverEnabled;
+        [ShowInInspector, ReadOnly] private Vector3 _originalPosition;
+        [ShowInInspector, ReadOnly] private Vector3 _originalRotation;
+
+
+        [ShowInInspector] [ReadOnly] private Vector3 _originalScale;
+        [ShowInInspector, ReadOnly] private int _originalSiblingIndex;
 
 
         private void Awake()
@@ -66,10 +66,23 @@ namespace Runtime.CardGameplay.Card.View
             SetOriginalValues();
         }
 
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            if (_isHoverEnabled) AnimateHoverEnter();
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            if (_isHoverEnabled) AnimateReturnToDefault();
+        }
+
         public CardView Init(Transform drawFrom, Transform discardTo)
         {
             _drawFromLocation = drawFrom;
             _discardToLocation = discardTo;
+            _canvasGroup.interactable = true;
+            _canvasGroup.blocksRaycasts = true;
 
             return this;
         }
@@ -131,23 +144,6 @@ namespace Runtime.CardGameplay.Card.View
             _cardTextParser.DrawTextDescription(_controller, _cardData.Description);
         }
 
-
-        public void OnPointerEnter(PointerEventData eventData)
-        {
-            if (_isHoverEnabled)
-            {
-                AnimateHoverEnter();
-            }
-        }
-
-        public void OnPointerExit(PointerEventData eventData)
-        {
-            if (_isHoverEnabled)
-            {
-                AnimateReturnToDefault();
-            }
-        }
-
         public void SetOriginalValues()
         {
             _originalSiblingIndex = transform.GetSiblingIndex();
@@ -207,6 +203,9 @@ namespace Runtime.CardGameplay.Card.View
         [Button]
         public void OnBurn()
         {
+            _canvasGroup.interactable = false;
+            _canvasGroup.blocksRaycasts = false;
+
             AnimateHoverEnter();
             _mask.DOFillAmount(0, _dissolveTime).SetEase(_dissolveEase);
             _canvasGroup.DOFade(0, _dissolveTime).SetEase(_dissolveEase).onComplete += () =>

@@ -36,6 +36,12 @@ namespace Runtime.CardGameplay.Card
 
         public void OnPointerClick(PointerEventData eventData)
         {
+            if (!HandController.Has(this))
+            {
+                Debug.LogWarning("Trying to play a card that is not in hand.");
+                return;
+            }
+
             if (eventData == null)
             {
                 Debug.LogWarning("OnPointerClick called with null eventData.");
@@ -58,6 +64,7 @@ namespace Runtime.CardGameplay.Card
 
             var predicate = SelectionService.Instance.Predicate;
             if (predicate.Invoke(this)) SelectionService.Instance.Select(this);
+            else SelectionService.Instance.Cancel();
         }
 
         public void OnSelected()
@@ -229,13 +236,5 @@ namespace Runtime.CardGameplay.Card
 
             Play();
         }
-    }
-
-    [Serializable]
-    public struct GemGroup
-    {
-        public int Pearls;
-        public int Quartz;
-        public int Brimstone;
     }
 }

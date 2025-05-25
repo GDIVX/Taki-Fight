@@ -108,13 +108,6 @@ namespace Runtime.Combat
             var handController = ServiceLocator.Get<HandController>();
             handController.DrawHand();
 
-            // Automatically skip if no cards
-            if (handController.HandIsEmpty())
-            {
-                Debug.Log("No cards left – skipping turn.");
-                EndTurn();
-                return;
-            }
 
             ServiceLocator.Get<Energy>().GainEnergyPerIncome();
 

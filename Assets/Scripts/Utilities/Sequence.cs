@@ -22,15 +22,20 @@ namespace Utilities
             return this;
         }
 
+        public Sequence OnComplete(Action action)
+        {
+            _onComplete = action;
+            return this;
+        }
+
         public Sequence WaitUntil(Func<bool> condition)
         {
             _steps.Enqueue(() => WaitUntilCoroutine(condition));
             return this;
         }
 
-        public void Execute(Action onComplete = null)
+        public void Execute()
         {
-            _onComplete = onComplete;
             CoroutineRunner.Instance.StartCoroutine(RunSequence());
         }
 

@@ -28,11 +28,14 @@ namespace Runtime.Selection
         {
             if (CurrentState != SelectionState.InProgress) return;
 
-            if (Input.GetMouseButtonUp(1)) // Right-click cancels selection
-            {
-                var cancelSelection = CancelSelection();
-                StartCoroutine(cancelSelection);
-            }
+            if (!Input.GetMouseButtonUp(1)) return; // Right-click cancels selection
+            Cancel();
+        }
+
+        internal void Cancel()
+        {
+            var cancelSelection = CancelSelection();
+            StartCoroutine(cancelSelection);
         }
 
         public event Action<List<ISelectableEntity>> OnSelectionComplete;
@@ -83,11 +86,9 @@ namespace Runtime.Selection
             SelectedEntities.Add(entity);
             entity.OnSelected();
 
-            if (SelectedEntities.Count >= _requiredSelections)
-            {
-                var completeSelection = CompleteSelection();
-                StartCoroutine(completeSelection);
-            }
+            if (SelectedEntities.Count < _requiredSelections) return;
+            var completeSelection = CompleteSelection();
+            StartCoroutine(completeSelection);
         }
 
         private bool IsValid(ISelectableEntity entity) => Predicate?.Invoke(entity) ?? false;

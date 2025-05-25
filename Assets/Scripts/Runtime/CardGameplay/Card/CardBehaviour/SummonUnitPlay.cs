@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using Runtime.Combat.Tilemap;
 using Runtime.Combat.Pawn;
+using Runtime.Combat.Tilemap;
 using Runtime.Selection;
 using UnityEngine;
 using Utilities;
@@ -16,7 +15,6 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
 
         public override void Play(CardController cardController, int potency, Action<bool> onComplete)
         {
-
             SelectionService.Instance.SearchSize = _unit.Size;
 
             SelectionService.Instance.RequestSelection
@@ -27,10 +25,11 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                     var tileView = target as TileView;
                     if (tileView == null)
                     {
-                        Debug.LogError("SummonUnitPlay: Target is not a TileView.");
+                        // Debug.LogError("SummonUnitPlay: Target is not a TileView.");
                         onComplete?.Invoke(false);
                         return false;
                     }
+
                     //get the size of the unit
                     var unitSize = _unit.Size;
 
@@ -58,12 +57,14 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                             onComplete?.Invoke(false);
                             return false;
                         }
+
                         //check if tile is in bounds of the tilemap
                         if (!tilemap.IsInBounds(tile.Position))
                         {
                             onComplete?.Invoke(false);
                             return false;
                         }
+
                         if (tile.IsOccupied)
                         {
                             onComplete?.Invoke(false);
@@ -77,6 +78,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                             return false;
                         }
                     }
+
                     //if all tiles are valid, return true
                     return true;
                 },
@@ -104,14 +106,9 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                     pawnFactory.CreatePawn(unit, tile);
                     onComplete?.Invoke(true);
                 },
-                () =>
-                {
-                    onComplete?.Invoke(false);
-                },
+                () => { onComplete?.Invoke(false); },
                 cardController.transform.position
             );
         }
     }
 }
-
-
