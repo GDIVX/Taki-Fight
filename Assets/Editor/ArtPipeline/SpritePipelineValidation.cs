@@ -1,77 +1,55 @@
-﻿using System.IO;
-using System.Linq;
+﻿using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
+
+// Required for HashSet
 
 namespace Editor.ArtPipeline
 {
     public class SpritePipelineValidation : AssetPostprocessor
     {
-        private static SpritePipelineSettings _settings;
+        private static readonly SpritePipelineSettings Settings = SpritePipelineSettings.Instance;
+        private static readonly HashSet<string> ProcessedAssets = new();
 
-        private void OnPreprocessTexture()
+        private void OnPostprocessTexture(Texture2D texture)
         {
-            if (_settings == null) _settings = LoadPipelineSettings();
+            var standardizedPath = assetPath.Replace("\\", "/");
 
-            // Validate assets only in the "Import" folder
-            if (!assetPath.StartsWith("Assets/Sprites/Import")) return;
+            // Avoid re-processing assets that have already been handled
+            if (ProcessedAssets.Contains(standardizedPath)) return;
 
-            var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(assetPath);
-            if (texture == null)
-            {
-                Debug.LogError($"[Validation Error] Unable to load texture at path: {assetPath}");
-                return;
-            }
+            ProcessedAssets.Add(standardizedPath);
 
-            Debug.Log($"[Validation Started] Processing asset: {assetPath}");
-
-            // Perform the validation
-            if (!ValidateSprite(texture, assetPath))
-            {
-                Debug.LogWarning(
-                    $"[Validation Failed] Asset '{assetPath}' has validation issues. Please review the logs for details.");
-                return; // Stop further processing, keep the file as is
-            }
-
-            Debug.Log($"[Validation Passed] Asset '{assetPath}' successfully passed all validation checks.");
+            // Validation and sorting logic here...
         }
 
-        private static SpritePipelineSettings LoadPipelineSettings()
-        {
-            // Load the settings from Resources folder
-            var settings = Resources.Load<SpritePipelineSettings>("SpritePipelineSettings");
-            if (settings == null)
-                Debug.LogError(
-                    "[Pipeline Error] SpritePipelineSettings file not found in 'Assets/Resources'. Please create one.");
 
-            return settings;
-        }
-
-        private static bool ValidateSprite(Texture2D texture, string assetPath)
+        internal static bool ValidateSprite(Texture2D texture, string assetPath)
         {
             var isValid = true;
             var fileName = Path.GetFileNameWithoutExtension(assetPath);
 
             // 1. Validate dimensions
-            if (texture.width < _settings.MinWidth || texture.width > _settings.MaxWidth ||
-                texture.height < _settings.MinHeight || texture.height > _settings.MaxHeight)
+            if (texture.width < Settings.MinWidth || texture.width > Settings.MaxWidth ||
+                texture.height < Settings.MinHeight || texture.height > Settings.MaxHeight)
             {
                 Debug.LogError(
                     $"[Validation Failed: Dimensions] Asset '{fileName}' has invalid dimensions ({texture.width}x{texture.height}). " +
-                    $"Expected dimensions between {_settings.MinWidth}x{_settings.MinHeight} and {_settings.MaxWidth}x{_settings.MaxHeight}.");
+                    $"Expected dimensions between {Settings.MinWidth}x{Settings.MinHeight} and {Settings.MaxWidth}x{Settings.MaxHeight}.");
                 isValid = false;
             }
 
             // 2. Validate naming convention
-            if (_settings.EnforceNamingConvention && !ValidateNamingConvention(fileName)) isValid = false;
+            if (!ValidateNamingConvention(fileName)) isValid = false;
 
             // 3. Validate file format
             var extension = Path.GetExtension(assetPath).ToLower();
-            if (!_settings.AllowedExtensions.Contains(extension))
+            if (!Settings.AllowedExtensions.Contains(extension))
             {
                 Debug.LogError(
                     $"[Validation Failed: Format] Asset '{fileName}' has an invalid file format '{extension}'. " +
-                    $"Allowed formats: {string.Join(", ", _settings.AllowedExtensions)}.");
+                    $"Allowed formats: {string.Join(", ", Settings.AllowedExtensions)}.");
                 isValid = false;
             }
 
@@ -80,32 +58,30 @@ namespace Editor.ArtPipeline
 
         private static bool ValidateNamingConvention(string fileName)
         {
+            // File name validation format: {Type}_{Name}_v{Version}
             var parts = fileName.Split('_');
-
-            // Ensure the file name has 3 parts: type_name_version
             if (parts.Length != 3)
             {
                 Debug.LogError(
-                    $"[Validation Failed: Naming] Asset '{fileName}' must follow the naming convention 'type_name_version'.");
+                    $"[Validation Failed: Naming] Asset '{fileName}' must follow the naming format: Type_Name_vVersion.");
                 return false;
             }
 
-            var type = parts[0].ToLower(); // Type of the asset
-            var version = parts[2].ToLower(); // Version of the asset
-
-            // Validate the 'type'
-            if (!_settings.AllowedTypes.Contains(type))
+            // Validate the type prefix
+            var type = parts[0].ToLower();
+            if (type != Settings.CardSpritePrefix.ToLower() && type != Settings.CardSpritePrefix.ToLower())
             {
                 Debug.LogError(
-                    $"[Validation Failed: Naming | Type] Asset '{fileName}' has an invalid type '{type}'. Allowed types: {string.Join(",", _settings.AllowedTypes)}.");
+                    $"[Validation Failed: Naming] Asset '{fileName}' has an invalid type prefix '{type}'. Expected: '{Settings.CardSpritePrefix}' or '{Settings.CardSpritePrefix}'.");
                 return false;
             }
 
-            // Validate the 'version'
-            if (!_settings.AllowedVersions.Contains(version))
+            // Validate the version suffix (vN)
+            var versionSegment = parts[2].ToLower();
+            if (!versionSegment.StartsWith("v") || !int.TryParse(versionSegment.Substring(1), out _))
             {
                 Debug.LogError(
-                    $"[Validation Failed: Naming | Version] Asset '{fileName}' has an invalid version '{version}'. Allowed versions: {string.Join(", ", _settings.AllowedVersions)}.");
+                    $"[Validation Failed: Naming] Asset '{fileName}' must contain a valid version suffix (e.g., v1, v2).");
                 return false;
             }
 

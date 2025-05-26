@@ -10,21 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: db39779a7d15495786ef0b741b93a144, type: 3}
-  m_Name: Wolf Warrior
+  m_Name: BigBadWolf
   m_EditorClassIdentifier: 
-  _sprite: {fileID: -4232371963121305725, guid: 0e58604c38ef60b49b6a55fd3049a056, type: 3}
-  _health: 10
-  _defense: 1
+  _sprite: {fileID: -6247120970568995558, guid: 81b3efde9ee929b40a7928a1b9b840bc, type: 3}
+  _health: 20
+  _defense: 5
   _damage: 3
-  _attacks: 1
+  _attacks: 2
   _speed: 1
   _attackRange: 1
   _isAgile: 0
-  _owner: 0
-  _size: {x: 1, y: 1}
+  _owner: 1
+  _size: {x: 2, y: 2}
   _onTurnStartStrategies: []
   _onAttackStrategies: []
   _onMoveStrategies: []
   _onDamagedStrategies: []
-  _onKilledStrategies: []
+  _onKilledStrategies:
+  - Strategy: {fileID: 11400000, guid: 0e9d1ce15e996934db87652ac0e08445, type: 2}
+    Potency: 0
   _summonStrategies: []

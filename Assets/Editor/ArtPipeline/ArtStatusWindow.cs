@@ -1,56 +1,24 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Runtime.CardGameplay.Card;
 using Runtime.Combat.Pawn;
+using Sirenix.OdinInspector;
+using Sirenix.OdinInspector.Editor;
 using UnityEditor;
 using UnityEngine;
-// For PawnData
-
-// For CardData
+using Object = UnityEngine.Object;
 
 namespace Editor.ArtPipeline
 {
-    public class ArtStatusWindow : EditorWindow
+    public class ArtStatusWindow : OdinEditorWindow
     {
         private const string DataFolderPath = "Assets/Resources/Data";
-        private List<ArtStatus> _artStatusList;
+        private const string ImportFolderPath = "Assets/Sprites/Import";
 
-        private void OnGUI()
-        {
-            if (_artStatusList == null)
-            {
-                if (GUILayout.Button("Refresh Art Status")) RefreshArtStatus();
-
-                return;
-            }
-
-            GUILayout.Label("Art Status for Project", EditorStyles.boldLabel);
-
-            // Header Row
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Asset Type", GUILayout.Width(100));
-            GUILayout.Label("Asset Name", GUILayout.Width(200));
-            GUILayout.Label("Art Status", GUILayout.Width(250));
-            GUILayout.EndHorizontal();
-
-            EditorGUILayout.Space();
-
-            // Display Art Status List
-            foreach (var status in _artStatusList)
-            {
-                GUILayout.BeginHorizontal();
-                GUILayout.Label(status.AssetType, GUILayout.Width(100));
-                GUILayout.Label(status.AssetName, GUILayout.Width(200));
-                GUILayout.Label(status.Status, GUILayout.Width(250));
-                GUILayout.EndHorizontal();
-            }
-
-            EditorGUILayout.Space();
-
-            // Export Button
-            if (GUILayout.Button("Export as CSV")) ExportAsCsv();
-        }
+        [TableList(AlwaysExpanded = true, ShowPaging = false, DrawScrollView = true)] [ShowInInspector]
+        private List<ArtStatus> _artStatusList = new();
 
         [MenuItem("Tools/Art Pipeline/Art Status Listing")]
         public static void ShowWindow()
@@ -59,20 +27,22 @@ namespace Editor.ArtPipeline
             window.RefreshArtStatus();
         }
 
-        private void RefreshArtStatus()
+        [Button(ButtonSizes.Large)]
+        [GUIColor(0.4f, 0.8f, 1.0f)]
+        public void RefreshArtStatus()
         {
-            _artStatusList = new List<ArtStatus>();
+            _artStatusList.Clear();
 
             // Load CardData assets
             var cardDataAssets = LoadAllAssets<CardData>();
             foreach (var card in cardDataAssets)
             {
-                var artStatus = GetArtStatus(card.Image);
                 _artStatusList.Add(new ArtStatus
                 {
                     AssetType = "CardData",
                     AssetName = card.name,
-                    Status = artStatus
+                    SpriteReference = card.Image,
+                    DataObject = card
                 });
             }
 
@@ -80,49 +50,16 @@ namespace Editor.ArtPipeline
             var pawnDataAssets = LoadAllAssets<PawnData>();
             foreach (var pawn in pawnDataAssets)
             {
-                var artStatus = GetArtStatus(pawn.Sprite);
                 _artStatusList.Add(new ArtStatus
                 {
                     AssetType = "PawnData",
                     AssetName = pawn.name,
-                    Status = artStatus
+                    SpriteReference = pawn.Sprite,
+                    DataObject = pawn
                 });
             }
 
             Debug.Log("[ArtStatusWindow] Art status listing refreshed!");
-        }
-
-        private void ExportAsCsv()
-        {
-            var path = EditorUtility.SaveFilePanel("Export Art Status as CSV", "", "ArtStatus.csv", "csv");
-            if (string.IsNullOrEmpty(path)) return;
-
-            using (var writer = new StreamWriter(path))
-            {
-                writer.WriteLine("Asset Type,Asset Name,Art Status");
-
-                foreach (var status in _artStatusList)
-                    writer.WriteLine($"{status.AssetType},{status.AssetName},{status.Status}");
-            }
-
-            Debug.Log($"[ArtStatusWindow] Art status exported to: {path}");
-        }
-
-        private static string GetArtStatus(Sprite sprite)
-        {
-            if (sprite == null) return "Missing";
-
-            var version = ExtractVersion(sprite.name);
-            return !string.IsNullOrEmpty(version) ? $"Assigned (Version: {version})" : "Assigned (No Version)";
-        }
-
-        private static string ExtractVersion(string name)
-        {
-            var versionTag = name.ToLower()
-                .Split('_')
-                .FirstOrDefault(s => s.StartsWith("v") && int.TryParse(s.Substring(1), out _));
-
-            return versionTag; // Returns null if no version
         }
 
         private static T[] LoadAllAssets<T>() where T : Object
@@ -132,11 +69,108 @@ namespace Editor.ArtPipeline
                 .ToArray();
         }
 
-        private class ArtStatus
+        private static string GenerateAssetFileName(string assetType, string assetName, string fileExtension)
         {
-            public string AssetType { get; set; }
-            public string AssetName { get; set; }
-            public string Status { get; set; }
+            var prefix = assetType switch
+            {
+                "PawnData" => SpritePipelineSettings.Instance.CharacterSpritePrefix,
+                "CardData" => SpritePipelineSettings.Instance.CardSpritePrefix,
+                _ => "unknown"
+            };
+            var sanitizedAssetName = SanitizeFileName(assetName);
+            var version = CalculateNextVersion(prefix, sanitizedAssetName);
+            return $"{prefix}_{sanitizedAssetName}_{version}{fileExtension}";
+        }
+
+        private static string SanitizeFileName(string fileName)
+        {
+            return string.Join("_", fileName.Split(Path.GetInvalidFileNameChars())).Replace(" ", "_").ToLower();
+        }
+
+        private static string CalculateNextVersion(string prefix, string assetName)
+        {
+            var assetsInFolder = AssetDatabase.FindAssets("t:Sprite", new[] { ImportFolderPath })
+                .Select(AssetDatabase.GUIDToAssetPath)
+                .Where(p => Path.GetFileNameWithoutExtension(p).StartsWith($"{prefix}_{assetName}_"))
+                .ToArray();
+            var highestVersion = 0;
+
+            foreach (var assetPath in assetsInFolder)
+            {
+                var versionSegment = ExtractVersion(Path.GetFileNameWithoutExtension(assetPath));
+                if (versionSegment > highestVersion)
+                    highestVersion = versionSegment;
+            }
+
+            return $"v{highestVersion + 1}";
+        }
+
+        private static int ExtractVersion(string name)
+        {
+            return int.TryParse(name.Split('_').LastOrDefault()?.Replace("v", ""), out var version) ? version : 0;
+        }
+
+        [TableList]
+        [Serializable]
+        public class ArtStatus
+        {
+            [TableColumnWidth(150, Resizable = false)] [PreviewField(Height = 50)]
+            public Sprite SpriteReference;
+
+            [ReadOnly] public string AssetType;
+
+            [ReadOnly] public string AssetName;
+
+            [HideInInspector] public Object DataObject; // CardData or PawnData reference
+
+            [Button("Import Asset", ButtonSizes.Medium)]
+            public void ImportAsset()
+            {
+                // Use a file dialog to allow the user to select a png/jpg
+                var filePath = EditorUtility.OpenFilePanel($"Import Sprite for {AssetName}", "", "png,jpg");
+                if (string.IsNullOrEmpty(filePath)) return;
+
+                var fileExtension = Path.GetExtension(filePath).ToLower();
+                if (fileExtension != ".png" && fileExtension != ".jpg")
+                {
+                    Debug.LogError(
+                        $"[ArtStatusWindow] Invalid file format for {AssetName}. Only .png and .jpg are supported.");
+                    return;
+                }
+
+                // Generate a proper name for the sprite using the asset type and name
+                var newFileName = GenerateAssetFileName(AssetType, AssetName, fileExtension);
+                var destinationPath = Path.Combine(ImportFolderPath, newFileName);
+
+                // Ensure the import folder exists
+                if (!Directory.Exists(ImportFolderPath))
+                {
+                    Directory.CreateDirectory(ImportFolderPath);
+                    Debug.Log($"[ArtStatusWindow] Created Import folder at: {ImportFolderPath}");
+                }
+
+                // Copy and rename the file
+                File.Copy(filePath, destinationPath, true);
+                AssetDatabase.Refresh();
+
+                // Automatically assign the imported sprite to the related data object
+                var sprite = AssetDatabase.LoadAssetAtPath<Sprite>(destinationPath);
+                if (sprite == null)
+                {
+                    Debug.LogError($"[ArtStatusWindow] Failed to load imported sprite at {destinationPath}.");
+                    return;
+                }
+
+                if (DataObject is CardData cardData)
+                    cardData.Image = sprite;
+                else if (DataObject is PawnData pawnData) pawnData.Sprite = sprite;
+
+                EditorUtility.SetDirty(DataObject);
+                AssetDatabase.SaveAssets();
+
+                Debug.Log(
+                    $"[ArtStatusWindow] Successfully imported and assigned sprite '{sprite.name}' to {AssetName}.");
+            }
         }
     }
 }

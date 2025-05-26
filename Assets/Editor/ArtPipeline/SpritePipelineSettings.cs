@@ -1,39 +1,52 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Editor.ArtPipeline
 {
     [CreateAssetMenu(fileName = "SpritePipelineSettings", menuName = "Pipeline/Sprite Pipeline Settings", order = 0)]
     public class SpritePipelineSettings : ScriptableObject
     {
+        // Constants for default values
+        private const string DefaultCharacterSpritePrefix = "character";
+        private const string DefaultCardSpritePrefix = "card";
+        private const int DefaultMinWidth = 128;
+        private const int DefaultMaxWidth = 2048;
+        private const int DefaultMinHeight = 128;
+        private const int DefaultMaxHeight = 2048;
+        private static SpritePipelineSettings _instance;
+
+        [Header("Prefix Settings for Sprite Types")]
+        [Tooltip("Prefix to identify character sprites (e.g., 'character').")]
+        public string CharacterSpritePrefix = DefaultCharacterSpritePrefix;
+
+        [Tooltip("Prefix to identify card sprites (e.g., 'card').")]
+        public string CardSpritePrefix = DefaultCardSpritePrefix;
+
         [Header("Size Constraints")] [Tooltip("Minimum allowed width for sprites.")]
-        public int MinWidth = 128;
+        public int MinWidth = DefaultMinWidth;
 
         [Tooltip("Maximum allowed width for sprites.")]
-        public int MaxWidth = 2048;
+        public int MaxWidth = DefaultMaxWidth;
 
         [Tooltip("Minimum allowed height for sprites.")]
-        public int MinHeight = 128;
+        public int MinHeight = DefaultMinHeight;
 
         [Tooltip("Maximum allowed height for sprites.")]
-        public int MaxHeight = 2048;
+        public int MaxHeight = DefaultMaxHeight;
 
-        [Header("File Validation")] [Tooltip("Allowed file extensions, e.g., .png, .jpg")]
-        public string[] AllowedExtensions = { ".png", ".jpg" };
+        [Header("File Extensions")] [Tooltip("List of allowed file extensions for sprites.")]
+        public List<string> AllowedExtensions = new() { "png", "jpg" };
 
-        [Header("Naming Conventions")] [Tooltip("Check if names must follow specific rules, e.g., no spaces.")]
-        public bool EnforceNamingConvention = true;
-
-        [Tooltip("Include assets with these keywords in the name.")]
-        public string[] RequiredNameKeywords = { };
-
-        [Tooltip("Exclude assets with these forbidden keywords in the name.")]
-        public string[] ForbiddenNameKeywords = { };
-
-        [Header("Naming Convention Settings")]
-        [Tooltip("Allowed types for the naming convention (e.g., 'character', 'card').")]
-        public string[] AllowedTypes = { "character", "card" };
-
-        [Tooltip("Allowed versions for the naming convention (e.g., 'temp', 'final').")]
-        public string[] AllowedVersions = { "temp", "final" };
+        public static SpritePipelineSettings Instance
+        {
+            get
+            {
+                if (_instance) return _instance;
+                _instance = Resources.Load<SpritePipelineSettings>("SpritePipelineSettings");
+                if (_instance == null)
+                    Debug.LogError("SpritePipelineSettings asset not found in Resources folder.");
+                return _instance;
+            }
+        }
     }
 }

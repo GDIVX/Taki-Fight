@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 0e58604c38ef60b49b6a55fd3049a056
+guid: 190a272fb94adcc4fb1f3552c61ec497
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4232371963121305725
-    second: wolf_char_0
+      213: -6831769907644853589
+    second: character_WolfWarrior_v1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,12 +46,12 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 400
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -100,7 +100,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: wolf_char_0
+      name: character_WolfWarrior_v1_0
       rect:
         serializedVersion: 2
         x: 0
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 387f4d4af189345c0800000000000000
-      internalID: -4232371963121305725
+      spriteID: ba210ab177da031a0800000000000000
+      internalID: -6831769907644853589
       vertices: []
       indices: 
       edges: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      wolf_char_0: -4232371963121305725
+      character_WolfWarrior_v1_0: -6831769907644853589
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
