@@ -12,16 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db39779a7d15495786ef0b741b93a144, type: 3}
   m_Name: Mage
   m_EditorClassIdentifier: 
+  _title: Mage
+  _description: 
   _sprite: {fileID: 21300000, guid: 190a272fb94adcc4fb1f3552c61ec497, type: 3}
+  _owner: 0
   _health: 50
   _defense: 0
   _damage: 10
   _attacks: 1
-  _speed: 0
   _attackRange: 3
+  _speed: 0
   _isAgile: 1
-  _owner: 0
   _size: {x: 1, y: 1}
+  _summonStrategies: []
   _onTurnStartStrategies: []
   _onAttackStrategies: []
   _onMoveStrategies: []
@@ -29,4 +32,4 @@ MonoBehaviour:
   _onKilledStrategies:
   - Strategy: {fileID: 11400000, guid: 06a5ed003995aed4aa0dbac31a7226aa, type: 2}
     Potency: 0
-  _summonStrategies: []
+  _summonCard: {fileID: 0}

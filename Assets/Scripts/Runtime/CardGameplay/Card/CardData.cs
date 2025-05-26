@@ -33,8 +33,17 @@ namespace Runtime.CardGameplay.Card
         [SerializeField] private FeedbackStrategy _feedbackStrategy;
 
 
-        public string Title => _title;
-        public string Description => _description;
+        public string Title
+        {
+            get => _title;
+            set => _title = value;
+        }
+
+        public string Description
+        {
+            get => _description;
+            set => _description = value;
+        }
 
         public Sprite Image
         {
@@ -42,7 +51,11 @@ namespace Runtime.CardGameplay.Card
             set => _image = value;
         }
 
-        public List<PlayStrategyData> PlayStrategies => _playStrategies;
+        public List<PlayStrategyData> PlayStrategies
+        {
+            get => _playStrategies;
+            set => _playStrategies = value;
+        }
 
 
         public CardType CardType => _cardType;

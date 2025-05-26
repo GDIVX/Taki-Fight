@@ -13,6 +13,18 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
         [SerializeField] private PawnData _unit;
         [SerializeField] private TileSelectionMode _tileSelectionMode;
 
+        public PawnData Pawn
+        {
+            get => _unit;
+            set => _unit = value;
+        }
+
+        public TileSelectionMode TileSelectionMode
+        {
+            get => _tileSelectionMode;
+            set => _tileSelectionMode = value;
+        }
+
         public override void Play(CardController cardController, int potency, Action<bool> onComplete)
         {
             SelectionService.Instance.SearchSize = _unit.Size;
