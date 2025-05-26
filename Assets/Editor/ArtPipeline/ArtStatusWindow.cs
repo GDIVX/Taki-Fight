@@ -15,10 +15,10 @@ namespace Editor.ArtPipeline
     public class ArtStatusWindow : OdinEditorWindow
     {
         private const string DataFolderPath = "Assets/Resources/Data";
-        private const string ImportFolderPath = "Assets/Sprites/Import";
+        private const string SpritesFolderPath = "Assets/Sprites"; // Updated search folder scope
 
         [TableList(AlwaysExpanded = true, ShowPaging = false, DrawScrollView = true)] [ShowInInspector]
-        private List<ArtStatus> _artStatusList = new();
+        private List<ArtStatus> ArtStatusList = new();
 
         [MenuItem("Tools/Art Pipeline/Art Status Listing")]
         public static void ShowWindow()
@@ -31,17 +31,18 @@ namespace Editor.ArtPipeline
         [GUIColor(0.4f, 0.8f, 1.0f)]
         public void RefreshArtStatus()
         {
-            _artStatusList.Clear();
+            ArtStatusList.Clear();
 
             // Load CardData assets
             var cardDataAssets = LoadAllAssets<CardData>();
             foreach (var card in cardDataAssets)
             {
-                _artStatusList.Add(new ArtStatus
+                ArtStatusList.Add(new ArtStatus
                 {
                     AssetType = "CardData",
                     AssetName = card.name,
                     SpriteReference = card.Image,
+                    SpriteName = FindSpriteAssetName(card.Image),
                     DataObject = card
                 });
             }
@@ -50,16 +51,34 @@ namespace Editor.ArtPipeline
             var pawnDataAssets = LoadAllAssets<PawnData>();
             foreach (var pawn in pawnDataAssets)
             {
-                _artStatusList.Add(new ArtStatus
+                ArtStatusList.Add(new ArtStatus
                 {
                     AssetType = "PawnData",
                     AssetName = pawn.name,
                     SpriteReference = pawn.Sprite,
+                    SpriteName = FindSpriteAssetName(pawn.Sprite),
                     DataObject = pawn
                 });
             }
 
             Debug.Log("[ArtStatusWindow] Art status listing refreshed!");
+        }
+
+        /// <summary>
+        ///     Finds the file name of the given sprite by searching in the Sprites folder.
+        ///     Returns the name of the sprite if found, or "None" if the sprite is not assigned.
+        /// </summary>
+        private string FindSpriteAssetName(Sprite sprite)
+        {
+            if (sprite == null)
+                return "None";
+
+            // Find the asset path of the sprite by name
+            var assetPath = AssetDatabase.GetAssetPath(sprite);
+            if (string.IsNullOrEmpty(assetPath))
+                return "None";
+
+            return Path.GetFileNameWithoutExtension(assetPath); // Return sprite name without extension
         }
 
         private static T[] LoadAllAssets<T>() where T : Object
@@ -89,7 +108,8 @@ namespace Editor.ArtPipeline
 
         private static string CalculateNextVersion(string prefix, string assetName)
         {
-            var assetsInFolder = AssetDatabase.FindAssets("t:Sprite", new[] { ImportFolderPath })
+            // Updated search scope to Sprites folder
+            var assetsInFolder = AssetDatabase.FindAssets("t:Sprite", new[] { SpritesFolderPath })
                 .Select(AssetDatabase.GUIDToAssetPath)
                 .Where(p => Path.GetFileNameWithoutExtension(p).StartsWith($"{prefix}_{assetName}_"))
                 .ToArray();
@@ -121,16 +141,18 @@ namespace Editor.ArtPipeline
 
             [ReadOnly] public string AssetName;
 
+            [ReadOnly] [TableColumnWidth(200)] public string SpriteName; // Displays the sprite's file name
+
             [HideInInspector] public Object DataObject; // CardData or PawnData reference
 
             [Button("Import Asset", ButtonSizes.Medium)]
             public void ImportAsset()
             {
-                // Use a file dialog to allow the user to select a png/jpg
+                // Use a file dialog to allow the user to select a sprite (png or jpg)
                 var filePath = EditorUtility.OpenFilePanel($"Import Sprite for {AssetName}", "", "png,jpg");
                 if (string.IsNullOrEmpty(filePath)) return;
 
-                var fileExtension = Path.GetExtension(filePath).ToLower();
+                var fileExtension = Path.GetExtension(filePath)?.ToLower();
                 if (fileExtension != ".png" && fileExtension != ".jpg")
                 {
                     Debug.LogError(
@@ -138,22 +160,21 @@ namespace Editor.ArtPipeline
                     return;
                 }
 
-                // Generate a proper name for the sprite using the asset type and name
+                // Generate a proper filename and move the sprite file
                 var newFileName = GenerateAssetFileName(AssetType, AssetName, fileExtension);
-                var destinationPath = Path.Combine(ImportFolderPath, newFileName);
+                var destinationPath = Path.Combine(SpritesFolderPath + "/Import", newFileName);
 
                 // Ensure the import folder exists
-                if (!Directory.Exists(ImportFolderPath))
+                if (!Directory.Exists(SpritesFolderPath + "/Import"))
                 {
-                    Directory.CreateDirectory(ImportFolderPath);
-                    Debug.Log($"[ArtStatusWindow] Created Import folder at: {ImportFolderPath}");
+                    Directory.CreateDirectory(SpritesFolderPath + "/Import");
+                    Debug.Log($"[ArtStatusWindow] Created Import folder at: {SpritesFolderPath}/Import");
                 }
 
-                // Copy and rename the file
                 File.Copy(filePath, destinationPath, true);
                 AssetDatabase.Refresh();
 
-                // Automatically assign the imported sprite to the related data object
+                // Automatically assign the imported sprite to the data object
                 var sprite = AssetDatabase.LoadAssetAtPath<Sprite>(destinationPath);
                 if (sprite == null)
                 {
@@ -164,6 +185,9 @@ namespace Editor.ArtPipeline
                 if (DataObject is CardData cardData)
                     cardData.Image = sprite;
                 else if (DataObject is PawnData pawnData) pawnData.Sprite = sprite;
+
+                SpriteReference = sprite;
+                SpriteName = sprite.name;
 
                 EditorUtility.SetDirty(DataObject);
                 AssetDatabase.SaveAssets();
