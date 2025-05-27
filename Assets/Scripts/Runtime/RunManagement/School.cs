@@ -1,20 +1,19 @@
 ﻿using System.Collections.Generic;
 using Runtime.CardGameplay.Card;
 using Runtime.Combat.Pawn;
-using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Runtime.RunManagement
 {
     [CreateAssetMenu(fileName = "Player Class", menuName = "Game/Player Class", order = 0)]
-    public class PlayerClassData : ScriptableObject
+    public class School : ScriptableObject
     {
         [SerializeField] private List<CardData> _starterCards;
         [SerializeField] private List<CardData> _collectableCards;
-        [SerializeField] private PawnData _pawn;
+        [SerializeField] private PawnData _mage;
 
         public List<CardData> StarterCards => _starterCards;
         public List<CardData> CollectableCards => _collectableCards;
-        public PawnData Pawn => _pawn;
+        public PawnData Mage => _mage;
     }
 }

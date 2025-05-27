@@ -16,7 +16,8 @@ namespace Runtime.Combat.Pawn
         [TabGroup("General", "Info")] [Title("Identity")] [SerializeField] [LabelWidth(80)]
         private string _title;
 
-        [SerializeField] [TextArea] private string _description;
+        [TabGroup("General", "Info")] [SerializeField] [TextArea]
+        private string _description;
 
         [TabGroup("General", "View")]
         [PreviewField(100)]
@@ -46,10 +47,12 @@ namespace Runtime.Combat.Pawn
         [Tooltip("The amount of damage this pawn deals in combat.")]
         private int _damage;
 
-        [SerializeField] [Tooltip("The number of attacks this pawn can perform per turn.")]
+        [TabGroup("Stats", "Combat")]
+        [SerializeField]
+        [Tooltip("The number of attacks this pawn can perform per turn.")]
         private int _attacks;
 
-        [SerializeField] [Tooltip("The attack range of the pawn in tiles.")]
+        [TabGroup("Stats", "Combat")] [SerializeField] [Tooltip("The attack range of the pawn in tiles.")]
         private int _attackRange;
 
         [TabGroup("Stats", "Movement")]
@@ -64,13 +67,10 @@ namespace Runtime.Combat.Pawn
         [TabGroup("Stats", "Size")] [Title("Size")] [SerializeField] [Tooltip("The pawn size in tiles.")]
         private Vector2Int _size = new(1, 1);
 
-        [TabGroup("Strategies", "Summon")] [SerializeField] [Tooltip("Strategies triggered when the pawn is summoned.")]
+        [Title("On Summon")] [SerializeField] [Tooltip("Strategies triggered when the pawn is summoned.")]
         private List<PawnStrategyData> _summonStrategies;
 
-        [TabGroup("Strategies", "Lifecycle")]
-        [Title("Turn Start")]
-        [SerializeField]
-        [Tooltip("Strategies that execute when the turn starts.")]
+        [Title("On Turn Start")] [SerializeField] [Tooltip("Strategies that execute when the turn starts.")]
         private List<PawnStrategyData> _onTurnStartStrategies;
 
         [Title("On Attack")] [SerializeField] [Tooltip("Strategies that execute when the pawn attacks.")]
@@ -85,7 +85,7 @@ namespace Runtime.Combat.Pawn
         [Title("On Killed")] [SerializeField] [Tooltip("Strategies triggered when the pawn is killed.")]
         private List<PawnStrategyData> _onKilledStrategies;
 
-        [TabGroup("General", "Info")] [Title("Summon Card")] [SerializeField]
+        [TabGroup("Card")] [Title("Summon Card")] [SerializeField]
         private CardData _summonCard;
 
         // Exposed Properties

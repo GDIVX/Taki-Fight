@@ -24,6 +24,12 @@ namespace Runtime.CardGameplay.Deck
             Setup(cards);
         }
 
+        public Deck(List<CardData> cards)
+        {
+            var cardInstances = cards.Select(card => new CardInstance(card)).ToList();
+            Setup(cardInstances);
+        }
+
         public event Action<Stack<CardInstance>> OnDrawPileUpdated;
         public event Action<Stack<CardInstance>> OnDiscardPileUpdated;
         public event Action<Stack<CardInstance>> OnBurnPileUpdated;

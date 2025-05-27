@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using DG.Tweening;
+using JetBrains.Annotations;
 using Runtime.CardGameplay.Card;
 using TMPro;
 using UnityEngine;
@@ -17,9 +19,9 @@ namespace Runtime.CardGameplay.Deck
 
         private Deck _deck;
 
-        public void Setup(Deck deck)
+        public void Setup([NotNull] Deck deck)
         {
-            _deck = deck;
+            _deck = deck ?? throw new ArgumentNullException(nameof(deck));
 
             _drawPileCounter.text = "0";
             _discardPileCounter.text = "0";

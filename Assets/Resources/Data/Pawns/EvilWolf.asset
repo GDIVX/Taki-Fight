@@ -12,19 +12,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db39779a7d15495786ef0b741b93a144, type: 3}
   m_Name: EvilWolf
   m_EditorClassIdentifier: 
+  _title: 
+  _description: 
   _sprite: {fileID: 6026301033729762914, guid: 5bf974ccbc4e80745acd5df117011425, type: 3}
+  _owner: 1
   _health: 10
   _defense: 1
   _damage: 3
   _attacks: 1
-  _speed: 1
   _attackRange: 1
+  _speed: 1
   _isAgile: 0
-  _owner: 1
   _size: {x: 1, y: 1}
+  _summonStrategies: []
   _onTurnStartStrategies: []
   _onAttackStrategies: []
   _onMoveStrategies: []
   _onDamagedStrategies: []
   _onKilledStrategies: []
-  _summonStrategies: []
+  _summonCard: {fileID: 0}

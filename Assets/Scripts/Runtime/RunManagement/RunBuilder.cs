@@ -1,62 +1,51 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Runtime.CardGameplay.Card;
-using Runtime.CardGameplay.Deck;
-using Runtime.Combat.Pawn;
+﻿using Runtime.CardGameplay.Deck;
+using UnityEngine;
 
 namespace Runtime.RunManagement
 {
     public class RunBuilder
     {
-        private RunData Data { get; }
+        private readonly RunState _runState = new();
 
-        public RunBuilder(RunData data)
+        public RunState Build()
         {
-            Data = data ?? throw new ArgumentNullException(nameof(data));
+            //build deck
+            _runState.Deck = new Deck(_runState.Cards);
+            return _runState;
         }
 
-        public void Reset()
+        public RunBuilder WithPrimarySchool(School school)
         {
-            Data.Hero = null;
-            Data.Cards.Clear();
-            Data.IsRunInProgress = false;
+            _runState.PrimarySchool = school;
+            _runState.Mage = school.Mage;
+
+            //add all starter cards
+            _runState.Cards = school.StarterCards;
+
+            return this;
         }
 
-        public void NewRunFromPlayerClass(PlayerClassData playerClassData)
+        public RunBuilder WithSecondarySchool(School school)
         {
-            if (playerClassData == null) throw new ArgumentNullException(nameof(playerClassData));
+            _runState.SecondarySchool = school;
 
-            // AddHeroData(playerClassData.Pawn);
-            Data.Cards = new List<CardData>(playerClassData.StarterCards);
-            Data.CollectableCards = new List<CardData>(playerClassData.CollectableCards);
-            SetDeck();
-            Data.IsRunInProgress = true;
+            //add all starter cards
+            _runState.Cards.AddRange(school.StarterCards);
+
+            return this;
         }
 
-        public void AddCard(CardData cardData)
+        public RunBuilder WithSeed(int seed)
         {
-            if (cardData == null) throw new ArgumentNullException(nameof(cardData));
-            Data.Cards.Add(cardData);
-            SetDeck();
+            Random.InitState(seed);
+            return this;
         }
 
-        public void RemoveCard(CardData cardData)
+        public RunBuilder WithRandomSeed()
         {
-            if (cardData == null) throw new ArgumentNullException(nameof(cardData));
-            Data.Cards.Remove(cardData);
-            SetDeck();
-        }
-
-        // private void AddHeroData(PawnData pawnData)
-        // {
-        //     if (pawnData == null) throw new ArgumentNullException(nameof(pawnData));
-        //     Data.Hero = pawnData;
-        // }
-
-        private void SetDeck()
-        {
-            Data.Deck = new Deck(Data.Cards.Select(data => new CardInstance(data)).ToList());
+            var randomSeed = new System.Random().Next(); // Generate a random seed
+            Random.InitState(randomSeed); // Initialize Unity's random state with the random seed
+            return this;
         }
     }
 }

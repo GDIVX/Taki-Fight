@@ -12,16 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db39779a7d15495786ef0b741b93a144, type: 3}
   m_Name: BigBadWolf
   m_EditorClassIdentifier: 
-  _sprite: {fileID: -6247120970568995558, guid: 81b3efde9ee929b40a7928a1b9b840bc, type: 3}
+  _title: 
+  _description: 
+  _sprite: {fileID: -3708821635527039621, guid: 70d0e43011ca9ef4ab95401f6c5592d5, type: 3}
+  _owner: 1
   _health: 20
   _defense: 5
   _damage: 3
   _attacks: 2
-  _speed: 1
   _attackRange: 1
+  _speed: 1
   _isAgile: 0
-  _owner: 1
   _size: {x: 2, y: 2}
+  _summonStrategies: []
   _onTurnStartStrategies: []
   _onAttackStrategies: []
   _onMoveStrategies: []
@@ -29,4 +32,4 @@ MonoBehaviour:
   _onKilledStrategies:
   - Strategy: {fileID: 11400000, guid: 0e9d1ce15e996934db87652ac0e08445, type: 2}
     Potency: 0
-  _summonStrategies: []
+  _summonCard: {fileID: 0}

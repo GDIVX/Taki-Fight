@@ -3,7 +3,6 @@ using Runtime.CardGameplay.Card;
 using Runtime.CardGameplay.Deck;
 using Runtime.CardGameplay.Energy;
 using Runtime.Combat;
-using Runtime.Rewards;
 using Runtime.RunManagement;
 using Runtime.SceneManagementExtend;
 using Sirenix.OdinInspector;
@@ -16,15 +15,13 @@ namespace Runtime
 {
     public class GameManager : MonoService<GameManager>
     {
-        [SerializeField] private RunData _runData;
-        [SerializeField] private PlayerClassData _tempClassData;
+        [SerializeField] private School _tempClassData;
+        [SerializeField] private RunState _runState;
 
         private static CardFactory CardFactory => ServiceLocator.Get<CardFactory>();
         private static CombatManager CombatManager => ServiceLocator.Get<CombatManager>();
         private static HandController HandController => ServiceLocator.Get<HandController>();
-        private static RewardsOfferController RewardsOfferController => ServiceLocator.Get<RewardsOfferController>();
 
-        public RunBuilder RunBuilder { get; private set; }
         public EventBus EventBus { get; private set; }
         public static GameManager Instance => ServiceLocator.Get<GameManager>();
 
@@ -33,8 +30,6 @@ namespace Runtime
             // Initialize core systems
             EventBus = new EventBus();
             ServiceLocator.Register(EventBus);
-            RunBuilder = new RunBuilder(_runData);
-            ServiceLocator.Register(RunBuilder);
             OnEventBusCreated?.Invoke();
         }
 
@@ -48,7 +43,7 @@ namespace Runtime
 
         public void StartRun()
         {
-            RunBuilder.NewRunFromPlayerClass(_tempClassData);
+            _runState = new RunBuilder().WithPrimarySchool(_tempClassData).Build();
 
             var operation = SceneManager.LoadSceneAsync("Combat", LoadSceneMode.Additive);
 
@@ -58,7 +53,6 @@ namespace Runtime
             {
                 // Initialize run-specific services
                 CardFactory.Init();
-                RewardsOfferController.Init();
                 CombatManager.Init();
             };
         }
@@ -68,7 +62,7 @@ namespace Runtime
             var deckView = ServiceLocator.Get<DeckView>();
             var energy = ServiceLocator.Get<Energy>();
 
-            var deck = _runData.Deck;
+            var deck = _runState.Deck;
             HandController.Deck = deck;
             deckView.Setup(deck);
             HandController.Deck.MergeAndShuffle();
