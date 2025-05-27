@@ -2,9 +2,10 @@
 {
     public enum CardType
     {
-        Attack,
-        Defense,
-        Skill,
-        Power
+        Spell,
+        Familiar,
+        Terrain,
+        Blight,
+        Curse
     }
 }

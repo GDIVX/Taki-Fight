@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _title: 
   _description: 
-  _sprite: {fileID: -3708821635527039621, guid: 70d0e43011ca9ef4ab95401f6c5592d5, type: 3}
+  _sprite: {fileID: 2470448008604918377, guid: 80a3478d7cf6ba641ac69fa1328bcefd, type: 3}
   _owner: 1
   _health: 20
   _defense: 5

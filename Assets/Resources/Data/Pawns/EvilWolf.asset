@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db39779a7d15495786ef0b741b93a144, type: 3}
   m_Name: EvilWolf
   m_EditorClassIdentifier: 
-  _title: 
+  _title: Bad Wolf
   _description: 
-  _sprite: {fileID: 6026301033729762914, guid: 5bf974ccbc4e80745acd5df117011425, type: 3}
+  _sprite: {fileID: 6835675914815659107, guid: 3068818034123544a8f4166bfc81ee88, type: 3}
   _owner: 1
   _health: 10
   _defense: 1

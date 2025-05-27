@@ -125,6 +125,12 @@ namespace Runtime.Combat.Pawn
         public int AttackRange => _attackRange;
         public PawnOwner Owner => _owner;
 
+        public string Title
+        {
+            get => _title;
+            set => _title = value;
+        }
+
         private void OnValidate()
         {
             if (_size.x <= 0 || _size.y <= 0)
@@ -137,7 +143,7 @@ namespace Runtime.Combat.Pawn
         }
 
         [Button(ButtonSizes.Medium)]
-        public void CreateSummonCard()
+        public void CreateSummonCard(int cost)
         {
             if (_summonCard) return;
 
@@ -149,7 +155,9 @@ namespace Runtime.Combat.Pawn
             strategy.TileSelectionMode = TileSelectionMode.FriendlyEmpty;
 
             card.Title = _title;
+            card.Cost = cost;
             card.Description = _description;
+            card.CardType = CardType.Familiar;
             var playStrategy = new PlayStrategyData
             {
                 PlayStrategy = strategy,

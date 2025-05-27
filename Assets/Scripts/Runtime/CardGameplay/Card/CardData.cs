@@ -10,28 +10,44 @@ namespace Runtime.CardGameplay.Card
     [CreateAssetMenu(fileName = "CardData", menuName = "Card/Data", order = 0)]
     public class CardData : ScriptableObject
     {
-        [SerializeField, BoxGroup("UI")] private string _title;
+// One tab bar: Card ▸ UI | Meta | Gameplay | Economy | Feedback
+// ─────────────────────────────────────────────────────────────
 
-        [SerializeField, TextArea, BoxGroup("UI")]
-        private string _description;
+// UI ──────────────────────────────────────────────────────────
+        [TabGroup("Card", "UI")] [LabelWidth(80)] [SerializeField]
+        private string _title;
 
-        [SerializeField, PreviewField, BoxGroup("UI")]
+        [TabGroup("Card", "UI")] [PreviewField(150, ObjectFieldAlignment.Center)] [HideLabel] [SerializeField]
         private Sprite _image;
 
-        [SerializeField, BoxGroup("Stats")] private CardType _cardType;
-        [SerializeField, BoxGroup("Stats")] private Rarity _rarity;
+        [TabGroup("Card", "UI")] [TextArea(2, 4)] [SerializeField]
+        private string _description;
 
 
-        [SerializeField, BoxGroup("Behaviour")]
+// Meta ───────────────────────────────────────────────────────
+        [TabGroup("Card", "Meta")] [LabelText("Type")] [SerializeField]
+        private CardType _cardType;
+
+        [TabGroup("Card", "Meta")] [LabelText("Rarity")] [SerializeField]
+        private Rarity _rarity;
+
+
+// Gameplay ───────────────────────────────────────────────────
+        [TabGroup("Card", "Gameplay")] [ListDrawerSettings(ShowFoldout = true)] [SerializeField]
         private List<PlayStrategyData> _playStrategies;
 
+        [TabGroup("Card", "Gameplay")] [LabelText("Consume After Use?")] [SerializeField]
+        private bool _destroyCardAfterUse;
 
-        [SerializeField, BoxGroup("Behaviour")]
-        private bool _destroyCardAfterUse = false;
 
-        [SerializeField, BoxGroup("Economy")] private int _cost;
-        [SerializeField] private FeedbackStrategy _feedbackStrategy;
+// Economy ────────────────────────────────────────────────────
+        [TabGroup("Card", "Economy")] [LabelText("Cost")] [SerializeField]
+        private int _cost;
 
+
+// Feedback ───────────────────────────────────────────────────
+        [TabGroup("Card", "Feedback")] [LabelText("VFX / SFX Strategy")] [SerializeField]
+        private FeedbackStrategy _feedbackStrategy;
 
         public string Title
         {
@@ -51,19 +67,27 @@ namespace Runtime.CardGameplay.Card
             set => _image = value;
         }
 
+        public CardType CardType
+        {
+            get => _cardType;
+            set => _cardType = value;
+        }
+
+        public Rarity Rarity => _rarity;
+
         public List<PlayStrategyData> PlayStrategies
         {
             get => _playStrategies;
             set => _playStrategies = value;
         }
 
-
-        public CardType CardType => _cardType;
-        public Rarity Rarity => _rarity;
-
         public bool DestroyCardAfterUse => _destroyCardAfterUse;
 
-        public int Cost => _cost;
+        public int Cost
+        {
+            get => _cost;
+            set => _cost = value;
+        }
 
         public FeedbackStrategy FeedbackStrategy => _feedbackStrategy;
     }
@@ -71,16 +95,8 @@ namespace Runtime.CardGameplay.Card
     [Serializable]
     public struct PlayStrategyData
     {
-        public CardPlayStrategy PlayStrategy;
-        public int Potency;
-    }
+        [LabelText("Strategy")] public CardPlayStrategy PlayStrategy;
 
-    public enum Rarity
-    {
-        None,
-        Common,
-        Uncommon,
-        Rare,
-        Legendery
+        [LabelText("Potency")] [MinValue(0)] public int Potency;
     }
 }
