@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Summon_Wolf Warrior_Card
   m_EditorClassIdentifier: 
   _title: Wolf Warrior
-  _description: Do absolutly nothing special, but it is somewhat cute
   _image: {fileID: -163822858987668334, guid: 82d51a4c551bae144afc8f03130f952b, type: 3}
-  _cardType: 0
-  _rarity: 0
+  _description: Do absolutly nothing special, but it is somewhat cute
+  _cardType: 1
+  _rarity: 1
   _playStrategies:
   - PlayStrategy: {fileID: 11400000, guid: 7d46a43a35c0e4241988be4bf350be57, type: 2}
     Potency: 1
