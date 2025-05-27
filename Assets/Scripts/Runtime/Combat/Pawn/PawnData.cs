@@ -13,80 +13,82 @@ namespace Runtime.Combat.Pawn
     [CreateAssetMenu(fileName = "Pawn Data", menuName = "Pawns/Regular", order = 0)]
     public class PawnData : ScriptableObject
     {
-        [TabGroup("General", "Info")] [Title("Identity")] [SerializeField] [LabelWidth(80)]
+// ─── ROOT BOXES (needed for 2-level paths) ──────────────────
+
+
+// ─── GENERAL ────────────────────────────────────────────────
+        [BoxGroup("General")] [LabelWidth(80)] [SerializeField]
         private string _title;
 
-        [TabGroup("General", "Info")] [SerializeField] [TextArea]
+        [BoxGroup("General")] [TextArea(2, 4)] [SerializeField]
         private string _description;
 
-        [TabGroup("General", "View")]
-        [PreviewField(100)]
+        [BoxGroup("General/View")]
+        [PreviewField(alignment: ObjectFieldAlignment.Center, height: 200)]
         [HideLabel]
         [SerializeField]
-        [Tooltip("The primary visual representation of the pawn.")]
+        [Tooltip("Primary visual of the pawn.")]
         private Sprite _sprite;
 
-        [TabGroup("General", "Info")]
-        [Title("Ownership")]
-        [SerializeField]
-        [Tooltip("Specifies the pawn owner's identity.")]
+        [BoxGroup("General/Ownership")] [LabelText("Owner")] [SerializeField]
         private PawnOwner _owner;
 
-        [TabGroup("Stats", "Health")]
-        [Title("Health")]
-        [SerializeField]
-        [Tooltip("The total health points of the pawn.")]
+
+// ─── STATS (four subtabs) ───────────────────────────────────
+        [TabGroup("Stats", "Health")] [LabelText("HP")] [SerializeField]
         private int _health;
 
-        [SerializeField] [Tooltip("The defense value that reduces incoming damage.")]
+        [TabGroup("Stats", "Health")] [LabelText("DEF")] [SerializeField]
         private int _defense;
 
-        [TabGroup("Stats", "Combat")]
-        [Title("Combat")]
-        [SerializeField]
-        [Tooltip("The amount of damage this pawn deals in combat.")]
+        [TabGroup("Stats", "Combat")] [LabelText("DMG")] [SerializeField]
         private int _damage;
 
-        [TabGroup("Stats", "Combat")]
-        [SerializeField]
-        [Tooltip("The number of attacks this pawn can perform per turn.")]
+        [TabGroup("Stats", "Combat")] [LabelText("Hits/Turn")] [SerializeField]
         private int _attacks;
 
-        [TabGroup("Stats", "Combat")] [SerializeField] [Tooltip("The attack range of the pawn in tiles.")]
+        [TabGroup("Stats", "Combat")] [LabelText("Range")] [SerializeField]
         private int _attackRange;
 
-        [TabGroup("Stats", "Movement")]
-        [Title("Movement")]
-        [SerializeField]
-        [Tooltip("The movement speed of the pawn in tiles per turn.")]
+        [TabGroup("Stats", "Movement")] [LabelText("Speed")] [SerializeField]
         private int _speed;
 
-        [SerializeField] [Tooltip("Indicates if this pawn is agile and may have agility-based abilities.")]
+        [TabGroup("Stats", "Movement")] [LabelText("Agile?")] [SerializeField]
         private bool _isAgile;
 
-        [TabGroup("Stats", "Size")] [Title("Size")] [SerializeField] [Tooltip("The pawn size in tiles.")]
+        [TabGroup("Stats", "Size")] [LabelText("Tile Size")] [SerializeField]
         private Vector2Int _size = new(1, 1);
 
-        [Title("On Summon")] [SerializeField] [Tooltip("Strategies triggered when the pawn is summoned.")]
+
+// ─── CALLBACKS (collapsed lists) ────────────────────────────
+        [ListDrawerSettings(DefaultExpandedState = false)]
+        [BoxGroup("Callbacks")]
+        [BoxGroup("Callbacks/On Summon")]
+        [SerializeField]
         private List<PawnStrategyData> _summonStrategies;
 
-        [Title("On Turn Start")] [SerializeField] [Tooltip("Strategies that execute when the turn starts.")]
+        [ListDrawerSettings(DefaultExpandedState = false)] [BoxGroup("Callbacks/On Turn Start")] [SerializeField]
         private List<PawnStrategyData> _onTurnStartStrategies;
 
-        [Title("On Attack")] [SerializeField] [Tooltip("Strategies that execute when the pawn attacks.")]
+        [ListDrawerSettings(DefaultExpandedState = false)] [BoxGroup("Callbacks/On Attack")] [SerializeField]
         private List<PawnStrategyData> _onAttackStrategies;
 
-        [Title("On Move")] [SerializeField] [Tooltip("Strategies triggered when the pawn moves.")]
+        [ListDrawerSettings(DefaultExpandedState = false)] [BoxGroup("Callbacks/On Move")] [SerializeField]
         private List<PawnStrategyData> _onMoveStrategies;
 
-        [Title("On Damaged")] [SerializeField] [Tooltip("Strategies triggered when the pawn takes damage.")]
+        [ListDrawerSettings(DefaultExpandedState = false)] [BoxGroup("Callbacks/On Damaged")] [SerializeField]
         private List<PawnStrategyData> _onDamagedStrategies;
 
-        [Title("On Killed")] [SerializeField] [Tooltip("Strategies triggered when the pawn is killed.")]
+        [ListDrawerSettings(DefaultExpandedState = false)] [BoxGroup("Callbacks/On Killed")] [SerializeField]
         private List<PawnStrategyData> _onKilledStrategies;
 
+
+// ─── CARD TAB ───────────────────────────────────────────────
         [TabGroup("Card")] [Title("Summon Card")] [SerializeField]
         private CardData _summonCard;
+
+
+        // ─────────────────────────────────────────────────────────
 
         // Exposed Properties
         public List<PawnStrategyData> OnSummonStrategies => _summonStrategies;
