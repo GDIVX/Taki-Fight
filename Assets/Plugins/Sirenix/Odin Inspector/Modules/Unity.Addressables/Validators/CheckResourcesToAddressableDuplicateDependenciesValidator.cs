@@ -5,6 +5,9 @@
 //-----------------------------------------------------------------------
 
 #if UNITY_EDITOR && ODIN_VALIDATOR_3_1
+#if !SIRENIX_INTERNAL
+#pragma warning disable
+#endif
 
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +23,8 @@ using Sirenix.OdinValidator.Editor;
 using Sirenix.OdinInspector.Modules.Addressables.Editor;
 
 [assembly: RegisterValidationRule(typeof(CheckResourcesToAddressableDuplicateDependenciesValidator),
-	Description = "This validator identifies dependencies that are duplicated in both addressable groups and the \"Resources\" folder.\n\n" +
+	Description =
+ "This validator identifies dependencies that are duplicated in both addressable groups and the \"Resources\" folder.\n\n" +
 				"These duplications mean that data will be included in both the application build and the addressables build.\n\n" +
 				"You can decide to simply ignore these duplicated dependencies if this behavior is desired, or use the provided fix " +
 				"to move the asset outside of the \"Resources\" folder.")]
@@ -58,7 +62,8 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
 
 						if (this.IgnoredGUIDs.Contains(dependencyGUID.ToString())) continue;
 
-						var dependencyAddressableAssetEntry = addressableAssetSettings.FindAssetEntry(dependencyGUID.ToString());
+						var dependencyAddressableAssetEntry =
+ addressableAssetSettings.FindAssetEntry(dependencyGUID.ToString());
 
 						var isAddressable = dependencyAddressableAssetEntry != null;
 						if (isAddressable) continue;
@@ -69,8 +74,10 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
 							{
 								if (args.FixChoice == FixChoice.Ignore)
 								{
-									var sourceType = args.IgnoreForEveryone ? ConfigSourceType.Project : ConfigSourceType.Local;
-									var data = RuleConfig.Instance.GetRuleData<CheckResourcesToAddressableDuplicateDependenciesValidator>(sourceType);
+									var sourceType =
+ args.IgnoreForEveryone ? ConfigSourceType.Project : ConfigSourceType.Local;
+									var data =
+ RuleConfig.Instance.GetRuleData<CheckResourcesToAddressableDuplicateDependenciesValidator>(sourceType);
 									data.IgnoredGUIDs.Add(dependencyGUID.ToString());
 									RuleConfig.Instance.SetAndSaveRuleData(data, sourceType);
 									return;

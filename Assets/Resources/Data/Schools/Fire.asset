@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _starterCards: []
   _collectableCards: []
-  _mage: {fileID: 0}
+  _mage: {fileID: 11400000, guid: cc49c349a77c1e64e875d502da628b47, type: 2}

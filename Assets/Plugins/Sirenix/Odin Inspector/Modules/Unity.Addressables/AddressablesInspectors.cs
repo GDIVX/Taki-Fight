@@ -4,16 +4,39 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
+#if !SIRENIX_INTERNAL
+#pragma warning disable
+#endif
+
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.Serialization;
 using Sirenix.OdinInspector;
+using Sirenix.OdinInspector.Editor;
+using Sirenix.OdinInspector.Modules.Addressables.Editor.Internal;
+using Sirenix.Reflection.Editor;
+using Sirenix.Serialization;
+using Sirenix.Utilities;
+using Sirenix.Utilities.Editor;
+using UnityEditor;
+using UnityEditor.AddressableAssets;
+using UnityEditor.AddressableAssets.GUI;
+using UnityEditor.AddressableAssets.Settings;
+using UnityEditor.U2D;
+using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.U2D;
+using Object = UnityEngine.Object;
 
 [assembly: RegisterAssetReferenceAttributeForwardToChild(typeof(InlineEditorAttribute))]
 [assembly: RegisterAssetReferenceAttributeForwardToChild(typeof(PreviewFieldAttribute))]
 
 namespace Sirenix.OdinInspector
 {
-    using System.Diagnostics;
-
     /// <summary>
     /// <para>DisallowAddressableSubAssetField is used on AssetReference properties, and disallows and prevents assigned sub-assets to the asset reference.</para>
     /// </summary>
@@ -26,7 +49,8 @@ namespace Sirenix.OdinInspector
     /// <seealso cref="RegisterAssetReferenceAttributeForwardToChildAttribute" />
     /// <seealso cref="AssetReferenceUILabelRestriction" />
     [Conditional("UNITY_EDITOR")]
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.ReturnValue | AttributeTargets.Parameter)]
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.ReturnValue |
+                    AttributeTargets.Parameter)]
     public class DisallowAddressableSubAssetFieldAttribute : Attribute
     {
     }
@@ -45,7 +69,8 @@ namespace Sirenix.OdinInspector
     /// <seealso cref="DisallowAddressableSubAssetFieldAttribute" />
     [Conditional("UNITY_EDITOR")]
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
-    public class RegisterAssetReferenceAttributeForwardToChildAttribute : Attribute // TODO: Should this be a global attribute?
+    public class
+        RegisterAssetReferenceAttributeForwardToChildAttribute : Attribute // TODO: Should this be a global attribute?
     {
         /// <summary>
         /// The type of the attribute to forward.
@@ -66,26 +91,6 @@ namespace Sirenix.OdinInspector
 #if UNITY_EDITOR
 namespace Sirenix.OdinInspector.Modules.Addressables.Editor
 {
-    using Sirenix.OdinInspector.Editor;
-    using Sirenix.Serialization;
-    using Sirenix.Utilities;
-    using Sirenix.Utilities.Editor;
-    using Sirenix.OdinInspector.Modules.Addressables.Editor.Internal;
-    using Sirenix.Reflection.Editor;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
-    using UnityEditor;
-    using UnityEditor.AddressableAssets;
-    using UnityEditor.AddressableAssets.Settings;
-    using UnityEditor.AddressableAssets.GUI;
-    using UnityEngine;
-    using UnityEngine.AddressableAssets;
-	using System.Runtime.Serialization;
-    using UnityEngine.U2D;
-    using UnityEditor.U2D;
-    using System.IO;
-
     /// <summary>
     /// Draws an AssetReference property.
     /// </summary>
@@ -94,23 +99,48 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
     public class AssetReferenceDrawer<T> : OdinValueDrawer<T>, IDefinesGenericMenuItems
         where T : AssetReference
     {
-        private bool hideAssetReferenceField;
-        private Type[] validMainAssetTypes;
-        private Type targetType;
-        private bool targetTypeIsNotValidMainAsset;
-        private string NoneSelectedLabel;
-        //private string[] labelRestrictions;
-        private bool showSubAssetField;
-
-        private bool updateShowSubAssetField;
-        
         private bool disallowSubAssets_Backing;
+        private bool hideAssetReferenceField;
 
-        private bool ActuallyDisallowSubAssets => this.disallowSubAssets_Backing && !this.targetTypeIsNotValidMainAsset;
+        private bool isSpriteAtlas;
+
+        private string lastGuid;
+        private string NoneSelectedLabel;
 
         private List<AssetReferenceUIRestriction> restrictions;
 
-        private bool isSpriteAtlas;
+        //private string[] labelRestrictions;
+        private bool showSubAssetField;
+        private Type targetType;
+        private bool targetTypeIsNotValidMainAsset;
+
+        private bool updateShowSubAssetField;
+        private Type[] validMainAssetTypes;
+
+        private bool ActuallyDisallowSubAssets => this.disallowSubAssets_Backing && !this.targetTypeIsNotValidMainAsset;
+
+        public void PopulateGenericMenu(InspectorProperty property, GenericMenu genericMenu)
+        {
+            genericMenu.AddItem(new GUIContent("Set To Null"), false, () =>
+            {
+                EnsureNotRealNull();
+
+                SetMainAsset(null);
+            });
+
+            if (ValueEntry.SmartValue != null &&
+                string.IsNullOrEmpty(ValueEntry.SmartValue.SubObjectName) == false)
+                genericMenu.AddItem(new GUIContent("Remove Sub Asset"), false, () =>
+                {
+                    EnsureNotRealNull();
+
+                    SetSubAsset(null);
+                });
+            else
+                genericMenu.AddDisabledItem(new GUIContent("Remove Sub Asset"));
+
+            genericMenu.AddItem(new GUIContent("Open Groups Window"), false, OdinAddressableUtility.OpenGroupsWindow);
+        }
 
         protected override bool CanDrawValueProperty(InspectorProperty property)
         {
@@ -132,15 +162,17 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
             this.targetType = OdinAddressableUtility.GetAssetReferenceTargetType(typeof(T));
             this.targetTypeIsNotValidMainAsset = this.validMainAssetTypes.Contains(this.targetType) == false;
 
-            this.isSpriteAtlas = this.validMainAssetTypes.Length > 0 && this.validMainAssetTypes[0] == typeof(SpriteAtlas);
+            isSpriteAtlas = validMainAssetTypes.Length > 0 &&
+                            validMainAssetTypes[0] == typeof(SpriteAtlas);
 
-            if (this.targetType == typeof(UnityEngine.Object))
+            if (targetType == typeof(Object))
             {
                 this.NoneSelectedLabel = "None (Addressable Asset)";
             }
             else if (this.validMainAssetTypes.Length > 1 || this.validMainAssetTypes[0] != this.targetType)
             {
-                this.NoneSelectedLabel = $"None (Addressable [{string.Join("/", this.validMainAssetTypes.Select(n => n.GetNiceName()))}]>{this.targetType.GetNiceName()})";
+                NoneSelectedLabel =
+                    $"None (Addressable [{string.Join("/", validMainAssetTypes.Select(n => n.GetNiceName()))}]>{targetType.GetNiceName()})";
             }
             else
             {
@@ -161,13 +193,12 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
             this.updateShowSubAssetField = true;
         }
 
-        private string lastGuid;
-
         protected override void DrawPropertyLayout(GUIContent label)
         {
             if (this.disallowSubAssets_Backing && this.targetTypeIsNotValidMainAsset)
             {
-                SirenixEditorGUI.WarningMessageBox($"This {typeof(T).GetNiceName()} field has been marked as not allowing sub assets, but the target type '{this.targetType.GetNiceName()}' is not a valid main asset for {typeof(T).GetNiceName()}, so the target value *must* be a sub asset. Therefore sub assets have been enabled. (Valid main asset types for {typeof(T).GetNiceName()} are: {string.Join(", ", this.validMainAssetTypes.Select(t => t.GetNiceName()))})");
+                SirenixEditorGUI.WarningMessageBox(
+                    $"This {typeof(T).GetNiceName()} field has been marked as not allowing sub assets, but the target type '{targetType.GetNiceName()}' is not a valid main asset for {typeof(T).GetNiceName()}, so the target value *must* be a sub asset. Therefore sub assets have been enabled. (Valid main asset types for {typeof(T).GetNiceName()} are: {string.Join(", ", validMainAssetTypes.Select(t => t.GetNiceName()))})");
             }
 
             if (this.hideAssetReferenceField == false)
@@ -207,14 +238,16 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
                         else
                         {
                             var mainAsset = AssetDatabase.LoadMainAssetAtPath(path);
-                            this.showSubAssetField = OdinAddressableUtility.EnumerateAllActualAndVirtualSubAssets(mainAsset, path).Any();
+                            showSubAssetField = OdinAddressableUtility
+                                .EnumerateAllActualAndVirtualSubAssets(mainAsset, path).Any();
                         }
                     }
 
                     this.updateShowSubAssetField = false;
                 }
 
-                var rect = SirenixEditorGUI.GetFeatureRichControlRect(label, out var controlId, out var _, out var valueRect);
+                var rect = SirenixEditorGUI.GetFeatureRichControlRect(label, out var controlId, out _,
+                    out var valueRect);
 
                 Rect mainRect = valueRect;
                 Rect subRect = default, subPickerRect = default;
@@ -240,13 +273,15 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
                 {
                     OpenMainAssetSelector(valueRect);
                 }
+
                 if (showSubAssetField && GUI.Button(subPickerRect, "", SirenixGUIStyles.None))
                 {
                     OpenSubAssetSelector(valueRect);
                 }
 
                 // Ping
-                if (Event.current.type == EventType.MouseDown && Event.current.button == 0 && mainRect.Contains(Event.current.mousePosition) && value != null && value.editorAsset != null)
+                if (Event.current.type == EventType.MouseDown && Event.current.button == 0 &&
+                    mainRect.Contains(Event.current.mousePosition) && value != null && value.editorAsset != null)
                 {
                     EditorGUIUtility.PingObject(value.editorAsset);
                 }
@@ -257,12 +292,13 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
                 if (EditorGUI.EndChangeCheck())
                 {
                     this.EnsureNotRealNull();
-                    
+
                     if (this.ConvertToValidAssignment(drop, out Object obj, out bool isSubAssetAssignment))
                     {
                         if (this.isSpriteAtlas && obj is Sprite sprite)
                         {
-                            foreach (SpriteAtlas spriteAtlas in AssetDatabase_Internals.FindAssets<SpriteAtlas>(String.Empty, false, AssetDatabaseSearchArea.AllAssets))
+                            foreach (var spriteAtlas in AssetDatabase_Internals.FindAssets<SpriteAtlas>(
+                                         string.Empty, false, AssetDatabaseSearchArea.AllAssets))
                             {
                                 if (!spriteAtlas.CanBindTo(sprite))
                                 {
@@ -280,7 +316,7 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
                             {
                                 string path = AssetDatabase.GetAssetPath(obj);
 
-                                UnityEngine.Object mainAsset = AssetDatabase.LoadMainAssetAtPath(path);
+                                var mainAsset = AssetDatabase.LoadMainAssetAtPath(path);
 
                                 if (mainAsset != null)
                                 {
@@ -304,7 +340,9 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
                                 {
                                     if (obj is Sprite)
                                     {
-                                        Object[] subAssets = AssetDatabase.LoadAllAssetRepresentationsAtPath(AssetDatabase.GetAssetPath(obj));
+                                        var subAssets =
+                                            AssetDatabase.LoadAllAssetRepresentationsAtPath(
+                                                AssetDatabase.GetAssetPath(obj));
 
                                         if (subAssets.Length > 0)
                                         {
@@ -346,14 +384,15 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
                     else if (showSubAssetField)
                     {
                         var path = AssetDatabase.GUIDToAssetPath(value.AssetGUID);
-                        var assetName = System.IO.Path.GetFileNameWithoutExtension(path);
+                        var assetName = Path.GetFileNameWithoutExtension(path);
 
-                        
+
                         valueLabel = GUIHelper.TempContent(assetName, GetTheDamnPreview(value.editorAsset));
                     }
                     else
                     {
-                        valueLabel = GUIHelper.TempContent(value.editorAsset.name, GetTheDamnPreview(value.editorAsset));
+                        valueLabel =
+                            GUIHelper.TempContent(value.editorAsset.name, GetTheDamnPreview(value.editorAsset));
                     }
 
                     GUI.Label(mainRect, valueLabel, EditorStyles.objectField);
@@ -381,10 +420,10 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
             }
         }
 
-        private static Texture2D GetTheDamnPreview(UnityEngine.Object obj)
+        private static Texture2D GetTheDamnPreview(Object obj)
         {
             Texture2D img = obj as Texture2D;
-            
+
             if (img == null)
             {
                 img = (obj as Sprite)?.texture;
@@ -398,14 +437,14 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
             return img;
         }
 
-        private bool ConvertToValidAssignment(object drop, out UnityEngine.Object converted, out bool isSubAssetAssignment)
+        private bool ConvertToValidAssignment(object drop, out Object converted, out bool isSubAssetAssignment)
         {
             converted = null;
             isSubAssetAssignment = false;
 
             bool isDefinitelyMainAssetAssignment = false;
 
-            if (object.ReferenceEquals(drop, null)) return false;
+            if (ReferenceEquals(drop, null)) return false;
 
             if (!ConvertUtility.TryWeakConvert(drop, this.targetType, out object convertedObj))
             {
@@ -419,7 +458,7 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
                 }
             }
 
-            if (convertedObj == null || !(convertedObj is UnityEngine.Object unityObj) || unityObj == null) return false;
+            if (convertedObj == null || !(convertedObj is Object unityObj) || unityObj == null) return false;
 
             converted = unityObj;
 
@@ -445,10 +484,10 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
         private void OpenMainAssetSelector(Rect rect)
         {
             this.EnsureNotRealNull();
-            
+
             var selector = new AddressableSelector("Select", this.validMainAssetTypes, this.restrictions, typeof(T));
 
-            bool isUnityRoot = this.Property.SerializationRoot?.ValueEntry.WeakSmartValue is UnityEngine.Object;
+            var isUnityRoot = Property.SerializationRoot?.ValueEntry.WeakSmartValue is Object;
 
             if (isUnityRoot)
             {
@@ -487,7 +526,7 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
         private void OpenSubAssetSelector(Rect rect)
         {
             this.EnsureNotRealNull();
-            
+
             if (this.ValueEntry.SmartValue == null || this.ValueEntry.SmartValue.AssetGUID == null)
                 return;
 
@@ -502,26 +541,26 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
             if (mainAsset != null && mainAsset is SpriteAtlas)
             {
                 subAssets = OdinAddressableUtility.EnumerateAllActualAndVirtualSubAssets(mainAsset, path)
-                                                  .Where(val => val != null && (val is Sprite || val is Texture2D))
-                                                  .ToList();
+                    .Where(val => val != null && (val is Sprite || val is Texture2D))
+                    .ToList();
             }
             else
             {
                 subAssets = OdinAddressableUtility.EnumerateAllActualAndVirtualSubAssets(mainAsset, path)
-                                                  .Where(val => val != null && this.targetType.IsInstanceOfType(val))
-                                                  .ToList();
+                    .Where(val => val != null && targetType.IsInstanceOfType(val))
+                    .ToList();
             }
 
-            var items = new GenericSelectorItem<UnityEngine.Object>[subAssets.Count + 1];
+            var items = new GenericSelectorItem<Object>[subAssets.Count + 1];
 
-            items[0] = new GenericSelectorItem<UnityEngine.Object>("<none>", null);
+            items[0] = new GenericSelectorItem<Object>("<none>", null);
             for (int i = 0; i < subAssets.Count; i++)
-            {   
-                var item = new GenericSelectorItem<UnityEngine.Object>(subAssets[i].name, subAssets[i]);
+            {
+                var item = new GenericSelectorItem<Object>(subAssets[i].name, subAssets[i]);
                 items[i + 1] = item;
             }
 
-            var selector = new GenericSelector<UnityEngine.Object>("Select Sub Asset", false, items);
+            var selector = new GenericSelector<Object>("Select Sub Asset", false, items);
 
             selector.SelectionChanged += OnSubAssetSelect;
             selector.SelectionConfirmed += OnSubAssetSelect;
@@ -531,14 +570,14 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
 
         private void OnMainAssetSelect(AddressableAssetEntry entry) => this.UpdateAssetReference(entry);
 
-        private void OnSubAssetSelect(IEnumerable<UnityEngine.Object> selection)
+        private void OnSubAssetSelect(IEnumerable<Object> selection)
         {
             if (this.ValueEntry == null || this.ValueEntry.SmartValue.AssetGUID == null)
             {
                 return;
             }
 
-            UnityEngine.Object selected = selection.FirstOrDefault();
+            var selected = selection.FirstOrDefault();
 
             this.SetSubAsset(selected);
         }
@@ -562,7 +601,7 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
 
             if (typeof(T).InheritsFrom<AssetReferenceSprite>())
             {
-                UnityEngine.Object subObject = null;
+                Object subObject = null;
 
                 string path = AssetDatabase.GetAssetPath(entry.TargetAsset);
 
@@ -598,19 +637,19 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
             }
         }
 
-        private T CreateAssetReferenceFrom(UnityEngine.Object mainAsset, UnityEngine.Object subAsset)
+        private T CreateAssetReferenceFrom(Object mainAsset, Object subAsset)
         {
             var path = AssetDatabase.GetAssetPath(mainAsset);
             var guid = AssetDatabase.AssetPathToGUID(path);
 
             if (guid == null) return null;
-            
+
             var instance = (T)Activator.CreateInstance(typeof(T), guid);
             instance.SetEditorSubObject(subAsset);
             return instance;
         }
 
-        private T CreateAssetReferenceFrom(UnityEngine.Object obj)
+        private T CreateAssetReferenceFrom(Object obj)
         {
             var path = AssetDatabase.GetAssetPath(obj);
             var guid = AssetDatabase.AssetPathToGUID(path);
@@ -643,33 +682,7 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
             return instance;
         }
 
-        public void PopulateGenericMenu(InspectorProperty property, GenericMenu genericMenu)
-        {
-            genericMenu.AddItem(new GUIContent("Set To Null"), false, () =>
-            {
-                this.EnsureNotRealNull();
-
-                this.SetMainAsset(null);
-            });
-
-            if (this.ValueEntry.SmartValue != null && string.IsNullOrEmpty(this.ValueEntry.SmartValue.SubObjectName) == false)
-            {
-                genericMenu.AddItem(new GUIContent("Remove Sub Asset"), false, () =>
-                {
-                    this.EnsureNotRealNull();
-
-                    this.SetSubAsset(null);
-                });
-            }
-            else
-            {
-                genericMenu.AddDisabledItem(new GUIContent("Remove Sub Asset"));
-            }
-
-            genericMenu.AddItem(new GUIContent("Open Groups Window"), false, OdinAddressableUtility.OpenGroupsWindow);
-        }
-
-        private void SetMainAndSubAsset(UnityEngine.Object mainAsset, UnityEngine.Object subAsset, bool setDirtyIfChanged = true)
+        private void SetMainAndSubAsset(Object mainAsset, Object subAsset, bool setDirtyIfChanged = true)
         {
             string subAssetName = subAsset == null ? null : subAsset.name;
 
@@ -681,7 +694,7 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
                 return;
             }
 
-            if (this.Property.SerializationRoot?.ValueEntry.WeakSmartValue is UnityEngine.Object)
+            if (Property.SerializationRoot?.ValueEntry.WeakSmartValue is Object)
             {
                 Undo.IncrementCurrentGroup();
 
@@ -706,7 +719,7 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
             }
         }
 
-        private void SetMainAsset(UnityEngine.Object asset, bool setDirtyIfChanged = true)
+        private void SetMainAsset(Object asset, bool setDirtyIfChanged = true)
         {
             if (this.ValueEntry.SmartValue.editorAsset == asset)
             {
@@ -714,7 +727,7 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
             }
 
             this.Property.RecordForUndo("Main Asset Changed");
-            
+
             this.ValueEntry.SmartValue.SetEditorAsset(asset);
 
             this.updateShowSubAssetField = true;
@@ -725,7 +738,7 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
             }
         }
 
-        private void SetSubAsset(UnityEngine.Object asset, bool setDirtyIfChanged = true)
+        private void SetSubAsset(Object asset, bool setDirtyIfChanged = true)
         {
 #if SIRENIX_INTERNAL
             if (this.ValueEntry.SmartValue.editorAsset == null)
@@ -753,7 +766,7 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
                 this.Property.MarkSerializationRootDirty();
             }
         }
-        
+
         private void EnsureNotRealNull()
         {
             if (this.ValueEntry.WeakSmartValue == null)
@@ -769,6 +782,13 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
     [DrawerPriority(0, 1, 0)]
     public class AssetLabelReferenceDrawer : OdinValueDrawer<AssetLabelReference>, IDefinesGenericMenuItems
     {
+        public void PopulateGenericMenu(InspectorProperty property, GenericMenu genericMenu)
+        {
+            genericMenu.AddItem(new GUIContent("Set To Null"), false, () => property.ValueEntry.WeakSmartValue = null);
+            genericMenu.AddItem(new GUIContent("Open Label Window"), false,
+                () => OdinAddressableUtility.OpenLabelsWindow());
+        }
+
         protected override bool CanDrawValueProperty(InspectorProperty property)
         {
             return property.GetAttribute<DrawWithUnityAttribute>() == null;
@@ -776,7 +796,8 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
 
         protected override void DrawPropertyLayout(GUIContent label)
         {
-            var rect = SirenixEditorGUI.GetFeatureRichControlRect(label, out var controlId, out var hasKeyboardFocus, out var valueRect);
+            var rect = SirenixEditorGUI.GetFeatureRichControlRect(label, out var controlId, out var hasKeyboardFocus,
+                out var valueRect);
 
             string valueLabel;
             if (this.ValueEntry.SmartValue == null || string.IsNullOrEmpty(this.ValueEntry.SmartValue.labelString))
@@ -807,12 +828,6 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
                 labelString = selected,
             };
         }
-
-        public void PopulateGenericMenu(InspectorProperty property, GenericMenu genericMenu)
-        {
-            genericMenu.AddItem(new GUIContent("Set To Null"), false, () => property.ValueEntry.WeakSmartValue = null);
-            genericMenu.AddItem(new GUIContent("Open Label Window"), false, () => OdinAddressableUtility.OpenLabelsWindow());
-        }
     }
 
     /// <summary>
@@ -820,20 +835,16 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
     /// </summary>
     public class AddressableSelector : OdinSelector<AddressableAssetEntry>
     {
-        //private static EditorPrefBool flatten = new EditorPrefBool("AddressablesSelector.Flatten", false);
-        public event Action<SelectionChangedType, IEnumerable<AddressableAssetEntry>> SelectionChangedWithType;
+        private static readonly EditorPrefEnum<SelectorListMode> listMode =
+            new("AddressablesSelector.ListMode", SelectorListMode.Group);
 
-        private static EditorPrefEnum<SelectorListMode> listMode = new EditorPrefEnum<SelectorListMode>("AddressablesSelector.ListMode", SelectorListMode.Group);
-
-        private readonly string title;
         private readonly Type[] filterTypes;
         private readonly List<AssetReferenceUIRestriction> restrictions;
-        private readonly AssetReference assetReferenceForValidating;
+
+        private readonly string title;
 
         internal bool ShowNonAddressables;
 
-        public override string Title => this.title;
-        
         /// <summary>
         /// Initializes a AddressableSelector.
         /// </summary>
@@ -841,7 +852,8 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
         /// <param name="filterType">The type of UnityEngine.Object to be selectable. For example, UnityEngine.Texture. For no restriction, pass in UnityEngine.Object.</param>
         /// <param name="labelRestrictions">The Addressable labels to restrict the selector to. Set to null for no label restrictions.</param>
         /// <exception cref="ArgumentNullException">Throws if the filter type is null.</exception>
-        public AddressableSelector(string title, Type filterType, List<AssetReferenceUIRestriction> restrictions, Type assetReferenceType)
+        public AddressableSelector(string title, Type filterType, List<AssetReferenceUIRestriction> restrictions,
+            Type assetReferenceType)
             : this(title, new Type[] { filterType }, restrictions, assetReferenceType)
         {
         }
@@ -853,7 +865,8 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
         /// <param name="filterTypes">The types of UnityEngine.Object to be selectable. For example, UnityEngine.Texture. For no restriction, pass in an array containing UnityEngine.Object.</param>
         /// <param name="labelRestrictions">The Addressable labels to restrict the selector to. Set to null for no label restrictions.</param>
         /// <exception cref="ArgumentNullException">Throws if the filter type is null.</exception>
-        public AddressableSelector(string title, Type[] filterTypes, List<AssetReferenceUIRestriction> restrictions, Type assetReferenceType)
+        public AddressableSelector(string title, Type[] filterTypes, List<AssetReferenceUIRestriction> restrictions,
+            Type assetReferenceType)
         {
             this.title = title;
             this.filterTypes = filterTypes ?? throw new ArgumentNullException(nameof(filterTypes));
@@ -869,10 +882,13 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
                 {
                     throw new ArgumentException("Cannot be abstract type.", nameof(assetReferenceType));
                 }
-
-                this.assetReferenceForValidating = (AssetReference)FormatterServices.GetUninitializedObject(assetReferenceType);
             }
         }
+
+        public override string Title => title;
+
+        //private static EditorPrefBool flatten = new EditorPrefBool("AddressablesSelector.Flatten", false);
+        public event Action<SelectionChangedType, IEnumerable<AddressableAssetEntry>> SelectionChangedWithType;
 
         protected override void DrawToolbar()
         {
@@ -913,7 +929,8 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
                     }
 
                     EditorGUI.BeginChangeCheck();
-                    this.ShowNonAddressables = SirenixEditorGUI.ToolbarToggle(this.ShowNonAddressables, EditorIcons.UnityLogo);
+                    ShowNonAddressables =
+                        SirenixEditorGUI.ToolbarToggle(ShowNonAddressables, EditorIcons.UnityLogo);
                     if (EditorGUI.EndChangeCheck())
                     {
                         this.RebuildMenuTree();
@@ -944,9 +961,9 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
                     }
                 };
             }
-            
+
             tree.Config.EXPERIMENTAL_INTERNAL_SparseFixedLayouting = true;
-            
+
             tree.Config.SelectMenuItemsOnMouseDown = true;
 
             if (AddressableAssetSettingsDefaultObject.SettingsExists)
@@ -984,7 +1001,9 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
                     searchFilter += $"t:{filterType.Name} ";
                 }
 
-                IEnumerator<HierarchyProperty> enumerator = AssetDatabase_Internals.EnumerateAllAssets(searchFilter, false, AssetDatabaseSearchArea.InAssetsOnly);
+                var enumerator =
+                    AssetDatabase_Internals.EnumerateAllAssets(searchFilter, false,
+                        AssetDatabaseSearchArea.InAssetsOnly);
 
                 if (enumerator.MoveNext())
                 {
@@ -1000,7 +1019,8 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
 
                     const string NON_ADDRESSABLES_ITEM_NAME = "Non Addressables";
 
-                    var nonAddressablesItem = new OdinMenuItem(tree, NON_ADDRESSABLES_ITEM_NAME, null) {Icon = EditorIcons.UnityLogo};
+                    var nonAddressablesItem = new OdinMenuItem(tree, NON_ADDRESSABLES_ITEM_NAME, null)
+                        { Icon = EditorIcons.UnityLogo };
 
                     tree.MenuItems.Add(nonAddressablesItem);
 
@@ -1013,11 +1033,12 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
                             continue;
                         }
 
-                        AddressableAssetEntry entry = OdinAddressableUtility.CreateFakeAddressableAssetEntry(current.guid);
+                        var entry =
+                            OdinAddressableUtility.CreateFakeAddressableAssetEntry(current.guid);
 
                         if (listMode == SelectorListMode.Flat)
                         {
-                            var item = new OdinMenuItem(tree, current.name, entry) {Icon = current.icon};
+                            var item = new OdinMenuItem(tree, current.name, entry) { Icon = current.icon };
 
                             nonAddressablesItem.ChildMenuItems.Add(item);
                         }
@@ -1047,7 +1068,7 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
 
             OdinMenuItem noneItem;
 
-            if (this.filterTypes.Contains(typeof(UnityEngine.Object)))
+            if (filterTypes.Contains(typeof(Object)))
             {
                 noneItem = new OdinMenuItem(tree, "<none> (Addressable Asset)", null);
             }
@@ -1120,9 +1141,9 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
                     }
                 }
             }
-            else 
+            else
             {
-                UnityEngine.Object asset = entry.TargetAsset;
+                var asset = entry.TargetAsset;
 
                 if (asset == null)
                 {
@@ -1150,7 +1171,7 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
                     }
                     else if (listMode.Value == SelectorListMode.Path)
                     {
-                        name = System.IO.Path.GetFileNameWithoutExtension(entry.AssetPath);
+                        name = Path.GetFileNameWithoutExtension(entry.AssetPath);
                     }
                     else if (listMode.Value == SelectorListMode.Flat)
                     {
@@ -1204,7 +1225,7 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
                     }
                     else if (listMode.Value == SelectorListMode.Path)
                     {
-                        tree.AddMenuItemAtPath(System.IO.Path.GetDirectoryName(entry.AssetPath), item);
+                        tree.AddMenuItemAtPath(Path.GetDirectoryName(entry.AssetPath), item);
                     }
                     else if (listMode.Value == SelectorListMode.Flat)
                     {
@@ -1277,6 +1298,7 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
                 SirenixEditorGUI.EndHorizontalToolbar();
             }
         }
+
         protected override void BuildSelectionTree(OdinMenuTree tree)
         {
             IList<string> labels = null;
@@ -1366,7 +1388,7 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
         }
 
         private class AssetReferenceValueGetterSetter<TTarget> : IValueGetterSetter<T, TTarget>
-            where TTarget : UnityEngine.Object
+            where TTarget : Object
         {
             public bool IsReadonly => false;
 
@@ -1409,7 +1431,8 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
         {
             attributes.Add(new DoNotDrawAsReferenceAttribute());
             attributes.Add(new HideReferenceObjectPickerAttribute());
-            attributes.Add(new SuppressInvalidAttributeErrorAttribute()); // TODO: Remove this with proper attribute forwarding support.
+            attributes.Add(
+                new SuppressInvalidAttributeErrorAttribute()); // TODO: Remove this with proper attribute forwarding support.
         }
     }
 
@@ -1441,9 +1464,16 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
 
         public AssetReferenceConverter()
         {
-            this.type_AssetEntryTreeViewItem = TwoWaySerializationBinder.Default.BindToType("UnityEditor.AddressableAssets.GUI.AssetEntryTreeViewItem") ?? throw new Exception("Failed to find UnityEditor.AddressableAssets.GUI.AddressableAssetEntryTreeViewItem type.");
-            var field_AssetEntryTreeViewItem_entry = type_AssetEntryTreeViewItem.GetField("entry", Flags.AllMembers) ?? throw new Exception("Failed to find entry field in UnityEditor.AddressableAssets.GUI.AddressableAssetEntryTreeViewItem type.");
-            this.get_AssetEntryTreeViewItem_entry = EmitUtilities.CreateWeakInstanceFieldGetter<AddressableAssetEntry>(type_AssetEntryTreeViewItem, field_AssetEntryTreeViewItem_entry);
+            type_AssetEntryTreeViewItem =
+                TwoWaySerializationBinder.Default.BindToType(
+                    "UnityEditor.AddressableAssets.GUI.AssetEntryTreeViewItem") ?? throw new Exception(
+                    "Failed to find UnityEditor.AddressableAssets.GUI.AddressableAssetEntryTreeViewItem type.");
+            var field_AssetEntryTreeViewItem_entry = type_AssetEntryTreeViewItem.GetField("entry", Flags.AllMembers) ??
+                                                     throw new Exception(
+                                                         "Failed to find entry field in UnityEditor.AddressableAssets.GUI.AddressableAssetEntryTreeViewItem type.");
+            get_AssetEntryTreeViewItem_entry =
+                EmitUtilities.CreateWeakInstanceFieldGetter<AddressableAssetEntry>(type_AssetEntryTreeViewItem,
+                    field_AssetEntryTreeViewItem_entry);
         }
 
         // UnityEngine.Object > AssetReference/T
@@ -1458,20 +1488,21 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
 
             if (to.InheritsFrom(typeof(AssetReference)))
             {
-                if (comparer.Equals(from, typeof(AddressableAssetEntry)) || comparer.Equals(from, type_AssetEntryTreeViewItem))
+                if (comparer.Equals(from, typeof(AddressableAssetEntry)) ||
+                    comparer.Equals(from, type_AssetEntryTreeViewItem))
                 {
                     return true;
                 }
-                else if (from.InheritsFrom<UnityEngine.Object>())
+                else if (from.InheritsFrom<Object>())
                 {
                     if (to.InheritsFrom(typeof(AssetReferenceT<>)))
                     {
-						var baseType = to.GetGenericBaseType(typeof(AssetReferenceT<>));
+                        var baseType = to.GetGenericBaseType(typeof(AssetReferenceT<>));
 
-						var targetType = baseType.GetGenericArguments()[0];
+                        var targetType = baseType.GetGenericArguments()[0];
 
-						return from.InheritsFrom(targetType);
-					}
+                        return from.InheritsFrom(targetType);
+                    }
                     else
                     {
                         return true;
@@ -1486,7 +1517,7 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
                     return false;
                 }
             }
-            else if (from.InheritsFrom(typeof(AssetReference)) && to.InheritsFrom<UnityEngine.Object>())
+            else if (from.InheritsFrom(typeof(AssetReference)) && to.InheritsFrom<Object>())
             {
                 return false;
             }
@@ -1516,17 +1547,17 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
             if (to.InheritsFrom(typeof(AssetReference)))
             {
                 Type assetType;
-				if (to.InheritsFrom(typeof(AssetReferenceT<>)))
-				{
-					var baseType = to.GetGenericBaseType(typeof(AssetReferenceT<>));
-					assetType = baseType.GetGenericArguments()[0];
-				}
-				else
+                if (to.InheritsFrom(typeof(AssetReferenceT<>)))
                 {
-                    assetType = typeof(UnityEngine.Object);
+                    var baseType = to.GetGenericBaseType(typeof(AssetReferenceT<>));
+                    assetType = baseType.GetGenericArguments()[0];
+                }
+                else
+                {
+                    assetType = typeof(Object);
                 }
 
-                if (obj is UnityEngine.Object uObj)
+                if (obj is Object uObj)
                 {
                     if (obj.GetType().InheritsFrom(assetType))
                     {
@@ -1534,7 +1565,6 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
 
                         if (string.IsNullOrEmpty(guid) == false)
                         {
-
                             result = CreateReference(to, uObj);
                             return true;
                         }
@@ -1556,7 +1586,6 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
                     {
                         result = CreateReference(to, entry.TargetAsset);
                         return true;
-
                     }
                     else
                     {
@@ -1583,7 +1612,7 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
                     return false;
                 }
             }
-            else if (to.InheritsFrom(typeof(UnityEngine.Object)) && obj is AssetReference reference)
+            else if (to.InheritsFrom(typeof(Object)) && obj is AssetReference reference)
             {
                 if (TryGetReferencedAsset(reference, to, out var asset))
                 {
@@ -1596,7 +1625,7 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
                     return false;
                 }
             }
-            else if (to.InheritsFrom(typeof(UnityEngine.Object)) && obj is AddressableAssetEntry entry)
+            else if (to.InheritsFrom(typeof(Object)) && obj is AddressableAssetEntry entry)
             {
                 var target = entry.TargetAsset;
                 if (target == null)
@@ -1627,7 +1656,7 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
             }
         }
 
-        private bool TryGetReferencedAsset(AssetReference reference, Type to, out UnityEngine.Object asset)
+        private bool TryGetReferencedAsset(AssetReference reference, Type to, out Object asset)
         {
             if (reference.AssetGUID == null)
             {
@@ -1641,7 +1670,8 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
             {
                 asset = null;
 
-                foreach (var subAsset in OdinAddressableUtility.EnumerateAllActualAndVirtualSubAssets(reference.editorAsset, path))
+                foreach (var subAsset in OdinAddressableUtility.EnumerateAllActualAndVirtualSubAssets(
+                             reference.editorAsset, path))
                 {
                     if (subAsset.name == reference.SubObjectName)
                     {
@@ -1652,7 +1682,7 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
             }
             else
             {
-                asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(path);
+                asset = AssetDatabase.LoadAssetAtPath<Object>(path);
             }
 
             if (asset != null)
@@ -1663,7 +1693,7 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
                 }
                 else if (ConvertUtility.TryWeakConvert(asset, to, out var converted))
                 {
-                    asset = (UnityEngine.Object)converted;
+                    asset = (Object)converted;
                     return true;
                 }
                 else
@@ -1678,9 +1708,10 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
             }
         }
 
-        private AssetReference CreateReference(Type type, UnityEngine.Object obj)
+        private AssetReference CreateReference(Type type, Object obj)
         {
-            var reference = (AssetReference)Activator.CreateInstance(type, new string[] { AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(obj)) });
+            var reference = (AssetReference)Activator.CreateInstance(type,
+                AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(obj)));
             if (AssetDatabase.IsSubAsset(obj))
             {
                 reference.SetEditorAsset(obj);
@@ -1696,16 +1727,17 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
     public static class OdinAddressableUtility
     {
         private readonly static Action openAddressableWindowAction;
-        private static bool hasLoggedPackablesMissingError = false;
-        
+
         static OdinAddressableUtility()
         {
-            var type = TwoWaySerializationBinder.Default.BindToType("UnityEditor.AddressableAssets.GUI.AddressableAssetsWindow") ?? throw new Exception("");
+            var type =
+                TwoWaySerializationBinder.Default.BindToType(
+                    "UnityEditor.AddressableAssets.GUI.AddressableAssetsWindow") ?? throw new Exception("");
             var method = type.GetMethod("Init", Flags.AllMembers) ?? throw new Exception("");
             openAddressableWindowAction = (Action)Delegate.CreateDelegate(typeof(Action), method);
         }
-        
-        public static IEnumerable<UnityEngine.Object> EnumerateAllActualAndVirtualSubAssets(UnityEngine.Object mainAsset, string mainAssetPath)
+
+        public static IEnumerable<Object> EnumerateAllActualAndVirtualSubAssets(Object mainAsset, string mainAssetPath)
         {
             if (mainAsset == null)
             {
@@ -1721,7 +1753,7 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
 
             // The sprites/textures in a sprite atlas are not sub assets of the atlas, but they are apparently
             // still part of the atlas in a way that the addressables system considers a sub asset.
-            if (mainAsset is UnityEngine.U2D.SpriteAtlas atlas)
+            if (mainAsset is SpriteAtlas atlas)
             {
                 Object[] packables = atlas.GetPackables();
 
@@ -1789,7 +1821,7 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
         /// </summary>
         /// <param name="obj">The object to make addressable.</param>
         /// <param name="group">The addressable group to add the object to.</param>
-        public static void MakeAddressable(UnityEngine.Object obj, AddressableAssetGroup group)
+        public static void MakeAddressable(Object obj, AddressableAssetGroup group)
         {
             if (!AddressableAssetSettingsDefaultObject.SettingsExists) return;
 
@@ -1815,15 +1847,15 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
         {
             if (assetReferenceType == null) throw new ArgumentNullException(nameof(assetReferenceType));
 
-			if (assetReferenceType.InheritsFrom(typeof(AssetReferenceT<>)))
+            if (assetReferenceType.InheritsFrom(typeof(AssetReferenceT<>)))
             {
-			    var genericBase = assetReferenceType.GetGenericBaseType(typeof(AssetReferenceT<>));
-				return genericBase.GetGenericArguments()[0];
-			}
+                var genericBase = assetReferenceType.GetGenericBaseType(typeof(AssetReferenceT<>));
+                return genericBase.GetGenericArguments()[0];
+            }
             else
-			{
-				return typeof(UnityEngine.Object);
-			}
+            {
+                return typeof(Object);
+            }
         }
 
         public static Type[] GetAssetReferenceValidMainAssetTypes(Type assetReferenceType)
@@ -1855,7 +1887,8 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
         /// <returns>Returns true if the asset passes all restrictions. Otherwise false.</returns>
         /// <exception cref="Exception">Throws if Addressable Settings have not been created.</exception>
         /// <exception cref="ArgumentNullException">Throws if restrictions or asset is null.</exception>
-        public static bool ValidateAssetReferenceRestrictions(List<AssetReferenceUIRestriction> restrictions, UnityEngine.Object asset)
+        public static bool ValidateAssetReferenceRestrictions(List<AssetReferenceUIRestriction> restrictions,
+            Object asset)
         {
             return ValidateAssetReferenceRestrictions(restrictions, asset, out _);
         }
@@ -1869,9 +1902,11 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
         /// <returns>Returns true if the asset passes all restrictions. Otherwise false.</returns>
         /// <exception cref="Exception">Throws if Addressable Settings have not been created.</exception>
         /// <exception cref="ArgumentNullException">Throws if restrictions or asset is null.</exception>
-        public static bool ValidateAssetReferenceRestrictions(List<AssetReferenceUIRestriction> restrictions, UnityEngine.Object asset, out AssetReferenceUIRestriction failedRestriction)
+        public static bool ValidateAssetReferenceRestrictions(List<AssetReferenceUIRestriction> restrictions,
+            Object asset, out AssetReferenceUIRestriction failedRestriction)
         {
-            if (AddressableAssetSettingsDefaultObject.SettingsExists == false) throw new Exception("Addressable Settings have not been created.");
+            if (AddressableAssetSettingsDefaultObject.SettingsExists == false)
+                throw new Exception("Addressable Settings have not been created.");
 
             _ = restrictions ?? throw new ArgumentNullException(nameof(restrictions));
             _ = asset ?? throw new ArgumentNullException(nameof(asset));
@@ -1904,12 +1939,14 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
             return true;
         }
 
-        internal static TAssetReference CreateAssetReferenceGuid<TAssetReference>(string guid) where TAssetReference : AssetReference
+        internal static TAssetReference CreateAssetReferenceGuid<TAssetReference>(string guid)
+            where TAssetReference : AssetReference
         {
-            return (TAssetReference) Activator.CreateInstance(typeof(TAssetReference), guid);
+            return (TAssetReference)Activator.CreateInstance(typeof(TAssetReference), guid);
         }
 
-        internal static TAssetReference CreateAssetReference<TAssetReference>(UnityEngine.Object obj) where TAssetReference : AssetReference
+        internal static TAssetReference CreateAssetReference<TAssetReference>(Object obj)
+            where TAssetReference : AssetReference
         {
             if (obj == null)
             {
@@ -1923,7 +1960,7 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
 
         internal static AddressableAssetEntry CreateFakeAddressableAssetEntry(string guid)
         {
-            var entry = (AddressableAssetEntry) FormatterServices.GetUninitializedObject(typeof(AddressableAssetEntry));
+            var entry = (AddressableAssetEntry)FormatterServices.GetUninitializedObject(typeof(AddressableAssetEntry));
 
             OdinAddressableReflection.AddressableAssetEntry_mGUID_Field.SetValue(entry, guid);
 

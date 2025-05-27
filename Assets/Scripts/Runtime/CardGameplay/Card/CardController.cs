@@ -80,16 +80,18 @@ namespace Runtime.CardGameplay.Card
         [Button]
         public void Init(CardData data, CardDependencies dependencies)
         {
-            if (data == null)
+            if (!data)
             {
                 Debug.LogError("CardData cannot be null during initialization.");
                 return;
             }
 
+
             Instance = new CardInstance(data)
             {
                 Controller = this
             };
+
 
             CardType = data.CardType;
 
@@ -219,7 +221,7 @@ namespace Runtime.CardGameplay.Card
         /// </summary>
         public void Disable()
         {
-            _cardFactory.Disable(this);
+            _cardFactory.ReturnToPool(this);
         }
 
         public void OnDraw()

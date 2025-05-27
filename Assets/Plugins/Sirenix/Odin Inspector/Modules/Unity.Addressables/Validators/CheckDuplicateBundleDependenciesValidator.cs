@@ -5,6 +5,9 @@
 //-----------------------------------------------------------------------
 
 #if UNITY_EDITOR && ODIN_VALIDATOR_3_1
+#if !SIRENIX_INTERNAL
+#pragma warning disable
+#endif
 
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +24,8 @@ using Sirenix.OdinValidator.Editor;
 using Sirenix.OdinInspector.Modules.Addressables.Editor;
 
 [assembly: RegisterValidationRule(typeof(CheckDuplicateBundleDependenciesValidator),
-	Description = "This validator detects potential duplicate asset dependencies in an addressable group, without the need for a build. " +
+	Description =
+ "This validator detects potential duplicate asset dependencies in an addressable group, without the need for a build. " +
 		"For instance, imagine two prefabs in separate groups, both referencing the same material. Each group would then include the material " +
 	"and all its associated dependencies. " +
 		"To address this, the material should be marked as Addressable, either with one of the prefabs or in a distinct group.\n\n" +
@@ -67,7 +71,8 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
 
 						if (this.IgnoredGUIDs.Contains(dependencyGUID.ToString())) continue;
 
-						var dependencyAddressableAssetEntry = addressableAssetSettings.FindAssetEntry(dependencyGUID.ToString());
+						var dependencyAddressableAssetEntry =
+ addressableAssetSettings.FindAssetEntry(dependencyGUID.ToString());
 
 						var isAddressable = dependencyAddressableAssetEntry != null;
 						if (isAddressable) continue;
@@ -100,7 +105,8 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
 						if (args.FixChoice == FixChoice.Ignore)
 						{
 							var sourceType = args.IgnoreForEveryone ? ConfigSourceType.Project : ConfigSourceType.Local;
-							var data = RuleConfig.Instance.GetRuleData<CheckDuplicateBundleDependenciesValidator>(sourceType);
+							var data =
+ RuleConfig.Instance.GetRuleData<CheckDuplicateBundleDependenciesValidator>(sourceType);
 							data.IgnoredGUIDs.Add(dependencyGUID.ToString());
 							RuleConfig.Instance.SetAndSaveRuleData(data, sourceType);
 							return;

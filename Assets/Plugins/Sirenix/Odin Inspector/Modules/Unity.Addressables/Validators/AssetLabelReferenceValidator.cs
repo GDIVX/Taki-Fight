@@ -6,11 +6,15 @@
 
 #if UNITY_EDITOR
 
-using UnityEngine;
-using UnityEditor.AddressableAssets;
+#if !SIRENIX_INTERNAL
+#pragma warning disable
+#endif
+
 using Sirenix.OdinInspector.Editor.Validation;
-using UnityEngine.AddressableAssets;
 using Sirenix.OdinInspector.Modules.Addressables.Editor;
+using UnityEditor.AddressableAssets;
+using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 #if ODIN_VALIDATOR_3_1
 [assembly: RegisterValidationRule(typeof(AssetLabelReferenceValidator), Description =
@@ -24,19 +28,21 @@ using Sirenix.OdinInspector.Modules.Addressables.Editor;
 
 namespace Sirenix.OdinInspector.Modules.Addressables.Editor
 {
-	/// <summary>
-	/// Validator for AssetLabelReference values.
-	/// </summary>
-	public class AssetLabelReferenceValidator : ValueValidator<AssetLabelReference>
+    /// <summary>
+    ///     Validator for AssetLabelReference values.
+    /// </summary>
+    public class AssetLabelReferenceValidator : ValueValidator<AssetLabelReference>
     {
+        private bool optional;
+
+        private bool required;
+
         [Tooltip("If enabled, the validator will display an error message if the AssetLabelReference is not set. " +
-            "If disabled, the validator will only display an error message if the AssetLabelReference is set, but the " +
-            "assigned label does not exist.")]
+                 "If disabled, the validator will only display an error message if the AssetLabelReference is set, but the " +
+                 "assigned label does not exist.")]
         [ToggleLeft]
         public bool RequiredByDefault;
 
-        private bool required;
-        private bool optional;
         private string requiredMessage;
 
         protected override void Initialize()
@@ -88,7 +94,6 @@ namespace Sirenix.OdinInspector.Modules.Addressables.Editor
             }
         }
     }
-
 }
 
 #endif
