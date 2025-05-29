@@ -4,6 +4,7 @@
     {
         Spell,
         Familiar,
+        Totem,
         Terrain,
         Blight,
         Curse

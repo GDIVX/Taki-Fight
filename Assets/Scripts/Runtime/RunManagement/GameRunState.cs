@@ -6,7 +6,7 @@ using Runtime.Combat.Pawn;
 
 namespace Runtime.RunManagement
 {
-    public class RunState
+    public class GameRunState
     {
         public List<CardData> Cards;
 

@@ -16,7 +16,7 @@ namespace Runtime
     public class GameManager : MonoService<GameManager>
     {
         [SerializeField] private School _tempClassData;
-        [SerializeField] private RunState _runState;
+        [SerializeField] private GameRunState _gameRunState;
 
         private static CardFactory CardFactory => ServiceLocator.Get<CardFactory>();
         private static CombatManager CombatManager => ServiceLocator.Get<CombatManager>();
@@ -43,7 +43,7 @@ namespace Runtime
 
         public void StartRun()
         {
-            _runState = new RunBuilder().WithPrimarySchool(_tempClassData).Build();
+            _gameRunState = new RunBuilder().WithPrimarySchool(_tempClassData).Build();
 
             var operation = SceneManager.LoadSceneAsync("Combat", LoadSceneMode.Additive);
 
@@ -62,7 +62,7 @@ namespace Runtime
             var deckView = ServiceLocator.Get<DeckView>();
             var energy = ServiceLocator.Get<Energy>();
 
-            var deck = _runState.Deck;
+            var deck = _gameRunState.Deck;
             HandController.Deck = deck;
             deckView.Setup(deck);
             HandController.Deck.MergeAndShuffle();

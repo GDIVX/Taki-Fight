@@ -5,32 +5,32 @@ namespace Runtime.RunManagement
 {
     public class RunBuilder
     {
-        private readonly RunState _runState = new();
+        private readonly GameRunState _gameRunState = new();
 
-        public RunState Build()
+        public GameRunState Build()
         {
             //build deck
-            _runState.Deck = new Deck(_runState.Cards);
-            return _runState;
+            _gameRunState.Deck = new Deck(_gameRunState.Cards);
+            return _gameRunState;
         }
 
         public RunBuilder WithPrimarySchool(School school)
         {
-            _runState.PrimarySchool = school;
-            _runState.Mage = school.Mage;
+            _gameRunState.PrimarySchool = school;
+            _gameRunState.Mage = school.Mage;
 
             //add all starter cards
-            _runState.Cards = school.StarterCards;
+            _gameRunState.Cards = school.StarterCards;
 
             return this;
         }
 
         public RunBuilder WithSecondarySchool(School school)
         {
-            _runState.SecondarySchool = school;
+            _gameRunState.SecondarySchool = school;
 
             //add all starter cards
-            _runState.Cards.AddRange(school.StarterCards);
+            _gameRunState.Cards.AddRange(school.StarterCards);
 
             return this;
         }
