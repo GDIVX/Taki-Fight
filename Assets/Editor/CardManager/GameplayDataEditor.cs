@@ -1,134 +1,210 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System;
 using Runtime.CardGameplay.Card;
+using Runtime.CardGameplay.Card.CardBehaviour;
+using Runtime.Combat;
 using Runtime.Combat.Pawn;
+using Runtime.Combat.StatusEffects;
 using Runtime.RunManagement;
-using Sirenix.OdinInspector;
+using Runtime.UI.Tooltip;
 using Sirenix.OdinInspector.Editor;
 using UnityEditor;
 using UnityEngine;
-// ← for Directory
-// ← for AssetDatabase, Selection
 
 namespace Editor.CardManager
 {
-    public sealed class GameplayDataEditor : OdinEditorWindow
+    public sealed class GameplayDataEditor : OdinMenuEditorWindow
     {
-        [TabGroup("Cards")]
-        [TableList(AlwaysExpanded = true, DrawScrollView = true, ShowPaging = true)]
-        [SerializeField]
-        private List<CardData> _cards;
-
-        [TabGroup("Pawns")]
-        [TableList(AlwaysExpanded = true, DrawScrollView = true, ShowPaging = true)]
-        [SerializeField]
-        private List<PawnData> _pawns;
-
-        [TabGroup("Schools")]
-        [TableList(AlwaysExpanded = true, DrawScrollView = true, ShowPaging = true, ShowIndexLabels = true)]
-        [SerializeField]
-        private List<School> _schools;
-
-        private void OnEnable()
-        {
-            LoadAllData();
-        }
+        private static readonly Type[] TypesToDisplay = { typeof(CardData), typeof(PawnData), typeof(School) };
+        private Type _selectedType;
 
         [MenuItem("Tools/Gameplay Data Editor")]
         private static void Open()
         {
-            GetWindow<GameplayDataEditor>("Gameplay Data");
+            GetWindow<GameplayDataEditor>();
         }
 
-        [Button(ButtonSizes.Large)]
-        [PropertyOrder(-10)]
-        private void Refresh()
+        protected override void OnImGUI()
         {
-            LoadAllData();
-        }
-
-        private void LoadAllData()
-        {
-            _cards = FindAssets<CardData>();
-            _pawns = FindAssets<PawnData>();
-            _schools = FindAssets<School>();
-        }
-
-        private static List<T> FindAssets<T>() where T : ScriptableObject
-        {
-            var guids = AssetDatabase.FindAssets($"t:{typeof(T).Name}");
-            var result = new List<T>(guids.Length);
-
-            foreach (var g in guids)
+            // Add the "Create New Asset" button above the tree, with decoration
+            GUILayout.Space(10);
+            GUILayout.Label("✦ Create New Asset ✦", new GUIStyle(EditorStyles.boldLabel)
             {
-                var path = AssetDatabase.GUIDToAssetPath(g);
-                var obj = AssetDatabase.LoadAssetAtPath<T>(path);
-                if (obj != null) result.Add(obj);
+                fontSize = 16,
+                alignment = TextAnchor.MiddleCenter,
+                normal = { textColor = Color.green }
+            });
+            GUILayout.Space(5);
+
+            if (GUILayout.Button("Create New Asset", GUILayout.Height(30))) ShowCreateNewAssetPopup();
+
+            GUILayout.Space(10);
+            base.OnImGUI();
+        }
+
+        protected override OdinMenuTree BuildMenuTree()
+        {
+            var tree = new OdinMenuTree { DefaultMenuStyle = { IconSize = 28.00f } };
+
+            foreach (var type in TypesToDisplay)
+            {
+                var tabName = type.Name switch
+                {
+                    nameof(CardData) => "Cards",
+                    nameof(PawnData) => "Pawns",
+                    nameof(School) => "Schools",
+                    _ => type.Name
+                };
+
+                tree.Add(tabName, new object()); // Header
+
+                if (type == typeof(CardData))
+                {
+                    tree.Add("Cards/All", new object());
+                    tree.AddAllAssetsAtPath("Cards/All", "Assets/Resources/Data", typeof(CardData), true, true);
+                    AddCardsGroupedBySchool(tree, "Cards", "Assets/Resources/Data");
+                }
+                else
+                {
+                    tree.AddAllAssetsAtPath(tabName, "Assets/Resources/Data", type, true, true);
+                }
             }
 
-            return result;
+            return tree;
         }
 
-        // ───────────────────────────────────────────
-        //   NEW ASSET CREATION BUTTONS
-        // ───────────────────────────────────────────
-
-        [TabGroup("Cards")]
-        [Button("Create New Card", ButtonSizes.Medium)]
-        private void CreateNewCard(string cardName)
+        private static void AddCardsGroupedBySchool(OdinMenuTree tree, string root, string dataPath)
         {
-            const string folder = "Assets/Resources/Data/Cards";
-            if (!AssetDatabase.IsValidFolder(folder)) Directory.CreateDirectory(folder);
+            var schools = AssetDatabase.FindAssets("t:School", new[] { dataPath });
 
-            var asset = CreateInstance<CardData>();
-            asset.Title = cardName;
-            var path = $"{folder}/{cardName}.asset";
+            foreach (var guid in schools)
+            {
+                var path = AssetDatabase.GUIDToAssetPath(guid);
+                var school = AssetDatabase.LoadAssetAtPath<School>(path);
+                if (school == null) continue;
 
-            AssetDatabase.CreateAsset(asset, path);
+                foreach (var card in school.StarterCards) AddCard(card);
+                foreach (var card in school.CollectableCards) AddCard(card);
+                continue;
+
+                void AddCard(CardData card)
+                {
+                    if (!card) return;
+                    var menuPath = $"{root}/{school.name}/{card.name}";
+                    tree.Add(menuPath, card);
+                }
+            }
+        }
+
+
+        private static void ShowCreateNewAssetPopup()
+        {
+            // Display a popup for user to select a type and specify a name
+            var window = CreateInstance<CreateNewAssetPopup>();
+            window.Init(TypesToDisplay, "Assets/Resources/Data");
+            window.titleContent = new GUIContent("Create New Asset");
+            window.ShowUtility();
+        }
+    }
+
+    public class CreateNewAssetPopup : EditorWindow
+    {
+        private string _assetName = "NewAsset";
+        private string _path;
+        private Type _selectedType;
+
+        private Type[] _typesToDisplay;
+
+        private void OnGUI()
+        {
+            GUILayout.Label("Create New Asset", EditorStyles.boldLabel);
+            GUILayout.Space(10);
+
+            // Type Selection Dropdown
+            GUILayout.Label("Select Asset Type", EditorStyles.label);
+            foreach (var type in _typesToDisplay)
+                if (GUILayout.Button(type.Name))
+                    _selectedType = type;
+
+            GUILayout.Space(10);
+
+            // Asset Name Input
+            GUILayout.Label("Specify Asset Name", EditorStyles.label);
+            _assetName = EditorGUILayout.TextField("Asset Name", _assetName);
+
+            GUILayout.Space(10);
+
+            // Create Asset Button
+            if (_selectedType != null && !string.IsNullOrWhiteSpace(_assetName))
+            {
+                if (GUILayout.Button("Create", GUILayout.Height(30))) CreateAsset();
+            }
+            else
+            {
+                EditorGUILayout.HelpBox("Select a type and provide a valid asset name.", MessageType.Warning);
+            }
+        }
+
+        public void Init(Type[] typesToDisplay, string path)
+        {
+            _typesToDisplay = typesToDisplay;
+            _path = path;
+        }
+
+        private void CreateAsset()
+        {
+            // Determine the proper subfolder based on the selected type
+            var subfolder = GetSubfolderName(_selectedType);
+
+            if (string.IsNullOrEmpty(subfolder))
+            {
+                Debug.LogError($"No folder mapping found for type {_selectedType.Name}. Cannot create asset.");
+                return;
+            }
+
+            // Construct the full path, ensuring it's placed in the correct subfolder
+            var uniquePath = AssetDatabase.GenerateUniqueAssetPath($"{_path}/{subfolder}/{_assetName}.asset");
+
+            // Create the asset and save it to the specified location
+            var asset = CreateInstance(_selectedType);
+
+            switch (asset)
+            {
+                case CardData cardData:
+                    cardData.Title = _assetName;
+                    break;
+                case PawnData pawnData:
+                    pawnData.Title = _assetName;
+                    break;
+            }
+
+            AssetDatabase.CreateAsset(asset, uniquePath);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 
-            LoadAllData();
+            // Highlight the new asset in the Project view
             Selection.activeObject = asset;
+
+            // Refresh the GameplayDataEditor window if it's open
+            var editorWindow = GetWindow<GameplayDataEditor>();
+            if (editorWindow) editorWindow.ForceMenuTreeRebuild();
+
+            Debug.Log($"Created new asset of type {_selectedType.Name} at: {uniquePath}");
+            Close();
         }
 
-        [TabGroup("Pawns")]
-        [Button("Create New Pawn", ButtonSizes.Medium)]
-        private void CreateNewPawn(string pawnName, bool createSummonCard, int cost)
+        private static string GetSubfolderName(Type type)
         {
-            const string folder = "Assets/Resources/Data/Pawns";
-            if (!AssetDatabase.IsValidFolder(folder)) Directory.CreateDirectory(folder);
-
-            var asset = CreateInstance<PawnData>();
-            asset.Title = pawnName;
-            var path = $"{folder}/{pawnName}.asset";
-
-            AssetDatabase.CreateAsset(asset, path);
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
-
-            if (createSummonCard) asset.CreateSummonCard(cost);
-
-            LoadAllData();
-            Selection.activeObject = asset;
-        }
-
-        [TabGroup("Schools")]
-        [Button("Create New School", ButtonSizes.Medium)]
-        private void CreateNewSchool(string schoolName)
-        {
-            const string folder = "Assets/Resources/Data/Schools";
-            if (!AssetDatabase.IsValidFolder(folder)) Directory.CreateDirectory(folder);
-
-            var asset = CreateInstance<School>();
-            var path = $"{folder}/{schoolName}.asset";
-
-            AssetDatabase.CreateAsset(asset, path);
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
-
-            LoadAllData();
-            Selection.activeObject = asset;
+            return type.Name switch
+            {
+                nameof(CardData) => "Cards",
+                nameof(PawnData) => "Pawns",
+                nameof(School) => "Schools",
+                nameof(CardPlayStrategy) => "Strategies",
+                nameof(StatusEffectData) => "StatusEffects",
+                nameof(CombatConfig) => "Combats",
+                nameof(TooltipData) => "Tooltips",
+                _ => null // Return null if no mapping is found
+            };
         }
     }
 }

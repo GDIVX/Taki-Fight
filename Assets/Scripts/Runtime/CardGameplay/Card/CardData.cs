@@ -2,6 +2,7 @@
 using System.Linq;
 using Runtime.CardGameplay.Card.CardBehaviour;
 using Runtime.CardGameplay.Card.CardBehaviour.Feedback;
+using Runtime.RunManagement;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
@@ -154,5 +155,62 @@ namespace Runtime.CardGameplay.Card
         }
 
         #endregion
+
+#if UNITY_EDITOR
+
+        [TabGroup("School")]
+        [GUIColor(0.6f, 0.8f, 1f)]
+        [Button("Add to School (Starter)", ButtonSizes.Medium)]
+        private void AddToStarterInSchool()
+        {
+            AddToSchool("starter");
+        }
+
+        [TabGroup("School")]
+        [GUIColor(0.6f, 1f, 0.6f)]
+        [Button("Add to School (Collectable)", ButtonSizes.Medium)]
+        private void AddToCollectableInSchool()
+        {
+            AddToSchool("collectable");
+        }
+
+        private void AddToSchool(string listType)
+        {
+            var guids = AssetDatabase.FindAssets("t:School");
+            var schools = guids
+                .Select(guid => AssetDatabase.LoadAssetAtPath<School>(AssetDatabase.GUIDToAssetPath(guid)))
+                .Where(s => s)
+                .ToList();
+
+            if (schools.Count == 0)
+            {
+                Debug.LogWarning("No School assets found.");
+                return;
+            }
+
+            var menu = new GenericMenu();
+
+            foreach (var school in schools)
+                menu.AddItem(new GUIContent(school.name), false, () =>
+                {
+                    Undo.RecordObject(school, "Add Card to School");
+                    var list = listType == "starter" ? school.StarterCards : school.CollectableCards;
+
+                    if (!list.Contains(this))
+                    {
+                        list.Add(this);
+                        EditorUtility.SetDirty(school);
+                        Debug.Log($"Added card '{name}' to {listType} list of school '{school.name}'.");
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"Card '{name}' is already in the {listType} list of school '{school.name}'.");
+                    }
+                });
+
+            menu.ShowAsContext();
+        }
+
+#endif
     }
 }

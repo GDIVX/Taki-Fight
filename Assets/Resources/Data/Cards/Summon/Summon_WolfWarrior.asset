@@ -1,25 +1,2 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &11400000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 842f4e02fee146ddb72cea2b80a51349, type: 3}
-  m_Name: Summon_WolfWarrior
-  m_EditorClassIdentifier: 
-  _title: Wolf Warrior
-  _image: {fileID: 21300000, guid: c566bdee1a0f40e47a12acc8401097e0, type: 3}
-  _description: WIP
-  _cardType: 1
-  _rarity: 1
-  _playStrategies:
-  - PlayStrategy: {fileID: 11400000, guid: 15f55f84d9f3dac46bcb9cbb836e3686, type: 2}
-    Potency: 1
-  _destroyCardAfterUse: 1
-  _cost: 1
-  _feedbackStrategy: {fileID: 0}
