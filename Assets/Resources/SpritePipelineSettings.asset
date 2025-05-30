@@ -12,29 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 238ff2f95e7ab8546979220c41072b4f, type: 3}
   m_Name: SpritePipelineSettings
   m_EditorClassIdentifier: 
-  MinWidth: 128
-  MaxWidth: 2048
-  MinHeight: 128
-  MaxHeight: 2048
-  AllowedExtensions:
-  - .png
-  - .jpg
-  EnforceNamingConvention: 1
-  RequiredNameKeywords: []
-  ForbiddenNameKeywords: []
-  AllowedTypes:
-  - character
-  - card
-  AllowedVersions:
-  - temp
-  - final
-  - v1
-  - v2
-  - v3
-  - v4
-  - v5
-  - v6
-  - v7
-  - v8
-  - v9
-  - v10
+  CharacterSpritePrefix: character
+  CardSpritePrefix: card
+  CardSpriteFolderPath: Assets/Sprites/Card Art
+  CharacterSpriteFolderPath: Assets/Sprites/Characters

@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      character_wolfwarrior_v1_0: -163822858987668334
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

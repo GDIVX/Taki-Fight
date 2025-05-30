@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: d3fb3d88bbbb3bd4c99fbeeb07c62c88
+guid: 0465c67b004aa8045ae6db42637b303e
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3849084858651121051
-    second: card_summon_mage_card_v1_0
+      213: 6683329046633577077
+    second: card_fireball_v1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: card_summon_mage_card_v1_0
+      name: card_fireball_v1_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 200
-        height: 200
+        width: 246
+        height: 212
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 56ae3c1e6bd459ac0800000000000000
-      internalID: -3849084858651121051
+      spriteID: 57af4adab54ffbc50800000000000000
+      internalID: 6683329046633577077
       vertices: []
       indices: 
       edges: []

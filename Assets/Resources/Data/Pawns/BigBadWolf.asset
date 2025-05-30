@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db39779a7d15495786ef0b741b93a144, type: 3}
   m_Name: BigBadWolf
   m_EditorClassIdentifier: 
-  _title: 
+  _title: Boss
   _description: 
   _sprite: {fileID: 2470448008604918377, guid: 80a3478d7cf6ba641ac69fa1328bcefd, type: 3}
   _owner: 1
