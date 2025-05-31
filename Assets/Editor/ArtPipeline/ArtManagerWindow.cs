@@ -16,7 +16,7 @@ namespace Editor.ArtPipeline
         private const string DataFolderPath = "Assets/Resources/Data";
         private const string SpritesFolderPath = "Assets/Sprites"; // Updated search folder scope
 
-        [TableList(AlwaysExpanded = true, ShowPaging = false, DrawScrollView = true)] [ShowInInspector]
+        [TableList(AlwaysExpanded = true, ShowPaging = false, DrawScrollView = true)] [Searchable] [ShowInInspector]
         private List<ArtEntry> _artStatusList = new();
 
         [MenuItem("Tools/Art Manager")]
