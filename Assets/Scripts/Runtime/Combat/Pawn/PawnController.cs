@@ -215,7 +215,7 @@ namespace Runtime.Combat.Pawn
             Health.OnDead += OnDead;
         }
 
-        public void OnPinterEnter(PointerEventData eventData)
+        public void OnPointerEnter(PointerEventData eventData)
         {
             _view.OnPointerEnter(eventData);
         }
