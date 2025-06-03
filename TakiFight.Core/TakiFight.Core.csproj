@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\UnityEngineStub\UnityEngineStub.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Assets\Scripts\Runtime\Events\EventBus.cs" />
+    <Compile Include="..\Assets\Scripts\Utilities\FlexibleQueue.cs" />
+    <Compile Include="..\Assets\Scripts\Utilities\Observable.cs" />
+    <Compile Include="..\Assets\Scripts\Utilities\ListExtensions.cs" />
+  </ItemGroup>
+
+</Project>
