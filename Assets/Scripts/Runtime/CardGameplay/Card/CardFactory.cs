@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Runtime.CardGameplay.Card.View;
 using Runtime.CardGameplay.Deck;
-using Runtime.UI.Tooltip;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
@@ -18,8 +17,6 @@ namespace Runtime.CardGameplay.Card
         [SerializeField, TabGroup("Dependencies")]
         private Energy.Energy _energy;
 
-        [SerializeField] [TabGroup("Dependencies")]
-        private KeywordDictionary _keywordDictionary;
 
         [SerializeField, TabGroup("Dependencies")]
         private Transform _discardToLocation, _drawFromLocation;
@@ -29,10 +26,6 @@ namespace Runtime.CardGameplay.Card
 
         private CardDependencies _cardDependencies;
 
-        public void Init()
-        {
-            ServiceLocator.Register(_keywordDictionary);
-        }
 
         [Button]
         public CardController Create(CardData data)

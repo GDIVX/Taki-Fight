@@ -1,5 +1,4 @@
 ﻿using System;
-using Runtime.CardGameplay.Card;
 using Runtime.CardGameplay.Deck;
 using Runtime.CardGameplay.Energy;
 using Runtime.Combat;
@@ -16,9 +15,8 @@ namespace Runtime
     public class GameManager : MonoService<GameManager>
     {
         [SerializeField] private School _tempClassData;
-        [SerializeField] private GameRunState _gameRunState;
+        private GameRunState _gameRunState;
 
-        private static CardFactory CardFactory => ServiceLocator.Get<CardFactory>();
         private static CombatManager CombatManager => ServiceLocator.Get<CombatManager>();
         private static HandController HandController => ServiceLocator.Get<HandController>();
 
@@ -52,7 +50,6 @@ namespace Runtime
             operation.completed += _ =>
             {
                 // Initialize run-specific services
-                CardFactory.Init();
                 CombatManager.Init();
             };
         }

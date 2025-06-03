@@ -19,8 +19,6 @@ namespace Runtime.CardGameplay.Card.View
         [SerializeField, TabGroup("Dissolve")] private float _dissolveTime;
         [SerializeField, TabGroup("Dissolve")] private Ease _dissolveEase;
 
-        [SerializeField, TabGroup("Dependencies")]
-        private CardTextParser _cardTextParser;
 
         [SerializeField] private float _cardMovementDuration;
         [SerializeField] private float _minScale;
@@ -141,7 +139,8 @@ namespace Runtime.CardGameplay.Card.View
 
         public void UpdateDescription()
         {
-            _cardTextParser.DrawTextDescription(_controller, _cardData.Description);
+            var builder = new DescriptionBuilder();
+            _description.text = builder.Build(_cardData);
         }
 
         public void SetOriginalValues()

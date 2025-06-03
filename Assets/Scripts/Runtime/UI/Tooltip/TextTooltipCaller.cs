@@ -1,20 +1,15 @@
-﻿using Sirenix.OdinInspector;
-using UnityEngine;
+﻿using System.Collections;
+using Sirenix.OdinInspector;
 using TMPro;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace Runtime.UI.Tooltip
 {
     public class TextTooltipCaller : TooltipCallerBase
     {
-        [SerializeField, Required] private KeywordDictionary _keywordDictionary;
         [SerializeField, Required] private TMP_Text _textField;
         private Camera _camera;
-
-        private void OnValidate()
-        {
-            _textField ??= GetComponent<TMP_Text>();
-        }
 
         protected void Awake()
         {
@@ -23,11 +18,11 @@ namespace Runtime.UI.Tooltip
             {
                 Debug.LogError("TextTooltipCaller requires a TMP_Text component!");
             }
+        }
 
-            if (_keywordDictionary == null)
-            {
-                Debug.LogError("TooltipDictionary is not assigned!");
-            }
+        private void OnValidate()
+        {
+            _textField ??= GetComponent<TMP_Text>();
         }
 
         public override void OnPointerEnter(PointerEventData eventData)
@@ -41,7 +36,7 @@ namespace Runtime.UI.Tooltip
             StopAllCoroutines();
         }
 
-        private System.Collections.IEnumerator CheckHoveredWord()
+        private IEnumerator CheckHoveredWord()
         {
             while (true)
             {
@@ -50,7 +45,7 @@ namespace Runtime.UI.Tooltip
                 if (hoveredWordIndex != -1)
                 {
                     string hoveredWord = _textField.textInfo.wordInfo[hoveredWordIndex].GetWord();
-                    TooltipData data = _keywordDictionary.GetTooltip(hoveredWord);
+                    var data = KeywordDictionary.Get(hoveredWord);
 
                     ShowTooltip(data);
                 }

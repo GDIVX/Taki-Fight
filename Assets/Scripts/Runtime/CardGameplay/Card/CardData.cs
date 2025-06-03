@@ -211,6 +211,13 @@ namespace Runtime.CardGameplay.Card
             menu.ShowAsContext();
         }
 
+        [Button]
+        public void WriteDescription()
+        {
+            DescriptionBuilder builder = new();
+            _description = builder.AsSpell(this);
+        }
+
 #endif
     }
 }

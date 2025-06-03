@@ -12,5 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bb96013ec9d4e368ea7f578fea6a525, type: 3}
   m_Name: Attack Target
   m_EditorClassIdentifier: 
-  _duration: 0.2
-  _targetingStrategy: {fileID: 11400000, guid: d4265d6c6cc324f41af4bb7fbc1366b9, type: 2}
+  _targetsCount: 1

@@ -8,12 +8,12 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
     [CreateAssetMenu(fileName = "Attack Play", menuName = "Card/Strategy/Play/Attack", order = 0)]
     public class AttackTargetCardPlay : CardPlayStrategy
     {
-        [SerializeField] private int _targetsCount = 1;
+        [SerializeField] private int _targetsCount;
 
         public override void Play(CardController cardController, int potency, Action<bool> onComplete)
         {
             SelectionService.Instance.RequestSelection(
-                target => target is PawnController, // Ensure we select a valid PawnController
+                target => false, // Ensure we select a valid PawnController
                 _targetsCount,
                 selectedEntities =>
                 {
@@ -21,7 +21,8 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                     {
                         selectedEntities.ForEach(entity =>
                         {
-                            if (entity is not PawnController target) return;
+                            var target = entity as PawnController;
+                            if (target is null) return;
                             HandleAttack(target, potency);
                         });
                     }
@@ -38,6 +39,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                 cardController.transform.position
             );
         }
+
 
         private void HandleAttack(PawnController target, int potency)
         {
@@ -56,6 +58,13 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
 
             var finalDamage = potency;
             target.Combat.ReceiveAttack(finalDamage);
+        }
+
+        public override string GetDescription()
+        {
+            if (_targetsCount > 1) return "Deal {Potency} damage to " + _targetsCount + " targets.";
+
+            return "Deal {Potency} damage.";
         }
     }
 }
