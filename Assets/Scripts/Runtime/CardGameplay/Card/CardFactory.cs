@@ -45,7 +45,7 @@ namespace Runtime.CardGameplay.Card
         }
 
         /// <summary>
-        /// Remove the card from the front end of the game. Does not destroy the card from all refrence points.
+        /// Remove the card from the front end of the game. Does not destroy the card from all reference points.
         /// </summary>
         public void ReturnToPool(CardController controller)
         {
