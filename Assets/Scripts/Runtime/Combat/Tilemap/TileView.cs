@@ -45,7 +45,7 @@ namespace Runtime.Combat.Tilemap
             }
             else if (tile.Pawn)
             {
-                tile.Pawn.OnPinterEnter(eventData); // Trigger the pawn's OnPointerEnter method if it exists
+                tile.Pawn.OnPointerEnter(eventData); // Trigger the pawn's OnPointerEnter method if it exists
                 // Highlight the tile in green if the pawn is on it
                 Highlight(Color.green);
             }
