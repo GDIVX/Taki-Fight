@@ -16,3 +16,10 @@ jobs:
         run: dotnet restore TakiFight.Tests/TakiFight.Tests.csproj
       - name: Run tests
         run: dotnet test TakiFight.Tests/TakiFight.Tests.csproj --verbosity normal
+      - name: Run tests with coverage
+        run: dotnet test TakiFight.Tests/TakiFight.Tests.csproj --collect:"XPlat Code Coverage" --results-directory TestResults --verbosity normal
+      - name: Upload coverage results
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage
+          path: TestResults/**/coverage.cobertura.xml
