@@ -1,5 +1,6 @@
 ﻿using System;
 using Runtime.Combat.Pawn;
+using Runtime.Combat.Tilemap;
 using Runtime.Selection;
 using UnityEngine;
 
@@ -9,11 +10,12 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
     public class AttackTargetCardPlay : CardPlayStrategy
     {
         [SerializeField] private int _targetsCount;
+        [SerializeField] private TileSelectionMode _tileSelectionMode = TileSelectionMode.EnemyOccupied;
 
         public override void Play(CardController cardController, int potency, Action<bool> onComplete)
         {
-            SelectionService.Instance.RequestSelection(
-                target => false, // Ensure we select a valid PawnController
+            SelectionService.Instance.RequestSelection(target =>
+                    target is TileView tileView && TileFilterHelper.FilterTile(tileView.Tile, _tileSelectionMode),
                 _targetsCount,
                 selectedEntities =>
                 {
@@ -21,9 +23,8 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                     {
                         selectedEntities.ForEach(entity =>
                         {
-                            var target = entity as PawnController;
-                            if (target is null) return;
-                            HandleAttack(target, potency);
+                            if (entity is not TileView tileView) return;
+                            HandleAttack(tileView.Tile?.Pawn, potency);
                         });
                     }
                     else
