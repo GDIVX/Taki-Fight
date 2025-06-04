@@ -13,6 +13,6 @@ jobs:
         with:
           dotnet-version: '8.0.x'
       - name: Restore dependencies
-        run: dotnet restore
+        run: dotnet restore TakiFight.Tests/TakiFight.Tests.csproj
       - name: Run tests
-        run: dotnet test --no-build --verbosity normal
+        run: dotnet test TakiFight.Tests/TakiFight.Tests.csproj --no-build --verbosity normal
