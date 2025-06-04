@@ -101,6 +101,9 @@ namespace Runtime.CardGameplay.Card
             // On Attack
             WithTriggeredAbilities("Strike", GetDescribableAbilities(unit.OnAttackStrategies));
 
+            // On Hit
+            WithTriggeredAbilities("Hit", GetDescribableAbilities(unit.OnHitStrategies));
+
             // On Damaged
             WithTriggeredAbilities("Revenge", GetDescribableAbilities(unit.OnDamagedStrategies));
 

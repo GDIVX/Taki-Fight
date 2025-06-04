@@ -50,7 +50,9 @@ namespace Runtime.Combat.Pawn
         {
             for (int i = 0; i < Attacks.Value; i++)
             {
-                target.Combat.ReceiveAttack(Damage.Value);
+                int attackDamage = Damage.Value;
+                Pawn.ExecuteHitStrategies(Pawn.Data.OnHitStrategies, target, ref attackDamage);
+                target.Combat.ReceiveAttack(attackDamage);
                 yield return null;
             }
 
