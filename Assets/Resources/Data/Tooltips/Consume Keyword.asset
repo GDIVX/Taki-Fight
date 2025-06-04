@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a585236af7d242cda9720c9380782e23, type: 3}
+  m_Name: Consume Keyword
+  m_EditorClassIdentifier:
+  _header: Consume
+  _secondHeader: 
+  _description: This card can only be played once
+  _icon: {fileID: 0}
+  _backgroundColor: {r: 0.7019608, g: 0.22352941, b: 0.22352941, a: 1}
+  _alpha: 0.95
+  _formatedText: Consume
