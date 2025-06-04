@@ -19,7 +19,7 @@ namespace Runtime.Combat.Pawn
         [SerializeField] private PawnTilemapHelper _tilemapHelper;
         [SerializeField] private PawnMovement _movement;
 
-        public PawnOwner Owner { get; private set; }
+        public PawnOwner Owner { get; set; }
 
         public PawnData Data { get; private set; }
         [ShowInInspector] public HealthSystem Health { get; private set; }
@@ -31,6 +31,7 @@ namespace Runtime.Combat.Pawn
         internal PawnTilemapHelper TilemapHelper => _tilemapHelper;
         internal PawnMovement Movement => _movement;
         public PawnView View => _view;
+        public event Action OnKilled;
 
         public PawnController Init(PawnData data)
         {
@@ -60,6 +61,7 @@ namespace Runtime.Combat.Pawn
 
             Data = data;
 
+            data.InitializeStrategies();
 
             // Execute onSummon strategies
             ExecuteStrategies(data.OnSummonStrategies);
@@ -75,6 +77,7 @@ namespace Runtime.Combat.Pawn
         public void Kill()
         {
             ExecuteStrategies(Data.OnKilledStrategies);
+            OnKilled?.Invoke();
             Remove(true);
         }
 
@@ -195,7 +198,7 @@ namespace Runtime.Combat.Pawn
                     continue;
                 }
 
-                strategyData.Strategy.Play(this, strategyData.Potency, success =>
+                strategyData.Strategy.Play(this, success =>
                 {
                     if (!success)
                     {

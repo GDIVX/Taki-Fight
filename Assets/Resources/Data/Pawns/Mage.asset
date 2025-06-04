@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _title: Mage
   _description: 
-  _sprite: {fileID: 2034801884315467888, guid: 0d923d0a2521b904b9daf9317b35dfc6, type: 3}
+  _sprite: {fileID: 8554711391987965292, guid: 0edd1eafc19bc0e4da949be2a15d96c7, type: 3}
   _owner: 0
   _health: 50
   _defense: 0

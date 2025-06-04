@@ -21,7 +21,7 @@ namespace Runtime.CardGameplay.Card
         [ShowInInspector] [ReadOnly] private FeedbackStrategy _feedbackStrategy;
         private bool _isSelecting;
 
-        [ShowInInspector, ReadOnly] private List<(CardPlayStrategy, int)> _playStrategies;
+        [ShowInInspector] [ReadOnly] private List<PlayStrategyData> _playStrategies;
         public CardType CardType { get; private set; }
 
         public CardInstance Instance { get; private set; }
@@ -96,7 +96,8 @@ namespace Runtime.CardGameplay.Card
             CardType = data.CardType;
 
             _feedbackStrategy = data.FeedbackStrategy;
-            _playStrategies = CreatePlayStrategyTupletList(data.PlayStrategies);
+            _playStrategies = new List<PlayStrategyData>(data.PlayStrategies);
+            _playStrategies.ForEach(s => s.PlayStrategy.Initialize(s));
 
             _cardFactory = ServiceLocator.Get<CardFactory>();
             Energy = ServiceLocator.Get<Energy.Energy>();
@@ -129,15 +130,13 @@ namespace Runtime.CardGameplay.Card
 
         public int GetPotency(int index)
         {
-            return _playStrategies[index].Item2;
+            return _playStrategies[index].Potency;
         }
 
         public void SetPotency(int index, int newValue)
         {
-            (CardPlayStrategy, int) tuple = _playStrategies[index];
-            _playStrategies.Remove(tuple);
-            tuple.Item2 = newValue;
-            _playStrategies.Insert(index, tuple);
+            var strategy = _playStrategies[index].PlayStrategy;
+            strategy.Potency = newValue;
         }
 
 
@@ -169,7 +168,7 @@ namespace Runtime.CardGameplay.Card
 
             foreach (var tuple in _playStrategies)
             {
-                tuple.Item1.Play(this, tuple.Item2, OnStrategyComplete);
+                tuple.PlayStrategy.Play(this, OnStrategyComplete);
             }
 
             return;
@@ -189,7 +188,7 @@ namespace Runtime.CardGameplay.Card
         {
             HandleCost();
 
-            if (Data.DestroyCardAfterUse)
+            if (Data.IsConsumed)
             {
                 HandController.ConsumeCard(this);
             }
@@ -237,6 +236,24 @@ namespace Runtime.CardGameplay.Card
             }
 
             Play();
+        }
+
+        public void Discard()
+        {
+            var hand = ServiceLocator.Get<HandController>();
+            if (hand) hand.DiscardCard(this);
+        }
+
+        public void Consume()
+        {
+            var hand = ServiceLocator.Get<HandController>();
+            if (hand) hand.ConsumeCard(this);
+        }
+
+        public void Limbo()
+        {
+            var hand = ServiceLocator.Get<HandController>();
+            if (hand) hand.LimboCard(this);
         }
     }
 }

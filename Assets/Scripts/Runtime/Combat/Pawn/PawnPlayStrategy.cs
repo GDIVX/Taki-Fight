@@ -6,13 +6,18 @@ namespace Runtime.Combat.Pawn
 {
     public abstract class PawnPlayStrategy : ScriptableObject, IDescribable
     {
-        [SerializeField] private string _description;
+        public int Potency { get; protected set; }
 
         public virtual string GetDescription()
         {
             return "";
         }
 
-        public abstract void Play(PawnController pawn, int potency, Action<bool> onComplete);
+        public abstract void Play(PawnController pawn, Action<bool> onComplete);
+
+        public virtual void Initialize(PawnStrategyData data)
+        {
+            Potency = data.Potency;
+        }
     }
 }

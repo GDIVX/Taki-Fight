@@ -1504,7 +1504,6 @@ GameObject:
   - component: {fileID: 288914488201551484}
   - component: {fileID: 3631230817857128461}
   - component: {fileID: 303948700310367551}
-  - component: {fileID: 8891487651071034071}
   - component: {fileID: 6598248545535228594}
   m_Layer: 5
   m_Name: Description
@@ -1571,21 +1570,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &8891487651071034071
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7722791846587031952}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c6a6e3df0e514c0ebb0d50e09e9146de, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _textField: {fileID: 6774713613490928545}
-  keywordColor: {r: 0.8039216, g: 0.38039216, b: 0.2, a: 1}
-  modifiedValueColor: {r: 0.13333334, g: 0.4392157, b: 0.5764706, a: 1}
 --- !u!114 &6598248545535228594
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1599,7 +1583,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _delayTime: 0
-  _keywordDictionary: {fileID: 11400000, guid: 66d450156de073643a2a3a33c7bc17b1, type: 2}
   _textField: {fileID: 6774713613490928545}
 --- !u!1 &8140057467381704309
 GameObject:
@@ -1835,7 +1818,6 @@ MonoBehaviour:
   _canvasGroup: {fileID: 6704841310954934043}
   _dissolveTime: 1
   _dissolveEase: 7
-  _cardTextParser: {fileID: 8891487651071034071}
   _cardMovementDuration: 0.2
   _minScale: 0.1
   _cardMovementEase: 18
@@ -1860,7 +1842,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IsPlayable:
-    _value: 0
+    _currentValue: 0
 --- !u!222 &6207031696805109181
 CanvasRenderer:
   m_ObjectHideFlags: 0

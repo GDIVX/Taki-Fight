@@ -12,6 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfa7d1474d204cdf97cff19db736ba13, type: 3}
   m_Name: Fire
   m_EditorClassIdentifier: 
-  _starterCards: []
+  _starterCards:
+  - {fileID: 11400000, guid: 73f7007b54d8fe94b85b8b4ec42a1d97, type: 2}
+  - {fileID: 11400000, guid: 73f7007b54d8fe94b85b8b4ec42a1d97, type: 2}
+  - {fileID: 11400000, guid: 73f7007b54d8fe94b85b8b4ec42a1d97, type: 2}
+  - {fileID: 11400000, guid: f4144b120bef8ea4fa423da3e4fc0257, type: 2}
+  - {fileID: 11400000, guid: f4144b120bef8ea4fa423da3e4fc0257, type: 2}
   _collectableCards: []
   _mage: {fileID: 11400000, guid: cc49c349a77c1e64e875d502da628b47, type: 2}

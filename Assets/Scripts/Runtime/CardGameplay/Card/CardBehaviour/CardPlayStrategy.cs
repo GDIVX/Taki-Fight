@@ -5,6 +5,8 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
 {
     public abstract class CardPlayStrategy : ScriptableObject, IDescribable
     {
+        public int Potency { get; set; }
+
         public virtual string GetDescription()
         {
             return "";
@@ -13,6 +15,11 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
         /// <summary>
         /// Executes the card effect. If the effect requires player input (e.g., selecting a target), it should call onComplete once finished.
         /// </summary>
-        public abstract void Play(CardController cardController, int potency, Action<bool> onComplete);
+        public abstract void Play(CardController cardController, Action<bool> onComplete);
+
+        public virtual void Initialize(PlayStrategyData playStrategyData)
+        {
+            Potency = playStrategyData.Potency;
+        }
     }
 }

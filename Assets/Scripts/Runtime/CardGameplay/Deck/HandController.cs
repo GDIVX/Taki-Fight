@@ -147,6 +147,19 @@ namespace Runtime.CardGameplay.Deck
             OnCardBurnt?.Invoke(cardController);
         }
 
+        /// <summary>
+        ///     The card is removed from all interaction with the game while still being tracked by the game.
+        ///     Effectivly it is put in limbo.It is no longer in the game, but it is also not destroyed.
+        ///     Used when you need to temporarily remove a card from the game, but you still want to keep track of it.
+        /// </summary>
+        /// <param name="cardController"></param>
+        public void LimboCard(CardController cardController)
+        {
+            Deck.TryToFindAndRemoveCard(instance => cardController.Instance.Equals(instance), out _);
+            RemoveCard(cardController);
+            cardController.View.OnBurn();
+        }
+
         public bool Has(CardController cardController)
         {
             return _cards.Contains(cardController);

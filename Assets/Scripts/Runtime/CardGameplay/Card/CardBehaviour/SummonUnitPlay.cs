@@ -11,7 +11,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
     public class SummonUnitPlay : CardPlayStrategy
     {
         [SerializeField] private PawnData _unit;
-        [SerializeField] private TileSelectionMode _tileSelectionMode;
+        [SerializeField] private TileFilterCriteria _tileFilterCriteria;
 
         public PawnData Pawn
         {
@@ -19,13 +19,13 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
             set => _unit = value;
         }
 
-        public TileSelectionMode TileSelectionMode
+        public TileFilterCriteria TileSelectionMode
         {
-            get => _tileSelectionMode;
-            set => _tileSelectionMode = value;
+            get => _tileFilterCriteria;
+            set => _tileFilterCriteria = value;
         }
 
-        public override void Play(CardController cardController, int potency, Action<bool> onComplete)
+        public override void Play(CardController cardController, Action<bool> onComplete)
         {
             SelectionService.Instance.SearchSize = _unit.Size;
 
@@ -84,7 +84,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                         }
 
                         //all tiles must adhear to the tile selection mode
-                        if (!TileFilterHelper.FilterTile(tile, _tileSelectionMode))
+                        if (!TileFilterHelper.FilterTile(tile, _tileFilterCriteria))
                         {
                             onComplete?.Invoke(false);
                             return false;
@@ -115,12 +115,27 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                     }
 
                     var unit = _unit;
-                    pawnFactory.CreatePawn(unit, tile);
+                    var pawnController = pawnFactory.CreatePawn(unit, tile);
+
+                    //deal with the card
+                    // //the card is moved to a "limbo" state where it dosen't have a controller 
+                    // //we remove it from the hand without adding it to the discard pile or the consume pile
+                    // cardController.Limbo();
+                    // //when the pawn is killed, we move the card to the consume pile
+                    // pawnController.OnKilled += cardController.Consume;
+
+
                     onComplete?.Invoke(true);
                 },
                 () => { onComplete?.Invoke(false); },
                 cardController.transform.position
             );
+        }
+
+        public override string GetDescription()
+        {
+            var descriptionBuilder = new DescriptionBuilder();
+            return descriptionBuilder.AsSummon(Pawn);
         }
     }
 }
