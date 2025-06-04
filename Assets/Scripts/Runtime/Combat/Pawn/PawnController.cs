@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using CodeMonkey.HealthSystemCM;
+using JetBrains.Annotations;
 using Runtime.Combat.StatusEffects;
 using Runtime.Combat.Tilemap;
 using Sirenix.OdinInspector;
@@ -33,7 +34,7 @@ namespace Runtime.Combat.Pawn
         public PawnView View => _view;
         public event Action OnKilled;
 
-        public PawnController Init(PawnData data)
+        public void Init(PawnData data)
         {
             if (data == null) throw new ArgumentNullException(nameof(data));
 
@@ -63,8 +64,6 @@ namespace Runtime.Combat.Pawn
 
             // Execute onSummon strategies
             ExecuteStrategies(data.OnSummonStrategies);
-
-            return this;
         }
 
         private void OnDead(object sender, EventArgs e)
@@ -86,9 +85,9 @@ namespace Runtime.Combat.Pawn
             else
                 Destroy(gameObject);
 
-            var tilemap = ServiceLocator.Get<TilemapController>();
-            tilemap.RemoveUnit(this);
             _statusEffectHandler.Clear();
+            var tilemap = ServiceLocator.Get<TilemapController>();
+            tilemap?.RemoveUnit(this);
         }
 
 
@@ -166,8 +165,14 @@ namespace Runtime.Combat.Pawn
             _view.MoveToPosition(tile.Position, onComplete);
         }
 
-        public void ApplyStatusEffect(StatusEffectData data, int stack)
+        public void ApplyStatusEffect([NotNull] StatusEffectData data, int stack)
         {
+            if (!data)
+            {
+                Debug.LogError("StatusEffectData is null.");
+                return;
+            }
+
             var effect = data.CreateStatusEffect(stack);
             _statusEffectHandler.Add(effect, data.Icon, data.Tooltip);
         }

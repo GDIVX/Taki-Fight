@@ -1,6 +1,5 @@
 using System;
 using Runtime.Combat.StatusEffects;
-using Runtime;
 
 namespace Runtime.Combat.Pawn.Abilities
 {

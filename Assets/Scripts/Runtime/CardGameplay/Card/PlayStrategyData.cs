@@ -1,7 +1,7 @@
 ﻿using System;
 using Runtime.CardGameplay.Card.CardBehaviour;
-using Runtime;
 using Sirenix.OdinInspector;
+using UnityEngine;
 
 namespace Runtime.CardGameplay.Card
 {
@@ -10,8 +10,7 @@ namespace Runtime.CardGameplay.Card
     {
         [LabelText("Strategy")] public CardPlayStrategy PlayStrategy;
 
-        [SerializeReference]
-        [LabelText("Params")]
+        [SerializeReference] [LabelText("Params")]
         public StrategyParams Parameters;
 
         [LabelText("Potency")] [MinValue(0)] public int Potency;

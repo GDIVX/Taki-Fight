@@ -22,6 +22,7 @@ namespace Runtime.Combat.Pawn
                 return null;
             }
 
+            unit.InitializeStrategies();
             controller.Init(unit);
             controller.SpawnAtPosition(tile);
             SceneManager.MoveGameObjectToScene(controller.gameObject, SceneManager.GetSceneByName("Combat"));

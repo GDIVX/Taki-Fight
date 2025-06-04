@@ -12,7 +12,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
     {
         private SummonUnitParams _params;
 
-        private PawnData Pawn => _params.Unit;
+        internal PawnData Pawn => _params.Unit;
         private TileFilterCriteria TileSelectionMode => _params.TileFilter;
 
         public override void Play(CardController cardController, Action<bool> onComplete)
