@@ -9,7 +9,7 @@ namespace Runtime.Combat.Pawn.Abilities
     [CreateAssetMenu(fileName = "Pawn Movement Ability", menuName = "Pawns/Abilities/Movement")]
     public class MoveAbility : PawnPlayStrategy
     {
-        [SerializeField] private MovementDirection _direction;
+        private MoveAbilityParams _params;
 
         public override void Play(PawnController pawn, Action<bool> onComplete)
         {
@@ -45,7 +45,7 @@ namespace Runtime.Combat.Pawn.Abilities
 
         private Vector2Int CalculateMovementVector(PawnController pawn, Vector2Int forward, int speed)
         {
-            var movement = _direction switch
+            var movement = _params.Direction switch
             {
                 MovementDirection.Forward => forward * speed,
                 MovementDirection.Backward => -forward * speed,
@@ -76,7 +76,7 @@ namespace Runtime.Combat.Pawn.Abilities
 
         public override string GetDescription()
         {
-            return _direction switch
+            return _params.Direction switch
             {
                 MovementDirection.Forward => $"Dash {Potency} tiles forward",
                 MovementDirection.Backward => $"Retreat {Potency} tiles backward",
@@ -87,6 +87,12 @@ namespace Runtime.Combat.Pawn.Abilities
                 MovementDirection.Random => $"Move in a random direction {Potency} tiles",
                 _ => throw new ArgumentOutOfRangeException()
             };
+        }
+
+        public override void Initialize(PawnStrategyData data)
+        {
+            _params = data.Parameters as MoveAbilityParams;
+            base.Initialize(data);
         }
     }
 }

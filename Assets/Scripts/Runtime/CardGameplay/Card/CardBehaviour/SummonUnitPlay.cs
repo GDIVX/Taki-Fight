@@ -10,24 +10,14 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
     [CreateAssetMenu(fileName = "Summon Unit", menuName = "Card/Strategy/Play/Summon Unit", order = 0)]
     public class SummonUnitPlay : CardPlayStrategy
     {
-        [SerializeField] private PawnData _unit;
-        [SerializeField] private TileFilterCriteria _tileFilterCriteria;
+        private SummonUnitParams _params;
 
-        public PawnData Pawn
-        {
-            get => _unit;
-            set => _unit = value;
-        }
-
-        public TileFilterCriteria TileSelectionMode
-        {
-            get => _tileFilterCriteria;
-            set => _tileFilterCriteria = value;
-        }
+        private PawnData Pawn => _params.Unit;
+        private TileFilterCriteria TileSelectionMode => _params.TileFilter;
 
         public override void Play(CardController cardController, Action<bool> onComplete)
         {
-            SelectionService.Instance.SearchSize = _unit.Size;
+            SelectionService.Instance.SearchSize = Pawn.Size;
 
             SelectionService.Instance.RequestSelection
             (
@@ -43,7 +33,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                     }
 
                     //get the size of the unit
-                    var unitSize = _unit.Size;
+                    var unitSize = Pawn.Size;
 
                     //get all tiles for the footprint of the unit
                     var tilemap = ServiceLocator.Get<TilemapController>();
@@ -84,7 +74,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                         }
 
                         //all tiles must adhear to the tile selection mode
-                        if (!TileFilterHelper.FilterTile(tile, _tileFilterCriteria))
+                        if (!TileFilterHelper.FilterTile(tile, TileSelectionMode))
                         {
                             onComplete?.Invoke(false);
                             return false;
@@ -114,7 +104,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                         return;
                     }
 
-                    var unit = _unit;
+                    var unit = Pawn;
                     var pawnController = pawnFactory.CreatePawn(unit, tile);
 
                     //deal with the card
@@ -140,6 +130,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
 
         public override void Initialize(PlayStrategyData playStrategyData)
         {
+            _params = playStrategyData.Parameters as SummonUnitParams;
             Pawn.InitializeStrategies();
             base.Initialize(playStrategyData);
         }

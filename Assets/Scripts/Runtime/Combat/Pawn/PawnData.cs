@@ -5,6 +5,7 @@ using Runtime.CardGameplay.Card;
 using Runtime.CardGameplay.Card.CardBehaviour;
 using Runtime.Combat.Pawn;
 using Runtime.Combat.Tilemap;
+using Runtime;
 using Sirenix.OdinInspector;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -155,11 +156,14 @@ namespace Runtime.Combat.Pawn
             card.Image = _sprite;
 
             var strategy = CreateInstance<SummonUnitPlay>();
-            strategy.Pawn = this;
-            strategy.TileSelectionMode = new TileFilterCriteria
+            var parameters = new SummonUnitParams
             {
-                Occupancy = OccupancyFilter.Empty,
-                TileOwner = TileOwner.Player
+                Unit = this,
+                TileFilter = new TileFilterCriteria
+                {
+                    Occupancy = OccupancyFilter.Empty,
+                    TileOwner = TileOwner.Player
+                }
             };
 
             card.Title = _title;
@@ -170,7 +174,8 @@ namespace Runtime.Combat.Pawn
             var playStrategy = new PlayStrategyData
             {
                 PlayStrategy = strategy,
-                Potency = 1
+                Potency = 1,
+                Parameters = parameters
             };
             card.PlayStrategies = new List<PlayStrategyData> { playStrategy };
 
@@ -212,6 +217,9 @@ public struct PawnStrategyData
 {
     [Tooltip("The specific strategy applied to the pawn.")]
     public PawnPlayStrategy Strategy;
+
+    [SerializeReference]
+    public StrategyParams Parameters;
 
     [Tooltip("The potency or strength of the applied strategy.")]
     public int Potency;

@@ -9,14 +9,13 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
     [CreateAssetMenu(fileName = "Attack Play", menuName = "Card/Strategy/Play/Attack", order = 0)]
     public class AttackTargetCardPlay : CardPlayStrategy
     {
-        [SerializeField] private int _targetsCount;
-        [SerializeField] private TileFilterCriteria _tileFilterCriteria;
+        private AttackTargetParams _params;
 
         public override void Play(CardController cardController, Action<bool> onComplete)
         {
             SelectionService.Instance.RequestSelection(target =>
-                    target is TileView tileView && TileFilterHelper.FilterTile(tileView.Tile, _tileFilterCriteria),
-                _targetsCount,
+                    target is TileView tileView && TileFilterHelper.FilterTile(tileView.Tile, _params.TileFilter),
+                _params.TargetsCount,
                 selectedEntities =>
                 {
                     if (selectedEntities.Count > 0)
@@ -63,7 +62,13 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
 
         public override string GetDescription()
         {
-            return _targetsCount > 1 ? $"Deal {Potency} damage to {_targetsCount} targets." : $"Deal {Potency} damage.";
+            return _params.TargetsCount > 1 ? $"Deal {Potency} damage to {_params.TargetsCount} targets." : $"Deal {Potency} damage.";
+        }
+
+        public override void Initialize(PlayStrategyData playStrategyData)
+        {
+            _params = playStrategyData.Parameters as AttackTargetParams;
+            base.Initialize(playStrategyData);
         }
     }
 }

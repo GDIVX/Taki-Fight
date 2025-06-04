@@ -1,11 +1,13 @@
 ﻿using System;
 using UnityEngine;
+using Runtime;
 
 namespace Runtime.CardGameplay.Card.CardBehaviour
 {
     public abstract class CardPlayStrategy : ScriptableObject, IDescribable
     {
         public int Potency { get; set; }
+        public StrategyParams Params { get; private set; }
 
         public virtual string GetDescription()
         {
@@ -20,6 +22,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
         public virtual void Initialize(PlayStrategyData playStrategyData)
         {
             Potency = playStrategyData.Potency;
+            Params = playStrategyData.Parameters;
         }
     }
 }
