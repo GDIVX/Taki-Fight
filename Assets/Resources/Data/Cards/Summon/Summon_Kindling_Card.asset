@@ -1,25 +1,3 @@
-%YAML 1.1
-%TAG !u! tag:unity3d.com,2011:
---- !u!114 &11400000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 842f4e02fee146ddb72cea2b80a51349, type: 3}
-  m_Name: Summon_Kindling_Card
-  m_EditorClassIdentifier: 
-  _image: {fileID: -23076615799697388, guid: 7a7efa1a2d8f720409d5bbcaa41747a7, type: 3}
-  _title: Kindling
-  _description: '<link="Strike"><b>Strike</b></link>: Retreat 0 tiles backward'
-  _cost: 1
-  _cardType: 1
-  _rarity: 0
-  _playStrategies:
-  - PlayStrategy: {fileID: 11400000, guid: d30021d87833bf642a6a5859c7fcad00, type: 2}
-    Potency: 1
-  _isConsumed: 1
-  _feedbackStrategy: {fileID: 0}
+version https://git-lfs.github.com/spec/v1
+oid sha256:03a97bd876ca003b5ec9e1b7a004017dae2adcaff7d8886955e46febd2f7e0a4
+size 1204

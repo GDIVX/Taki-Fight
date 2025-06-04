@@ -1,25 +1,3 @@
-%YAML 1.1
-%TAG !u! tag:unity3d.com,2011:
---- !u!114 &11400000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 842f4e02fee146ddb72cea2b80a51349, type: 3}
-  m_Name: Ignite
-  m_EditorClassIdentifier: 
-  _image: {fileID: -1075237379, guid: aaf06ea70717cc643b5453f87d2e7c1f, type: 3}
-  _title: Ignite
-  _description: Deal 0 damage.
-  _cost: 1
-  _cardType: 0
-  _rarity: 0
-  _playStrategies:
-  - PlayStrategy: {fileID: 11400000, guid: cd7cd7aafe2c3b14ab5954de633d36b0, type: 2}
-    Potency: 6
-  _destroyCardAfterUse: 0
-  _feedbackStrategy: {fileID: 0}
+version https://git-lfs.github.com/spec/v1
+oid sha256:f5282e84d131cc22cea3cf76a4806c0821f9b40bf45864beb5a9b433c3b80dbb
+size 1074

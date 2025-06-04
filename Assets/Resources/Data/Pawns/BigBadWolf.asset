@@ -1,35 +1,3 @@
-%YAML 1.1
-%TAG !u! tag:unity3d.com,2011:
---- !u!114 &11400000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: db39779a7d15495786ef0b741b93a144, type: 3}
-  m_Name: BigBadWolf
-  m_EditorClassIdentifier: 
-  _title: Boss
-  _description: 
-  _sprite: {fileID: -9151604657101185949, guid: cde5565896d922b4783fcb93ba410845, type: 3}
-  _owner: 1
-  _health: 20
-  _defense: 5
-  _damage: 3
-  _attacks: 2
-  _attackRange: 1
-  _speed: 1
-  _isAgile: 0
-  _size: {x: 2, y: 2}
-  _summonStrategies: []
-  _onTurnStartStrategies: []
-  _onAttackStrategies: []
-  _onMoveStrategies: []
-  _onDamagedStrategies: []
-  _onKilledStrategies:
-  - Strategy: {fileID: 11400000, guid: 0e9d1ce15e996934db87652ac0e08445, type: 2}
-    Potency: 0
-  _summonCard: {fileID: 0}
+version https://git-lfs.github.com/spec/v1
+oid sha256:9c5f530c3e55ab64ee67245588a8b52490688e12c4adfd1545de24130d04e367
+size 1052
