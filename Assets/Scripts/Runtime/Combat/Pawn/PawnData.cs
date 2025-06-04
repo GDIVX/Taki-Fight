@@ -6,7 +6,9 @@ using Runtime.CardGameplay.Card.CardBehaviour;
 using Runtime.Combat.Pawn;
 using Runtime.Combat.Tilemap;
 using Sirenix.OdinInspector;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 
 namespace Runtime.Combat.Pawn
@@ -143,6 +145,7 @@ namespace Runtime.Combat.Pawn
             if (_summonCard) _summonCard.Image = _sprite;
         }
 
+        #if UNITY_EDITOR
         [Button(ButtonSizes.Medium)]
         public void CreateSummonCard(int cost)
         {
@@ -183,6 +186,7 @@ namespace Runtime.Combat.Pawn
 
             _summonCard = card;
         }
+        #endif
 
         [Button]
         public void WriteDescription()
