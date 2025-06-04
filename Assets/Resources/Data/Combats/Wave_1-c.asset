@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6a6ab02a3c3a4ac4ba42990f4eca1037, type: 3}
-  m_Name: Wave_3Wolf
+  m_Name: Wave_1-c
   m_EditorClassIdentifier: 
   Enemies:
-  - {fileID: 11400000, guid: 1fd20c971c16de74d859bf19fc5e021a, type: 2}
-  - {fileID: 11400000, guid: 1fd20c971c16de74d859bf19fc5e021a, type: 2}
-  - {fileID: 11400000, guid: 1fd20c971c16de74d859bf19fc5e021a, type: 2}
+  - {fileID: 11400000, guid: 365c2676da9b04f488f7cfb4a561b46a, type: 2}
+  - {fileID: 11400000, guid: f8f7e39c2eb02384db6aa56d820e1155, type: 2}
+  - {fileID: 11400000, guid: f8f7e39c2eb02384db6aa56d820e1155, type: 2}
   DifficultyLevel: 0.7

@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: PowerStatusEffect
   m_EditorClassIdentifier: 
   _icon: {fileID: -773697859, guid: aaf06ea70717cc643b5453f87d2e7c1f, type: 3}
-  _tooltip: {fileID: 11400000, guid: 8d6d7d0af7ca7f04e9a042c81ff18dff, type: 2}
+  _tooltip: {fileID: 11400000, guid: 50c0cdbb2176d754f9e4c0e15b565d0a, type: 2}

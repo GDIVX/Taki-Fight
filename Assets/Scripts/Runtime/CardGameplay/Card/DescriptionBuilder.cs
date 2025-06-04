@@ -75,7 +75,7 @@ namespace Runtime.CardGameplay.Card
         /// </summary>
         public string AsSpell(CardData spellCard)
         {
-            if (spellCard.DestroyCardAfterUse) WithKeyword("Consume");
+            if (spellCard.IsConsumed) WithKeyword("Consume");
 
             foreach (var strategy in spellCard.PlayStrategies)
             {

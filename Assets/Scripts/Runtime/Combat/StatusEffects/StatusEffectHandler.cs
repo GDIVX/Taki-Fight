@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Runtime.Combat.Pawn;
@@ -11,9 +10,9 @@ namespace Runtime.Combat.StatusEffects
 {
     public class StatusEffectHandler : MonoBehaviour
     {
-        [ShowInInspector, ReadOnly] private List<IStatusEffect> _statusEffects;
         [SerializeField] private StatusEffectListView _statusEffectView;
         private PawnController _pawn;
+        [ShowInInspector] [ReadOnly] private List<IStatusEffect> _statusEffects;
 
         private void OnValidate()
         {
@@ -85,8 +84,9 @@ namespace Runtime.Combat.StatusEffects
 
         public void Clear()
         {
-            foreach (IStatusEffect effect in _statusEffects)
+            for (var i = _statusEffects.Count - 1; i >= 0; i--)
             {
+                var effect = _statusEffects[i];
                 Remove(effect);
             }
         }

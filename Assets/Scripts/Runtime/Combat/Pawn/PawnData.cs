@@ -4,6 +4,7 @@ using System.IO;
 using Runtime.CardGameplay.Card;
 using Runtime.CardGameplay.Card.CardBehaviour;
 using Runtime.Combat.Pawn;
+using Runtime.Combat.Tilemap;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
@@ -152,12 +153,17 @@ namespace Runtime.Combat.Pawn
 
             var strategy = CreateInstance<SummonUnitPlay>();
             strategy.Pawn = this;
-            strategy.TileSelectionMode = TileSelectionMode.FriendlyEmpty;
+            strategy.TileSelectionMode = new TileFilterCriteria
+            {
+                Occupancy = OccupancyFilter.Empty,
+                TileOwner = TileOwner.Player
+            };
 
             card.Title = _title;
             card.Cost = cost;
             card.Description = _description;
             card.CardType = CardType.Familiar;
+            card.IsConsumed = true;
             var playStrategy = new PlayStrategyData
             {
                 PlayStrategy = strategy,

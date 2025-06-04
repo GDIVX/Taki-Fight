@@ -6,7 +6,7 @@ using Utilities;
 namespace Runtime.Combat.StatusEffects
 {
     [CreateAssetMenu(fileName = "RageStFX", menuName = "StatusEffect/Rage", order = 0)]
-    public class RageStatusEffectData : StatusEffectData
+    public class PowerStatusEffectData : StatusEffectData
     {
         public override IStatusEffect CreateStatusEffect(int stacks)
         {

@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _image: {fileID: 6683329046633577077, guid: 0465c67b004aa8045ae6db42637b303e, type: 3}
   _title: Sparklet
-  _description: 
+  _description: '<link="Moved"><b>Moved</b></link>: +0 Attack Power'
   _cost: 1
   _cardType: 1
   _rarity: 0
   _playStrategies:
   - PlayStrategy: {fileID: 11400000, guid: e52cadfa8a2831244b8508efb35b2100, type: 2}
     Potency: 1
-  _destroyCardAfterUse: 0
+  _isConsumed: 0
   _feedbackStrategy: {fileID: 0}

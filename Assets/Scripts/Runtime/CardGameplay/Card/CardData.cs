@@ -53,7 +53,7 @@ namespace Runtime.CardGameplay.Card
         private List<PlayStrategyData> _playStrategies;
 
         [TabGroup("Gameplay")] [LabelText("Consume After Use?")] [SerializeField]
-        private bool _destroyCardAfterUse;
+        private bool _isConsumed;
 
 
         // Feedback ───────────────────────────────────────────────────
@@ -109,10 +109,10 @@ namespace Runtime.CardGameplay.Card
             set => _playStrategies = value;
         }
 
-        public bool DestroyCardAfterUse
+        public bool IsConsumed
         {
-            get => _destroyCardAfterUse;
-            set => _destroyCardAfterUse = value;
+            get => _isConsumed;
+            set => _isConsumed = value;
         }
 
         public int Cost

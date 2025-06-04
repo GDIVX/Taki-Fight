@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a585236af7d242cda9720c9380782e23, type: 3}
   m_Name: Moved
   m_EditorClassIdentifier: 
-  _header: Death Rattle
+  _header: Moved
   _secondHeader: Trigger
-  _description: When the Familiar is killed
+  _description: When the Familiar is moving or being moved
   _icon: {fileID: 0}
   _backgroundColor: {r: 1, g: 0.69411767, b: 0.25882354, a: 1}
   _alpha: 0.95
-  _formatedText: 'Death Rattle: '
+  _formatedText: 'Moved:'

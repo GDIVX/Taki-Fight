@@ -13,3 +13,7 @@ MonoBehaviour:
   m_Name: Attack Target
   m_EditorClassIdentifier: 
   _targetsCount: 1
+  _tileFilterCriteria:
+    Occupancy: 2
+    TileOwner: 0
+    PawnOwner: 1

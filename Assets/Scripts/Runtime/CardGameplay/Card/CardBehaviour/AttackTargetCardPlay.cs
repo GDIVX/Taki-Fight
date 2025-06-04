@@ -10,12 +10,12 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
     public class AttackTargetCardPlay : CardPlayStrategy
     {
         [SerializeField] private int _targetsCount;
-        [SerializeField] private TileSelectionMode _tileSelectionMode = TileSelectionMode.EnemyOccupied;
+        [SerializeField] private TileFilterCriteria _tileFilterCriteria;
 
         public override void Play(CardController cardController, Action<bool> onComplete)
         {
             SelectionService.Instance.RequestSelection(target =>
-                    target is TileView tileView && TileFilterHelper.FilterTile(tileView.Tile, _tileSelectionMode),
+                    target is TileView tileView && TileFilterHelper.FilterTile(tileView.Tile, _tileFilterCriteria),
                 _targetsCount,
                 selectedEntities =>
                 {

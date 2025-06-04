@@ -10,26 +10,26 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: db39779a7d15495786ef0b741b93a144, type: 3}
-  m_Name: Sparklet
+  m_Name: Brute
   m_EditorClassIdentifier: 
-  _title: Sparklet
+  _title: Brute
   _description: 
-  _sprite: {fileID: 6683329046633577077, guid: 0465c67b004aa8045ae6db42637b303e, type: 3}
-  _owner: 0
-  _health: 15
-  _defense: 0
-  _damage: 2
+  _sprite: {fileID: 652791290322147480, guid: 8b74185b2383a20459497196e36f5811, type: 3}
+  _owner: 1
+  _health: 20
+  _defense: 5
+  _damage: 5
   _attacks: 1
   _attackRange: 1
-  _speed: 2
+  _speed: 1
   _isAgile: 0
   _size: {x: 1, y: 1}
   _summonStrategies: []
   _onTurnStartStrategies: []
-  _onAttackStrategies: []
-  _onMoveStrategies:
-  - Strategy: {fileID: 11400000, guid: 7bbe3ecb8c686ca45ab88c8cf417444f, type: 2}
+  _onAttackStrategies:
+  - Strategy: {fileID: 11400000, guid: 0b93385a9746cf04d9e8d22bf21d7971, type: 2}
     Potency: 1
+  _onMoveStrategies: []
   _onDamagedStrategies: []
   _onKilledStrategies: []
-  _summonCard: {fileID: 11400000, guid: f4144b120bef8ea4fa423da3e4fc0257, type: 2}
+  _summonCard: {fileID: 0}

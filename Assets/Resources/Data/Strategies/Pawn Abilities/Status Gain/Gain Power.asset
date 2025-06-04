@@ -9,10 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f0a7eb2bc4d7445eb8ca22eebe869068, type: 3}
-  m_Name: Shake Feedback
+  m_Script: {fileID: 11500000, guid: 3c2ee67f8d53476781dddc7a08eeb7bd, type: 3}
+  m_Name: Gain Power
   m_EditorClassIdentifier: 
-  _animationTime: 0.15
-  _strength: {x: 0.5, y: 0.5, z: 0}
-  _vibrato: 10
-  _ease: 4
+  _statusEffectData: {fileID: 11400000, guid: 54cb4099e45e5da4688d9a3d913a1ef2, type: 2}

@@ -98,6 +98,7 @@ namespace Runtime.Combat.Spawning
         private static void SpawnUnit(PawnData pawnData, Tile spawnTile)
         {
             var pawnController = PawnFactory.CreatePawn(pawnData, spawnTile);
+            pawnController.Owner = PawnOwner.Enemy;
 
             if (!pawnController)
             {

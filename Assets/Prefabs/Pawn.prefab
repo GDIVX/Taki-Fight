@@ -1381,7 +1381,7 @@ SpriteRenderer:
   m_Size: {x: 6.99, y: 5.72}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &1229084231330852880
@@ -1558,6 +1558,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6684600840131509813}
   - component: {fileID: 463642889551849496}
+  - component: {fileID: 179444446329696987}
   m_Layer: 0
   m_Name: GUI
   m_TagString: Untagged
@@ -1609,6 +1610,18 @@ Canvas:
   m_SortingLayerID: -847609159
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!225 &179444446329696987
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7919825689091907805}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1 &9027509355880087403
 GameObject:
   m_ObjectHideFlags: 0

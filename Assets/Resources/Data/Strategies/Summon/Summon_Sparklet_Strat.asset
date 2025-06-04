@@ -13,4 +13,7 @@ MonoBehaviour:
   m_Name: Summon_Sparklet_Strat
   m_EditorClassIdentifier: 
   _unit: {fileID: 11400000, guid: 3354da628f2562044b535cc503c03994, type: 2}
-  _tileSelectionMode: 5
+  _tileFilterCriteria:
+    Occupancy: 1
+    TileOwner: 2
+    PawnOwner: 0

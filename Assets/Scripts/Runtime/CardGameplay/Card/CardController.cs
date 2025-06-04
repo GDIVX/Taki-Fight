@@ -188,7 +188,7 @@ namespace Runtime.CardGameplay.Card
         {
             HandleCost();
 
-            if (Data.DestroyCardAfterUse)
+            if (Data.IsConsumed)
             {
                 HandController.ConsumeCard(this);
             }
@@ -236,6 +236,24 @@ namespace Runtime.CardGameplay.Card
             }
 
             Play();
+        }
+
+        public void Discard()
+        {
+            var hand = ServiceLocator.Get<HandController>();
+            if (hand) hand.DiscardCard(this);
+        }
+
+        public void Consume()
+        {
+            var hand = ServiceLocator.Get<HandController>();
+            if (hand) hand.ConsumeCard(this);
+        }
+
+        public void Limbo()
+        {
+            var hand = ServiceLocator.Get<HandController>();
+            if (hand) hand.LimboCard(this);
         }
     }
 }

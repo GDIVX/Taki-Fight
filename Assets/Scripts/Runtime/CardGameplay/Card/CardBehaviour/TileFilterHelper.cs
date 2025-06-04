@@ -1,36 +1,44 @@
-﻿using Runtime.Combat.Tilemap;
-using System;
+﻿using System;
+using Runtime.Combat.Pawn;
+using Runtime.Combat.Tilemap;
+using Sirenix.OdinInspector;
 
 namespace Runtime.CardGameplay.Card.CardBehaviour
 {
-    internal class TileFilterHelper
-    {
-        internal static bool FilterTile(Tile tile, TileSelectionMode tileSelectionMode)
-        {
-            return tileSelectionMode switch
-            {
-                TileSelectionMode.All => true,
-                TileSelectionMode.Empty => tile.IsEmpty,
-                TileSelectionMode.Occupied => tile.IsOccupied,
-                TileSelectionMode.EnemyOccupied => tile.IsOccupied && tile.Owner == TileOwner.Enemy,
-                TileSelectionMode.FriendlyOccupied => tile.IsOccupied && IsFriendly(tile),
-                TileSelectionMode.FriendlyEmpty => tile.IsEmpty && IsFriendly(tile),
-                TileSelectionMode.EnemyEmpty => tile.IsEmpty && tile.Owner == TileOwner.Enemy,
-                _ => throw new ArgumentOutOfRangeException(nameof(tileSelectionMode), tileSelectionMode, null),
-            };
-        }
-
-        private static bool IsFriendly(Tile tile) => tile.Owner == TileOwner.Player;
-    }
-
-    public enum TileSelectionMode
+    public enum OccupancyFilter
     {
         All,
         Empty,
-        Occupied,
-        EnemyOccupied,
-        FriendlyOccupied,
-        FriendlyEmpty,
-        EnemyEmpty
+        Occupied
+    }
+
+    [Serializable]
+    public struct TileFilterCriteria
+    {
+        [EnumToggleButtons] public OccupancyFilter Occupancy;
+
+        [EnumToggleButtons] public TileOwner TileOwner;
+
+        [ShowIf("@Occupancy == OccupancyFilter.Occupied")] [EnumToggleButtons]
+        public PawnOwner PawnOwner;
+    }
+
+    internal static class TileFilterHelper
+    {
+        internal static bool FilterTile(Tile tile, TileFilterCriteria criteria)
+        {
+            // 1) occupancy check
+            if (criteria.Occupancy == OccupancyFilter.Empty && tile.IsOccupied) return false;
+            if (criteria.Occupancy == OccupancyFilter.Occupied && tile.IsEmpty) return false;
+
+
+            // 2) tile‐owner check
+            if (criteria.TileOwner != TileOwner.All && tile.Owner != criteria.TileOwner) return false;
+
+            // 3) pawn‐owner check (only when occupied)
+            return criteria.Occupancy != OccupancyFilter.Occupied
+                   || !tile.IsOccupied
+                   || tile.Pawn.Owner == criteria.PawnOwner;
+        }
     }
 }
