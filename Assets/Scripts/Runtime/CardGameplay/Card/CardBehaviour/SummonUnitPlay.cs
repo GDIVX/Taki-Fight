@@ -137,5 +137,11 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
             var descriptionBuilder = new DescriptionBuilder();
             return descriptionBuilder.AsSummon(Pawn);
         }
+
+        public override void Initialize(PlayStrategyData playStrategyData)
+        {
+            Pawn.InitializeStrategies();
+            base.Initialize(playStrategyData);
+        }
     }
 }

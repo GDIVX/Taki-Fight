@@ -99,6 +99,7 @@ namespace Runtime.CardGameplay.Card
             _playStrategies = new List<PlayStrategyData>(data.PlayStrategies);
             _playStrategies.ForEach(s => s.PlayStrategy.Initialize(s));
 
+
             _cardFactory = ServiceLocator.Get<CardFactory>();
             Energy = ServiceLocator.Get<Energy.Energy>();
             HandController = ServiceLocator.Get<HandController>();

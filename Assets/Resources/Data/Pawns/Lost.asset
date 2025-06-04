@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _title: Lost
   _description: 
-  _sprite: {fileID: 2465197344586919686, guid: bf8475f4199f7f5479b4b59ea0636568, type: 3}
+  _sprite: {fileID: -1895306781140893850, guid: 218f1bb1d41881748bfeecc66b2c28f0, type: 3}
   _owner: 1
   _health: 1
   _defense: 0

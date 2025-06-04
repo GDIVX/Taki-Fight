@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _title: Brute
   _description: 
-  _sprite: {fileID: 652791290322147480, guid: 8b74185b2383a20459497196e36f5811, type: 3}
+  _sprite: {fileID: -2712218979368324060, guid: 1c2d559404c8d9f4b821aed804691754, type: 3}
   _owner: 1
   _health: 20
   _defense: 5

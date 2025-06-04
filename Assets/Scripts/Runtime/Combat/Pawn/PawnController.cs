@@ -61,8 +61,6 @@ namespace Runtime.Combat.Pawn
 
             Data = data;
 
-            data.InitializeStrategies();
-
             // Execute onSummon strategies
             ExecuteStrategies(data.OnSummonStrategies);
 
@@ -162,10 +160,10 @@ namespace Runtime.Combat.Pawn
             _view.SpawnAtPosition(anchor.Position);
         }
 
-        internal void MoveToPosition(Tile anchor, Action onComplete)
+        internal void MoveToPosition(Tile tile, Action onComplete)
         {
-            if (!TrySetMultiTilePosition(anchor)) return;
-            _view.MoveToPosition(anchor.Position, onComplete);
+            if (!TrySetMultiTilePosition(tile)) return;
+            _view.MoveToPosition(tile.Position, onComplete);
         }
 
         public void ApplyStatusEffect(StatusEffectData data, int stack)

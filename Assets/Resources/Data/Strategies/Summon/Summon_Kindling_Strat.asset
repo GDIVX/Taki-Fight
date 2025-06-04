@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5bacc48de2fe4c9db18c51dcbdbef93b, type: 3}
+  m_Name: Summon_Kindling_Strat
+  m_EditorClassIdentifier: 
+  _unit: {fileID: 11400000, guid: b9d16536b90534540ad457a8441bb372, type: 2}
+  _tileFilterCriteria:
+    Occupancy: 1
+    TileOwner: 2
+    PawnOwner: 0
