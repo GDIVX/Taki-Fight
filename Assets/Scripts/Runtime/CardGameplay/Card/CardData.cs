@@ -4,7 +4,9 @@ using Runtime.CardGameplay.Card.CardBehaviour;
 using Runtime.CardGameplay.Card.CardBehaviour.Feedback;
 using Runtime.RunManagement;
 using Sirenix.OdinInspector;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 
 namespace Runtime.CardGameplay.Card
@@ -60,6 +62,7 @@ namespace Runtime.CardGameplay.Card
         [TabGroup("Feedback")] [LabelText("VFX / SFX Strategy")] [SerializeField]
         private FeedbackStrategy _feedbackStrategy;
 
+        #if UNITY_EDITOR
         [TabGroup("Danger Zone")]
         [GUIColor(1, 0f, 0)]
         [Button(ButtonSizes.Medium)]
@@ -69,6 +72,7 @@ namespace Runtime.CardGameplay.Card
                     "Are you sure you want to delete this card?", "Yes", "No"))
                 DestroyImmediate(this, true);
         }
+        #endif
 
         #region Properties
 
