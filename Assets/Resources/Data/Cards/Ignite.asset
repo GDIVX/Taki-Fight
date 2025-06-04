@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 842f4e02fee146ddb72cea2b80a51349, type: 3}
-  m_Name: Fireball
+  m_Name: Ignite
   m_EditorClassIdentifier: 
-  _image: {fileID: -3568548666391906261, guid: 1847d17260ae1cb4a828fc73dbdefac8, type: 3}
-  _title: Fireball
+  _image: {fileID: -1075237379, guid: aaf06ea70717cc643b5453f87d2e7c1f, type: 3}
+  _title: Ignite
   _description: Deal {Potency} damage.
   _cost: 1
   _cardType: 0

@@ -12,7 +12,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
         [SerializeField] private int _targetsCount;
         [SerializeField] private TileSelectionMode _tileSelectionMode = TileSelectionMode.EnemyOccupied;
 
-        public override void Play(CardController cardController, int potency, Action<bool> onComplete)
+        public override void Play(CardController cardController, Action<bool> onComplete)
         {
             SelectionService.Instance.RequestSelection(target =>
                     target is TileView tileView && TileFilterHelper.FilterTile(tileView.Tile, _tileSelectionMode),
@@ -24,7 +24,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                         selectedEntities.ForEach(entity =>
                         {
                             if (entity is not TileView tileView) return;
-                            HandleAttack(tileView.Tile?.Pawn, potency);
+                            HandleAttack(tileView.Tile?.Pawn, Potency);
                         });
                     }
                     else
@@ -63,9 +63,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
 
         public override string GetDescription()
         {
-            if (_targetsCount > 1) return "Deal {Potency} damage to " + _targetsCount + " targets.";
-
-            return "Deal {Potency} damage.";
+            return _targetsCount > 1 ? $"Deal {Potency} damage to {_targetsCount} targets." : $"Deal {Potency} damage.";
         }
     }
 }

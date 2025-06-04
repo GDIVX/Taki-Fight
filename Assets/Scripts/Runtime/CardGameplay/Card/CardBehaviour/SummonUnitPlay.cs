@@ -25,7 +25,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
             set => _tileSelectionMode = value;
         }
 
-        public override void Play(CardController cardController, int potency, Action<bool> onComplete)
+        public override void Play(CardController cardController, Action<bool> onComplete)
         {
             SelectionService.Instance.SearchSize = _unit.Size;
 
@@ -121,6 +121,12 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                 () => { onComplete?.Invoke(false); },
                 cardController.transform.position
             );
+        }
+
+        public override string GetDescription()
+        {
+            var descriptionBuilder = new DescriptionBuilder();
+            return descriptionBuilder.AsSummon(Pawn);
         }
     }
 }
