@@ -9,7 +9,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
     [CreateAssetMenu(fileName = "Attack Play", menuName = "Card/Strategy/Play/Attack", order = 0)]
     public class AttackTargetCardPlay : CardPlayStrategy
     {
-        private AttackTargetParams _params;
+        private GetTilesParams _params;
 
         public override void Play(CardController cardController, Action<bool> onComplete)
         {
@@ -67,7 +67,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
 
         public override void Initialize(PlayStrategyData playStrategyData)
         {
-            _params = playStrategyData.Parameters as AttackTargetParams;
+            _params = playStrategyData.Parameters as GetTilesParams;
             base.Initialize(playStrategyData);
         }
     }

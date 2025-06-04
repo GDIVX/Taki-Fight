@@ -5,7 +5,7 @@ using Runtime;
 namespace Runtime.Combat.Pawn.Abilities
 {
     [Serializable]
-    public class MoveAbilityParams : StrategyParams
+    public class MoveDirectionParams : StrategyParams
     {
         public MovementDirection Direction;
     }

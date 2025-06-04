@@ -9,7 +9,7 @@ namespace Runtime.Combat.Pawn.Abilities
     [CreateAssetMenu(fileName = "Pawn Movement Ability", menuName = "Pawns/Abilities/Movement")]
     public class MoveAbility : PawnPlayStrategy
     {
-        private MoveAbilityParams _params;
+        private MoveDirectionParams _params;
 
         public override void Play(PawnController pawn, Action<bool> onComplete)
         {
@@ -91,7 +91,7 @@ namespace Runtime.Combat.Pawn.Abilities
 
         public override void Initialize(PawnStrategyData data)
         {
-            _params = data.Parameters as MoveAbilityParams;
+            _params = data.Parameters as MoveDirectionParams;
             base.Initialize(data);
         }
     }

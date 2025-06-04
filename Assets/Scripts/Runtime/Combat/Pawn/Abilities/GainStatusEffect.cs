@@ -6,7 +6,7 @@ namespace Runtime.Combat.Pawn.Abilities
     [CreateAssetMenu(fileName = "Gain Status Effect", menuName = "Pawns/Abilities/Gain Status Effect", order = 0)]
     public class GainStatusEffect : PawnPlayStrategy
     {
-        private GainStatusEffectParams _params;
+        private StatusEffectParams _params;
 
         public override void Play(PawnController pawn, Action<bool> onComplete)
         {
@@ -23,7 +23,7 @@ namespace Runtime.Combat.Pawn.Abilities
 
         public override void Initialize(PawnStrategyData data)
         {
-            _params = data.Parameters as GainStatusEffectParams;
+            _params = data.Parameters as StatusEffectParams;
             //validate params
             if (_params == null)
             {
