@@ -195,7 +195,7 @@ namespace Runtime.Combat.Spawning
         {
             // Ask each PawnView directly if its summon animation is complete
             return Tilemap.GetUnitsByOwnership(PawnOwner.Enemy)
-                .All(pawn => pawn.View.IsAnimating());
+                .All(pawn => !pawn.View.IsAnimating());
         }
     }
 }
