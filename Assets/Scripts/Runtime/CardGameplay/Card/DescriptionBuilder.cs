@@ -53,7 +53,7 @@ namespace Runtime.CardGameplay.Card
         public DescriptionBuilder WithKeyword(Keyword keyword)
         {
             AddNewLineIfNeeded();
-            _builder.Append($"{Hyperlink(keyword.FormatedText)}");
+            _builder.Append($"{Hyperlink(keyword.FormattedText)}");
             return this;
         }
 
