@@ -77,6 +77,9 @@ namespace Runtime.Combat.Pawn
         [ListDrawerSettings(DefaultExpandedState = false)] [BoxGroup("Callbacks/On Attack")] [SerializeField]
         private List<PawnStrategyData> _onAttackStrategies;
 
+        [ListDrawerSettings(DefaultExpandedState = false)] [BoxGroup("Callbacks/On Hit")] [SerializeField]
+        private List<PawnStrategyData> _onHitStrategies;
+
         [ListDrawerSettings(DefaultExpandedState = false)] [BoxGroup("Callbacks/On Move")] [SerializeField]
         private List<PawnStrategyData> _onMoveStrategies;
 
@@ -98,6 +101,7 @@ namespace Runtime.Combat.Pawn
         public List<PawnStrategyData> OnSummonStrategies => _summonStrategies;
         public List<PawnStrategyData> OnTurnStartStrategies => _onTurnStartStrategies;
         public List<PawnStrategyData> OnAttackStrategies => _onAttackStrategies;
+        public List<PawnStrategyData> OnHitStrategies => _onHitStrategies;
         public List<PawnStrategyData> OnMoveStrategies => _onMoveStrategies;
         public List<PawnStrategyData> OnDamagedStrategies => _onDamagedStrategies;
         public List<PawnStrategyData> OnKilledStrategies => _onKilledStrategies;
@@ -203,6 +207,7 @@ namespace Runtime.Combat.Pawn
         public void InitializeStrategies()
         {
             _onAttackStrategies.ForEach(data => data.Strategy.Initialize(data));
+            _onHitStrategies.ForEach(data => data.Strategy.Initialize(data));
             _onDamagedStrategies.ForEach(data => data.Strategy.Initialize(data));
             _onKilledStrategies.ForEach(data => data.Strategy.Initialize(data));
             _onMoveStrategies.ForEach(data => data.Strategy.Initialize(data));
