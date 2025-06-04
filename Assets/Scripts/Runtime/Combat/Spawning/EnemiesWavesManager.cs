@@ -2,6 +2,7 @@
 using System.Linq;
 using Runtime.Combat.Pawn;
 using Runtime.Combat.Tilemap;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
 
@@ -9,16 +10,14 @@ namespace Runtime.Combat.Spawning
 {
     public class EnemiesWavesManager
     {
-        private readonly Queue<WaveConfig> _remainingWaves = new();
-        private readonly Queue<PawnData> _waitList = new();
+        [ShowInInspector] private readonly Queue<WaveConfig> _remainingWaves = new();
+        [ShowInInspector] private readonly Queue<PawnData> _waitList = new();
 
         private int _combatLength;
 
         private AnimationCurve _difficultyCurve;
-        private WaveConfig _finalWave;
 
         private List<WaveConfig> _waves;
-        private int _wavesSpawned;
 
         private static PawnFactory PawnFactory => ServiceLocator.Get<PawnFactory>();
         private static TilemapController Tilemap => ServiceLocator.Get<TilemapController>();
@@ -27,24 +26,23 @@ namespace Runtime.Combat.Spawning
         {
             _combatLength = combatConfig.CombatLength;
             _waves = combatConfig.Waves;
-            _finalWave = combatConfig.FinalWave;
             _difficultyCurve = combatConfig.DifficultyCurve;
 
             ResetState();
 
-            for (var i = 0; i < _combatLength; i++)
+            for (var i = 0; i < _combatLength - 1; i++)
             {
-                var wave = i < _combatLength - 1 ? SelectWave(i) : _finalWave;
+                var wave = SelectWave(i);
                 _remainingWaves.Enqueue(wave);
             }
+
+            //Add the final wave
+            _remainingWaves.Enqueue(combatConfig.FinalWave);
         }
 
         public void OnTurnStart()
         {
-            // If the final wave has already been spawned, exit early
-            if (!_finalWave) return;
-
-            var enemyOwnedTiles = Tilemap.GetEnemyOwnedTiles();
+            if (_remainingWaves.Count <= 0 && _waitList.Count <= 0) return;
 
             // Use a fluid sequence to handle animations and gameplay logic step by step
             var sequence = new TaskRunner();
@@ -59,12 +57,11 @@ namespace Runtime.Combat.Spawning
 
         private void SpawnWave()
         {
-            var waveToSpawn = _remainingWaves.Count > 0 ? _remainingWaves.Dequeue() : null;
-            if (!waveToSpawn) return;
-
             var unitsToSpawn = new List<PawnData>(_waitList);
             _waitList.Clear();
-            unitsToSpawn.AddRange(waveToSpawn.Enemies);
+
+            var waveToSpawn = _remainingWaves.Count > 0 ? _remainingWaves.Dequeue() : null;
+            if (waveToSpawn) unitsToSpawn.AddRange(waveToSpawn.Enemies);
 
             foreach (var pawnData in unitsToSpawn)
             {
@@ -75,8 +72,6 @@ namespace Runtime.Combat.Spawning
                     // Add to waitlist if no valid tile is found
                     _waitList.Enqueue(pawnData);
             }
-
-            _wavesSpawned++;
         }
 
         private void TakeOverTile()
@@ -173,14 +168,12 @@ namespace Runtime.Combat.Spawning
 
         private void ResetState()
         {
-            _wavesSpawned = 0;
             _remainingWaves?.Clear();
             _waitList?.Clear();
         }
 
         public void StopSpawning()
         {
-            _finalWave = null;
             ResetState();
         }
 

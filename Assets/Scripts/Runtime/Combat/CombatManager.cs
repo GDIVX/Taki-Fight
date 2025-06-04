@@ -25,7 +25,7 @@ namespace Runtime.Combat
         [SerializeField] [BoxGroup("Objective")]
         private PawnData _defenseObjectiveData;
 
-        private EnemiesWavesManager _wavesManager;
+        [ShowInInspector] private EnemiesWavesManager _wavesManager;
         public int CurrentTurn { get; private set; }
 
         private CastleHealthManager DefenseCastle { get; set; }
