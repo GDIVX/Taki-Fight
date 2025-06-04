@@ -7,10 +7,15 @@ namespace Runtime.Combat.Pawn.Abilities
     [Tooltip("End the game with defeat.")]
     public class PawnGameOver : PawnPlayStrategy
     {
-        public override void Play(PawnController pawn, int potency, Action<bool> onComplete)
+        public override void Play(PawnController pawn, Action<bool> onComplete)
         {
             GameManager.Instance.EndRun();
             onComplete(true);
+        }
+
+        public override string GetDescription()
+        {
+            return "End the game.";
         }
     }
 }

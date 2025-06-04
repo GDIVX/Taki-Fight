@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: db39779a7d15495786ef0b741b93a144, type: 3}
-  m_Name: EvilWolf
+  m_Name: Lost
   m_EditorClassIdentifier: 
-  _title: Bad Wolf
+  _title: Lost
   _description: 
-  _sprite: {fileID: 6835675914815659107, guid: 3068818034123544a8f4166bfc81ee88, type: 3}
+  _sprite: {fileID: 2465197344586919686, guid: bf8475f4199f7f5479b4b59ea0636568, type: 3}
   _owner: 1
-  _health: 10
-  _defense: 1
+  _health: 1
+  _defense: 0
   _damage: 3
   _attacks: 1
   _attackRange: 1

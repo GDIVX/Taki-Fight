@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.RegularExpressions;
 using Runtime.CardGameplay.Card;
 using Runtime.CardGameplay.Card.CardBehaviour;
 using Runtime.Combat.Pawn;
@@ -185,31 +184,25 @@ namespace Runtime.Combat.Pawn
             DescriptionBuilder builder = new();
             _description = builder.AsSummon(this);
         }
+
+        public void InitializeStrategies()
+        {
+            _onAttackStrategies.ForEach(data => data.Strategy.Initialize(data));
+            _onDamagedStrategies.ForEach(data => data.Strategy.Initialize(data));
+            _onKilledStrategies.ForEach(data => data.Strategy.Initialize(data));
+            _onMoveStrategies.ForEach(data => data.Strategy.Initialize(data));
+            _onTurnStartStrategies.ForEach(data => data.Strategy.Initialize(data));
+            _summonStrategies.ForEach(data => data.Strategy.Initialize(data));
+        }
     }
 }
 
 [Serializable]
-public struct PawnStrategyData : IDescribable
+public struct PawnStrategyData
 {
     [Tooltip("The specific strategy applied to the pawn.")]
     public PawnPlayStrategy Strategy;
 
     [Tooltip("The potency or strength of the applied strategy.")]
     public int Potency;
-
-
-    public string GetDescription()
-    {
-        var description = Strategy.GetDescription();
-        // Replace the {Potency} token with the value of the Potency field
-        var formattedDescription = description.Replace("{Potency}", Potency.ToString());
-
-        // Use a regex to find all other tokens within curly brackets
-        var tokenRegex = new Regex(@"\{([^}]+)\}");
-        var matches = tokenRegex.Matches(formattedDescription);
-
-
-        // Return the fully formatted description
-        return formattedDescription;
-    }
 }

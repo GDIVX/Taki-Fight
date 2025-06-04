@@ -10,24 +10,26 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: db39779a7d15495786ef0b741b93a144, type: 3}
-  m_Name: WolfWarrior
+  m_Name: Sparklet
   m_EditorClassIdentifier: 
-  _title: Wolf Warrior
-  _description: Do absolutly nothing special, but it is somewhat cute
-  _sprite: {fileID: -163822858987668334, guid: 82d51a4c551bae144afc8f03130f952b, type: 3}
+  _title: Sparklet
+  _description: 
+  _sprite: {fileID: 6683329046633577077, guid: 0465c67b004aa8045ae6db42637b303e, type: 3}
   _owner: 0
-  _health: 10
-  _defense: 1
-  _damage: 3
+  _health: 15
+  _defense: 0
+  _damage: 5
   _attacks: 1
   _attackRange: 1
-  _speed: 1
+  _speed: 2
   _isAgile: 0
   _size: {x: 1, y: 1}
   _summonStrategies: []
   _onTurnStartStrategies: []
   _onAttackStrategies: []
-  _onMoveStrategies: []
+  _onMoveStrategies:
+  - Strategy: {fileID: 11400000, guid: 7bbe3ecb8c686ca45ab88c8cf417444f, type: 2}
+    Potency: 1
   _onDamagedStrategies: []
   _onKilledStrategies: []
-  _summonCard: {fileID: 0}
+  _summonCard: {fileID: 11400000, guid: f4144b120bef8ea4fa423da3e4fc0257, type: 2}

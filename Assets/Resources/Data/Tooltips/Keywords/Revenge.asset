@@ -9,12 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6763c31d68e84c31a632f095429b1351, type: 3}
-  m_Name: Find Tooltip
+  m_Script: {fileID: 11500000, guid: a585236af7d242cda9720c9380782e23, type: 3}
+  m_Name: Revenge
   m_EditorClassIdentifier: 
-  _header: Find
-  _secondHeader: Action
-  _description: Draw a specified Gem from the Bag
-  _icon: {fileID: -1722815243, guid: aaf06ea70717cc643b5453f87d2e7c1f, type: 3}
+  _header: Revenge
+  _secondHeader: Trigger
+  _description: When the Familiar is being harmed
+  _icon: {fileID: 0}
   _backgroundColor: {r: 1, g: 0.69411767, b: 0.25882354, a: 1}
   _alpha: 0.95
+  _formatedText: 'Revenge: '

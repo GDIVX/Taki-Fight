@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 0d923d0a2521b904b9daf9317b35dfc6
+guid: cde5565896d922b4783fcb93ba410845
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 2034801884315467888
-    second: character_mage_v1_0
+      213: -9151604657101185949
+    second: character_bigbadwolf_v5_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,7 +100,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: character_mage_v1_0
+      name: character_bigbadwolf_v5_0
       rect:
         serializedVersion: 2
         x: 0
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 0704bee68811d3c10800000000000000
-      internalID: 2034801884315467888
+      spriteID: 36c5ca83d08fef080800000000000000
+      internalID: -9151604657101185949
       vertices: []
       indices: 
       edges: []
@@ -134,8 +134,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      character_mage_v1_0: 2034801884315467888
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

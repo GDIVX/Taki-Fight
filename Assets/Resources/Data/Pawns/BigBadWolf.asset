@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _title: Boss
   _description: 
-  _sprite: {fileID: 2470448008604918377, guid: 80a3478d7cf6ba641ac69fa1328bcefd, type: 3}
+  _sprite: {fileID: -9151604657101185949, guid: cde5565896d922b4783fcb93ba410845, type: 3}
   _owner: 1
   _health: 20
   _defense: 5

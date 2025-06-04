@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 842f4e02fee146ddb72cea2b80a51349, type: 3}
-  m_Name: Ignite
+  m_Name: Summon_Sparklet_Card
   m_EditorClassIdentifier: 
-  _image: {fileID: -1075237379, guid: aaf06ea70717cc643b5453f87d2e7c1f, type: 3}
-  _title: Ignite
-  _description: Deal 0 damage.
+  _image: {fileID: 6683329046633577077, guid: 0465c67b004aa8045ae6db42637b303e, type: 3}
+  _title: Sparklet
+  _description: 
   _cost: 1
-  _cardType: 0
+  _cardType: 1
   _rarity: 0
   _playStrategies:
-  - PlayStrategy: {fileID: 11400000, guid: cd7cd7aafe2c3b14ab5954de633d36b0, type: 2}
-    Potency: 6
+  - PlayStrategy: {fileID: 11400000, guid: e52cadfa8a2831244b8508efb35b2100, type: 2}
+    Potency: 1
   _destroyCardAfterUse: 0
   _feedbackStrategy: {fileID: 0}

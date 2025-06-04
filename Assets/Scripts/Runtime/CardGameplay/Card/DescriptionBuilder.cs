@@ -107,6 +107,8 @@ namespace Runtime.CardGameplay.Card
             // On Killed
             WithTriggeredAbilities("Death Rattle", GetDescribableAbilities(unit.OnKilledStrategies));
 
+            WithTriggeredAbilities("Moved", GetDescribableAbilities(unit.OnMoveStrategies));
+
             return GetFormattedText();
         }
 

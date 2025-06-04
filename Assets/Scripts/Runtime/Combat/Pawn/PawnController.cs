@@ -60,6 +60,7 @@ namespace Runtime.Combat.Pawn
 
             Data = data;
 
+            data.InitializeStrategies();
 
             // Execute onSummon strategies
             ExecuteStrategies(data.OnSummonStrategies);
@@ -195,7 +196,7 @@ namespace Runtime.Combat.Pawn
                     continue;
                 }
 
-                strategyData.Strategy.Play(this, strategyData.Potency, success =>
+                strategyData.Strategy.Play(this, success =>
                 {
                     if (!success)
                     {
