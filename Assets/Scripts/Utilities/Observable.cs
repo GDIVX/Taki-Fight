@@ -19,7 +19,7 @@ namespace Utilities
             get => _currentValue;
             set
             {
-                if (HasValueChanged(value)) return;
+                if (HasValueNotChanged(value)) return;
                 _currentValue = value;
                 OnValueChanged?.Invoke(_currentValue);
             }
@@ -37,7 +37,7 @@ namespace Utilities
             return observable._currentValue;
         }
 
-        private bool HasValueChanged(T newValue)
+        private bool HasValueNotChanged(T newValue)
         {
             return Equals(_currentValue, newValue);
         }
