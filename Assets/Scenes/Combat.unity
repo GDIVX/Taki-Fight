@@ -3827,7 +3827,6 @@ MonoBehaviour:
   _prefab: {fileID: 5188398243834909485, guid: 79de2714e98778e45a8d6f81b5df8b9b, type: 3}
   _handController: {fileID: 303423372}
   _energy: {fileID: 1763573683}
-  _keywordDictionary: {fileID: 11400000, guid: 66d450156de073643a2a3a33c7bc17b1, type: 2}
   _discardToLocation: {fileID: 196735047}
   _drawFromLocation: {fileID: 1103476681}
 --- !u!4 &1877293997
