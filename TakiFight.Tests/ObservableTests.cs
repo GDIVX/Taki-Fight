@@ -16,6 +16,16 @@ public class ObservableTests
     }
 
     [Test]
+    public void SettingSameValue_DoesNotRaiseEvent()
+    {
+        var obs = new Observable<int>(3);
+        bool raised = false;
+        obs.OnValueChanged += _ => raised = true;
+        obs.Value = 3;
+        Assert.That(raised, Is.False);
+    }
+
+    [Test]
     public void ForceNotify_RaisesEventWithCurrentValue()
     {
         var obs = new Observable<string>("hello");
