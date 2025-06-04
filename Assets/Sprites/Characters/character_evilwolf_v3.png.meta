@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      character_evilwolf_v3_0: 2465197344586919686
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

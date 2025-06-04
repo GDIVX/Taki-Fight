@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      character_bigbadwolf_v5_0: -9151604657101185949
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
