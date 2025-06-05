@@ -6,7 +6,7 @@ using Utilities;
 
 namespace Runtime.Combat.Tilemap
 {
-    public static class AOEHiighlight
+    public static class AOEHighlight
     {
 
         static List<Tile> _currentlyHighlightedTiles = new List<Tile>();
