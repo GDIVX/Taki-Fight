@@ -1,11 +1,20 @@
 namespace UnityEngine
 {
+    public class Object
+    {
+        public static object FindAnyObjectByType(System.Type type) => null;
+    }
+
     public class SerializeField : System.Attribute {}
     public class TooltipAttribute : System.Attribute { public TooltipAttribute(string text){} }
     public class RangeAttribute : System.Attribute { public RangeAttribute(float a,float b){} }
     public class CreateAssetMenuAttribute : System.Attribute { public string fileName; public string menuName; public int order; }
-    public class MonoBehaviour { }
-    public class ScriptableObject { }
+    public class MonoBehaviour : Object { }
+    public class ScriptableObject : Object { }
+    public static class Resources
+    {
+        public static object Load(string name) => null;
+    }
     public static class Debug {
         public static void Log(string message) {}
         public static void LogWarning(string message) {}
