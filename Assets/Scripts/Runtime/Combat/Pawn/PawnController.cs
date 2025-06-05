@@ -262,6 +262,43 @@ namespace Runtime.Combat.Pawn
             }
         }
 
+        internal void ExecuteMoveStrategies(List<PawnStrategyData> strategies, ref Tile nextTile)
+        {
+            if (strategies == null)
+            {
+                Debug.LogWarning("ExecuteStrategies: The strategies list is null.");
+                return;
+            }
+
+            foreach (var strategyData in strategies)
+            {
+                if (strategyData.Strategy == null)
+                {
+                    Debug.LogWarning("ExecuteStrategies: A strategy in the list is null.");
+                    continue;
+                }
+
+                if (strategyData.Strategy is PawnMovePlayStrategy moveStrategy)
+                {
+                    moveStrategy.ModifyMove(this, ref nextTile);
+                }
+                else
+                {
+                    strategyData.Strategy.Play(this, success =>
+                    {
+                        if (!success)
+                        {
+                            Debug.LogWarning($"Strategy {strategyData.Strategy.name} failed.");
+                        }
+                        else
+                        {
+                            Debug.Log($"Strategy {strategyData.Strategy.name} succeeded.");
+                        }
+                    });
+                }
+            }
+        }
+
         internal void ExecuteHitStrategies(List<PawnStrategyData> strategies, PawnController target, ref int damage)
         {
             if (strategies == null)
