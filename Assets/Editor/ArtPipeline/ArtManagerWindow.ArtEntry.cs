@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Collections.Generic;
 using Runtime.CardGameplay.Card;
 using Runtime.Combat.Pawn;
 using Sirenix.OdinInspector;
@@ -156,10 +157,10 @@ namespace Editor.ArtPipeline
                 }
 
                 // Proceed with deletion
-                var failedFiles = new string[filesToDelete.Count];
-                AssetDatabase.DeleteAssets(filesToDelete.ToArray(), filesToDelete);
+                var failedFiles = new List<string>();
+                AssetDatabase.DeleteAssets(filesToDelete.ToArray(), failedFiles);
 
-                if (failedFiles.Any())
+                if (failedFiles.Count > 0)
                 {
                     Debug.LogError(
                         $"[ArtStatusWindow] Failed to delete the following files: {string.Join(", ", failedFiles)}");
