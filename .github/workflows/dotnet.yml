@@ -15,11 +15,11 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore TakiFight.Tests/TakiFight.Tests.csproj
       - name: Run tests
-        run: dotnet test TakiFight.Tests/TakiFight.Tests.csproj --collect:"XPlat Code Coverage" --results-directory ./TestResults
+        run: dotnet test --collect:"XPlat Code Coverage"
       - name: List Test Results
-        run: ls -R ./TestResults
+        run: ls -R **/TestResults
       - name: Upload coverage
         uses: actions/upload-artifact@v3
         with:
           name: coverage-results
-          path: './TestResults/**'
+          path: '**/TestResults/**'
