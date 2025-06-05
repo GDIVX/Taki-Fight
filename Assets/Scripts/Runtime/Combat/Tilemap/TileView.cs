@@ -41,7 +41,7 @@ namespace Runtime.Combat.Tilemap
             if (SelectionService.Instance.CurrentState == SelectionState.InProgress)
             {
                 // Trigger AOE visualization on hover
-                AOEHiighlight.HighlightForSelection(tile); // Highlight the tile for AOE selection
+                AOEHighlight.HighlightForSelection(tile); // Highlight the tile for AOE selection
             }
             else if (tile.Pawn)
             {
@@ -98,7 +98,7 @@ namespace Runtime.Combat.Tilemap
             {
                 // Clear AOE visualization when hover ends
                 ClearHighlight();
-                AOEHiighlight.ClearHighlights(); // Clear the AOE highlights
+                AOEHighlight.ClearHighlights(); // Clear the AOE highlights
             };
         }
 
