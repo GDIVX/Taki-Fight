@@ -15,11 +15,18 @@ namespace Editor.ArtPipeline
         [Tooltip("Prefix to identify card sprites (e.g., 'card').")]
         public string CardSpritePrefix = "card";
 
+        [Tooltip("Prefix to identify status effect icons (e.g., 'status').")]
+        public string StatusEffectIconPrefix = "status";
+
         [FolderPath] [Tooltip("Path to the folder where card sprites are stored.")]
         public string CardSpriteFolderPath = "Assets/Resources/Sprites/Cards";
 
         [FolderPath] [Tooltip("Path to the folder where character sprites are stored.")]
         public string CharacterSpriteFolderPath = "Assets/Resources/Sprites/Characters";
+
+        [FolderPath]
+        [Tooltip("Path to the folder where status effect icons are stored.")]
+        public string StatusEffectIconFolderPath = "Assets/Resources/Sprites/StatusEffects";
 
         public static SpritePipelineSettings Instance
         {

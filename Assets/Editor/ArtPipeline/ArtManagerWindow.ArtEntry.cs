@@ -178,6 +178,7 @@ namespace Editor.ArtPipeline
                 {
                     "PawnData" => SpritePipelineSettings.Instance.CharacterSpriteFolderPath,
                     "CardData" => SpritePipelineSettings.Instance.CardSpriteFolderPath,
+                    "StatusEffectData" => SpritePipelineSettings.Instance.StatusEffectIconFolderPath,
                     _ => "unknown"
                 };
             }
