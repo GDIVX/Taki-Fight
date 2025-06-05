@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Runtime.Combat.Tilemap
 {
@@ -8,9 +9,10 @@ namespace Runtime.Combat.Tilemap
     {
         [SerializeField] int rows = 3;
 
-        [SerializeField] List<TileOwner> colums = new List<TileOwner>();
+        [FormerlySerializedAs("colums")]
+        [SerializeField] List<TileOwner> columns = new List<TileOwner>();
 
         public int Rows => rows;
-        public List<TileOwner> Colums => colums;
+        public List<TileOwner> Columns => columns;
     }
 }
