@@ -28,3 +28,7 @@ dotnet test
 
 Refer to the [Playtesting Guide](docs/PlaytestingGuide.md) for details on opening the project in Unity and running the `Bootstrap` scene.
 
+
+## Coding Standards
+
+See [CodingStandards.md](docs/CodingStandards.md) for the project's coding conventions.
