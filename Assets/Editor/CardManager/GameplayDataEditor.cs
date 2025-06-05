@@ -193,11 +193,11 @@ namespace Editor.CardManager
                 case PawnData pawnData:
                     pawnData.Title = _assetName;
                     break;
-                case TooltipData tooltip:
-                    SetTooltipHeader(tooltip);
-                    break;
                 case Keyword keyword:
                     SetTooltipHeader(keyword);
+                    break;
+                case TooltipData tooltip:
+                    SetTooltipHeader(tooltip);
                     break;
             }
 

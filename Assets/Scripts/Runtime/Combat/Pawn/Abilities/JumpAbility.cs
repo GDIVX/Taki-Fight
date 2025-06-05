@@ -1,3 +1,4 @@
+using System;
 using Runtime.Combat.Tilemap;
 using UnityEngine;
 using Utilities;
@@ -26,6 +27,10 @@ namespace Runtime.Combat.Pawn.Abilities
         public override string GetDescription()
         {
             return "Jump over one tile";
+        }
+
+        public override void Play(PawnController pawn, Action<bool> onComplete)
+        {
         }
     }
 }

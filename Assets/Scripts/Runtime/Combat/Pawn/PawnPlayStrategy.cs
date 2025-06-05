@@ -7,7 +7,7 @@ namespace Runtime.Combat.Pawn
 {
     public abstract class PawnPlayStrategy : ScriptableObject, IDescribable
     {
-        public int Potency { get; protected set; }
+        protected int Potency { get; private set; }
         public StrategyParams Params { get; private set; }
 
         public virtual string GetDescription()

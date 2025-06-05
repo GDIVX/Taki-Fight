@@ -58,5 +58,9 @@ namespace Runtime.Combat.Pawn.Abilities
         {
             return $"Knockback {Potency}";
         }
+
+        public override void Play(PawnController pawn, Action<bool> onComplete)
+        {
+        }
     }
 }

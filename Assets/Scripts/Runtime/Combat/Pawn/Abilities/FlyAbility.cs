@@ -1,3 +1,4 @@
+using System;
 using Runtime.Combat.Tilemap;
 using UnityEngine;
 using Utilities;
@@ -32,6 +33,11 @@ namespace Runtime.Combat.Pawn.Abilities
         public override string GetDescription()
         {
             return Potency > 0 ? $"Fly over up to {Potency} tiles" : "Fly";
+        }
+
+        public override void Play(PawnController pawn, Action<bool> onComplete)
+        {
+            
         }
     }
 }
