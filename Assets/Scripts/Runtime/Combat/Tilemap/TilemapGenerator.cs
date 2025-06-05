@@ -14,14 +14,14 @@ namespace Runtime.Combat.Tilemap
 
             if (tilemapView == null) throw new ArgumentNullException(nameof(tilemapView));
 
-            if (config.Colums == null || config.Colums.Count == 0)
+            if (config.Columns == null || config.Columns.Count == 0)
             {
-                throw new ArgumentException("TilemapConfig must have at least one TileOwner in the colums list.");
+                throw new ArgumentException("TilemapConfig must have at least one TileOwner in the columns list.");
             }
 
             // Determine the size of the arena
             int rows = config.Rows;
-            int cols = config.Colums.Count;
+            int cols = config.Columns.Count;
 
             // Create the tilemap
             var tiles = new Tile[cols, rows];
@@ -33,8 +33,8 @@ namespace Runtime.Combat.Tilemap
                     var position = new Vector2Int(x, y);
                     tiles[x, y] = new Tile(position);
 
-                    // Assign the owner of the tile based on the colums list
-                    tiles[x, y].Owner = config.Colums[x];
+                    // Assign the owner of the tile based on the columns list
+                    tiles[x, y].Owner = config.Columns[x];
                 }
             }
 
