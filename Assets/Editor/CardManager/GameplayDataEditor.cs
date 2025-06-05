@@ -1,11 +1,14 @@
-﻿using System;
+using System;
+using System.IO;
 using Runtime.CardGameplay.Card;
 using Runtime.CardGameplay.Card.CardBehaviour;
 using Runtime.Combat;
 using Runtime.Combat.Pawn;
 using Runtime.Combat.StatusEffects;
+using Runtime.Combat.Spawning;
 using Runtime.RunManagement;
 using Runtime.UI.Tooltip;
+using Runtime.CardGameplay.Card.View;
 using Sirenix.OdinInspector.Editor;
 using UnityEditor;
 using UnityEngine;
@@ -14,7 +17,17 @@ namespace Editor.CardManager
 {
     public sealed class GameplayDataEditor : OdinMenuEditorWindow
     {
-        private static readonly Type[] TypesToDisplay = { typeof(CardData), typeof(PawnData), typeof(School) };
+        private static readonly Type[] TypesToDisplay =
+        {
+            typeof(CardData),
+            typeof(PawnData),
+            typeof(School),
+            typeof(StatusEffectData),
+            typeof(TooltipData),
+            typeof(Keyword),
+            typeof(WaveConfig),
+            typeof(CombatConfig)
+        };
         private Type _selectedType;
 
         [MenuItem("Tools/Gameplay Data Editor")]
@@ -161,8 +174,13 @@ namespace Editor.CardManager
                 return;
             }
 
+            // Ensure the destination folder exists
+            var folderPath = $"{_path}/{subfolder}";
+            if (!AssetDatabase.IsValidFolder(folderPath))
+                Directory.CreateDirectory(folderPath);
+
             // Construct the full path, ensuring it's placed in the correct subfolder
-            var uniquePath = AssetDatabase.GenerateUniqueAssetPath($"{_path}/{subfolder}/{_assetName}.asset");
+            var uniquePath = AssetDatabase.GenerateUniqueAssetPath($"{folderPath}/{_assetName}.asset");
 
             // Create the asset and save it to the specified location
             var asset = CreateInstance(_selectedType);
@@ -174,6 +192,12 @@ namespace Editor.CardManager
                     break;
                 case PawnData pawnData:
                     pawnData.Title = _assetName;
+                    break;
+                case TooltipData tooltip:
+                    SetTooltipHeader(tooltip);
+                    break;
+                case Keyword keyword:
+                    SetTooltipHeader(keyword);
                     break;
             }
 
@@ -192,6 +216,17 @@ namespace Editor.CardManager
             Close();
         }
 
+        private void SetTooltipHeader(ScriptableObject tooltip)
+        {
+            var so = new SerializedObject(tooltip);
+            var headerProp = so.FindProperty("_header");
+            if (headerProp != null)
+            {
+                headerProp.stringValue = _assetName;
+                so.ApplyModifiedProperties();
+            }
+        }
+
         private static string GetSubfolderName(Type type)
         {
             return type.Name switch
@@ -202,7 +237,9 @@ namespace Editor.CardManager
                 nameof(CardPlayStrategy) => "Strategies",
                 nameof(StatusEffectData) => "StatusEffects",
                 nameof(CombatConfig) => "Combats",
+                nameof(WaveConfig) => "Combats/Waves",
                 nameof(TooltipData) => "Tooltips",
+                nameof(Keyword) => "Tooltips/Keywords",
                 _ => null // Return null if no mapping is found
             };
         }
