@@ -36,6 +36,8 @@ namespace Runtime.Combat.Pawn
 
             var nextTile = GetNextTile();
 
+            _pawn.ExecuteMoveStrategies(_pawn.Data.MovementAbilities, ref nextTile);
+
             if (nextTile == null || nextTile == _tilemapHelper.AnchorTile) return false;
 
             // Check if the next tile or any tile in the footprint is occupied by another unit
