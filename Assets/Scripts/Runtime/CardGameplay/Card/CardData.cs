@@ -146,7 +146,7 @@ namespace Runtime.CardGameplay.Card
 
         private bool IsImageEmpty(Sprite sprite)
         {
-            return sprite;
+            return sprite != null;
         }
 
         private bool ValidateCardType(CardType cardType)
@@ -183,7 +183,7 @@ namespace Runtime.CardGameplay.Card
             var guids = AssetDatabase.FindAssets("t:School");
             var schools = guids
                 .Select(guid => AssetDatabase.LoadAssetAtPath<School>(AssetDatabase.GUIDToAssetPath(guid)))
-                .Where(s => s)
+                .Where(s => s != null)
                 .ToList();
 
             if (schools.Count == 0)
