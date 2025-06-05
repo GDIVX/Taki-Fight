@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using Runtime.CardGameplay.Card;
 using Runtime.Combat.Pawn;
+using Runtime.Combat.StatusEffects;
 using Sirenix.OdinInspector;
 using Sirenix.OdinInspector.Editor;
 using UnityEditor;
@@ -62,6 +63,21 @@ namespace Editor.ArtPipeline
                 });
             }
 
+            // Load StatusEffectData assets
+            var statusEffectDataAssets = LoadAllAssets<StatusEffectData>();
+            foreach (var status in statusEffectDataAssets)
+            {
+                _artStatusList.Add(new ArtEntry
+                {
+                    AssetType = "StatusEffectData",
+                    AssetName = status.name,
+                    Title = status.Tooltip ? status.Tooltip.Header : status.name,
+                    SpriteReference = status.Icon,
+                    SpriteName = FindSpriteAssetName(status.Icon),
+                    DataObject = status
+                });
+            }
+
             Debug.Log("[ArtStatusWindow] Art status listing refreshed!");
         }
 
@@ -95,6 +111,7 @@ namespace Editor.ArtPipeline
             {
                 "PawnData" => SpritePipelineSettings.Instance.CharacterSpritePrefix,
                 "CardData" => SpritePipelineSettings.Instance.CardSpritePrefix,
+                "StatusEffectData" => SpritePipelineSettings.Instance.StatusEffectIconPrefix,
                 _ => "unknown"
             };
             var sanitizedAssetName = SanitizeFileName(assetName);
@@ -107,6 +124,7 @@ namespace Editor.ArtPipeline
             {
                 "PawnData" => SpritePipelineSettings.Instance.CharacterSpritePrefix,
                 "CardData" => SpritePipelineSettings.Instance.CardSpritePrefix,
+                "StatusEffectData" => SpritePipelineSettings.Instance.StatusEffectIconPrefix,
                 _ => "unknown"
             };
             var sanitizedAssetName = SanitizeFileName(assetName);
