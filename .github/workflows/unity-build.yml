@@ -39,3 +39,12 @@ jobs:
           echo "$DRIVE_SERVICE_ACCOUNT_KEY" > service-account.json
           rclone config create buildremote drive service_account_file service-account.json --config rclone.conf
           rclone copy "build/${{ matrix.targetPlatform }}" buildremote:"$DRIVE_BUILD_FOLDER"/${{ matrix.targetPlatform }} --config rclone.conf --create-empty-src-dirs
+
+      - name: Notify Discord
+        env:
+          PLAYTEST_DISCORD_BUILD: ${{ secrets.PLAYTEST_DISCORD_BUILD }}
+          DRIVE_BUILD_FOLDER: ${{ secrets.DRIVE_BUILD_FOLDER }}
+        run: |
+          ARTIFACT_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          DRIVE_URL="https://drive.google.com/drive/folders/$DRIVE_BUILD_FOLDER"
+          ./scripts/post_discord.sh "$ARTIFACT_URL" "$DRIVE_URL" "${{ matrix.targetPlatform }}"
