@@ -27,11 +27,26 @@ jobs:
         with:
           name: ${{ matrix.targetPlatform }}-build
           path: build/${{ matrix.targetPlatform }}
+      - name: Install rclone
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y rclone
+      - name: Upload to Drive
+        env:
+          DRIVE_SERVICE_ACCOUNT_KEY: ${{ secrets.DRIVE_SERVICE_ACCOUNT_KEY }}
+          DRIVE_BUILD_FOLDER: ${{ secrets.DRIVE_BUILD_FOLDER }}
+        run: |
+          echo "$DRIVE_SERVICE_ACCOUNT_KEY" > service-account.json
+          rclone config create buildremote drive service_account_file service-account.json --config rclone.conf
+          rclone copy "build/${{ matrix.targetPlatform }}" buildremote:"$DRIVE_BUILD_FOLDER"/${{ matrix.targetPlatform }} --config rclone.conf --create-empty-src-dirs
       - name: Notify Discord
         if: success()
         env:
           PLAYTEST_DISCORD_BUILD: ${{ secrets.PLAYTEST_DISCORD_BUILD }}
+          DRIVE_BUILD_FOLDER: ${{ secrets.DRIVE_BUILD_FOLDER }}
         run: |
+          ARTIFACT_LINK="https://nightly.link/${{ github.repository }}/actions/runs/${{ github.run_id }}/${{ matrix.targetPlatform }}-build.zip"
+          DRIVE_LINK="https://drive.google.com/drive/folders/$DRIVE_BUILD_FOLDER"
           curl -H "Content-Type: application/json" \
-            -d "{\"content\":\"New build for ${{ matrix.targetPlatform }}: https://nightly.link/${{ github.repository }}/actions/runs/${{ github.run_id }}/${{ matrix.targetPlatform }}-build.zip\"}" \
+            -d "{\"content\":\"New build for ${{ matrix.targetPlatform }}:\nArtifact: $ARTIFACT_LINK\nDrive: $DRIVE_LINK\"}" \
             $PLAYTEST_DISCORD_BUILD
