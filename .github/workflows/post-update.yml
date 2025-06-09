@@ -1,0 +1,16 @@
+name: Post Update Log
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  send-log:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Send changelog entry
+        env:
+          PLAYTEST_DISCORD_UPDATE: ${{ secrets.PLAYTEST_DISCORD_UPDATE }}
+        run: bash scripts/send_update_log.sh
