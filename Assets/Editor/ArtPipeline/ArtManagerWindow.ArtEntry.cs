@@ -4,6 +4,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Runtime.CardGameplay.Card;
 using Runtime.Combat.Pawn;
+using Runtime.Combat.StatusEffects;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
@@ -75,6 +76,15 @@ namespace Editor.ArtPipeline
                         break;
                     case PawnData pawnData:
                         pawnData.Sprite = sprite;
+                        break;
+                    case StatusEffectData statusEffectData:
+                        var so = new SerializedObject(statusEffectData);
+                        var iconProp = so.FindProperty("_icon");
+                        if (iconProp != null)
+                        {
+                            iconProp.objectReferenceValue = sprite;
+                            so.ApplyModifiedProperties();
+                        }
                         break;
                 }
 
