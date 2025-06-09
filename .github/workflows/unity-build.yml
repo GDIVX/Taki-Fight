@@ -27,3 +27,11 @@ jobs:
         with:
           name: ${{ matrix.targetPlatform }}-build
           path: build/${{ matrix.targetPlatform }}
+      - name: Notify Discord
+        if: success()
+        env:
+          PLAYTEST_DISCORD_BUILD: ${{ secrets.PLAYTEST_DISCORD_BUILD }}
+        run: |
+          curl -H "Content-Type: application/json" \
+            -d "{\"content\":\"New build for ${{ matrix.targetPlatform }}: https://nightly.link/${{ github.repository }}/actions/runs/${{ github.run_id }}/${{ matrix.targetPlatform }}-build.zip\"}" \
+            $PLAYTEST_DISCORD_BUILD
