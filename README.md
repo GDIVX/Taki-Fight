@@ -32,3 +32,7 @@ Refer to the [Playtesting Guide](docs/PlaytestingGuide.md) for details on openin
 ## Coding Standards
 
 See [CodingStandards.md](docs/CodingStandards.md) for the project's coding conventions.
+
+## Changelog
+
+All notable changes are documented in [CHANGELOG.md](CHANGELOG.md).
