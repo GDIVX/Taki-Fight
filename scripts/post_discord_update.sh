@@ -10,6 +10,7 @@ notes=$(awk '/^## /{if(found) exit; found=1; next} found{print}' "$CHANGELOG_FIL
 
 content="**$header**\n$notes"
 
-payload=$(jq -n --arg content "$content" '{content:$content}')
+payload=$(printf '%s' "$content" | \
+    python3 -c "import sys, json; print(json.dumps({'content': sys.stdin.read()}))")
 
-curl -H 'Content-Type: application/json' -d "$payload" "$WEBHOOK_URL"
+curl -H 'Content-Type: application/json' -X POST -d "$payload" "$WEBHOOK_URL"
