@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ./.github/actions/common-setup
+        with:
+          unity-license: ${{ secrets.UNITY_LICENSE }}
+      - name: Restore dependencies
+        run: dotnet restore TakiFight.Tests/TakiFight.Tests.csproj
+      - name: Run tests
+        run: dotnet test TakiFight.Tests/TakiFight.Tests.csproj --verbosity normal
+
+  build:
+    runs-on: ubuntu-latest
+    needs: test
+    strategy:
+      matrix:
+        targetPlatform: [StandaloneWindows64, StandaloneLinux64]
+    steps:
+      - uses: ./.github/actions/common-setup
+        with:
+          unity-license: ${{ secrets.UNITY_LICENSE }}
+      - name: Build Project
+        uses: game-ci/unity-builder@v3
+        with:
+          projectPath: .
+          unityVersion: 6000.0.28f1
+          targetPlatform: ${{ matrix.targetPlatform }}
+

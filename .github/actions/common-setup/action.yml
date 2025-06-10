@@ -1,0 +1,19 @@
+name: 'Common Setup'
+description: 'Checkout repository, setup .NET and Unity license'
+inputs:
+  unity-license:
+    description: 'Unity license content'
+    required: true
+runs:
+  using: 'composite'
+  steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
+    - name: Set Unity license
+      shell: bash
+      run: |
+        echo 'UNITY_LICENSE<<EOF' >> "$GITHUB_ENV"
+        echo "${{ inputs.unity-license }}" >> "$GITHUB_ENV"
+        echo 'EOF' >> "$GITHUB_ENV"
