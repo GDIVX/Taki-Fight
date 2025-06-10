@@ -227,6 +227,19 @@ namespace Runtime.CardGameplay.Card
         public void OnDraw()
         {
             UpdateAffordability();
+            HealAssociatedPawn();
+        }
+
+        private void HealAssociatedPawn()
+        {
+            var pawn = Instance.PawnInstant;
+            if (pawn == null) return;
+            if (pawn.IsFullHealth()) return;
+            //heal by half of its total max HP
+            var maxHealth = pawn.Data.Health;
+            var half = Mathf.RoundToInt(maxHealth * 0.5f);
+            var curr = pawn.CurrentHealth;
+            pawn.CurrentHealth = Mathf.Clamp(curr + half, 0, maxHealth);
         }
 
         private void TryToPlay()
@@ -251,10 +264,10 @@ namespace Runtime.CardGameplay.Card
             if (hand) hand.ConsumeCard(this);
         }
 
-        public void Limbo()
+        public void SetAside()
         {
             var hand = ServiceLocator.Get<HandController>();
-            if (hand) hand.LimboCard(this);
+            if (hand) hand.SetAside(this);
         }
     }
 }

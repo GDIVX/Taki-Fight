@@ -200,7 +200,7 @@ namespace Runtime.CardGameplay.Card.View
         }
 
         [Button]
-        public void OnBurn()
+        public void OnConsume()
         {
             _canvasGroup.interactable = false;
             _canvasGroup.blocksRaycasts = false;

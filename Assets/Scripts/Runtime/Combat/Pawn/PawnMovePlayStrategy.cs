@@ -1,4 +1,4 @@
-using System;
+using Runtime.Combat.Tilemap;
 
 namespace Runtime.Combat.Pawn
 {
@@ -13,6 +13,6 @@ namespace Runtime.Combat.Pawn
         /// <param name="pawn">The moving pawn.</param>
         /// <param name="nextTile">Reference to the tile the pawn intends to move to. Implementations
         /// may modify this reference to change the final destination.</param>
-        public abstract void ModifyMove(PawnController pawn, ref Runtime.Combat.Tilemap.Tile nextTile);
+        public abstract void ModifyMove(PawnController pawn, ref Tile nextTile);
     }
 }

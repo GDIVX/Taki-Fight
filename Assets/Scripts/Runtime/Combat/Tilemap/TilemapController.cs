@@ -148,5 +148,10 @@ namespace Runtime.Combat.Tilemap
         {
             return _activeUnits.Where(u => u.Owner == owner).ToList();
         }
+
+        public bool IsPawnExist(PawnController pawnController)
+        {
+            return _activeUnits.Contains(pawnController);
+        }
     }
 }

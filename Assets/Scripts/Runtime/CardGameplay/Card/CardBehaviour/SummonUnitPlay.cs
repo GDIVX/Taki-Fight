@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Runtime.Combat.Pawn;
 using Runtime.Combat.Tilemap;
 using Runtime.Selection;
@@ -21,73 +22,19 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
 
             SelectionService.Instance.RequestSelection
             (
-                target =>
-                {
-                    //cast the target to a tile
-                    var tileView = target as TileView;
-                    if (tileView == null)
-                    {
-                        // Debug.LogError("SummonUnitPlay: Target is not a TileView.");
-                        onComplete?.Invoke(false);
-                        return false;
-                    }
-
-                    //get the size of the unit
-                    var unitSize = Pawn.Size;
-
-                    //get all tiles for the footprint of the unit
-                    var tilemap = ServiceLocator.Get<TilemapController>();
-                    if (tilemap == null)
-                    {
-                        Debug.LogError("SummonUnitPlay: TilemapController not found.");
-                        onComplete?.Invoke(false);
-                        return false;
-                    }
-
-                    if (!tilemap.TryGenerateFootprintBounded(tileView.Tile.Position, unitSize, out var footprint))
-                    {
-                        onComplete?.Invoke(false);
-                        return false;
-                    }
-
-                    //check if the footprint is valid
-                    //iterate through the footprint and check validation
-                    foreach (var tile in footprint)
-                    {
-                        if (tile == null)
-                        {
-                            onComplete?.Invoke(false);
-                            return false;
-                        }
-
-                        //check if tile is in bounds of the tilemap
-                        if (!tilemap.IsInBounds(tile.Position))
-                        {
-                            onComplete?.Invoke(false);
-                            return false;
-                        }
-
-                        if (tile.IsOccupied)
-                        {
-                            onComplete?.Invoke(false);
-                            return false;
-                        }
-
-                        //all tiles must adhear to the tile selection mode
-                        if (!TileFilterHelper.FilterTile(tile, TileSelectionMode))
-                        {
-                            onComplete?.Invoke(false);
-                            return false;
-                        }
-                    }
-
-                    //if all tiles are valid, return true
-                    return true;
-                },
+                IsValidTile,
                 1,
-                selectedEntities =>
+                SummonPawn,
+                () => { onComplete?.Invoke(false); },
+                cardController.transform.position
+            );
+            return;
+
+            void SummonPawn(List<ISelectableEntity> selectedEntities)
+            {
+                var tileView = selectedEntities[0] as TileView;
+                if (tileView)
                 {
-                    var tileView = selectedEntities[0] as TileView;
                     var tile = tileView.Tile;
 
                     if (tile.IsOccupied)
@@ -104,22 +51,92 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                         return;
                     }
 
-                    var unit = Pawn;
-                    var pawnController = pawnFactory.CreatePawn(unit, tile);
+                    //if the card instance already holds a pawn instance, we use it to spawn. Otherwise, we spawn a new pawn
 
-                    //deal with the card
-                    // //the card is moved to a "limbo" state where it dosen't have a controller 
-                    // //we remove it from the hand without adding it to the discard pile or the consume pile
-                    // cardController.Limbo();
-                    // //when the pawn is killed, we move the card to the consume pile
-                    // pawnController.OnKilled += cardController.Consume;
+                    PawnController controller;
+                    if (cardController.Instance.PawnInstant == null)
+                    {
+                        var unit = Pawn;
+                        controller = pawnFactory.CreatePawn(unit, tile);
+                    }
+                    else
+                    {
+                        var unit = cardController.Instance.PawnInstant;
+                        controller = pawnFactory.CreatePawn(unit, tile);
+                    }
 
 
-                    onComplete?.Invoke(true);
-                },
-                () => { onComplete?.Invoke(false); },
-                cardController.transform.position
-            );
+                    //destroy the card for now. It would be recreated later if needed
+                    controller.BoundCard(cardController.Instance);
+                    cardController.SetAside();
+                }
+
+                onComplete?.Invoke(true);
+            }
+
+            bool IsValidTile(ISelectableEntity target)
+            {
+                //cast the target to a tile
+                var tileView = target as TileView;
+                if (tileView == null)
+                {
+                    // Debug.LogError("SummonUnitPlay: Target is not a TileView.");
+                    onComplete?.Invoke(false);
+                    return false;
+                }
+
+                //get the size of the unit
+                var unitSize = Pawn.Size;
+
+                //get all tiles for the footprint of the unit
+                var tilemap = ServiceLocator.Get<TilemapController>();
+                if (tilemap == null)
+                {
+                    Debug.LogError("SummonUnitPlay: TilemapController not found.");
+                    onComplete?.Invoke(false);
+                    return false;
+                }
+
+                if (!tilemap.TryGenerateFootprintBounded(tileView.Tile.Position, unitSize, out var footprint))
+                {
+                    onComplete?.Invoke(false);
+                    return false;
+                }
+
+                //check if the footprint is valid
+                //iterate through the footprint and check validation
+                foreach (var tile in footprint)
+                {
+                    if (tile == null)
+                    {
+                        onComplete?.Invoke(false);
+                        return false;
+                    }
+
+                    //check if tile is in bounds of the tilemap
+                    if (!tilemap.IsInBounds(tile.Position))
+                    {
+                        onComplete?.Invoke(false);
+                        return false;
+                    }
+
+                    if (tile.IsOccupied)
+                    {
+                        onComplete?.Invoke(false);
+                        return false;
+                    }
+
+                    //all tiles must adhear to the tile selection mode
+                    if (!TileFilterHelper.FilterTile(tile, TileSelectionMode))
+                    {
+                        onComplete?.Invoke(false);
+                        return false;
+                    }
+                }
+
+                //if all tiles are valid, return true
+                return true;
+            }
         }
 
         public override string GetDescription()

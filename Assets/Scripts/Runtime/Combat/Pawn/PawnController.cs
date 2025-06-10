@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using CodeMonkey.HealthSystemCM;
 using JetBrains.Annotations;
+using Runtime.CardGameplay.Card;
+using Runtime.CardGameplay.Deck;
 using Runtime.Combat.StatusEffects;
 using Runtime.Combat.Tilemap;
 using Sirenix.OdinInspector;
@@ -23,15 +25,20 @@ namespace Runtime.Combat.Pawn
         public PawnOwner Owner { get; set; }
 
         public PawnData Data { get; private set; }
-        [ShowInInspector] public HealthSystem Health { get; private set; }
+        [ShowInInspector] public HealthSystem Health { get; internal set; }
         public bool IsAgile { get; private set; }
         public bool IsProcessingTurn { get; private set; }
 
 
         internal PawnCombat Combat => _combat;
         internal PawnTilemapHelper TilemapHelper => _tilemapHelper;
-        internal PawnMovement Movement => _movement;
+        private PawnMovement Movement => _movement;
         public PawnView View => _view;
+
+        public CardInstance AssociatedCard { get; internal set; }
+        public PawnInstant Instant { get; private set; }
+
+        public bool IsActive { get; private set; }
         public event Action OnKilled;
 
         public void Init(PawnData data)
@@ -64,10 +71,15 @@ namespace Runtime.Combat.Pawn
 
             // Execute onSummon strategies
             ExecuteStrategies(data.OnSummonStrategies);
+
+            Instant = new PawnInstant(data);
+
+            IsActive = true;
         }
 
         private void OnDead(object sender, EventArgs e)
         {
+            if (!IsActive) return;
             Kill();
         }
 
@@ -76,6 +88,27 @@ namespace Runtime.Combat.Pawn
             ExecuteStrategies(Data.OnKilledStrategies);
             OnKilled?.Invoke();
             Remove(true);
+
+            //if the card has an associated card, create it 
+            Recall();
+        }
+
+        public void Recall(bool cleanup = false)
+        {
+            if (AssociatedCard == null) return;
+
+            AssociatedCard.PawnInstant.CurrentHealth = (int)Health.GetHealth();
+
+            var hand = ServiceLocator.Get<HandController>();
+            hand.InstantiateCard(AssociatedCard);
+
+            if (!cleanup) return;
+            if (gameObject.activeInHierarchy) Destroy(gameObject);
+
+            var tilemap = ServiceLocator.Get<TilemapController>();
+            if (tilemap.IsPawnExist(this)) tilemap.RemoveUnit(this);
+
+            IsActive = false;
         }
 
         public void Remove(bool animate)
@@ -88,6 +121,8 @@ namespace Runtime.Combat.Pawn
             _statusEffectHandler.Clear();
             var tilemap = ServiceLocator.Get<TilemapController>();
             tilemap?.RemoveUnit(this);
+
+            IsActive = false;
         }
 
 
@@ -369,6 +404,12 @@ namespace Runtime.Combat.Pawn
         public void OnPointerEnter(PointerEventData eventData)
         {
             _view.OnPointerEnter(eventData);
+        }
+
+        public void BoundCard(CardInstance card)
+        {
+            AssociatedCard = card;
+            card.PawnInstant = Instant;
         }
     }
 }

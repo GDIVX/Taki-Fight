@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Runtime.Combat.Pawn;
 
 namespace Runtime.CardGameplay.Card
 {
@@ -7,6 +8,7 @@ namespace Runtime.CardGameplay.Card
     public class CardInstance : IEqualityComparer<CardInstance>
     {
         public CardData Data;
+        public PawnInstant PawnInstant;
 
 
         public CardInstance(CardData data)

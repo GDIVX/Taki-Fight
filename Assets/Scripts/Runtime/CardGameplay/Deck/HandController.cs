@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Runtime.CardGameplay.Card;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -77,12 +78,19 @@ namespace Runtime.CardGameplay.Deck
             InstantiateCard(cardInstance);
         }
 
-        private void InstantiateCard(CardInstance cardInstance)
+        public void InstantiateCard(CardInstance cardInstance)
         {
+            if (Has(cardInstance)) return;
+
             var controller = _cardFactory.Create(cardInstance);
             controller.OnDraw();
             controller.View.OnDraw();
             AddCard(controller);
+        }
+
+        private bool Has(CardInstance instance)
+        {
+            return _cards.Any(c => c.Instance == instance);
         }
 
         [Button]
@@ -141,24 +149,9 @@ namespace Runtime.CardGameplay.Deck
             }
 
             Deck.Consume(cardController.Instance);
-            RemoveCard(cardController);
-            cardController.OnDiscard();
-            cardController.View.OnBurn();
-            OnCardBurnt?.Invoke(cardController);
+            SetAside(cardController);
         }
 
-        /// <summary>
-        ///     The card is removed from all interaction with the game while still being tracked by the game.
-        ///     Effectivly it is put in limbo.It is no longer in the game, but it is also not destroyed.
-        ///     Used when you need to temporarily remove a card from the game, but you still want to keep track of it.
-        /// </summary>
-        /// <param name="cardController"></param>
-        public void LimboCard(CardController cardController)
-        {
-            Deck.TryToFindAndRemoveCard(instance => cardController.Instance.Equals(instance), out _);
-            RemoveCard(cardController);
-            cardController.View.OnBurn();
-        }
 
         public bool Has(CardController cardController)
         {
@@ -185,6 +178,14 @@ namespace Runtime.CardGameplay.Deck
         public bool HandIsEmpty()
         {
             return _cards.Count == 0;
+        }
+
+        public void SetAside(CardController cardController)
+        {
+            RemoveCard(cardController);
+            cardController.OnDiscard();
+            cardController.View.OnConsume();
+            OnCardBurnt?.Invoke(cardController);
         }
     }
 }
