@@ -20,7 +20,7 @@ jobs:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
           projectPath: .
-          unityVersion: 6000.0.28f1
+          unityVersion: 2022.3.28f1
           targetPlatform: ${{ matrix.targetPlatform }}
       - name: Upload build
         uses: actions/upload-artifact@v3
