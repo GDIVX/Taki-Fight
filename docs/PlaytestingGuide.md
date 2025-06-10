@@ -4,7 +4,7 @@ This guide explains how to open **Taki Fight** in Unity and run the game locally
 
 ## Required Unity Version
 
-Use **Unity 6000.0.28f1**. Make sure it is installed via the Unity Hub.
+Use **Unity 2022.3.10f1**. Make sure it is installed via the Unity Hub.
 
 ## Opening the Project
 

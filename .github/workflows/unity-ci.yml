@@ -10,18 +10,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 6.0.x
+          cache: true
+      - name: Restore NuGet packages
+        run: dotnet restore
+      - name: Run .NET tests
+        run: dotnet test TakiFight.Tests/TakiFight.Tests.csproj --verbosity minimal
       - name: Run Unity Tests
         uses: game-ci/unity-test-runner@v3
         with:
           projectPath: .
-          unityVersion: 6000.0.28f1
+          unityVersion: 2022.3.10f1
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
       - name: Build Game
         uses: game-ci/unity-builder@v3
         with:
           projectPath: .
-          unityVersion: 6000.0.28f1
+          unityVersion: 2022.3.10f1
           targetPlatform: StandaloneLinux64
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
