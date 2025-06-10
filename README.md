@@ -40,6 +40,17 @@ organization settings:
 - `DRIVE_BUILD_FOLDER` – the Google Drive folder ID that receives uploaded
   builds.
 
+### Google Drive Setup
+
+1. Open the [Google Cloud Console](https://console.cloud.google.com/) and create
+   or select a project.
+2. Navigate to **APIs & Services** → **Credentials** and create a new
+   **service account**.
+3. From the service account page, generate a **JSON key** and download the file.
+   Use its contents for the `DRIVE_SERVICE_ACCOUNT_KEY` secret.
+4. Go to [Google Drive](https://drive.google.com/), open the target folder, and
+   copy the ID from the URL for the `DRIVE_BUILD_FOLDER` secret.
+
 
 ## Coding Standards
 
