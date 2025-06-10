@@ -12,6 +12,8 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '8.0.x'
+          cache: 'nuget'
+          cache-dependency-path: '**/*.csproj'
       - name: Restore dependencies
         run: dotnet restore TakiFight.Tests/TakiFight.Tests.csproj
       - name: Run tests
