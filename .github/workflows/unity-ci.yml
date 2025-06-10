@@ -22,7 +22,7 @@ jobs:
         run: dotnet restore TakiFight.Tests/TakiFight.Tests.csproj
 
       - name: Compile and run .NET tests
-        run: dotnet test TakiFight.Tests/TakiFight.Tests.csproj --no-build --verbosity normal
+        run: dotnet test TakiFight.Tests/TakiFight.Tests.csproj
 
       - name: Run Unity tests
         uses: game-ci/unity-test-runner@v4
