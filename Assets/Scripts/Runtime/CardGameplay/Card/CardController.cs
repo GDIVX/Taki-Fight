@@ -86,19 +86,32 @@ namespace Runtime.CardGameplay.Card
                 return;
             }
 
-
-            Instance = new CardInstance(data)
+            var instance = new CardInstance(data)
             {
                 Controller = this
             };
 
+            Init(instance, dependencies);
+        }
+
+        public void Init(CardInstance instance, CardDependencies dependencies)
+        {
+            if (instance == null)
+            {
+                Debug.LogError("CardInstance cannot be null during initialization.");
+                return;
+            }
+
+            Instance = instance;
+            Instance.Controller = this;
+
+            var data = instance.Data;
 
             CardType = data.CardType;
 
             _feedbackStrategy = data.FeedbackStrategy;
             _playStrategies = new List<PlayStrategyData>(data.PlayStrategies);
             _playStrategies.ForEach(s => s.PlayStrategy.Initialize(s));
-
 
             _cardFactory = ServiceLocator.Get<CardFactory>();
             Energy = ServiceLocator.Get<Energy.Energy>();

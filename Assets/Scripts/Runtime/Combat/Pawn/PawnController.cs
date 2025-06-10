@@ -38,6 +38,11 @@ namespace Runtime.Combat.Pawn
         public CardInstance AssociatedCard { get; internal set; }
         public PawnInstant Instant { get; private set; }
 
+        internal void SetInstant(PawnInstant instant)
+        {
+            Instant = instant;
+        }
+
         public bool IsActive { get; private set; }
         public event Action OnKilled;
 
