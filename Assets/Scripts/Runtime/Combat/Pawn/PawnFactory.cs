@@ -43,6 +43,7 @@ namespace Runtime.Combat.Pawn
 
             var data = instant.Data;
             var controller = CreatePawn(data, tile);
+            controller.SetInstant(instant);
             controller.Health.SetHealth(instant.CurrentHealth);
             return controller;
         }

@@ -41,7 +41,13 @@ namespace Runtime.CardGameplay.Card
 
         public CardController Create(CardInstance instance)
         {
-            return Create(instance.Data);
+            CardController controller = GetController();
+            controller.Init(instance, _cardDependencies);
+            controller.gameObject.GetComponent<CardView>()
+                .Init(_drawFromLocation, _discardToLocation)
+                .Draw(controller);
+            controller.gameObject.SetActive(true);
+            return controller;
         }
 
         /// <summary>
