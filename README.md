@@ -39,6 +39,7 @@ organization settings:
   to upload builds to Google Drive.
 - `DRIVE_BUILD_FOLDER` – the Google Drive folder ID that receives uploaded
   builds.
+- `UNITY_LICENSE` – the encoded Unity license used to activate the editor during CI.
 
 
 ## Coding Standards

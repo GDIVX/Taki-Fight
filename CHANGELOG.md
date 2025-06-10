@@ -9,6 +9,7 @@ Maintainers should add a new entry for each release.
 
 - Placeholder for upcoming changes.
 - Added workflow to upload builds to Google Drive.
+- Replaced CI with a Unity 6 workflow that tests, builds, and uploads builds to Google Drive.
 
 ## [0.1.0] - 2025-06-09
 ### Added
