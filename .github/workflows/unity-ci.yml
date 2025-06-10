@@ -1,0 +1,40 @@
+name: Unity CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run Unity Tests
+        uses: game-ci/unity-test-runner@v3
+        with:
+          projectPath: .
+          unityVersion: 6000.0.28f1
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+      - name: Build Game
+        uses: game-ci/unity-builder@v3
+        with:
+          projectPath: .
+          unityVersion: 6000.0.28f1
+          targetPlatform: StandaloneLinux64
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+      - name: Install rclone
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y rclone
+      - name: Upload to Drive
+        env:
+          DRIVE_SERVICE_ACCOUNT_KEY: ${{ secrets.DRIVE_SERVICE_ACCOUNT_KEY }}
+          DRIVE_BUILD_FOLDER: ${{ secrets.DRIVE_BUILD_FOLDER }}
+        run: |
+          echo "$DRIVE_SERVICE_ACCOUNT_KEY" > service-account.json
+          rclone config create buildremote drive service_account_file service-account.json --config rclone.conf
+          rclone copy build/StandaloneLinux64 buildremote:"$DRIVE_BUILD_FOLDER"/StandaloneLinux64 --config rclone.conf --create-empty-src-dirs
+

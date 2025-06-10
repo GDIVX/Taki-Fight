@@ -33,12 +33,11 @@ Refer to the [Playtesting Guide](docs/PlaytestingGuide.md) for details on openin
 The CI workflows rely on several secrets configured in the repository or
 organization settings:
 
-- `PLAYTEST_DISCORD_BUILD` – webhook URL used to post new builds to Discord.
-- `PLAYTEST_DISCORD_UPDATE` – webhook URL for sending playtest updates.
 - `DRIVE_SERVICE_ACCOUNT_KEY` – JSON credentials for the service account used
   to upload builds to Google Drive.
 - `DRIVE_BUILD_FOLDER` – the Google Drive folder ID that receives uploaded
   builds.
+- `UNITY_LICENSE` – Base64 encoded Unity license used for automated builds.
 
 
 ## Coding Standards
