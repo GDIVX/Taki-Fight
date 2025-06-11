@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: HealthBarMat
+  m_Name: Energy
   m_Shader: {fileID: -6465566751694194690, guid: f17408263761cbf4595f089885db62d4, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -43,7 +43,7 @@ Material:
     m_Floats:
     - _ColorMask: 15
     - _GradientSample: 0.398
-    - _Scale: 7.6
+    - _Scale: 1.8
     - _Stencil: 0
     - _StencilComp: 8
     - _StencilOp: 0
@@ -53,12 +53,12 @@ Material:
     - _UIMaskSoftnessY: 1
     m_Colors:
     - _ClipRect: {r: 0, g: 0, b: 0, a: 0}
-    - _HealthColorA: {r: 2.2350326, g: 0.06995078, b: 0, a: 1}
-    - _HealthColorB: {r: 0.3160377, g: 0.0051439693, b: 0, a: 1}
+    - _HealthColorA: {r: 0.8915094, g: 0.26168916, b: 0.021026162, a: 1}
+    - _HealthColorB: {r: 2.1789541, g: 2.0990973, b: 0, a: 1}
     - _HealthColorMaxA: {r: 0, g: 2.1915438, b: 0.022016782, a: 1}
     - _HealthColorMaxB: {r: 0.02291783, g: 0.16078432, b: 0, a: 0}
     - _HealthColorMimB: {r: 0.3207547, g: 0.05598078, b: 0.07410239, a: 0}
     - _HealthColorMinA: {r: 0.5566038, g: 0.06563723, b: 0.1211766, a: 1}
-    - _TwirlOffsetSpeed: {r: 0.1, g: 0, b: 0, a: 0}
+    - _TwirlOffsetSpeed: {r: 0.66, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
