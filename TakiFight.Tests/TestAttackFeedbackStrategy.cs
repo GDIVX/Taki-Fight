@@ -4,9 +4,15 @@ using UnityEngine;
 
 namespace Runtime.Combat.Pawn.AttackFeedback
 {
+    public struct AttackFeedbackStrategyData
+    {
+        public AttackFeedbackStrategy Strategy;
+        public StrategyParams Parameters;
+    }
+
     public abstract class AttackFeedbackStrategy : ScriptableObject
     {
-        public virtual void Initialize()
+        public virtual void Initialize(AttackFeedbackStrategyData data)
         {
         }
 

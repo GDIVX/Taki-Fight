@@ -11,7 +11,7 @@ namespace Runtime.Combat.Pawn
         public int Defense { get; set; }
         public int Damage { get; set; }
         public int Attacks { get; set; }
-        public AttackFeedback.AttackFeedbackStrategy AttackFeedbackStrategy { get; set; }
+        public AttackFeedback.AttackFeedbackStrategyData AttackFeedbackStrategy { get; set; }
         public List<PawnStrategyData> OnHitStrategies { get; } = new();
         public List<PawnStrategyData> OnAttackStrategies { get; } = new();
     }
@@ -61,7 +61,7 @@ namespace Runtime.Combat.Pawn
 
         public IEnumerator Attack(PawnController target, Action onComplete)
         {
-            Pawn.Data.AttackFeedbackStrategy?.Play(Pawn, target, null);
+            Pawn.Data.AttackFeedbackStrategy.Strategy?.Play(Pawn, target, null);
 
             for (int i = 0; i < Attacks.Value; i++)
             {

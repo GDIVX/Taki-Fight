@@ -7,7 +7,12 @@ namespace Runtime.Combat.Pawn.AttackFeedback
     [CreateAssetMenu(fileName = "Projectile Attack Feedback", menuName = "Pawns/Attack Feedback/Projectile")]
     public class ProjectileAttackFeedbackStrategy : AttackFeedbackStrategy
     {
-        [SerializeField] private ProjectileAttackFeedbackParams _params;
+        private ProjectileAttackFeedbackParams _params;
+
+        public override void Initialize(AttackFeedbackStrategyData data)
+        {
+            _params = data.Parameters as ProjectileAttackFeedbackParams;
+        }
 
         public override void Play(PawnController attacker, PawnController target, Action onComplete)
         {
