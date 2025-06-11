@@ -5,6 +5,7 @@ using Runtime.CardGameplay.Card;
 using Runtime.CardGameplay.Card.CardBehaviour;
 using Runtime.Combat.Pawn;
 using Runtime.Combat.Tilemap;
+using Runtime.Combat.Pawn.AttackFeedback;
 using Runtime;
 using Sirenix.OdinInspector;
 #if UNITY_EDITOR
@@ -77,6 +78,9 @@ namespace Runtime.Combat.Pawn
         [ListDrawerSettings(DefaultExpandedState = false)] [BoxGroup("Callbacks/On Attack")] [SerializeField]
         private List<PawnStrategyData> _onAttackStrategies;
 
+        [BoxGroup("Callbacks/On Attack")] [SerializeField]
+        private AttackFeedback.AttackFeedbackStrategy _attackFeedbackStrategy;
+
         [ListDrawerSettings(DefaultExpandedState = false)] [BoxGroup("Callbacks/On Hit")] [SerializeField]
         private List<PawnStrategyData> _onHitStrategies;
 
@@ -106,6 +110,7 @@ namespace Runtime.Combat.Pawn
         public List<PawnStrategyData> OnSummonStrategies => _summonStrategies;
         public List<PawnStrategyData> OnTurnStartStrategies => _onTurnStartStrategies;
         public List<PawnStrategyData> OnAttackStrategies => _onAttackStrategies;
+        public AttackFeedback.AttackFeedbackStrategy AttackFeedbackStrategy => _attackFeedbackStrategy;
         public List<PawnStrategyData> OnHitStrategies => _onHitStrategies;
         public List<PawnStrategyData> OnMoveStrategies => _onMoveStrategies;
         public List<PawnStrategyData> MovementAbilities => _movementAbilities;
@@ -212,6 +217,7 @@ namespace Runtime.Combat.Pawn
 
         public void InitializeStrategies()
         {
+            _attackFeedbackStrategy?.Initialize();
             _onAttackStrategies.ForEach(data => data.Strategy.Initialize(data));
             _onHitStrategies.ForEach(data => data.Strategy.Initialize(data));
             _onDamagedStrategies.ForEach(data => data.Strategy.Initialize(data));
