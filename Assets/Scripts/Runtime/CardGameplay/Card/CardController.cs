@@ -26,7 +26,7 @@ namespace Runtime.CardGameplay.Card
 
         public CardInstance Instance { get; private set; }
         public Transform Transform => gameObject.transform;
-        public CardView View { get; private set; }
+        public CardView View { get; set; }
 
         public CardData Data { get; private set; }
 

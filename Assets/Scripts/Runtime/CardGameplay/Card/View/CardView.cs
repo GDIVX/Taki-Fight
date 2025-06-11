@@ -50,6 +50,14 @@ namespace Runtime.CardGameplay.Card.View
         private Transform _discardToLocation, _drawFromLocation;
 
         [ShowInInspector, ReadOnly] private bool _isHoverEnabled;
+
+        public bool IsAnimating => _currentTween != null && _currentTween.IsActive() && _currentTween.IsPlaying();
+
+        public void SetHoverEnabled(bool value)
+        {
+            _isHoverEnabled = value;
+        }
+
         [ShowInInspector, ReadOnly] private Vector3 _originalPosition;
         [ShowInInspector, ReadOnly] private Vector3 _originalRotation;
 

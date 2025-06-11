@@ -5,6 +5,7 @@ using CodeMonkey.HealthSystemCM;
 using JetBrains.Annotations;
 using Runtime.Combat.StatusEffects;
 using Runtime.Combat.Tilemap;
+using Runtime.Combat.Pawn.AttackFeedback;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -19,6 +20,7 @@ namespace Runtime.Combat.Pawn
         [SerializeField] private PawnCombat _combat;
         [SerializeField] private PawnTilemapHelper _tilemapHelper;
         [SerializeField] private PawnMovement _movement;
+        [SerializeField] private AttackFeedbackStrategyData _attackFeedbackStrategy;
 
         public PawnOwner Owner { get; set; }
 
@@ -32,6 +34,7 @@ namespace Runtime.Combat.Pawn
         internal PawnTilemapHelper TilemapHelper => _tilemapHelper;
         internal PawnMovement Movement => _movement;
         public PawnView View => _view;
+        internal AttackFeedbackStrategy AttackFeedbackStrategy => _attackFeedbackStrategy.Strategy;
         public event Action OnKilled;
 
         public void Init(PawnData data)
@@ -61,6 +64,7 @@ namespace Runtime.Combat.Pawn
             gameObject.name = $"{data.name}_{Guid.NewGuid()}";
 
             Data = data;
+            _attackFeedbackStrategy = data.AttackFeedbackStrategy;
 
             // Execute onSummon strategies
             ExecuteStrategies(data.OnSummonStrategies);
@@ -358,6 +362,17 @@ namespace Runtime.Combat.Pawn
                     });
                 }
             }
+        }
+
+        internal void ExecuteAttackFeedbackStrategy(PawnController target, Action onComplete)
+        {
+            if (_attackFeedbackStrategy.Strategy == null)
+            {
+                onComplete?.Invoke();
+                return;
+            }
+
+            _attackFeedbackStrategy.Strategy.Play(this, target, onComplete);
         }
 
         public void OverrideHealthSystem(HealthSystem health)

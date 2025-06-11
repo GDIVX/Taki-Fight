@@ -50,6 +50,10 @@ namespace Runtime.Combat.Pawn
         {
             for (int i = 0; i < Attacks.Value; i++)
             {
+                var feedbackDone = false;
+                Pawn.ExecuteAttackFeedbackStrategy(target, () => feedbackDone = true);
+                yield return new WaitUntil(() => feedbackDone);
+
                 int attackDamage = Damage.Value;
                 Pawn.ExecuteHitStrategies(Pawn.Data.OnHitStrategies, target, ref attackDamage);
                 target.Combat.ReceiveAttack(attackDamage);
