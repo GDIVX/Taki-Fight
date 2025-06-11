@@ -47,18 +47,6 @@ namespace Runtime.CardGameplay.Deck
             ArrangeCardsInArch();
         }
 
-        private void EnsureCardOnTop(CardController card)
-        {
-            if (card == null) return;
-            if (_currentArrangeSequence != null && _currentArrangeSequence.IsPlaying())
-            {
-                _currentArrangeSequence.Kill();
-            }
-
-            card.Transform.SetAsLastSibling();
-            ArrangeCardsInArch(); // Re-arrange cards to update positions
-        }
-
         private void OnDisable()
         {
             if (_currentArrangeSequence != null && _currentArrangeSequence.IsActive())
@@ -118,6 +106,22 @@ namespace Runtime.CardGameplay.Deck
         {
             int count = _cards.Count;
 
+            if (_currentArrangeSequence.IsActive() && _currentArrangeSequence.IsPlaying())
+            {
+                _currentArrangeSequence.Kill();
+                foreach (var c in _cards)
+                {
+                    c.View.SetOriginalValues();
+                }
+            }
+
+            foreach (var c in _cards)
+            {
+                c.View.SetHoverEnabled(false);
+            }
+
+            _hoveredCard?.Transform.SetAsLastSibling();
+
             if (count == 1)
             {
                 _cards[0].Transform.DOLocalMove(Vector3.zero, animationDuration).SetEase(easeType);
@@ -136,12 +140,6 @@ namespace Runtime.CardGameplay.Deck
 
             float radius = scaledWidth / (2 * Mathf.Tan(Mathf.Deg2Rad * (arcAngle / 2)));
             if (float.IsNaN(radius) || float.IsInfinity(radius)) return;
-
-            // Kill any existing arrangement animation
-            if (_currentArrangeSequence.IsActive() && _currentArrangeSequence.IsPlaying())
-            {
-                _currentArrangeSequence.Kill();
-            }
 
             _currentArrangeSequence = DOTween.Sequence();
 
@@ -173,11 +171,7 @@ namespace Runtime.CardGameplay.Deck
                 foreach (var card in _cards)
                 {
                     card.View.SetOriginalValues();
-                }
-
-                if (_hoveredCard != null)
-                {
-                    EnsureCardOnTop(_hoveredCard);
+                    card.View.SetHoverEnabled(true);
                 }
             });
         }
