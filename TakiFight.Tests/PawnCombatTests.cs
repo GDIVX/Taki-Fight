@@ -12,7 +12,11 @@ namespace TakiFight.Tests
             var attackerData = new PawnData { Damage = 1, Defense = 0, Attacks = 1 };
             var targetData = new PawnData { Damage = 0, Defense = 0, Attacks = 0 };
             var feedback = new TestAttackFeedbackStrategy();
-            attackerData.AttackFeedbackStrategy = feedback;
+            attackerData.AttackFeedbackStrategy = new AttackFeedbackStrategyData
+            {
+                Strategy = feedback,
+                Parameters = null
+            };
 
             var attacker = new PawnController();
             attacker.Init(attackerData);

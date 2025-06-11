@@ -79,7 +79,7 @@ namespace Runtime.Combat.Pawn
         private List<PawnStrategyData> _onAttackStrategies;
 
         [BoxGroup("Callbacks/On Attack")] [SerializeField]
-        private AttackFeedback.AttackFeedbackStrategy _attackFeedbackStrategy;
+        private AttackFeedback.AttackFeedbackStrategyData _attackFeedbackStrategy;
 
         [ListDrawerSettings(DefaultExpandedState = false)] [BoxGroup("Callbacks/On Hit")] [SerializeField]
         private List<PawnStrategyData> _onHitStrategies;
@@ -110,7 +110,7 @@ namespace Runtime.Combat.Pawn
         public List<PawnStrategyData> OnSummonStrategies => _summonStrategies;
         public List<PawnStrategyData> OnTurnStartStrategies => _onTurnStartStrategies;
         public List<PawnStrategyData> OnAttackStrategies => _onAttackStrategies;
-        public AttackFeedback.AttackFeedbackStrategy AttackFeedbackStrategy => _attackFeedbackStrategy;
+        public AttackFeedback.AttackFeedbackStrategyData AttackFeedbackStrategy => _attackFeedbackStrategy;
         public List<PawnStrategyData> OnHitStrategies => _onHitStrategies;
         public List<PawnStrategyData> OnMoveStrategies => _onMoveStrategies;
         public List<PawnStrategyData> MovementAbilities => _movementAbilities;
@@ -217,7 +217,10 @@ namespace Runtime.Combat.Pawn
 
         public void InitializeStrategies()
         {
-            _attackFeedbackStrategy?.Initialize();
+            if (_attackFeedbackStrategy.Strategy != null)
+            {
+                _attackFeedbackStrategy.Strategy.Initialize(_attackFeedbackStrategy);
+            }
             _onAttackStrategies.ForEach(data => data.Strategy.Initialize(data));
             _onHitStrategies.ForEach(data => data.Strategy.Initialize(data));
             _onDamagedStrategies.ForEach(data => data.Strategy.Initialize(data));

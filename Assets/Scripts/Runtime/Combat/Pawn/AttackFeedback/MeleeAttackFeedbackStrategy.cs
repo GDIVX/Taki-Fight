@@ -6,7 +6,12 @@ namespace Runtime.Combat.Pawn.AttackFeedback
     [CreateAssetMenu(fileName = "Melee Attack Feedback", menuName = "Pawns/Attack Feedback/Melee")]
     public class MeleeAttackFeedbackStrategy : AttackFeedbackStrategy
     {
-        [SerializeField] private MeleeAttackFeedbackParams _params;
+        private MeleeAttackFeedbackParams _params;
+
+        public override void Initialize(AttackFeedbackStrategyData data)
+        {
+            _params = data.Parameters as MeleeAttackFeedbackParams;
+        }
 
         public override void Play(PawnController attacker, PawnController target, Action onComplete)
         {
