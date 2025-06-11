@@ -1,5 +1,4 @@
 using System;
-using DG.Tweening;
 using UnityEngine;
 
 namespace Runtime.Combat.Pawn.AttackFeedback
@@ -17,12 +16,14 @@ namespace Runtime.Combat.Pawn.AttackFeedback
                 return;
             }
 
-            var origin = attacker.transform.position;
-            var sequence = DOTween.Sequence();
-            sequence.Append(attacker.transform.DOMove(target.transform.position, _params.MoveDuration));
-            sequence.AppendCallback(() => PlayEffects(attacker, _params));
-            sequence.Append(attacker.transform.DOMove(origin, _params.MoveDuration));
-            sequence.OnComplete(() => onComplete?.Invoke());
+            var origin = attacker.TilemapHelper.AnchorTile.Position;
+            var destination = target.TilemapHelper.AnchorTile.Position;
+
+            attacker.View.MoveToPosition(destination, () =>
+            {
+                PlayEffects(attacker, _params);
+                attacker.View.MoveToPosition(origin, onComplete);
+            });
         }
 
         private static void PlayEffects(PawnController pawn, AttackFeedbackParams parameters)
