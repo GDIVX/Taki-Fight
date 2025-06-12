@@ -136,6 +136,23 @@ namespace Runtime.Combat.Pawn
             Debug.Log($"{_summonCardInstance} has been recalled");
         }
 
+        public bool Capture(int potency)
+        {
+            if (Health.GetHealth() > potency)
+            {
+                return false;
+            }
+
+            var cardData = Data.CreateRuntimeSummonCard(1);
+            var cardInstance = new CardInstance(cardData);
+
+            var hand = ServiceLocator.Get<HandController>();
+            hand.AddCardFromInstant(cardInstance);
+
+            Remove(false);
+            return true;
+        }
+
 
         public void OnTurn()
         {
