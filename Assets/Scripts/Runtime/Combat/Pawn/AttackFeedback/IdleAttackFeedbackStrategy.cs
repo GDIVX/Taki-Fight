@@ -6,7 +6,12 @@ namespace Runtime.Combat.Pawn.AttackFeedback
     [CreateAssetMenu(fileName = "Idle Attack Feedback", menuName = "Pawns/Attack Feedback/Idle")]
     public class IdleAttackFeedbackStrategy : AttackFeedbackStrategy
     {
-        [SerializeField] private AttackFeedbackParams _params;
+        private AttackFeedbackParams _params;
+
+        public override void Initialize(AttackFeedbackStrategyData data)
+        {
+            _params = data.Parameters as AttackFeedbackParams;
+        }
 
         public override void Play(PawnController attacker, PawnController target, Action onComplete)
         {

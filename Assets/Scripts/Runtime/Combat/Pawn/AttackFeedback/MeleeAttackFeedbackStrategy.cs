@@ -1,13 +1,18 @@
 using System;
-using DG.Tweening;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Runtime.Combat.Pawn.AttackFeedback
 {
     [CreateAssetMenu(fileName = "Melee Attack Feedback", menuName = "Pawns/Attack Feedback/Melee")]
     public class MeleeAttackFeedbackStrategy : AttackFeedbackStrategy
     {
-        [SerializeField] private MeleeAttackFeedbackParams _params;
+        private MeleeAttackFeedbackParams _params;
+
+        public override void Initialize(AttackFeedbackStrategyData data)
+        {
+            _params = data.Parameters as MeleeAttackFeedbackParams;
+        }
 
         public override void Play(PawnController attacker, PawnController target, Action onComplete)
         {
@@ -17,12 +22,14 @@ namespace Runtime.Combat.Pawn.AttackFeedback
                 return;
             }
 
-            var origin = attacker.transform.position;
-            var sequence = DOTween.Sequence();
-            sequence.Append(attacker.transform.DOMove(target.transform.position, _params.MoveDuration));
-            sequence.AppendCallback(() => PlayEffects(attacker, _params));
-            sequence.Append(attacker.transform.DOMove(origin, _params.MoveDuration));
-            sequence.OnComplete(() => onComplete?.Invoke());
+            var origin = attacker.TilemapHelper.AnchorTile.Position;
+            var destination = target.TilemapHelper.AnchorTile.Position;
+
+            attacker.View.MoveToPosition(destination, () =>
+            {
+                PlayEffects(attacker, _params);
+                attacker.View.MoveToPosition(origin, onComplete);
+            });
         }
 
         private static void PlayEffects(PawnController pawn, AttackFeedbackParams parameters)
