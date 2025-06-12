@@ -151,5 +151,35 @@ namespace Runtime.CardGameplay.Card
 
             return AsSpell(cardData);
         }
+
+        public string Build(CardController controller)
+        {
+            if (controller.PlayStrategies.Count > 0 && controller.PlayStrategies[0].PlayStrategy is SummonUnitPlay summon)
+            {
+                return AsSummon(summon.Pawn);
+            }
+
+            return AsSpell(controller);
+        }
+
+        private string AsSpell(CardController controller)
+        {
+            if (controller.Data.IsConsumed)
+            {
+                WithKeyword("Consume");
+            }
+
+            foreach (var strategy in controller.PlayStrategies)
+            {
+                if (strategy.PlayStrategy is SummonUnitPlay summonStrategy)
+                {
+                    return AsSummon(summonStrategy.Pawn);
+                }
+
+                WithLine(strategy.PlayStrategy);
+            }
+
+            return GetFormattedText();
+        }
     }
 }

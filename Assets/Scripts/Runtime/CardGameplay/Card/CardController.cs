@@ -22,6 +22,7 @@ namespace Runtime.CardGameplay.Card
         private bool _isSelecting;
 
         [ShowInInspector] [ReadOnly] private List<PlayStrategyData> _playStrategies;
+        public IReadOnlyList<PlayStrategyData> PlayStrategies => _playStrategies;
         public CardType CardType { get; private set; }
 
         public CardInstance Instance { get; private set; }
@@ -35,7 +36,12 @@ namespace Runtime.CardGameplay.Card
         public int Cost
         {
             get => Instance.Cost;
-            set => Instance.Cost = value;
+            set
+            {
+                Instance.Cost = value;
+                View?.SetCost(value);
+                View?.UpdateDescription();
+            }
         }
 
         public void OnPointerClick(PointerEventData eventData)
@@ -147,6 +153,7 @@ namespace Runtime.CardGameplay.Card
         {
             var strategy = _playStrategies[index].PlayStrategy;
             strategy.Potency = newValue;
+            View?.UpdateDescription();
         }
 
 

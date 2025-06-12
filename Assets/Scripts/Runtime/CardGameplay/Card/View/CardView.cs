@@ -99,10 +99,7 @@ namespace Runtime.CardGameplay.Card.View
             _title.text = data.Title;
             _image.sprite = data.Image;
 
-            var cost = data.Cost;
-            _costText.text = cost.ToString();
-
-            _costText.transform.parent.gameObject.SetActive(cost > 0);
+            SetCost(data.Cost);
 
             _mask.fillAmount = 1;
             _canvasGroup.alpha = 1;
@@ -123,6 +120,7 @@ namespace Runtime.CardGameplay.Card.View
         {
             Draw(controller.Data);
             _controller = controller;
+            SetCost(controller.Instance.Cost);
             UpdateDescription();
             _controller.IsPlayable.OnValueChanged += isPlayable =>
             {
@@ -148,7 +146,13 @@ namespace Runtime.CardGameplay.Card.View
         public void UpdateDescription()
         {
             var builder = new DescriptionBuilder();
-            _description.text = builder.Build(_cardData);
+            _description.text = _controller ? builder.Build(_controller) : builder.Build(_cardData);
+        }
+
+        public void SetCost(int cost)
+        {
+            _costText.text = cost.ToString();
+            _costText.transform.parent.gameObject.SetActive(cost > 0);
         }
 
         public void SetOriginalValues()
