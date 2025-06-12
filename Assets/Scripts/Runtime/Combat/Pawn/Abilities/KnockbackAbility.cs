@@ -10,7 +10,7 @@ namespace Runtime.Combat.Pawn.Abilities
 
         public override void Play(PawnController pawn, PawnController target, ref int damage, Action<bool> onComplete)
         {
-            var direction = pawn.Owner == PawnOwner.Player ? Vector2Int.up : Vector2Int.left;
+            var direction = pawn.Owner == PawnOwner.Player ? Vector2Int.right : Vector2Int.left;
             PawnHelper.Knockback(target, Potency, DamagePerTile, direction, onComplete);
 
             onComplete?.Invoke(true);
