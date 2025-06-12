@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 1c2d559404c8d9f4b821aed804691754
+guid: 8dafd5280e16044499026639cf72d088
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2712218979368324060
-    second: character_brute_v2_0
+      213: 6532866200798642100
+    second: Logo Black_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: character_brute_v2_0
+      name: Logo Black_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 251
-        height: 227
+        width: 366
+        height: 333
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 424bdad45334c5ad0800000000000000
-      internalID: -2712218979368324060
+      spriteID: 4bf32cf623769aa50800000000000000
+      internalID: 6532866200798642100
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      character_brute_v2_0: -2712218979368324060
+      Logo Black_0: 6532866200798642100
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
