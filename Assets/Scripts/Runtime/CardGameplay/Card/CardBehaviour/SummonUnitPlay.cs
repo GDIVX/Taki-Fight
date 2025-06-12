@@ -15,7 +15,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
         internal PawnData Pawn => _params.Unit;
         private TileFilterCriteria TileSelectionMode => _params.TileFilter;
 
-        public override void Play(CardController cardController, Action<bool> onComplete)
+        public override void Play(CardController cardController, Action<CardPlayResult> onComplete)
         {
             SelectionService.Instance.SearchSize = Pawn.Size;
 
@@ -28,7 +28,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                     if (tileView == null)
                     {
                         // Debug.LogError("SummonUnitPlay: Target is not a TileView.");
-                        onComplete?.Invoke(false);
+                        onComplete?.Invoke(new CardPlayResult(false));
                         return false;
                     }
 
@@ -40,13 +40,13 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                     if (tilemap == null)
                     {
                         Debug.LogError("SummonUnitPlay: TilemapController not found.");
-                        onComplete?.Invoke(false);
+                        onComplete?.Invoke(new CardPlayResult(false));
                         return false;
                     }
 
                     if (!tilemap.TryGenerateFootprintBounded(tileView.Tile.Position, unitSize, out var footprint))
                     {
-                        onComplete?.Invoke(false);
+                        onComplete?.Invoke(new CardPlayResult(false));
                         return false;
                     }
 
@@ -56,27 +56,27 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                     {
                         if (tile == null)
                         {
-                            onComplete?.Invoke(false);
+                            onComplete?.Invoke(new CardPlayResult(false));
                             return false;
                         }
 
                         //check if tile is in bounds of the tilemap
                         if (!tilemap.IsInBounds(tile.Position))
                         {
-                            onComplete?.Invoke(false);
+                            onComplete?.Invoke(new CardPlayResult(false));
                             return false;
                         }
 
                         if (tile.IsOccupied)
                         {
-                            onComplete?.Invoke(false);
+                            onComplete?.Invoke(new CardPlayResult(false));
                             return false;
                         }
 
                         //all tiles must adhear to the tile selection mode
                         if (!TileFilterHelper.FilterTile(tile, TileSelectionMode))
                         {
-                            onComplete?.Invoke(false);
+                            onComplete?.Invoke(new CardPlayResult(false));
                             return false;
                         }
                     }
@@ -92,7 +92,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
 
                     if (tile.IsOccupied)
                     {
-                        onComplete?.Invoke(true); // graceful fail
+                        onComplete?.Invoke(new CardPlayResult(true)); // graceful fail
                         return;
                     }
 
@@ -100,7 +100,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                     if (pawnFactory == null)
                     {
                         Debug.LogError("SummonUnitPlay: PawnFactory not found.");
-                        onComplete?.Invoke(false);
+                        onComplete?.Invoke(new CardPlayResult(false));
                         return;
                     }
 
@@ -109,9 +109,9 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
 
                     pawnController.AssignSummonCard(cardController);
 
-                    onComplete?.Invoke(true);
+                    onComplete?.Invoke(new CardPlayResult(true));
                 },
-                () => { onComplete?.Invoke(false); },
+                () => { onComplete?.Invoke(new CardPlayResult(false)); },
                 cardController.transform.position
             );
         }

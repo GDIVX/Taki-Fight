@@ -192,17 +192,33 @@ namespace Runtime.CardGameplay.Card
         {
             int remainingPlays = _playStrategies.Count;
 
-
-            foreach (var tuple in _playStrategies)
+            foreach (var data in _playStrategies)
             {
-                tuple.PlayStrategy.Play(this, OnStrategyComplete);
+                var strategy = data.PlayStrategy;
+                strategy.Play(this, result =>
+                {
+                    if (!result.IsResolved)
+                    {
+                        return;
+                    }
+
+                    if (strategy is ConditionalCardPlayStrategy conditional &&
+                        result.EventType == conditional.ConditionEvent &&
+                        conditional.FollowUpStrategy != null)
+                    {
+                        conditional.FollowUpStrategy.Play(this, _ => OnStrategyComplete());
+                    }
+                    else
+                    {
+                        OnStrategyComplete();
+                    }
+                });
             }
 
             return;
 
-            void OnStrategyComplete(bool isResolved)
+            void OnStrategyComplete()
             {
-                if (!isResolved) return;
                 remainingPlays--;
                 if (remainingPlays <= 0)
                 {
