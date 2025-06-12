@@ -107,11 +107,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                     var unit = Pawn;
                     var pawnController = pawnFactory.CreatePawn(unit, tile);
 
-                    // deal with the card
-                    cardController.Limbo();
-                    pawnController.SummonCardInstance = cardController.Instance;
-                    pawnController.OnKilled += cardController.Consume;
-
+                    pawnController.AssignSummonCard(cardController);
 
                     onComplete?.Invoke(true);
                 },

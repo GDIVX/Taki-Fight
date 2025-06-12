@@ -58,9 +58,7 @@ namespace Runtime.CardGameplay.Card
         {
             return _objectPool.Count > 0
                 ? _objectPool.Pop()
-                :
-                //Create a new instance
-                Instantiate(_prefab);
+                : Instantiate(_prefab); //Create a new instance
         }
     }
 }

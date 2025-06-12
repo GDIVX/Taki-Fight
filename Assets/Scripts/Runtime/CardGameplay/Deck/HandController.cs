@@ -66,18 +66,26 @@ namespace Runtime.CardGameplay.Deck
             OnCardAdded?.Invoke(cardController);
         }
 
-        public void AddCardFromInstance(CardInstance instance)
+        public void AddCardToHand(CardController cardController)
         {
-            if (_cards.Count >= _maxHandSize)
+            if (cardController == null)
             {
+                Debug.LogWarning("Trying to add null card to hand");
                 return;
             }
 
-            CardController controller = _cardFactory.Create(instance);
-            controller.OnDraw();
-            controller.View.OnDraw();
-            AddCard(controller);
+            if (_cards.Count >= _maxHandSize)
+            {
+                //add to the draw pile instead
+                Deck.AddToDrawPile(cardController.Instance);
+                return;
+            }
+
+            cardController.OnDraw();
+            cardController.View.OnDraw();
+            AddCard(cardController);
         }
+
 
         /// <summary>
         /// Draw a card from the deck, create for it a game object and add it to the hand
@@ -87,10 +95,10 @@ namespace Runtime.CardGameplay.Deck
         {
             if (_cards.Count >= _maxHandSize) return;
             if (!Deck.Draw(out var cardInstance)) return;
-            InstantiateCard(cardInstance);
+            AddCardFromInstant(cardInstance);
         }
 
-        private void InstantiateCard(CardInstance cardInstance)
+        public void AddCardFromInstant(CardInstance cardInstance)
         {
             var controller = _cardFactory.Create(cardInstance);
             controller.OnDraw();
@@ -104,7 +112,7 @@ namespace Runtime.CardGameplay.Deck
             if (_cards.Count >= _maxHandSize) return;
             if (!Deck.TryToFindAndRemoveCard(cardData, out CardInstance cardInstance)) return;
 
-            InstantiateCard(cardInstance);
+            AddCardFromInstant(cardInstance);
         }
 
 
@@ -168,8 +176,7 @@ namespace Runtime.CardGameplay.Deck
         /// <param name="cardController"></param>
         public void LimboCard(CardController cardController)
         {
-            Deck.TryToFindAndRemoveCard(instance => cardController.Instance.Equals(instance), out _);
-            RemoveCard(cardController);
+            Deck.Limbo(cardController.Instance);
             cardController.View.OnBurn();
         }
 
@@ -198,6 +205,11 @@ namespace Runtime.CardGameplay.Deck
         public bool HandIsEmpty()
         {
             return _cards.Count == 0;
+        }
+
+        public void RemoveFromLimbo(CardInstance card)
+        {
+            Deck.RemoveFromLimbo(card);
         }
     }
 }
