@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using Runtime.CardGameplay.Card;
 using Runtime.UI.OnScreenMessages;
 using Sirenix.OdinInspector;
@@ -18,6 +19,8 @@ namespace Runtime.CardGameplay.Deck
 
         [ShowInInspector] [ReadOnly] [TableList]
         private Stack<CardInstance> _drawPile;
+
+        private List<CardInstance> _limboPile = new List<CardInstance>();
 
         public Deck(List<CardInstance> cards)
         {
@@ -148,6 +151,60 @@ namespace Runtime.CardGameplay.Deck
         public bool IsConsumed(CardInstance card)
         {
             return _consumePile.Contains(card);
+        }
+
+        public void AddToDrawPile(CardInstance card)
+        {
+            if (card == null) return;
+
+            _drawPile.Push(card);
+        }
+
+        public void Limbo(CardInstance card)
+        {
+            if (card == null) return;
+            //already in limbo
+            if (_limboPile.Contains(card)) return;
+
+            _limboPile.Add(card);
+
+            //Clean 
+            RemoveFromDrawPile(card);
+            RemoveFromDiscardPile(card);
+            RemoveFromConsumePile(card);
+        }
+
+        private void RemoveFromConsumePile(CardInstance card)
+        {
+            if (_consumePile.Contains(card))
+            {
+                var listedPile = _consumePile.ToList();
+                listedPile.Remove(card);
+                _consumePile = new Stack<CardInstance>(listedPile);
+            }
+        }
+
+        private void RemoveFromDiscardPile(CardInstance card)
+        {
+            if (!_discardPile.Contains(card)) return;
+            var listedPile = _discardPile.ToList();
+            listedPile.Remove(card);
+            _discardPile = new Stack<CardInstance>(listedPile);
+        }
+
+        private void RemoveFromDrawPile(CardInstance card)
+        {
+            if (!_drawPile.Contains(card)) return;
+            var listedPile = _drawPile.ToList();
+            listedPile.Remove(card);
+            _drawPile = new Stack<CardInstance>(listedPile);
+        }
+
+        public void RemoveFromLimbo(CardInstance card)
+        {
+            if (card == null) return;
+            if (!_limboPile.Contains(card)) return;
+            _limboPile.Remove(card);
         }
     }
 }

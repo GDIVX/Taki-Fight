@@ -31,9 +31,7 @@ namespace Runtime.Combat.Pawn
         [ShowInInspector] public HealthSystem Health { get; private set; }
         public bool IsAgile { get; private set; }
         public bool IsProcessingTurn { get; private set; }
-        public bool IsCardless => _summonCardInstance == null;
-
-        private CardController _summonCardController;
+        private bool IsCardless => _summonCardInstance == null;
 
 
         internal PawnCombat Combat => _combat;
@@ -41,11 +39,8 @@ namespace Runtime.Combat.Pawn
         internal PawnMovement Movement => _movement;
         public PawnView View => _view;
         internal AttackFeedbackStrategy AttackFeedbackStrategy => _attackFeedbackStrategy.Strategy;
-        internal CardInstance SummonCardInstance
-        {
-            get => _summonCardInstance;
-            set => _summonCardInstance = value;
-        }
+
+
         public event Action OnKilled;
 
         public void Init(PawnData data)
@@ -54,8 +49,8 @@ namespace Runtime.Combat.Pawn
 
             // Components
             _combat = new PawnCombat(this, data);
-            _tilemapHelper = new(data.Size, this);
-            _movement = new(this, _tilemapHelper, data.Speed);
+            _tilemapHelper = new PawnTilemapHelper(data.Size, this);
+            _movement = new PawnMovement(this, _tilemapHelper, data.Speed);
 
             Health = new HealthSystem(data.Health);
             Health.OnDead += OnDead;
@@ -86,18 +81,12 @@ namespace Runtime.Combat.Pawn
             Kill();
         }
 
-        public void Kill()
+        private void Kill()
         {
             ExecuteStrategies(Data.OnKilledStrategies);
             if (!IsCardless)
             {
-                var hand = ServiceLocator.Get<HandController>();
-                if (hand && _summonCardInstance != null)
-                {
-                    hand.Deck.Consume(_summonCardInstance);
-                }
-
-                _summonCardInstance = null;
+                Recall();
             }
 
             OnKilled?.Invoke();
@@ -124,21 +113,17 @@ namespace Runtime.Combat.Pawn
                 return;
             }
 
-            _summonCardController = card;
-            _summonCardInstance = card.Instance;
             card.Limbo();
-            OnKilled += OnSummonedPawnKilled;
+            _summonCardInstance = card.Instance;
         }
 
-        private void OnSummonedPawnKilled()
+        public void Recall()
         {
-            OnKilled -= OnSummonedPawnKilled;
-
-            if (_summonCardController == null || _summonCardInstance == null) return;
-
-            _summonCardInstance.Cost += 1;
+            _summonCardInstance.Controller.Cost += 1;
             var hand = ServiceLocator.Get<HandController>();
-            hand?.AddCardToHand(_summonCardController);
+            hand.RemoveFromLimbo(_summonCardInstance);
+            hand?.AddCardFromInstant(_summonCardInstance);
+            Debug.Log($"{_summonCardInstance} has been recalled");
         }
 
 
@@ -366,47 +351,47 @@ namespace Runtime.Combat.Pawn
                     continue;
                 }
 
-                if (strategyData.Strategy is PawnHitPlayStrategy hitStrategy)
+                switch (strategyData.Strategy)
                 {
-                    hitStrategy.Play(this, target, ref damage, success =>
-                    {
-                        if (!success)
+                    case PawnHitPlayStrategy hitStrategy:
+                        hitStrategy.Play(this, target, ref damage, success =>
                         {
-                            Debug.LogWarning($"Strategy {strategyData.Strategy.name} failed.");
-                        }
-                        else
+                            if (!success)
+                            {
+                                Debug.LogWarning($"Strategy {strategyData.Strategy.name} failed.");
+                            }
+                            else
+                            {
+                                Debug.Log($"Strategy {strategyData.Strategy.name} succeeded.");
+                            }
+                        });
+                        break;
+                    case PawnTargetPlayStrategy targeted:
+                        targeted.Play(this, target, success =>
                         {
-                            Debug.Log($"Strategy {strategyData.Strategy.name} succeeded.");
-                        }
-                    });
-                }
-                else if (strategyData.Strategy is PawnTargetPlayStrategy targeted)
-                {
-                    targeted.Play(this, target, success =>
-                    {
-                        if (!success)
+                            if (!success)
+                            {
+                                Debug.LogWarning($"Strategy {strategyData.Strategy.name} failed.");
+                            }
+                            else
+                            {
+                                Debug.Log($"Strategy {strategyData.Strategy.name} succeeded.");
+                            }
+                        });
+                        break;
+                    default:
+                        strategyData.Strategy.Play(this, success =>
                         {
-                            Debug.LogWarning($"Strategy {strategyData.Strategy.name} failed.");
-                        }
-                        else
-                        {
-                            Debug.Log($"Strategy {strategyData.Strategy.name} succeeded.");
-                        }
-                    });
-                }
-                else
-                {
-                    strategyData.Strategy.Play(this, success =>
-                    {
-                        if (!success)
-                        {
-                            Debug.LogWarning($"Strategy {strategyData.Strategy.name} failed.");
-                        }
-                        else
-                        {
-                            Debug.Log($"Strategy {strategyData.Strategy.name} succeeded.");
-                        }
-                    });
+                            if (!success)
+                            {
+                                Debug.LogWarning($"Strategy {strategyData.Strategy.name} failed.");
+                            }
+                            else
+                            {
+                                Debug.Log($"Strategy {strategyData.Strategy.name} succeeded.");
+                            }
+                        });
+                        break;
                 }
             }
         }

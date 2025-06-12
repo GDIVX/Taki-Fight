@@ -32,7 +32,11 @@ namespace Runtime.CardGameplay.Card
 
         public HandController HandController { get; private set; }
         public Energy.Energy Energy { get; private set; }
-        public int Cost => Instance.Cost;
+        public int Cost
+        {
+            get => Instance.Cost;
+            set => Instance.Cost = value;
+        }
 
         public void OnPointerClick(PointerEventData eventData)
         {
