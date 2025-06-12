@@ -1,7 +1,5 @@
 using System;
-using Runtime.Combat.Tilemap;
 using UnityEngine;
-using Utilities;
 
 namespace Runtime.Combat.Pawn.Abilities
 {
@@ -12,44 +10,8 @@ namespace Runtime.Combat.Pawn.Abilities
 
         public override void Play(PawnController pawn, PawnController target, ref int damage, Action<bool> onComplete)
         {
-            if (target == null)
-            {
-                Debug.LogError("KnockbackAbility called with null target.");
-                onComplete?.Invoke(false);
-                return;
-            }
-
-            var tilemap = ServiceLocator.Get<TilemapController>();
-            var direction = pawn.Owner == PawnOwner.Player ? Vector2Int.right : Vector2Int.left;
-            var moved = 0;
-            var anchor = target.TilemapHelper.AnchorTile.Position;
-
-            for (int i = 0; i < Potency; i++)
-            {
-                var next = anchor + direction;
-                var tile = tilemap.GetTile(next);
-                if (tile != null && !tile.IsOccupied)
-                {
-                    anchor = next;
-                    moved++;
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            if (moved > 0)
-            {
-                var tile = tilemap.GetTile(anchor);
-                target.MoveToPosition(tile, null);
-            }
-
-            if (moved < Potency)
-            {
-                int missing = Potency - moved;
-                target.Combat.ReceiveAttack(DamagePerTile * missing);
-            }
+            var direction = pawn.Owner == PawnOwner.Player ? Vector2Int.up : Vector2Int.left;
+            PawnHelper.Knockback(target, Potency, DamagePerTile, direction, onComplete);
 
             onComplete?.Invoke(true);
         }
