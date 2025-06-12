@@ -13,3 +13,4 @@ dotnet test TakiFight.Tests/TakiFight.Tests.csproj
 ## Coding Standards
 
 Follow the [coding standards](docs/CodingStandards.md) when contributing code.
+UI artists can reference the [View Components Guide](docs/ViewComponentsGuide.md) for an overview of in-game screens.
