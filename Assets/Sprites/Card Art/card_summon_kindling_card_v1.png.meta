@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      card_summon_kindling_card_v1_0: -23076615799697388
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

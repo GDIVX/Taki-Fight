@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      character_kindling_v1_0: -9143516232828223013
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -1,35 +1,3 @@
-%YAML 1.1
-%TAG !u! tag:unity3d.com,2011:
---- !u!114 &11400000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: db39779a7d15495786ef0b741b93a144, type: 3}
-  m_Name: Mage
-  m_EditorClassIdentifier: 
-  _title: Mage
-  _description: 
-  _sprite: {fileID: 8554711391987965292, guid: 0edd1eafc19bc0e4da949be2a15d96c7, type: 3}
-  _owner: 0
-  _health: 50
-  _defense: 0
-  _damage: 10
-  _attacks: 1
-  _attackRange: 3
-  _speed: 0
-  _isAgile: 1
-  _size: {x: 1, y: 1}
-  _summonStrategies: []
-  _onTurnStartStrategies: []
-  _onAttackStrategies: []
-  _onMoveStrategies: []
-  _onDamagedStrategies: []
-  _onKilledStrategies:
-  - Strategy: {fileID: 11400000, guid: 06a5ed003995aed4aa0dbac31a7226aa, type: 2}
-    Potency: 0
-  _summonCard: {fileID: 0}
+version https://git-lfs.github.com/spec/v1
+oid sha256:df21065f0a9dd2c15d64ae907531e18edf6569e21d63353963a084850411e8be
+size 926
