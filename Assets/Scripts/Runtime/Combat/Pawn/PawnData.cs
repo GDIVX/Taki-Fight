@@ -208,6 +208,41 @@ namespace Runtime.Combat.Pawn
         }
         #endif
 
+        public CardData CreateRuntimeSummonCard(int cost)
+        {
+            var card = new CardData
+            {
+                Image = _sprite,
+                Title = _title,
+                Cost = cost,
+                Description = _description,
+                CardType = CardType.Familiar,
+                IsConsumed = true
+            };
+
+            var strategy = new SummonUnitPlay();
+            var parameters = new SummonUnitParams
+            {
+                Unit = this,
+                TileFilter = new TileFilterCriteria
+                {
+                    Occupancy = OccupancyFilter.Empty,
+                    TileOwner = TileOwner.Player
+                }
+            };
+
+            var playStrategy = new PlayStrategyData
+            {
+                PlayStrategy = strategy,
+                Potency = 1,
+                Parameters = parameters
+            };
+
+            card.PlayStrategies = new List<PlayStrategyData> { playStrategy };
+
+            return card;
+        }
+
         [Button]
         public void WriteDescription()
         {
