@@ -6,10 +6,10 @@ using UnityEngine;
 namespace Runtime.Combat.Tilemap
 {
     [Serializable]
-    public static class TilemapGenerator
+    public class TilemapGenerator
     {
         [Button]
-        public static Tile[,] GenerateTilemap([NotNull] TilemapConfig config, [NotNull] TilemapView tilemapView,
+        public Tile[,] GenerateTilemap([NotNull] TilemapConfig config, [NotNull] TilemapView tilemapView,
             Action<Tile[,]> onComplete = null)
         {
             if (config == null) throw new ArgumentNullException(nameof(config));
