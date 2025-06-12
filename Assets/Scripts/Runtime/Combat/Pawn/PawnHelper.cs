@@ -33,7 +33,7 @@ namespace Runtime.Combat.Pawn
         {
             if (pawn == null)
             {
-                Debug.LogError("Knockback Ability called with null target.");
+                Debug.LogError("PawnHelper.Knockback called with null pawn.");
                 onComplete?.Invoke(false);
                 return;
             }
