@@ -11,7 +11,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
     {
         private GetTilesParams _params;
 
-        public override void Play(CardController cardController, Action<bool> onComplete)
+        public override void Play(CardController cardController, Action<CardPlayResult> onComplete)
         {
             SelectionService.Instance.RequestSelection(
                 target => target is TileView tileView && TileFilterHelper.FilterTile(tileView.Tile, _params.TileFilter) && tileView.Tile.IsOccupied,
@@ -28,9 +28,9 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                             success = false;
                         }
                     }
-                    onComplete?.Invoke(success);
+                    onComplete?.Invoke(new CardPlayResult(success));
                 },
-                () => onComplete?.Invoke(false),
+                () => onComplete?.Invoke(new CardPlayResult(false)),
                 cardController.transform.position);
         }
 

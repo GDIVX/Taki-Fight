@@ -11,7 +11,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
     {
         private GetTilesParams _params;
 
-        public override void Play(CardController cardController, Action<bool> onComplete)
+        public override void Play(CardController cardController, Action<CardPlayResult> onComplete)
         {
             SelectionService.Instance.RequestSelection(target =>
                     target is TileView tileView && TileFilterHelper.FilterTile(tileView.Tile, _params.TileFilter),
@@ -32,9 +32,9 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                     }
 
                     // Notify that play execution is complete (even if canceled)
-                    onComplete?.Invoke(true);
+                    onComplete?.Invoke(new CardPlayResult(true));
                 },
-                () => onComplete?.Invoke(false)
+                () => onComplete?.Invoke(new CardPlayResult(false))
                 ,
                 cardController.transform.position
             );
