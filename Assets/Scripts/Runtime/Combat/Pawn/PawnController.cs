@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using CodeMonkey.HealthSystemCM;
 using JetBrains.Annotations;
+using Runtime.CardGameplay.Card;
+using Runtime.CardGameplay.Deck;
 using Runtime.Combat.StatusEffects;
 using Runtime.Combat.Tilemap;
 using Runtime.Combat.Pawn.AttackFeedback;
@@ -21,6 +23,7 @@ namespace Runtime.Combat.Pawn
         [SerializeField] private PawnTilemapHelper _tilemapHelper;
         [SerializeField] private PawnMovement _movement;
         [SerializeField] private AttackFeedbackStrategyData _attackFeedbackStrategy;
+        private CardInstance _summonCardInstance;
 
         public PawnOwner Owner { get; set; }
 
@@ -28,6 +31,7 @@ namespace Runtime.Combat.Pawn
         [ShowInInspector] public HealthSystem Health { get; private set; }
         public bool IsAgile { get; private set; }
         public bool IsProcessingTurn { get; private set; }
+        public bool IsCardless => _summonCardInstance == null;
 
 
         internal PawnCombat Combat => _combat;
@@ -35,6 +39,11 @@ namespace Runtime.Combat.Pawn
         internal PawnMovement Movement => _movement;
         public PawnView View => _view;
         internal AttackFeedbackStrategy AttackFeedbackStrategy => _attackFeedbackStrategy.Strategy;
+        internal CardInstance SummonCardInstance
+        {
+            get => _summonCardInstance;
+            set => _summonCardInstance = value;
+        }
         public event Action OnKilled;
 
         public void Init(PawnData data)
@@ -78,6 +87,17 @@ namespace Runtime.Combat.Pawn
         public void Kill()
         {
             ExecuteStrategies(Data.OnKilledStrategies);
+            if (!IsCardless)
+            {
+                var hand = ServiceLocator.Get<HandController>();
+                if (hand && _summonCardInstance != null)
+                {
+                    hand.Deck.Consume(_summonCardInstance);
+                }
+
+                _summonCardInstance = null;
+            }
+
             OnKilled?.Invoke();
             Remove(true);
         }
