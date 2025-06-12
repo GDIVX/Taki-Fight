@@ -9,7 +9,7 @@ namespace Runtime.Combat.Tilemap
     public class TilemapGenerator
     {
         [Button]
-        public Tile[,] GenerateTilemap([NotNull] TilemapConfig config, [NotNull] TilemapView tilemapView,
+        public static Tile[,] GenerateTilemap([NotNull] TilemapConfig config, [NotNull] TilemapView tilemapView,
             Action<Tile[,]> onComplete = null)
         {
             if (config == null) throw new ArgumentNullException(nameof(config));
