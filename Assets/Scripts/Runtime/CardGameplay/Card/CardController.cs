@@ -86,19 +86,26 @@ namespace Runtime.CardGameplay.Card
                 return;
             }
 
+            CardInstance cardInstance = new CardInstance(data);
+            Init(cardInstance, dependencies);
+        }
 
-            Instance = new CardInstance(data)
+        public void Init(CardInstance instance, CardDependencies deps)
+        {
+            if (instance == null)
             {
-                Controller = this
-            };
+                Debug.LogError("CardInstance cannot be null during initialization.");
+                return;
+            }
 
+            Instance = instance;
+            Instance.Controller = this;
 
-            CardType = data.CardType;
+            CardType = instance.Data.CardType;
 
-            _feedbackStrategy = data.FeedbackStrategy;
-            _playStrategies = new List<PlayStrategyData>(data.PlayStrategies);
+            _feedbackStrategy = instance.Data.FeedbackStrategy;
+            _playStrategies = new List<PlayStrategyData>(instance.Data.PlayStrategies);
             _playStrategies.ForEach(s => s.PlayStrategy.Initialize(s));
-
 
             _cardFactory = ServiceLocator.Get<CardFactory>();
             Energy = ServiceLocator.Get<Energy.Energy>();
@@ -109,11 +116,9 @@ namespace Runtime.CardGameplay.Card
             IsPlayable = new Observable<bool>(true);
             OnCardPlayedEvent += _ => UpdateAffordability();
             Energy.OnAmountChanged += _ => UpdateAffordability();
-            Data = data;
+            Data = instance.Data;
 
-            // SelectionService.Instance.Register(this);
-
-            gameObject.name = data.Title + Instance.Guid;
+            gameObject.name = instance.Data.Title + instance.Guid;
         }
 
         private void UpdateAffordability()

@@ -66,6 +66,19 @@ namespace Runtime.CardGameplay.Deck
             OnCardAdded?.Invoke(cardController);
         }
 
+        public void AddCardFromInstance(CardInstance instance)
+        {
+            if (_cards.Count >= _maxHandSize)
+            {
+                return;
+            }
+
+            CardController controller = _cardFactory.Create(instance);
+            controller.OnDraw();
+            controller.View.OnDraw();
+            AddCard(controller);
+        }
+
         /// <summary>
         /// Draw a card from the deck, create for it a game object and add it to the hand
         /// </summary>
