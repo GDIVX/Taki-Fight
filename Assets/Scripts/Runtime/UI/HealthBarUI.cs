@@ -1,4 +1,5 @@
-﻿using CodeMonkey.HealthSystemCM;
+﻿using System;
+using CodeMonkey.HealthSystemCM;
 using DG.Tweening;
 using Sirenix.OdinInspector;
 using TMPro;
@@ -29,12 +30,24 @@ namespace Runtime.UI
             _healthBarTrailImage.fillAmount = 1;
 
             _healthSystem = healthSystem;
-            _healthSystem.OnHealthChanged += (_, _) => UpdateHealth();
+            _healthSystem.OnHealthChanged += UpdateHealth;
+            _healthSystem.OnDead += (sender, args) => _healthSystem.OnHealthChanged -= UpdateHealth;
+            UpdateHealth();
+        }
+
+        private void OnDestroy()
+        {
+            _healthSystem.OnHealthChanged -= UpdateHealth;
+        }
+
+        private void UpdateHealth(object sender, EventArgs e)
+        {
             UpdateHealth();
         }
 
         private void UpdateHealth()
         {
+            if (!gameObject.activeInHierarchy) return;
             if (_healthSystem == null || _healthBarFillImage == null || _healthText == null)
             {
                 Debug.LogError("HealthBarUI is not properly configured.");
