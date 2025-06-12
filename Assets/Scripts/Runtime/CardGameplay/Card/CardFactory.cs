@@ -30,18 +30,19 @@ namespace Runtime.CardGameplay.Card
         [Button]
         public CardController Create(CardData data)
         {
+            var instance = new CardInstance(data);
+            return Create(instance);
+        }
+
+        public CardController Create(CardInstance instance)
+        {
             CardController controller = GetController();
-            controller.Init(data, _cardDependencies);
+            controller.Init(instance, _cardDependencies);
             controller.gameObject.GetComponent<CardView>()
                 .Init(_drawFromLocation, _discardToLocation)
                 .Draw(controller);
             controller.gameObject.SetActive(true);
             return controller;
-        }
-
-        public CardController Create(CardInstance instance)
-        {
-            return Create(instance.Data);
         }
 
         /// <summary>

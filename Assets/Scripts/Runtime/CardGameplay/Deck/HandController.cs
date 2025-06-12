@@ -74,11 +74,27 @@ namespace Runtime.CardGameplay.Deck
                 return;
             }
 
-            if (_cards.Count >= _maxHandSize) return;
+            if (_cards.Count >= _maxHandSize)
+            {
+                return;
+            }
 
             cardController.OnDraw();
             cardController.View.OnDraw();
             AddCard(cardController);
+        }
+
+        public void AddCardFromInstance(CardInstance instance)
+        {
+            if (_cards.Count >= _maxHandSize)
+            {
+                return;
+            }
+
+            CardController controller = _cardFactory.Create(instance);
+            controller.OnDraw();
+            controller.View.OnDraw();
+            AddCard(controller);
         }
 
         /// <summary>
