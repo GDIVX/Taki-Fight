@@ -66,6 +66,21 @@ namespace Runtime.CardGameplay.Deck
             OnCardAdded?.Invoke(cardController);
         }
 
+        public void AddCardToHand(CardController cardController)
+        {
+            if (cardController == null)
+            {
+                Debug.LogWarning("Trying to add null card to hand");
+                return;
+            }
+
+            if (_cards.Count >= _maxHandSize) return;
+
+            cardController.OnDraw();
+            cardController.View.OnDraw();
+            AddCard(cardController);
+        }
+
         /// <summary>
         /// Draw a card from the deck, create for it a game object and add it to the hand
         /// </summary>

@@ -107,13 +107,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                     var unit = Pawn;
                     var pawnController = pawnFactory.CreatePawn(unit, tile);
 
-                    //deal with the card
-                    // //the card is moved to a "limbo" state where it dosen't have a controller 
-                    // //we remove it from the hand without adding it to the discard pile or the consume pile
-                    // cardController.Limbo();
-                    // //when the pawn is killed, we move the card to the consume pile
-                    // pawnController.OnKilled += cardController.Consume;
-
+                    pawnController.AssignSummonCard(cardController);
 
                     onComplete?.Invoke(true);
                 },

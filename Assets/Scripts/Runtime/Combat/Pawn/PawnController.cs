@@ -6,6 +6,8 @@ using JetBrains.Annotations;
 using Runtime.Combat.StatusEffects;
 using Runtime.Combat.Tilemap;
 using Runtime.Combat.Pawn.AttackFeedback;
+using Runtime.CardGameplay.Card;
+using Runtime.CardGameplay.Deck;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -28,6 +30,9 @@ namespace Runtime.Combat.Pawn
         [ShowInInspector] public HealthSystem Health { get; private set; }
         public bool IsAgile { get; private set; }
         public bool IsProcessingTurn { get; private set; }
+
+        private CardController _summonCardController;
+        private CardInstance _summonCardInstance;
 
 
         internal PawnCombat Combat => _combat;
@@ -92,6 +97,31 @@ namespace Runtime.Combat.Pawn
             _statusEffectHandler.Clear();
             var tilemap = ServiceLocator.Get<TilemapController>();
             tilemap?.RemoveUnit(this);
+        }
+
+        public void AssignSummonCard(CardController card)
+        {
+            if (card == null)
+            {
+                Debug.LogWarning("AssignSummonCard called with null card.");
+                return;
+            }
+
+            _summonCardController = card;
+            _summonCardInstance = card.Instance;
+            card.Limbo();
+            OnKilled += OnSummonedPawnKilled;
+        }
+
+        private void OnSummonedPawnKilled()
+        {
+            OnKilled -= OnSummonedPawnKilled;
+
+            if (_summonCardController == null || _summonCardInstance == null) return;
+
+            _summonCardInstance.Cost += 1;
+            var hand = ServiceLocator.Get<HandController>();
+            hand?.AddCardToHand(_summonCardController);
         }
 
 
