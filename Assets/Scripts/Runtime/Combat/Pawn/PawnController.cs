@@ -8,8 +8,6 @@ using Runtime.CardGameplay.Deck;
 using Runtime.Combat.StatusEffects;
 using Runtime.Combat.Tilemap;
 using Runtime.Combat.Pawn.AttackFeedback;
-using Runtime.CardGameplay.Card;
-using Runtime.CardGameplay.Deck;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -36,7 +34,6 @@ namespace Runtime.Combat.Pawn
         public bool IsCardless => _summonCardInstance == null;
 
         private CardController _summonCardController;
-        private CardInstance _summonCardInstance;
 
 
         internal PawnCombat Combat => _combat;
