@@ -56,13 +56,14 @@ namespace Runtime.CardGameplay.Deck
         /// <param name="cardController"></param>
         private void AddCard(CardController cardController)
         {
-            if (cardController == null)
+            if (!cardController)
             {
                 Debug.LogWarning("Trying to add null card to hand");
                 return;
             }
 
             _cards.Add(cardController);
+            cardController.Instance.State = CardInstance.CardInstanceState.Hand;
             OnCardAdded?.Invoke(cardController);
         }
 
@@ -101,6 +102,13 @@ namespace Runtime.CardGameplay.Deck
         public void AddCardFromInstant(CardInstance cardInstance)
         {
             var controller = _cardFactory.Create(cardInstance);
+
+            if (controller == null)
+            {
+                Debug.LogWarning("Trying to add null card to hand");
+                return;
+            }
+
             controller.OnDraw();
             controller.View.OnDraw();
             AddCard(controller);

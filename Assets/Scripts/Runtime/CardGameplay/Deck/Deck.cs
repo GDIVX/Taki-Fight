@@ -93,12 +93,14 @@ namespace Runtime.CardGameplay.Deck
         public void Discard(CardInstance card)
         {
             _discardPile.Push(card);
+            card.State = CardInstance.CardInstanceState.Discard;
             OnDiscardPileUpdated?.Invoke(_discardPile);
         }
 
         public void Consume(CardInstance card)
         {
             _consumePile.Push(card);
+            card.State = CardInstance.CardInstanceState.Consumed;
             OnBurnPileUpdated?.Invoke(_consumePile);
         }
 
@@ -158,6 +160,7 @@ namespace Runtime.CardGameplay.Deck
             if (card == null) return;
 
             _drawPile.Push(card);
+            card.State = CardInstance.CardInstanceState.Draw;
         }
 
         public void Limbo(CardInstance card)
@@ -172,16 +175,16 @@ namespace Runtime.CardGameplay.Deck
             RemoveFromDrawPile(card);
             RemoveFromDiscardPile(card);
             RemoveFromConsumePile(card);
+
+            card.State = CardInstance.CardInstanceState.Limbo;
         }
 
         private void RemoveFromConsumePile(CardInstance card)
         {
-            if (_consumePile.Contains(card))
-            {
-                var listedPile = _consumePile.ToList();
-                listedPile.Remove(card);
-                _consumePile = new Stack<CardInstance>(listedPile);
-            }
+            if (!_consumePile.Contains(card)) return;
+            var listedPile = _consumePile.ToList();
+            listedPile.Remove(card);
+            _consumePile = new Stack<CardInstance>(listedPile);
         }
 
         private void RemoveFromDiscardPile(CardInstance card)

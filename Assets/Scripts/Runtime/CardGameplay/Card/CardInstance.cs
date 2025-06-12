@@ -8,6 +8,7 @@ namespace Runtime.CardGameplay.Card
     {
         public CardData Data;
 
+        public CardInstanceState State;
 
         public CardInstance(CardData data)
         {
@@ -15,6 +16,9 @@ namespace Runtime.CardGameplay.Card
             Controller = null;
             Cost = data.Cost;
             Guid = Guid.NewGuid();
+
+            //default state
+            State = CardInstanceState.Limbo;
         }
 
         public CardController Controller { get; set; }
@@ -33,6 +37,15 @@ namespace Runtime.CardGameplay.Card
         public int GetHashCode(CardInstance obj)
         {
             return obj.Guid.GetHashCode();
+        }
+
+        public enum CardInstanceState
+        {
+            Limbo,
+            Hand,
+            Consumed,
+            Discard,
+            Draw
         }
     }
 }

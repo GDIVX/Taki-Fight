@@ -33,6 +33,7 @@ namespace Runtime.CardGameplay.Card
 
         public HandController HandController { get; private set; }
         public Energy.Energy Energy { get; private set; }
+
         public int Cost
         {
             get => Instance.Cost;
@@ -100,12 +101,19 @@ namespace Runtime.CardGameplay.Card
             Init(cardInstance, dependencies);
         }
 
-        public void Init(CardInstance instance, CardDependencies deps)
+        public bool Init(CardInstance instance, CardDependencies deps)
         {
             if (instance == null)
             {
                 Debug.LogError("CardInstance cannot be null during initialization.");
-                return;
+                return false;
+            }
+
+            if (instance.State == CardInstance.CardInstanceState.Hand)
+            {
+                Debug.LogWarning($"CardInstance {instance.Guid} state is already hand. Disabling duplicates.");
+                gameObject.SetActive(false);
+                return false;
             }
 
             Instance = instance;
@@ -114,6 +122,7 @@ namespace Runtime.CardGameplay.Card
             CardType = instance.Data.CardType;
 
             _feedbackStrategy = instance.Data.FeedbackStrategy;
+            View = GetComponent<CardView>();
             _playStrategies = new List<PlayStrategyData>(instance.Data.PlayStrategies);
             _playStrategies.ForEach(s => s.PlayStrategy.Initialize(s));
 
@@ -121,7 +130,6 @@ namespace Runtime.CardGameplay.Card
             Energy = ServiceLocator.Get<Energy.Energy>();
             HandController = ServiceLocator.Get<HandController>();
 
-            View = GetComponent<CardView>();
 
             IsPlayable = new Observable<bool>(true);
             OnCardPlayedEvent += _ => UpdateAffordability();
@@ -129,6 +137,8 @@ namespace Runtime.CardGameplay.Card
             Data = instance.Data;
 
             gameObject.name = instance.Data.Title + instance.Guid;
+            
+            return true;
         }
 
         private void UpdateAffordability()
