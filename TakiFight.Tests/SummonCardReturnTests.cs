@@ -23,10 +23,17 @@ public class SummonCardReturnTests
 
     private class Pawn
     {
+        private bool _isDead;
         public event Action OnKilled;
 
         public void Kill()
         {
+            if (_isDead)
+            {
+                return;
+            }
+
+            _isDead = true;
             OnKilled?.Invoke();
         }
     }
@@ -68,6 +75,21 @@ public class SummonCardReturnTests
         var summon = new SummonUnitPlay(hand, card, true);
 
         var pawn = summon.Summon();
+        pawn.Kill();
+
+        Assert.That(hand.Cards.Count, Is.EqualTo(1));
+        Assert.That(hand.Cards[0].Cost, Is.EqualTo(2));
+    }
+
+    [Test]
+    public void KillingSummonedPawnTwice_ReturnsOnlyOneCard()
+    {
+        var hand = new Hand();
+        var card = new CardData { Cost = 1 };
+        var summon = new SummonUnitPlay(hand, card, true);
+
+        var pawn = summon.Summon();
+        pawn.Kill();
         pawn.Kill();
 
         Assert.That(hand.Cards.Count, Is.EqualTo(1));

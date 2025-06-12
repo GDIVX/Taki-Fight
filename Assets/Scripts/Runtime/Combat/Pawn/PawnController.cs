@@ -24,6 +24,7 @@ namespace Runtime.Combat.Pawn
         [SerializeField] private PawnMovement _movement;
         [SerializeField] private AttackFeedbackStrategyData _attackFeedbackStrategy;
         private CardInstance _summonCardInstance;
+        private bool _isBeingKilled;
 
         public PawnOwner Owner { get; set; }
 
@@ -83,6 +84,13 @@ namespace Runtime.Combat.Pawn
 
         private void Kill()
         {
+            if (_isBeingKilled)
+            {
+                return;
+            }
+
+            _isBeingKilled = true;
+
             ExecuteStrategies(Data.OnKilledStrategies);
             if (!IsCardless)
             {
@@ -119,10 +127,12 @@ namespace Runtime.Combat.Pawn
 
         public void Recall()
         {
-            _summonCardInstance.Controller.Cost += 1;
+            _summonCardInstance.Cost += 1;
+
             var hand = ServiceLocator.Get<HandController>();
             hand.RemoveFromLimbo(_summonCardInstance);
             hand?.AddCardFromInstant(_summonCardInstance);
+
             Debug.Log($"{_summonCardInstance} has been recalled");
         }
 
