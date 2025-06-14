@@ -13,7 +13,6 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
         private SummonUnitParams _params;
 
         internal PawnData Pawn => _params.Unit;
-        private TileFilterCriteria TileSelectionMode => _params.TileFilter;
 
         public override void Play(CardController cardController, Action<bool> onComplete)
         {
@@ -74,7 +73,12 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                         }
 
                         //all tiles must adhear to the tile selection mode
-                        if (!TileFilterHelper.FilterTile(tile, TileSelectionMode))
+                        var tileSelectionMode = new TileFilterCriteria
+                        {
+                            Occupancy = OccupancyFilter.Empty,
+                            TileOwner = TileOwner.Player
+                        };
+                        if (!TileFilterHelper.FilterTile(tile, tileSelectionMode))
                         {
                             onComplete?.Invoke(false);
                             return false;

@@ -4,10 +4,10 @@ using Runtime.CardGameplay.Card.CardBehaviour;
 using Runtime.CardGameplay.Card.CardBehaviour.Feedback;
 using Runtime.RunManagement;
 using Sirenix.OdinInspector;
+using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
-using UnityEngine;
 
 namespace Runtime.CardGameplay.Card
 {
@@ -51,7 +51,10 @@ namespace Runtime.CardGameplay.Card
 
 
         // Gameplay ───────────────────────────────────────────────────
-        [TabGroup("Gameplay")] [ListDrawerSettings(ShowFoldout = true)] [SerializeField]
+        [TabGroup("Gameplay")]
+        [ListDrawerSettings(ShowFoldout = true)]
+        [SerializeField]
+        [ValidateInput("ValidateStrategies", "Invalid Strategies.")]
         private List<PlayStrategyData> _playStrategies;
 
         [TabGroup("Gameplay")] [LabelText("Consume After Use?")] [SerializeField]
@@ -62,7 +65,7 @@ namespace Runtime.CardGameplay.Card
         [TabGroup("Feedback")] [LabelText("VFX / SFX Strategy")] [SerializeField]
         private FeedbackStrategy _feedbackStrategy;
 
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         [TabGroup("Danger Zone")]
         [GUIColor(1, 0f, 0)]
         [Button(ButtonSizes.Medium)]
@@ -72,7 +75,7 @@ namespace Runtime.CardGameplay.Card
                     "Are you sure you want to delete this card?", "Yes", "No"))
                 DestroyImmediate(this, true);
         }
-        #endif
+#endif
 
         #region Properties
 
@@ -137,6 +140,14 @@ namespace Runtime.CardGameplay.Card
 
         #region Validation
 
+        private void OnValidate()
+        {
+            _playStrategies.ForEach(data =>
+            {
+                if (!ValidateStrategy(data)) Debug.LogError($"Invalid strategy: {data} for {name}");
+            });
+        }
+
         private string _typeValidationMessage;
 
         private bool StringIsValid(string str)
@@ -156,6 +167,16 @@ namespace Runtime.CardGameplay.Card
                 || cardType is CardType.Familiar or CardType.Totem) return true;
             _typeValidationMessage = "Summon Unit Play Strategy requires a familiar or totem card.";
             return false;
+        }
+
+        public bool ValidateStrategies(List<PlayStrategyData> strategies)
+        {
+            return strategies.TrueForAll(ValidateStrategy);
+        }
+
+        private static bool ValidateStrategy(PlayStrategyData strategy)
+        {
+            return strategy.PlayStrategy;
         }
 
         #endregion

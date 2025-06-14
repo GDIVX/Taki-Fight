@@ -1,15 +1,3 @@
-%YAML 1.1
-%TAG !u! tag:unity3d.com,2011:
---- !u!114 &11400000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0bb96013ec9d4e368ea7f578fea6a525, type: 3}
-  m_Name: Attack Random Enemy
-  m_EditorClassIdentifier: 
-  _targetingStrategy: {fileID: 11400000, guid: 0c8decfe29efd4240a9995273fd478a7, type: 2}
+version https://git-lfs.github.com/spec/v1
+oid sha256:1ffb95df5281b375c1e81ee570103b34a8f787317a05d018b0d1b2e10863eef3
+size 498

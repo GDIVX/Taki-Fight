@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Runtime.CardGameplay.Card.CardBehaviour;
 using Runtime.Combat.Tilemap;
+using Runtime.Selection;
 using UnityEngine;
 using Utilities;
 
@@ -75,7 +77,7 @@ namespace Runtime.Combat.Pawn
             pawn.Combat.ReceiveAttack(damagePerTile * missing);
 
             // Collision detection with multiple pawns
-            var collisionFootprint = pawn.TilemapHelper.GenerateFootprintUnbounded(currTile + direction);
+            var collisionFootprint = ProjectFootprint(pawn, direction);
             var collidedPawns = collisionFootprint
                 .Where(t => t != null && t.IsOccupied)
                 .Select(t => t.Pawn)
@@ -83,6 +85,83 @@ namespace Runtime.Combat.Pawn
                 .Distinct();
 
             foreach (var collidedPawn in collidedPawns) collidedPawn.Combat.ReceiveAttack(damagePerTile * missing);
+        }
+
+        public static void SelectPawnsAndInvokeAction(PawnOwner pawnOwner, int targetsCount,
+            Action<PawnController> action, Vector3 pointerPosition, Action<bool> onComplete = null)
+        {
+            var tileFilerCriteria = new TileFilterCriteria
+            {
+                Occupancy = OccupancyFilter.Occupied,
+                PawnOwner = pawnOwner,
+                TileOwner = TileOwner.All
+            };
+
+            SelectionService.Instance.RequestSelection(target =>
+                    target is TileView tileView && TileFilterHelper.FilterTile(tileView.Tile, tileFilerCriteria),
+                targetsCount,
+                selectedEntities =>
+                {
+                    if (selectedEntities.Count > 0)
+                        selectedEntities.ForEach(entity =>
+                        {
+                            if (entity is not TileView tileView) return;
+                            if (tileView.Tile.IsEmpty) return;
+                            action(tileView.Tile.Pawn);
+                            onComplete?.Invoke(true);
+                        });
+                    else
+                        Debug.LogWarning("Pawn selection had failed");
+
+                    // Notify that play execution is complete (even if canceled)
+                    onComplete?.Invoke(true);
+                },
+                () => onComplete?.Invoke(false)
+                ,
+                pointerPosition
+            );
+        }
+
+        public static void SelectPawnsAndInvokeAction(PawnOwner pawnOwner, int targetsCount,
+            Action<PawnController, Action<bool>> action, Vector3 pointerPosition, Action<bool> onComplete = null)
+        {
+            var tileFilerCriteria = new TileFilterCriteria
+            {
+                Occupancy = OccupancyFilter.Occupied,
+                PawnOwner = pawnOwner,
+                TileOwner = TileOwner.All
+            };
+
+            SelectionService.Instance.RequestSelection(target =>
+                    target is TileView tileView && TileFilterHelper.FilterTile(tileView.Tile, tileFilerCriteria),
+                targetsCount,
+                selectedEntities =>
+                {
+                    if (selectedEntities.Count > 0)
+                        selectedEntities.ForEach(entity =>
+                        {
+                            if (entity is not TileView tileView) return;
+                            if (tileView.Tile.IsEmpty) return;
+                            action(tileView.Tile.Pawn, onComplete);
+                            onComplete?.Invoke(true);
+                        });
+                    else
+                        Debug.LogWarning("Pawn selection had failed");
+
+                    // Notify that play execution is complete (even if canceled)
+                    onComplete?.Invoke(true);
+                },
+                () => onComplete?.Invoke(false)
+                ,
+                pointerPosition
+            );
+        }
+
+        public static void SelectPawnsAndInvokeAction(GetPawnsParams getterParams, Action<PawnController> action,
+            Vector3 pointerPosition, Action<bool> onComplete = null)
+        {
+            SelectPawnsAndInvokeAction(getterParams.PawnOwner, getterParams.TargetsCount, action, pointerPosition,
+                onComplete);
         }
 
 

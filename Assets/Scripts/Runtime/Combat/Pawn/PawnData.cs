@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Runtime;
 using Runtime.CardGameplay.Card;
 using Runtime.CardGameplay.Card.CardBehaviour;
 using Runtime.Combat.Pawn;
-using Runtime.Combat.Tilemap;
 using Runtime.Combat.Pawn.AttackFeedback;
-using Runtime;
 using Sirenix.OdinInspector;
+using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
-using UnityEngine;
 
 namespace Runtime.Combat.Pawn
 {
@@ -69,33 +68,53 @@ namespace Runtime.Combat.Pawn
         [ListDrawerSettings(DefaultExpandedState = false)]
         [BoxGroup("Callbacks")]
         [BoxGroup("Callbacks/On Summon")]
+        [ValidateInput("ValidateStrategies", "Strategies are invalid")]
         [SerializeField]
         private List<PawnStrategyData> _summonStrategies;
 
-        [ListDrawerSettings(DefaultExpandedState = false)] [BoxGroup("Callbacks/On Turn Start")] [SerializeField]
+        [ListDrawerSettings(DefaultExpandedState = false)]
+        [BoxGroup("Callbacks/On Turn Start")]
+        [SerializeField]
+        [ValidateInput("ValidateStrategies", "Strategies are invalid")]
         private List<PawnStrategyData> _onTurnStartStrategies;
 
-        [ListDrawerSettings(DefaultExpandedState = false)] [BoxGroup("Callbacks/On Attack")] [SerializeField]
+        [ListDrawerSettings(DefaultExpandedState = false)]
+        [BoxGroup("Callbacks/On Attack")]
+        [SerializeField]
+        [ValidateInput("ValidateStrategies", "Strategies are invalid")]
         private List<PawnStrategyData> _onAttackStrategies;
 
         [BoxGroup("Callbacks/On Attack")] [SerializeField]
-        private AttackFeedback.AttackFeedbackStrategyData _attackFeedbackStrategy;
+        private AttackFeedbackStrategyData _attackFeedbackStrategy;
 
-        [ListDrawerSettings(DefaultExpandedState = false)] [BoxGroup("Callbacks/On Hit")] [SerializeField]
+        [ListDrawerSettings(DefaultExpandedState = false)]
+        [BoxGroup("Callbacks/On Hit")]
+        [SerializeField]
+        [ValidateInput("ValidateStrategies", "Strategies are invalid")]
         private List<PawnStrategyData> _onHitStrategies;
 
-        [ListDrawerSettings(DefaultExpandedState = false)] [BoxGroup("Callbacks/On Move")] [SerializeField]
+        [ListDrawerSettings(DefaultExpandedState = false)]
+        [BoxGroup("Callbacks/On Move")]
+        [SerializeField]
+        [ValidateInput("ValidateStrategies", "Strategies are invalid")]
         private List<PawnStrategyData> _onMoveStrategies;
 
         [ListDrawerSettings(DefaultExpandedState = false)]
         [BoxGroup("Callbacks/Movement Abilities")]
         [SerializeField]
+        [ValidateInput("ValidateStrategies", "Strategies are invalid")]
         private List<PawnStrategyData> _movementAbilities;
 
-        [ListDrawerSettings(DefaultExpandedState = false)] [BoxGroup("Callbacks/On Damaged")] [SerializeField]
+        [ListDrawerSettings(DefaultExpandedState = false)]
+        [BoxGroup("Callbacks/On Damaged")]
+        [SerializeField]
+        [ValidateInput("ValidateStrategies", "Strategies are invalid")]
         private List<PawnStrategyData> _onDamagedStrategies;
 
-        [ListDrawerSettings(DefaultExpandedState = false)] [BoxGroup("Callbacks/On Killed")] [SerializeField]
+        [ListDrawerSettings(DefaultExpandedState = false)]
+        [BoxGroup("Callbacks/On Killed")]
+        [SerializeField]
+        [ValidateInput("ValidateStrategies", "Strategies are invalid")]
         private List<PawnStrategyData> _onKilledStrategies;
 
 
@@ -110,7 +129,7 @@ namespace Runtime.Combat.Pawn
         public List<PawnStrategyData> OnSummonStrategies => _summonStrategies;
         public List<PawnStrategyData> OnTurnStartStrategies => _onTurnStartStrategies;
         public List<PawnStrategyData> OnAttackStrategies => _onAttackStrategies;
-        public AttackFeedback.AttackFeedbackStrategyData AttackFeedbackStrategy => _attackFeedbackStrategy;
+        public AttackFeedbackStrategyData AttackFeedbackStrategy => _attackFeedbackStrategy;
         public List<PawnStrategyData> OnHitStrategies => _onHitStrategies;
         public List<PawnStrategyData> OnMoveStrategies => _onMoveStrategies;
         public List<PawnStrategyData> MovementAbilities => _movementAbilities;
@@ -159,9 +178,80 @@ namespace Runtime.Combat.Pawn
             }
 
             if (_summonCard) _summonCard.Image = _sprite;
+
+            var allStrategies = new List<PawnStrategyData>();
+            allStrategies.AddRange(_onHitStrategies);
+            allStrategies.AddRange(_onMoveStrategies);
+            allStrategies.AddRange(_movementAbilities);
+            allStrategies.AddRange(_onDamagedStrategies);
+            allStrategies.AddRange(_onKilledStrategies);
+            allStrategies.AddRange(_summonStrategies);
+            allStrategies.AddRange(_onTurnStartStrategies);
+
+            allStrategies.ForEach(data =>
+            {
+                if (!ValidateStrategy(data)) Debug.LogError($"Invalid strategy: {data} for {name}");
+            });
         }
 
-        #if UNITY_EDITOR
+        public CardData CreateRuntimeSummonCard(int cost)
+        {
+            var card = CreateInstance<CardData>();
+
+            var strategy = CreateInstance<SummonUnitPlay>();
+            var parameters = new SummonUnitParams
+            {
+                Unit = this
+            };
+
+            var playStrategy = new PlayStrategyData
+            {
+                PlayStrategy = strategy,
+                Potency = 1,
+                Parameters = parameters
+            };
+
+            card.PlayStrategies = new List<PlayStrategyData> { playStrategy };
+
+            return card;
+        }
+
+        [Button]
+        public void WriteDescription()
+        {
+            DescriptionBuilder builder = new();
+            _description = builder.AsSummon(this);
+        }
+
+        public void InitializeStrategies()
+        {
+            if (_attackFeedbackStrategy.Strategy != null)
+                _attackFeedbackStrategy.Strategy.Initialize(_attackFeedbackStrategy);
+
+            _onAttackStrategies.ForEach(data => data.Strategy.Initialize(data));
+            _onHitStrategies.ForEach(data => data.Strategy.Initialize(data));
+            _onDamagedStrategies.ForEach(data => data.Strategy.Initialize(data));
+            _onKilledStrategies.ForEach(data => data.Strategy.Initialize(data));
+            _onMoveStrategies.ForEach(data => data.Strategy.Initialize(data));
+            _movementAbilities.ForEach(data => data.Strategy.Initialize(data));
+            _onTurnStartStrategies.ForEach(data => data.Strategy.Initialize(data));
+            _summonStrategies.ForEach(data => data.Strategy.Initialize(data));
+        }
+
+#if UNITY_EDITOR
+
+
+        public bool ValidateStrategies(List<PawnStrategyData> strategies)
+        {
+            return strategies.TrueForAll(ValidateStrategy);
+        }
+
+        private static bool ValidateStrategy(PawnStrategyData strategy)
+        {
+            return strategy.Strategy;
+        }
+
+
         [Button(ButtonSizes.Medium)]
         public void CreateSummonCard(int cost)
         {
@@ -174,11 +264,6 @@ namespace Runtime.Combat.Pawn
             var parameters = new SummonUnitParams
             {
                 Unit = this,
-                TileFilter = new TileFilterCriteria
-                {
-                    Occupancy = OccupancyFilter.Empty,
-                    TileOwner = TileOwner.Player
-                }
             };
 
             card.Title = _title;
@@ -206,65 +291,7 @@ namespace Runtime.Combat.Pawn
 
             _summonCard = card;
         }
-        #endif
-
-        public CardData CreateRuntimeSummonCard(int cost)
-        {
-            var card = new CardData
-            {
-                Image = _sprite,
-                Title = _title,
-                Cost = cost,
-                Description = _description,
-                CardType = CardType.Familiar,
-                IsConsumed = true
-            };
-
-            var strategy = new SummonUnitPlay();
-            var parameters = new SummonUnitParams
-            {
-                Unit = this,
-                TileFilter = new TileFilterCriteria
-                {
-                    Occupancy = OccupancyFilter.Empty,
-                    TileOwner = TileOwner.Player
-                }
-            };
-
-            var playStrategy = new PlayStrategyData
-            {
-                PlayStrategy = strategy,
-                Potency = 1,
-                Parameters = parameters
-            };
-
-            card.PlayStrategies = new List<PlayStrategyData> { playStrategy };
-
-            return card;
-        }
-
-        [Button]
-        public void WriteDescription()
-        {
-            DescriptionBuilder builder = new();
-            _description = builder.AsSummon(this);
-        }
-
-        public void InitializeStrategies()
-        {
-            if (_attackFeedbackStrategy.Strategy != null)
-            {
-                _attackFeedbackStrategy.Strategy.Initialize(_attackFeedbackStrategy);
-            }
-            _onAttackStrategies.ForEach(data => data.Strategy.Initialize(data));
-            _onHitStrategies.ForEach(data => data.Strategy.Initialize(data));
-            _onDamagedStrategies.ForEach(data => data.Strategy.Initialize(data));
-            _onKilledStrategies.ForEach(data => data.Strategy.Initialize(data));
-            _onMoveStrategies.ForEach(data => data.Strategy.Initialize(data));
-            _movementAbilities.ForEach(data => data.Strategy.Initialize(data));
-            _onTurnStartStrategies.ForEach(data => data.Strategy.Initialize(data));
-            _summonStrategies.ForEach(data => data.Strategy.Initialize(data));
-        }
+#endif
     }
 }
 
@@ -274,8 +301,7 @@ public struct PawnStrategyData
     [Tooltip("The specific strategy applied to the pawn.")]
     public PawnPlayStrategy Strategy;
 
-    [SerializeReference]
-    public StrategyParams Parameters;
+    [SerializeReference] public StrategyParams Parameters;
 
     [Tooltip("The potency or strength of the applied strategy.")]
     public int Potency;
