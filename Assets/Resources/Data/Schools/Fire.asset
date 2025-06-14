@@ -1,26 +1,3 @@
-%YAML 1.1
-%TAG !u! tag:unity3d.com,2011:
---- !u!114 &11400000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bfa7d1474d204cdf97cff19db736ba13, type: 3}
-  m_Name: Fire
-  m_EditorClassIdentifier: 
-  _starterCards:
-  - {fileID: 11400000, guid: 73f7007b54d8fe94b85b8b4ec42a1d97, type: 2}
-  - {fileID: 11400000, guid: 73f7007b54d8fe94b85b8b4ec42a1d97, type: 2}
-  - {fileID: 11400000, guid: 73f7007b54d8fe94b85b8b4ec42a1d97, type: 2}
-  - {fileID: 11400000, guid: 73f7007b54d8fe94b85b8b4ec42a1d97, type: 2}
-  - {fileID: 11400000, guid: 73f7007b54d8fe94b85b8b4ec42a1d97, type: 2}
-  - {fileID: 11400000, guid: 73f7007b54d8fe94b85b8b4ec42a1d97, type: 2}
-  - {fileID: 11400000, guid: f4144b120bef8ea4fa423da3e4fc0257, type: 2}
-  - {fileID: 11400000, guid: f4144b120bef8ea4fa423da3e4fc0257, type: 2}
-  - {fileID: 11400000, guid: 4000c48af7bd535478f1567f932ba23a, type: 2}
-  _collectableCards: []
-  _mage: {fileID: 11400000, guid: cc49c349a77c1e64e875d502da628b47, type: 2}
+version https://git-lfs.github.com/spec/v1
+oid sha256:3bbb71d4a8cf4e7b219e6a09e467ccf0675b67f2c6f1d20221e198a27f3004c2
+size 1159

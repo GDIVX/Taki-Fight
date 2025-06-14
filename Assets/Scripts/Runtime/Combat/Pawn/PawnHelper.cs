@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Runtime.CardGameplay.Card.CardBehaviour;
+using Runtime.Combat.Pawn.AttackMod;
 using Runtime.Combat.Tilemap;
 using Runtime.Selection;
 using UnityEngine;
@@ -74,7 +75,7 @@ namespace Runtime.Combat.Pawn
                 return;
 
             var missing = magnitude - moved;
-            pawn.Combat.ReceiveAttack(damagePerTile * missing);
+            pawn.Combat.HandleDamage(damagePerTile * missing, new NormalDamageHandler());
 
             // Collision detection with multiple pawns
             var collisionFootprint = ProjectFootprint(pawn, direction);
@@ -84,7 +85,8 @@ namespace Runtime.Combat.Pawn
                 .Where(p => p != null && p != pawn) // avoid self
                 .Distinct();
 
-            foreach (var collidedPawn in collidedPawns) collidedPawn.Combat.ReceiveAttack(damagePerTile * missing);
+            foreach (var collidedPawn in collidedPawns)
+                collidedPawn.Combat.HandleDamage(damagePerTile * missing, new NormalDamageHandler());
         }
 
         public static void SelectPawnsAndInvokeAction(PawnOwner pawnOwner, int targetsCount,

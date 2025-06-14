@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Runtime.Combat.Pawn.AttackMod;
 using Runtime.Combat.Tilemap;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -14,6 +15,7 @@ namespace Runtime.Combat.Pawn
         public Observable<int> Defense;
         public Observable<int> Damage;
         public Observable<int> Attacks;
+        public IDamageHandler DamageHandler;
 
         public PawnCombat(PawnController pawn, PawnData data)
         {
@@ -21,6 +23,7 @@ namespace Runtime.Combat.Pawn
             Defense = new Observable<int>(data.Defense);
             Damage = new Observable<int>(data.Damage);
             Attacks = new Observable<int>(data.Attacks);
+            DamageHandler = data.DamageType;
         }
 
         [ShowInInspector] [ReadOnly] public int AttackRange { get; set; }
@@ -29,7 +32,7 @@ namespace Runtime.Combat.Pawn
 
         public event Action<int, int> OnBeingAttacked;
 
-        public void ReceiveAttack(int damage)
+        public void HandleDamage(int damage, IDamageHandler handler)
         {
             if (damage <= 0)
             {
@@ -37,11 +40,12 @@ namespace Runtime.Combat.Pawn
                 return;
             }
 
-            int finalDamage = Mathf.Max(0, damage - Defense.Value);
-            Pawn.Health.Damage(finalDamage);
-            Defense.Value = Mathf.Max(0, Defense.Value - damage);
+            var result = handler.DamagePawn(damage, Defense.Value);
 
-            OnBeingAttacked?.Invoke(damage, finalDamage);
+            Pawn.Health.Damage(result.HealthOnlyDamage);
+            Defense.Value = Mathf.Max(0, Defense.Value - result.ArmorOnlyDamage);
+
+            OnBeingAttacked?.Invoke(damage, result.HealthOnlyDamage);
             Pawn.ExecuteStrategies(Pawn.Data.OnDamagedStrategies);
         }
 
@@ -56,7 +60,7 @@ namespace Runtime.Combat.Pawn
 
                 int attackDamage = Damage.Value;
                 Pawn.ExecuteHitStrategies(Pawn.Data.OnHitStrategies, target, ref attackDamage);
-                target.Combat.ReceiveAttack(attackDamage);
+                target.Combat.HandleDamage(attackDamage, DamageHandler);
                 yield return null;
             }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using Runtime.Combat.Pawn;
+using Runtime.Combat.Pawn.AttackMod;
 using UnityEngine;
 
 namespace Runtime.CardGameplay.Card.CardBehaviour
@@ -7,7 +8,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
     [CreateAssetMenu(fileName = "Attack Play", menuName = "Card/Strategy/Play/Attack", order = 0)]
     public class AttackTargetCardPlay : CardPlayStrategy
     {
-        private GetPawnsParams _params;
+        private AttackParams _params;
 
         public override void Play(CardController cardController, Action<bool> onComplete)
         {
@@ -32,20 +33,26 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
             }
 
             var finalDamage = potency;
-            target.Combat.ReceiveAttack(finalDamage);
+            target.Combat.HandleDamage(finalDamage, _params.DamageHandler);
         }
 
         public override string GetDescription()
         {
+            var relation = _params.PawnOwner == PawnOwner.Player ? "Allied Familiar" : "Hostile Familiar";
             return _params.TargetsCount > 1
-                ? $"Deal {Potency} damage to {_params.TargetsCount} targets."
-                : $"Deal {Potency} damage.";
+                ? $"Deal {Potency} {_params.DamageHandler.GetDescription()} to {_params.TargetsCount} {relation}s."
+                : $"Deal {Potency} {_params.DamageHandler.GetDescription()} to a {relation}.";
         }
 
         public override void Initialize(PlayStrategyData playStrategyData)
         {
-            _params = playStrategyData.Parameters as GetPawnsParams;
+            _params = playStrategyData.Parameters as AttackParams;
             base.Initialize(playStrategyData);
+        }
+
+        public class AttackPawnParams : GetPawnsParams
+        {
+            [SerializeReference] public IDamageHandler DamageType;
         }
     }
 }

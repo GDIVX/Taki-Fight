@@ -6,6 +6,7 @@ using Runtime.CardGameplay.Card;
 using Runtime.CardGameplay.Card.CardBehaviour;
 using Runtime.Combat.Pawn;
 using Runtime.Combat.Pawn.AttackFeedback;
+using Runtime.Combat.Pawn.AttackMod;
 using Sirenix.OdinInspector;
 using UnityEngine;
 #if UNITY_EDITOR
@@ -53,6 +54,9 @@ namespace Runtime.Combat.Pawn
 
         [TabGroup("Stats", "Combat")] [LabelText("Range")] [SerializeField]
         private int _attackRange;
+
+        [TabGroup("Stats", "Combat")] [LabelText("Damage Type")] [SerializeField] [SerializeReference] [Required]
+        public IDamageHandler DamageType = new NormalDamageHandler();
 
         [TabGroup("Stats", "Movement")] [LabelText("Speed")] [SerializeField]
         private int _speed;
@@ -168,6 +172,7 @@ namespace Runtime.Combat.Pawn
             get => _title;
             set => _title = value;
         }
+
 
         private void OnValidate()
         {

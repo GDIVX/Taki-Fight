@@ -61,12 +61,20 @@ namespace Runtime.CardGameplay.Card
         ///     Adds a line describing an ability.
         ///     Example: "+3 Defense Boost"
         /// </summary>
-        public DescriptionBuilder WithLine(IDescribable ability)
+        public DescriptionBuilder WithLine(IDescribable describable)
         {
-            if (ability == null) return this;
+            if (describable == null) return this;
 
             AddNewLineIfNeeded();
-            _builder.Append(ability.GetDescription());
+            _builder.Append(describable.GetDescription());
+            return this;
+        }
+
+        public DescriptionBuilder WithLine(string line)
+        {
+            if (line == null) return this;
+            AddNewLineIfNeeded();
+            _builder.Append(line);
             return this;
         }
 
@@ -92,6 +100,19 @@ namespace Runtime.CardGameplay.Card
         /// </summary>
         public string AsSummon(PawnData unit)
         {
+            //stats
+
+            //attack
+            WithLine(unit.Attacks > 1
+                ? $"Attack for {unit.Damage}X{unit.Attacks} {unit.DamageType.GetDescription()}"
+                : $"Attack for {unit.Damage} {unit.DamageType.GetDescription()}");
+
+            //defense
+            if (unit.Defense > 0) WithLine($"Armor {unit.Defense}");
+
+            //Health
+            WithLine($"Health {unit.Health}");
+
             // On Summon
             WithTriggeredAbilities("Summon", GetDescribableAbilities(unit.OnSummonStrategies));
 
@@ -154,7 +175,8 @@ namespace Runtime.CardGameplay.Card
 
         public string Build(CardController controller)
         {
-            if (controller.PlayStrategies.Count > 0 && controller.PlayStrategies[0].PlayStrategy is SummonUnitPlay summon)
+            if (controller.PlayStrategies.Count > 0 &&
+                controller.PlayStrategies[0].PlayStrategy is SummonUnitPlay summon)
             {
                 return AsSummon(summon.Pawn);
             }
