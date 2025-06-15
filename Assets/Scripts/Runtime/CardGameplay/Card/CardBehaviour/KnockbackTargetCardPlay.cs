@@ -2,6 +2,7 @@ using System;
 using Runtime.Combat.Pawn;
 using Runtime.CardGameplay.Card;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Runtime.CardGameplay.Card.CardBehaviour
 {

@@ -1,6 +1,7 @@
 using System;
 using Runtime.CardGameplay.Deck;
 using UnityEngine;
+using Utilities;
 
 namespace Runtime.CardGameplay.Card.CardBehaviour
 {
