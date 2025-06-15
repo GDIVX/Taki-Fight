@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 
 namespace Runtime.Combat.Tilemap
 {
+    [RequireComponent(typeof(Runtime.UI.Tooltip.CompoundTooltipCaller))]
     public class TileView : MonoBehaviour, ISelectableEntity, IPointerClickHandler, IPointerEnterHandler,
         IPointerExitHandler
     {
