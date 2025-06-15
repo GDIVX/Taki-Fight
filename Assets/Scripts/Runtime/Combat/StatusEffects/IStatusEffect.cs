@@ -1,9 +1,10 @@
-﻿using Runtime.Combat.Pawn;
+﻿using System;
+using Runtime.Combat.Pawn;
 using Utilities;
 
 namespace Runtime.Combat.StatusEffects
 {
-    public interface IStatusEffect
+    public interface IStatusEffect : ICloneable
     {
         public Observable<int> Stack { get; set; }
         public void OnTurnStart(PawnController pawn);

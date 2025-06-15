@@ -1,21 +1,44 @@
 ﻿using System;
+using Runtime.CardGameplay.Card.View;
+using Runtime.Combat.Pawn;
 using Runtime.UI.Tooltip;
+using Sirenix.OdinInspector;
+using Sirenix.Serialization;
 using UnityEngine;
+using Utilities;
 
 namespace Runtime.Combat.StatusEffects
 {
-    public abstract class StatusEffectData : ScriptableObject
+    [CreateAssetMenu(fileName = "StatusEffectData", menuName = "StatusEffects/StatusEffectData")]
+    public class StatusEffectData : ScriptableObject
     {
-        [SerializeField] private Sprite _icon;
-        [SerializeField] private TooltipData _tooltip;
+        [SerializeField, Required] private StatusEffectStrategy _effect;
+        [SerializeField, Required] private Sprite _icon;
+        [SerializeField, Required] private Keyword _keyword;
 
         public Sprite Icon => _icon;
 
-        public TooltipData Tooltip => _tooltip;
+        public Keyword Keyword => _keyword;
 
-        public abstract IStatusEffect CreateStatusEffect(int stacks);
+        public IStatusEffect CreateStatusEffect(int stacks)
+        {
+            if (_effect.Clone() is not IStatusEffect clone)
+            {
+                Debug.LogError($"{nameof(StatusEffectStrategy)} is not of type {nameof(IStatusEffect)}");
+                return null;
+            }
 
-        public abstract Type GetStatusEffectType();
+            clone.Stack = new Observable<int>(stacks);
+            return clone;
+        }
     }
 
+    public abstract class StatusEffectStrategy : ScriptableObject, IStatusEffect
+    {
+        public abstract Observable<int> Stack { get; set; }
+        public abstract void OnTurnStart(PawnController pawn);
+        public abstract void OnAdded(PawnController pawn);
+        public abstract void Remove(PawnController pawn);
+        public abstract object Clone();
+    }
 }

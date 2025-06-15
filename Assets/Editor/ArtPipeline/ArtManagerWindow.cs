@@ -71,7 +71,7 @@ namespace Editor.ArtPipeline
                 {
                     AssetType = "StatusEffectData",
                     AssetName = status.name,
-                    Title = status.Tooltip ? status.Tooltip.Header : status.name,
+                    Title = status.Keyword ? status.Keyword.Header : status.name,
                     SpriteReference = status.Icon,
                     SpriteName = FindSpriteAssetName(status.Icon),
                     DataObject = status

@@ -1,4 +1,5 @@
 ﻿using System;
+using Runtime.CardGameplay.Card;
 using UnityEngine;
 
 namespace Runtime.Combat.Pawn.Abilities
@@ -38,6 +39,18 @@ namespace Runtime.Combat.Pawn.Abilities
             }
 
             base.Initialize(data);
+        }
+
+        public override string GetDescription()
+        {
+            var keyword = _params.StatusEffect.Keyword;
+            if (keyword == null)
+            {
+                return $"Gain a status effect with a stack of {Potency}. *Error: missing keyword.*";
+            }
+
+            var builder = new DescriptionBuilder();
+            return builder.WithLine("Gain ").WithKeyword(keyword, false).AppendInLine($" {Potency}").GetFormattedText();
         }
     }
 }

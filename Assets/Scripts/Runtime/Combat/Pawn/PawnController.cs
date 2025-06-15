@@ -237,7 +237,7 @@ namespace Runtime.Combat.Pawn
             }
 
             var effect = data.CreateStatusEffect(stack);
-            _statusEffectHandler.Add(effect, data.Icon, data.Tooltip);
+            _statusEffectHandler.Add(effect, data.Icon, data.Keyword);
         }
 
         public int GetStatusEffectStacks(Type type)

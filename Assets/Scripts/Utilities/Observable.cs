@@ -7,7 +7,7 @@ namespace Utilities
     [Serializable]
     public class Observable<T>
     {
-        [OdinSerialize] [SerializeField] private T _currentValue;
+        [OdinSerialize] [SerializeField] protected T _currentValue;
 
         public Observable(T initialValue = default)
         {
@@ -37,7 +37,7 @@ namespace Utilities
             return observable._currentValue;
         }
 
-        private bool HasValueNotChanged(T newValue)
+        protected bool HasValueNotChanged(T newValue)
         {
             return Equals(_currentValue, newValue);
         }

@@ -12,17 +12,17 @@ namespace Runtime.Combat.Pawn
     [Serializable]
     internal class PawnCombat
     {
-        public Observable<int> Defense;
-        public Observable<int> Damage;
-        public Observable<int> Attacks;
+        public Stat Defense;
+        public Stat Damage;
+        public Stat Attacks;
         public IDamageHandler DamageHandler;
 
         public PawnCombat(PawnController pawn, PawnData data)
         {
             Pawn = pawn;
-            Defense = new Observable<int>(data.Defense);
-            Damage = new Observable<int>(data.Damage);
-            Attacks = new Observable<int>(data.Attacks);
+            Defense = new(data.Defense);
+            Damage = new(data.Damage);
+            Attacks = new(data.Attacks);
             DamageHandler = data.DamageType;
         }
 
@@ -43,7 +43,7 @@ namespace Runtime.Combat.Pawn
             var result = handler.DamagePawn(damage, Defense.Value);
 
             Pawn.Health.Damage(result.HealthOnlyDamage);
-            Defense.Value = Mathf.Max(0, Defense.Value - result.ArmorOnlyDamage);
+            Defense.BaseValue = Mathf.Max(0, Defense.Value - result.ArmorOnlyDamage);
 
             OnBeingAttacked?.Invoke(damage, result.HealthOnlyDamage);
             Pawn.ExecuteStrategies(Pawn.Data.OnDamagedStrategies);

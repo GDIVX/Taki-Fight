@@ -43,16 +43,18 @@ namespace Runtime.CardGameplay.Card
         ///     Adds a single keyword with hyperlink formatting.
         ///     Example: "Consumed"
         /// </summary>
-        public DescriptionBuilder WithKeyword(string keyword)
+        public DescriptionBuilder WithKeyword(string keyword, bool addNewLine = true)
         {
-            AddNewLineIfNeeded();
+            if (addNewLine)
+                AddNewLineIfNeeded();
             _builder.Append($"{Hyperlink(keyword)}");
             return this;
         }
 
-        public DescriptionBuilder WithKeyword(Keyword keyword)
+        public DescriptionBuilder WithKeyword(Keyword keyword, bool newLine = true)
         {
-            AddNewLineIfNeeded();
+            if (newLine)
+                AddNewLineIfNeeded();
             _builder.Append($"{Hyperlink(keyword.FormattedText)}");
             return this;
         }
@@ -75,6 +77,13 @@ namespace Runtime.CardGameplay.Card
             if (line == null) return this;
             AddNewLineIfNeeded();
             _builder.Append(line);
+            return this;
+        }
+
+        public DescriptionBuilder AppendInLine(string text)
+        {
+            if (text == null) return this;
+            _builder.Append(text);
             return this;
         }
 
