@@ -167,7 +167,7 @@ namespace Runtime.CardGameplay.Card
         }
 
 
-        private void Play()
+        public void Play()
         {
             if (!CanAfford())
             {
