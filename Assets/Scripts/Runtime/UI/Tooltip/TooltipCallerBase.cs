@@ -49,5 +49,24 @@ namespace Runtime.UI.Tooltip
                 CurrentTooltip.ShowTooltip();
             });
         }
+
+        protected void ShowTooltip(CompoundTooltipData data)
+        {
+            if (data == null) return;
+            if (CurrentTooltip == null)
+            {
+                CurrentTooltip = TooltipPool.GetTooltip();
+            }
+
+            if (CurrentTooltip is CompoundTooltipController compound)
+            {
+                compound.SetTooltip(data);
+            }
+
+            this.Timer(_delayTime, () =>
+            {
+                CurrentTooltip.ShowTooltip();
+            });
+        }
     }
 }
