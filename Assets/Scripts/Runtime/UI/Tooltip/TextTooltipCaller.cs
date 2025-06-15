@@ -45,7 +45,7 @@ namespace Runtime.UI.Tooltip
                 if (hoveredWordIndex != -1)
                 {
                     string hoveredWord = _textField.textInfo.wordInfo[hoveredWordIndex].GetWord();
-                    var data = KeywordDictionary.Get(hoveredWord);
+                    var data = KeywordDictionary.GetFormated(hoveredWord);
 
                     ShowTooltip(data);
                 }

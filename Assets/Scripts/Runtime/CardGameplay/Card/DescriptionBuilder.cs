@@ -4,6 +4,7 @@ using System.Text;
 using Runtime.CardGameplay.Card.CardBehaviour;
 using Runtime.CardGameplay.Card.View;
 using Runtime.Combat.Pawn;
+using Runtime.UI.Tooltip;
 
 namespace Runtime.CardGameplay.Card
 {
@@ -47,7 +48,10 @@ namespace Runtime.CardGameplay.Card
         {
             if (addNewLine)
                 AddNewLineIfNeeded();
-            _builder.Append($"{Hyperlink(keyword)}");
+
+            var keywordInstant = KeywordDictionary.Get(keyword);
+
+            _builder.Append($"{Hyperlink(keywordInstant.FormattedText)}: )");
             return this;
         }
 

@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Runtime.CardGameplay.Card.View;
 
 namespace Runtime.UI.Tooltip
 {
     public static class KeywordDictionary
     {
-        internal static readonly Dictionary<string, Keyword> Keywords = new();
+        private static readonly Dictionary<string, Keyword> Keywords = new();
 
         public static void Register(Keyword keyword)
         {
@@ -15,6 +16,11 @@ namespace Runtime.UI.Tooltip
         public static Keyword Get(string key)
         {
             return Keywords.GetValueOrDefault(key);
+        }
+
+        public static TooltipData GetFormated(string formatedKeyword)
+        {
+            return Keywords.FirstOrDefault(entry => entry.Value.FormattedText.Contains(formatedKeyword)).Value;
         }
     }
 }
