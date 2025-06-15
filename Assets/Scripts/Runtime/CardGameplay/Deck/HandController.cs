@@ -92,26 +92,35 @@ namespace Runtime.CardGameplay.Deck
         /// Draw a card from the deck, create for it a game object and add it to the hand
         /// </summary>
         [Button]
-        public void DrawCard()
+        public CardController DrawCard()
         {
-            if (_cards.Count >= _maxHandSize) return;
-            if (!Deck.Draw(out var cardInstance)) return;
-            AddCardFromInstant(cardInstance);
+            if (_cards.Count >= _maxHandSize)
+            {
+                return null;
+            }
+
+            if (!Deck.Draw(out var cardInstance))
+            {
+                return null;
+            }
+
+            return AddCardFromInstant(cardInstance);
         }
 
-        public void AddCardFromInstant(CardInstance cardInstance)
+        public CardController AddCardFromInstant(CardInstance cardInstance)
         {
             var controller = _cardFactory.Create(cardInstance);
 
             if (controller == null)
             {
                 Debug.LogWarning("Trying to add null card to hand");
-                return;
+                return null;
             }
 
             controller.OnDraw();
             controller.View.OnDraw();
             AddCard(controller);
+            return controller;
         }
 
         [Button]
