@@ -13,7 +13,7 @@ namespace Runtime.UI.Tooltip
             {
                 // OnEnable should still be called, but you can register here directly to be extra safe.
                 KeywordDictionary.Register(keyword);
-                Debug.Log($"Registered keyword: {keyword.Header}");
+                // Debug.Log($"Registered keyword: {keyword.Header}");
             }
         }
     }

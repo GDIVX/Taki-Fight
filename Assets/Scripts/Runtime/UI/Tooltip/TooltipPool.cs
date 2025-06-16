@@ -33,7 +33,7 @@ namespace Runtime.UI.Tooltip
         {
             var type = typeof(T);
 
-            if (!_tooltips.ContainsKey(type))
+            if (!_tooltips.TryGetValue(type, out var pool))
             {
                 Debug.LogError($"[{type.Name}] not registered.");
                 return null;
@@ -41,7 +41,6 @@ namespace Runtime.UI.Tooltip
 
             // DumpPool<T>("Before Dequeue");
 
-            var pool = _tooltips[type];
             if (pool.Count < _minimalSize)
             {
                 Debug.Log($"[{type.Name}] below minimal ({pool.Count} < {_minimalSize}), creating new.");
@@ -62,8 +61,9 @@ namespace Runtime.UI.Tooltip
 
             // DumpPool<T>("Before Return");
             instance.HideTooltip();
+            instance.Reset();
             AddToPool<T>(instance);
-            Debug.Log($"[{type.Name}] Returned instance: {instance.name}");
+            // Debug.Log($"[{type.Name}] Returned instance: {instance.name}");
             // DumpPool<T>("After Return");
         }
 
@@ -83,7 +83,7 @@ namespace Runtime.UI.Tooltip
             if (registerToPool)
                 AddToPool<T>(instance);
 
-            Debug.Log($"[{type.Name}] Created new instance: {instance.name}");
+            // Debug.Log($"[{type.Name}] Created new instance: {instance.name}");
             return instance;
         }
 

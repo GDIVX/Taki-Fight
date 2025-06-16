@@ -90,5 +90,10 @@ namespace Runtime.Combat.StatusEffects
                 Remove(effect);
             }
         }
+
+        public List<IStatusEffect> GetAll()
+        {
+            return _statusEffects;
+        }
     }
 }

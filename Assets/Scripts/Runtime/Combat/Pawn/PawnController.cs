@@ -444,5 +444,10 @@ namespace Runtime.Combat.Pawn
         {
             _view.OnPointerEnter(eventData);
         }
+
+        public List<IStatusEffect> GetStatusEffects()
+        {
+            return _statusEffectHandler.GetAll();
+        }
     }
 }

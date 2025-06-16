@@ -18,12 +18,12 @@ namespace Runtime.UI.Tooltip
 
         public override void SetTooltip(ITooltipSource source)
         {
-            if (source is not TooltipData data) return;
+            if (source is not IContentTooltipSource tooltipSource) return;
 
-            _headerField.text = data.Header;
-            _secondHeaderField.text = data.SecondHeader;
-            _descriptionText.text = data.Description;
-            _background.color = data.BackgroundColor;
+            _headerField.text = tooltipSource.Header;
+            _secondHeaderField.text = tooltipSource.Subtitle;
+            _descriptionText.text = tooltipSource.Content;
+            _background.color = tooltipSource.BackgroundColor;
 
             int headerLength = _headerField.text.Length;
             int secondHeaderLength = _secondHeaderField.text.Length;
@@ -32,7 +32,7 @@ namespace Runtime.UI.Tooltip
                                      || secondHeaderLength > _characterWrapLimit ||
                                      contentLength > _characterWrapLimit;
 
-            var icon = data.Icon;
+            var icon = tooltipSource.Icon;
             if (icon)
             {
                 _iconImage.sprite = icon;

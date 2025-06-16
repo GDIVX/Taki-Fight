@@ -211,8 +211,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ef209cb7b1747da9891f06f6e1f510a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _tooltipPrefab: {fileID: 6036290927624565365, guid: e9297393ee27db847b5e9c8b69a068aa, type: 3}
   _initialSize: 3
+  _minimalSize: 1
 --- !u!1 &2001608338
 GameObject:
   m_ObjectHideFlags: 11
@@ -317,7 +317,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 5000

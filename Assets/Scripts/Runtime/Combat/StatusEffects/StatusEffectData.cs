@@ -29,6 +29,7 @@ namespace Runtime.Combat.StatusEffects
             }
 
             clone.Stack = new Observable<int>(stacks);
+            clone.Keyword = _keyword;
             return clone;
         }
     }
@@ -36,6 +37,7 @@ namespace Runtime.Combat.StatusEffects
     public abstract class StatusEffectStrategy : ScriptableObject, IStatusEffect
     {
         public abstract Observable<int> Stack { get; set; }
+        public Keyword Keyword { get; set; }
         public abstract void OnTurnStart(PawnController pawn);
         public abstract void OnAdded(PawnController pawn);
         public abstract void Remove(PawnController pawn);

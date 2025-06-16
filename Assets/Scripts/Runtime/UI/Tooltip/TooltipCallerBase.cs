@@ -36,7 +36,7 @@ namespace Runtime.UI.Tooltip
             CurrentTooltip = null;
         }
 
-        protected void ShowTooltip(ITooltipSource source)
+        protected virtual void ShowTooltip(ITooltipSource source)
         {
             if (source == null)
             {

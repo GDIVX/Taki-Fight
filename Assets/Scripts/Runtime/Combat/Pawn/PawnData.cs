@@ -25,6 +25,9 @@ namespace Runtime.Combat.Pawn
         [BoxGroup("General")] [LabelWidth(80)] [SerializeField]
         private string _title;
 
+        [BoxGroup("General")] [LabelWidth(80)] [SerializeField]
+        private string _tribe;
+
         [BoxGroup("General")] [TextArea(2, 4)] [SerializeField]
         private string _description;
 
@@ -171,6 +174,12 @@ namespace Runtime.Combat.Pawn
         {
             get => _title;
             set => _title = value;
+        }
+
+        public string Tribe
+        {
+            get => _tribe;
+            set => _tribe = value;
         }
 
 
