@@ -18,9 +18,14 @@ namespace Runtime.UI.Tooltip
             return Keywords.GetValueOrDefault(key);
         }
 
-        public static TooltipData GetFormated(string formatedKeyword)
+        public static Keyword GetFormated(string formatedKeyword)
         {
             return Keywords.FirstOrDefault(entry => entry.Value.FormattedText.Contains(formatedKeyword)).Value;
+        }
+
+        public static bool Contain(string keywordString)
+        {
+            return Keywords.ContainsKey(keywordString);
         }
     }
 }

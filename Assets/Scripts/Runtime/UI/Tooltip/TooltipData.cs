@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Runtime.UI.Tooltip
 {
     [CreateAssetMenu(fileName = "Tooltip", menuName = "Game/Tooltip", order = 0)]
-    public class TooltipData : ScriptableObject
+    public class TooltipData : ScriptableObject , ITooltipSource
     {
         [SerializeField] private string _header;
         [SerializeField] private string _secondHeader;

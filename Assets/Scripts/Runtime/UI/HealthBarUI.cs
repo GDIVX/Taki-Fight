@@ -74,7 +74,7 @@ namespace Runtime.UI
             DOTween.Kill(_healthBarFillImage); // Prevent overlapping sequences
             _healthBarFillImage.fillAmount = ratio; // Instant update for health bar front
             var sequence = DOTween.Sequence();
-            sequence.Append(_healthBarTrailImage.DOFillAmount(ratio, 0.3f).SetEase(Ease.InOutSine));
+            sequence.Append(_healthBarTrailImage.DOFillAmount(ratio, _trailDelay).SetEase(Ease.InOutSine));
             sequence.Play();
         }
     }

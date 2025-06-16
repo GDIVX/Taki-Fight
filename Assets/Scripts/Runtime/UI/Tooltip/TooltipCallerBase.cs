@@ -7,16 +7,18 @@ using Utilities;
 
 namespace Runtime.UI.Tooltip
 {
-    public abstract class TooltipCallerBase : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    public abstract class TooltipCallerBase<T> : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+        where T : ITooltipSource
     {
         protected TooltipController CurrentTooltip;
         [SerializeField] private float _delayTime;
+        [SerializeField] private TooltipController _prefab;
 
-        protected TooltipPool TooltipPool { get; private set; }
+        protected TooltipPool TooltipPool => ServiceLocator.Get<TooltipPool>();
 
-        private void Start()
+        private void Awake()
         {
-            TooltipPool = ServiceLocator.Get<TooltipPool>();
+            TooltipPool.Populate<T>(_prefab);
         }
 
 
@@ -30,24 +32,26 @@ namespace Runtime.UI.Tooltip
             if (CurrentTooltip == null) return;
 
             StopAllCoroutines();
-            TooltipPool.ReturnTooltip(CurrentTooltip);
+            TooltipPool.ReturnTooltip<T>(CurrentTooltip);
             CurrentTooltip = null;
         }
 
-        protected void ShowTooltip(TooltipData data)
+        protected void ShowTooltip(ITooltipSource source)
         {
-            if (data == null) return;
-            if (CurrentTooltip == null)
+            if (source == null)
             {
-                CurrentTooltip = TooltipPool.GetTooltip();
+                Debug.LogError("Tooltip source cannot be null!");
+                return;
             }
 
-            CurrentTooltip.SetTooltip(data.Header, data.SecondHeader, data.Description, data.BackgroundColor,
-                data.Icon);
-            this.Timer(_delayTime, () =>
+            if (!CurrentTooltip)
             {
-                CurrentTooltip.ShowTooltip();
-            });
+                CurrentTooltip = TooltipPool.GetTooltip<T>();
+            }
+
+
+            CurrentTooltip.SetTooltip(source);
+            this.Timer(_delayTime, () => { CurrentTooltip.ShowTooltip(); });
         }
     }
 }

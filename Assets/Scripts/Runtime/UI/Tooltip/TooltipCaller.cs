@@ -3,7 +3,7 @@ using UnityEngine.EventSystems;
 
 namespace Runtime.UI.Tooltip
 {
-    public class TooltipCaller : TooltipCallerBase
+    public class TooltipCaller : TooltipCallerBase<TooltipData>
     {
         [SerializeField] private TooltipData _tooltipData;
 

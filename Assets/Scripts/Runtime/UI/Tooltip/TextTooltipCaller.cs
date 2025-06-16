@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using Runtime.CardGameplay.Card.View;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
@@ -6,23 +8,17 @@ using UnityEngine.EventSystems;
 
 namespace Runtime.UI.Tooltip
 {
-    public class TextTooltipCaller : TooltipCallerBase
+    public class TextTooltipCaller : TooltipCallerBase<Keyword>
     {
         [SerializeField, Required] private TMP_Text _textField;
-        private Camera _camera;
-
-        protected void Awake()
-        {
-            _camera = Camera.main;
-            if (_textField == null)
-            {
-                Debug.LogError("TextTooltipCaller requires a TMP_Text component!");
-            }
-        }
 
         private void OnValidate()
         {
             _textField ??= GetComponent<TMP_Text>();
+            if (!_textField)
+            {
+                Debug.LogError("TextTooltipCaller requires a TMP_Text component!");
+            }
         }
 
         public override void OnPointerEnter(PointerEventData eventData)
@@ -44,14 +40,23 @@ namespace Runtime.UI.Tooltip
 
                 if (hoveredWordIndex != -1)
                 {
-                    string hoveredWord = _textField.textInfo.wordInfo[hoveredWordIndex].GetWord();
-                    var data = KeywordDictionary.GetFormated(hoveredWord);
+                    var hoveredWord = _textField.textInfo.wordInfo[hoveredWordIndex].GetWord();
+                    if (KeywordDictionary.Contain(hoveredWord))
+                    {
+                        var data = KeywordDictionary.GetFormated(hoveredWord);
 
-                    ShowTooltip(data);
+                        if (!data)
+                        {
+                            Debug.LogWarning($"Keyword {hoveredWord} not found!");
+                            yield break;
+                        }
+
+                        ShowTooltip(data);
+                    }
                 }
                 else if (CurrentTooltip)
                 {
-                    TooltipPool.ReturnTooltip(CurrentTooltip);
+                    TooltipPool.ReturnTooltip<TooltipData>(CurrentTooltip);
                     CurrentTooltip = null;
                 }
 

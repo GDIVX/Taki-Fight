@@ -540,6 +540,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _delayTime: 0.5
+  _prefab: {fileID: 5469356255993162659, guid: e9297393ee27db847b5e9c8b69a068aa, type: 3}
   _tooltipData: {fileID: 11400000, guid: 153297568953245498fe4dd11416d94e, type: 2}
 --- !u!222 &196735050
 CanvasRenderer:
@@ -1842,6 +1843,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _delayTime: 0.5
+  _prefab: {fileID: 5469356255993162659, guid: e9297393ee27db847b5e9c8b69a068aa, type: 3}
   _tooltipData: {fileID: 11400000, guid: 153297568953245498fe4dd11416d94e, type: 2}
 --- !u!222 &944534678
 CanvasRenderer:
@@ -2172,6 +2174,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _delayTime: 0.5
+  _prefab: {fileID: 5469356255993162659, guid: e9297393ee27db847b5e9c8b69a068aa, type: 3}
   _tooltipData: {fileID: 11400000, guid: 153297568953245498fe4dd11416d94e, type: 2}
 --- !u!114 &1103476685
 MonoBehaviour:
