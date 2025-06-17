@@ -75,8 +75,9 @@ namespace Runtime.UI.Tooltip
             for (int i = 0; i < _activeTooltips.Count; i++)
             {
                 var tooltip = _activeTooltips.Pop();
-                _disableTooltips.Push(tooltip);
-                tooltip.Reset();
+                // _disableTooltips.Push(tooltip);
+                // tooltip.Reset();
+                Destroy(tooltip.gameObject);
             }
 
             gameObject.SetActive(false);

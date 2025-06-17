@@ -202,18 +202,19 @@ namespace Runtime.CardGameplay.Deck
             return _cards.Contains(cardController);
         }
 
-        public void DiscardHand()
+        public void DiscardHand(bool callRetained = true)
         {
-            StartCoroutine(DiscardHandWithDelay());
+            StartCoroutine(DiscardHandWithDelay(true));
         }
 
-        private IEnumerator DiscardHandWithDelay()
+        private IEnumerator DiscardHandWithDelay(bool callRetained = true)
         {
             // Create a copy of the list to avoid modifying it while iterating
             List<CardController> cardsToDiscard = new List<CardController>(_cards);
 
             foreach (var card in cardsToDiscard)
             {
+                if(callRetained) card.InvokeOnRetained();
                 yield return new WaitForSeconds(_cardMovementDelay);
                 DiscardCard(card);
             }

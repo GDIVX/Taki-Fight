@@ -41,10 +41,10 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                 : "Capture an enemy";
         }
 
-        public override void Initialize(PlayStrategyData playStrategyData)
+        public override void Initialize(PlayStrategyData playStrategyData, CardController cardController)
         {
             _params = playStrategyData.Parameters as GetTilesParams;
-            base.Initialize(playStrategyData);
+            base.Initialize(playStrategyData, cardController);
         }
     }
 }

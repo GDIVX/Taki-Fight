@@ -16,18 +16,18 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                 return;
             }
 
-            tile.Pawn.Combat.HandleDamage(_params.Damage, _params.DamageHandler);
+            tile.Pawn.Combat.HandleDamage(Potency, _params.DamageHandler);
         }
 
-        public override void Initialize(PlayStrategyData playStrategyData)
+        public override void Initialize(PlayStrategyData playStrategyData, CardController cardController)
         {
             _params = playStrategyData.Parameters as AOEDamageParams;
-            base.Initialize(playStrategyData);
+            base.Initialize(playStrategyData, cardController);
         }
 
         public override string GetDescription()
         {
-            return $"Deal {_params.Damage} {_params.DamageHandler.GetDescription()} in a {_params.AreaSize.x}x{_params.AreaSize.y} area";
+            return $"{base.GetDescription()} Deal {Potency} {_params.DamageHandler.GetDescription()} in a {_params.AreaSize.x}x{_params.AreaSize.y} area";
         }
     }
 }

@@ -126,11 +126,11 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
             return descriptionBuilder.AsSummon(Pawn);
         }
 
-        public override void Initialize(PlayStrategyData playStrategyData)
+        public override void Initialize(PlayStrategyData playStrategyData, CardController cardController)
         {
             _params = playStrategyData.Parameters as SummonUnitParams;
             Pawn.InitializeStrategies();
-            base.Initialize(playStrategyData);
+            base.Initialize(playStrategyData, cardController);
         }
     }
 }

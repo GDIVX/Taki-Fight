@@ -193,5 +193,11 @@ namespace Runtime.Combat.Pawn
                 return new Vector2Int(v.x > 0 ? 1 : -1, 0);
             return new Vector2Int(0, v.y > 0 ? 1 : -1);
         }
+
+        public static PawnController FindRandomPawn(PawnOwner owner)
+        {
+            var tilemap = ServiceLocator.Get<TilemapController>();
+            return tilemap.GetAllUnits().Where(t => t.Owner == owner).ToList().SelectRandom();
+        }
     }
 }

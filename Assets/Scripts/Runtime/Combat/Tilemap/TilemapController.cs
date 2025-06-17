@@ -148,5 +148,10 @@ namespace Runtime.Combat.Tilemap
         {
             return _activeUnits.Where(u => u.Owner == owner).ToList();
         }
+
+        public List<Tile> AllTiles()
+        {
+            return _tiles.Cast<Tile>().ToList();
+        }
     }
 }

@@ -16,6 +16,12 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                 cardController.transform.position, onComplete);
         }
 
+        public override void BlindPlay(CardController cardController, Action<bool> onComplete)
+        {
+            PawnController pawn = PawnHelper.FindRandomPawn(_params.PawnOwner);
+            HandleAttack(pawn, Potency);
+        }
+
 
         private void HandleAttack(PawnController target, int potency)
         {
@@ -39,15 +45,16 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
         public override string GetDescription()
         {
             var relation = _params.PawnOwner == PawnOwner.Player ? "Allied Familiar" : "Hostile Familiar";
-            return _params.TargetsCount > 1
+            var str = _params.TargetsCount > 1
                 ? $"Deal {Potency} {_params.DamageHandler.GetDescription()} to {_params.TargetsCount} {relation}s."
                 : $"Deal {Potency} {_params.DamageHandler.GetDescription()} to a {relation}.";
+            return $"{base.GetDescription()} {str}";
         }
 
-        public override void Initialize(PlayStrategyData playStrategyData)
+        public override void Initialize(PlayStrategyData playStrategyData, CardController cardController)
         {
             _params = playStrategyData.Parameters as AttackParams;
-            base.Initialize(playStrategyData);
+            base.Initialize(playStrategyData, cardController);
         }
 
         public class AttackPawnParams : GetPawnsParams

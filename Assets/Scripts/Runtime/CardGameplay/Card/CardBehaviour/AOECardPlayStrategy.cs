@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using Runtime.CardGameplay.Card.CardBehaviour.Predicates;
 using Runtime.Combat.Tilemap;
 using Runtime.Selection;
 using UnityEngine;
@@ -64,10 +66,19 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                 cardController.transform.position);
         }
 
-        public override void Initialize(PlayStrategyData playStrategyData)
+        public override void BlindPlay(CardController cardController, Action<bool> onComplete)
+        {
+            var tilemap = ServiceLocator.Get<TilemapController>();
+            var tile = tilemap.AllTiles().Where(t => TileFilterHelper.FilterTile(t, aoeParams.TileFilter)).ToList()
+                .SelectRandom();
+
+            ApplyEffect(tile);
+        }
+
+        public override void Initialize(PlayStrategyData playStrategyData, CardController cardController)
         {
             aoeParams = playStrategyData.Parameters as AOEPlayParams;
-            base.Initialize(playStrategyData);
+            base.Initialize(playStrategyData, cardController);
         }
     }
 }

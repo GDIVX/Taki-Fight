@@ -24,11 +24,17 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
             _params.PawnStrategyData.Strategy.Play(pawn, onComplete);
         }
 
-        public override void Initialize(PlayStrategyData playStrategyData)
+        public override void Initialize(PlayStrategyData playStrategyData, CardController cardController)
         {
-            base.Initialize(playStrategyData);
+            base.Initialize(playStrategyData, cardController);
             _params = playStrategyData.Parameters as InvokePawnAbilityPlayStrategyParams;
             if (_params != null) _params.PawnStrategyData.Strategy.Initialize(_params.PawnStrategyData);
+        }
+
+        public override string GetDescription()
+        {
+            var relation = _params.PawnOwner == PawnOwner.Player ? "Allied Familiar" : "Hostile Familiar";
+            return $"{relation}: {_params.PawnStrategyData.Strategy.GetDescription()}";
         }
     }
 

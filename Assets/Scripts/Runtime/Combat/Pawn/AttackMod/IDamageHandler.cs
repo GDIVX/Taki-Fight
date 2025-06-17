@@ -57,7 +57,10 @@ namespace Runtime.Combat.Pawn.AttackMod
 
         public string GetDescription()
         {
-            return "Pierce Damage";
+            var builder = new DescriptionBuilder();
+            builder.WithKeyword("Piercing");
+            builder.AppendInLine(" Damage");
+            return builder.GetFormattedText();
         }
     }
 
@@ -76,7 +79,10 @@ namespace Runtime.Combat.Pawn.AttackMod
 
         public string GetDescription()
         {
-            return "Shred Damage";
+            var builder = new DescriptionBuilder();
+            builder.WithKeyword("Sundering");
+            builder.AppendInLine(" Damage");
+            return builder.GetFormattedText();
         }
     }
 
@@ -97,7 +103,10 @@ namespace Runtime.Combat.Pawn.AttackMod
 
         public string GetDescription()
         {
-            return "Blunt Damage";
+            var builder = new DescriptionBuilder();
+            builder.WithKeyword("Blunt");
+            builder.AppendInLine(" Damage");
+            return builder.GetFormattedText();
         }
     }
 
@@ -118,7 +127,10 @@ namespace Runtime.Combat.Pawn.AttackMod
 
         public string GetDescription()
         {
-            return "Cut Damage";
+            var builder = new DescriptionBuilder();
+            builder.WithKeyword("Slash");
+            builder.AppendInLine(" Damage");
+            return builder.GetFormattedText();
         }
     }
 }

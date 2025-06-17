@@ -183,6 +183,7 @@ namespace Runtime.Combat.Pawn
         }
 
 
+#if UNITY_EDITOR
         private void OnValidate()
         {
             if (_size.x <= 0 || _size.y <= 0)
@@ -207,6 +208,7 @@ namespace Runtime.Combat.Pawn
                 if (!ValidateStrategy(data)) Debug.LogError($"Invalid strategy: {data} for {name}");
             });
         }
+#endif
 
         public CardData CreateRuntimeSummonCard(int cost)
         {

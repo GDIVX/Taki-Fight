@@ -25,9 +25,9 @@ namespace Runtime.UI.Tooltip
             _descriptionText.text = tooltipSource.Content;
             _background.color = tooltipSource.BackgroundColor;
 
-            int headerLength = _headerField.text.Length;
-            int secondHeaderLength = _secondHeaderField.text.Length;
-            int contentLength = _descriptionText.text.Length;
+            int headerLength = _headerField ? _headerField.text.Length : 0;
+            int secondHeaderLength = _secondHeaderField ? _secondHeaderField.text.Length : 0;
+            int contentLength = _descriptionText ? _descriptionText.text.Length : 0;
             _layoutElement.enabled = headerLength > _characterWrapLimit
                                      || secondHeaderLength > _characterWrapLimit ||
                                      contentLength > _characterWrapLimit;
@@ -36,11 +36,11 @@ namespace Runtime.UI.Tooltip
             if (icon)
             {
                 _iconImage.sprite = icon;
-                _iconImage.gameObject.SetActive(true);
+                _iconImage?.gameObject.SetActive(true);
             }
             else
             {
-                _iconImage.gameObject.SetActive(false);
+                _iconImage?.gameObject.SetActive(false);
             }
         }
 

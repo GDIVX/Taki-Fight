@@ -1,13 +1,33 @@
-﻿using UnityEngine;
+﻿using Runtime.CardGameplay.Card;
+using Runtime.CardGameplay.Card.CardBehaviour.Predicates;
+using UnityEngine;
 
 namespace Runtime
 {
-    public abstract class ScriptablePredicate<T> : ScriptableObject where T : PredicateHandler
+    public abstract class ScriptablePredicate : ScriptableObject, IDescribable , IPredicate
     {
-        public abstract bool Evaluate(T predicateParams);
+        public virtual bool Evaluate(PredicateHandler handler)
+        {
+            if (Negate)
+            {
+                return !OnEvaluate(handler);
+            }
+
+            return OnEvaluate(handler);
+        }
+
+        protected abstract bool OnEvaluate(PredicateHandler handler);
+        public abstract string GetDescription();
+
+        public bool Negate { get; set; }
     }
 
     public abstract class PredicateHandler
     {
+    }
+
+    public interface IPredicate
+    {
+        public bool Evaluate(PredicateHandler handler);
     }
 }

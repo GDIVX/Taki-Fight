@@ -13,7 +13,7 @@ using Utilities;
 
 namespace Runtime.CardGameplay.Card
 {
-    public class CardController : MonoBehaviour, IPointerClickHandler, ISelectableEntity
+    public class CardController : MonoBehaviour, IPointerClickHandler, ISelectableEntity, ICloneable
     {
         [ShowInInspector] [ReadOnly] public Observable<bool> IsPlayable;
 
@@ -22,7 +22,13 @@ namespace Runtime.CardGameplay.Card
         private bool _isSelecting;
 
         [ShowInInspector] [ReadOnly] private List<PlayStrategyData> _playStrategies;
-        public IReadOnlyList<PlayStrategyData> PlayStrategies => _playStrategies;
+
+        public List<PlayStrategyData> PlayStrategies
+        {
+            get => _playStrategies;
+            internal set => _playStrategies = value;
+        }
+
         public CardType CardType { get; private set; }
 
         public CardInstance Instance { get; private set; }
@@ -31,8 +37,11 @@ namespace Runtime.CardGameplay.Card
 
         public CardData Data { get; private set; }
 
+        public bool IsConsumed { get; set; }
         public HandController HandController { get; private set; }
         public Energy.Energy Energy { get; private set; }
+
+        public event Action<CardController> OnRetained;
 
         public int Cost
         {
@@ -98,10 +107,10 @@ namespace Runtime.CardGameplay.Card
             }
 
             CardInstance cardInstance = new CardInstance(data);
-            Init(cardInstance, dependencies);
+            Init(cardInstance);
         }
 
-        public bool Init(CardInstance instance, CardDependencies deps)
+        public bool Init(CardInstance instance)
         {
             if (instance == null)
             {
@@ -124,7 +133,7 @@ namespace Runtime.CardGameplay.Card
             _feedbackStrategy = instance.Data.FeedbackStrategy;
             View = GetComponent<CardView>();
             _playStrategies = new List<PlayStrategyData>(instance.Data.PlayStrategies);
-            _playStrategies.ForEach(s => s.PlayStrategy.Initialize(s));
+            _playStrategies.ForEach(s => s.PlayStrategy.Initialize(s, this));
 
             _cardFactory = ServiceLocator.Get<CardFactory>();
             Energy = ServiceLocator.Get<Energy.Energy>();
@@ -132,12 +141,13 @@ namespace Runtime.CardGameplay.Card
 
 
             IsPlayable = new Observable<bool>(true);
+            IsConsumed = instance.Data.IsConsumed;
             OnCardPlayedEvent += _ => UpdateAffordability();
             Energy.OnAmountChanged += _ => UpdateAffordability();
             Data = instance.Data;
 
             gameObject.name = instance.Data.Title + instance.Guid;
-            
+
             return true;
         }
 
@@ -187,15 +197,27 @@ namespace Runtime.CardGameplay.Card
             }
         }
 
-        [Button]
         private void RunPlayLogic()
+        {
+            RunPlayLogic(false);
+        }
+
+        [Button]
+        internal void RunPlayLogic(bool blind = false)
         {
             int remainingPlays = _playStrategies.Count;
 
 
             foreach (var tuple in _playStrategies)
             {
-                tuple.PlayStrategy.Play(this, OnStrategyComplete);
+                if (blind)
+                {
+                    tuple.PlayStrategy.BlindPlay(this, OnStrategyComplete);
+                }
+                else
+                {
+                    tuple.PlayStrategy.Play(this, OnStrategyComplete);
+                }
             }
 
             return;
@@ -215,7 +237,7 @@ namespace Runtime.CardGameplay.Card
         {
             HandleCost();
 
-            if (Data.IsConsumed)
+            if (IsConsumed)
             {
                 HandController.ConsumeCard(this);
             }
@@ -281,6 +303,23 @@ namespace Runtime.CardGameplay.Card
         {
             var hand = ServiceLocator.Get<HandController>();
             if (hand) hand.LimboCard(this);
+        }
+
+        public virtual void InvokeOnRetained()
+        {
+            OnRetained?.Invoke(this);
+        }
+
+        public object Clone()
+        {
+            var clone = _cardFactory.Create(Instance.Clone() as CardInstance);
+            clone._playStrategies = new List<PlayStrategyData>(_playStrategies);
+            return clone;
+        }
+
+        public void AddStrategies(List<PlayStrategyData> newStrategies)
+        {
+            _playStrategies.AddRange(newStrategies);
         }
     }
 }

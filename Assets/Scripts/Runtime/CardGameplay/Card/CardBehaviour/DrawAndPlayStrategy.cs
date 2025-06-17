@@ -21,7 +21,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
             for (int i = 0; i < Potency; i++)
             {
                 var drawn = handController.DrawCard();
-                drawn?.Play();
+                drawn?.RunPlayLogic(true);
             }
 
             onComplete?.Invoke(true);

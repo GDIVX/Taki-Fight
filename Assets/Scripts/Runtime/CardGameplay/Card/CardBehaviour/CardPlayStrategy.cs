@@ -7,7 +7,9 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
     public abstract class CardPlayStrategy : ScriptableObject, IDescribable
     {
         public int Potency { get; set; }
-        public StrategyParams Params { get; private set; }
+        protected StrategyParams Params { get; private set; }
+
+
 
         public virtual string GetDescription()
         {
@@ -19,10 +21,17 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
         /// </summary>
         public abstract void Play(CardController cardController, Action<bool> onComplete);
 
-        public virtual void Initialize(PlayStrategyData playStrategyData)
+        public virtual void Initialize(PlayStrategyData playStrategyData, CardController cardController)
         {
             Potency = playStrategyData.Potency;
             Params = playStrategyData.Parameters;
+
+
+        }
+
+        public virtual void BlindPlay(CardController cardController, Action<bool> onComplete)
+        {
+            Play(cardController, onComplete);
         }
     }
 }

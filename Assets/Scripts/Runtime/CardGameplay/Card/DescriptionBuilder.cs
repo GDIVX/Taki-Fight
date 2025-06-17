@@ -51,7 +51,7 @@ namespace Runtime.CardGameplay.Card
 
             var keywordInstant = KeywordDictionary.Get(keyword);
 
-            _builder.Append($"{Hyperlink(keywordInstant.FormattedText)}: )");
+            _builder.Append($"{Hyperlink(keywordInstant.FormattedText)}");
             return this;
         }
 

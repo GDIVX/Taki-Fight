@@ -85,10 +85,10 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
             };
         }
 
-        public override void Initialize(PlayStrategyData playStrategyData)
+        public override void Initialize(PlayStrategyData playStrategyData, CardController cardController)
         {
             _params = playStrategyData.Parameters as KnockbackParams;
-            base.Initialize(playStrategyData);
+            base.Initialize(playStrategyData, cardController);
         }
     }
 }

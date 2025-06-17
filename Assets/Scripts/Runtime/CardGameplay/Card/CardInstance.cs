@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Runtime.CardGameplay.Card
 {
     [Serializable]
-    public class CardInstance : IEqualityComparer<CardInstance>
+    public class CardInstance : IEqualityComparer<CardInstance>, ICloneable
     {
         public CardData Data;
 
@@ -46,6 +46,13 @@ namespace Runtime.CardGameplay.Card
             Consumed,
             Discard,
             Draw
+        }
+
+        public object Clone()
+        {
+            var clone = new CardInstance(Data);
+            clone.Cost = Cost;
+            return clone;
         }
     }
 }

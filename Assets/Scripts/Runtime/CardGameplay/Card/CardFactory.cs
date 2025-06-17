@@ -37,7 +37,7 @@ namespace Runtime.CardGameplay.Card
         public CardController Create(CardInstance instance)
         {
             CardController controller = GetController();
-            if (controller.Init(instance, _cardDependencies))
+            if (controller.Init(instance))
             {
                 controller.View
                     .Init(_drawFromLocation, _discardToLocation)
