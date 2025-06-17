@@ -16,6 +16,26 @@
     <PackageReference Include="NUnit.Analyzers" Version="3.6.1" />
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
     <ProjectReference Include="..\TakiFight.Core\TakiFight.Core.csproj" />
+    <Compile Include="..\Assets\Scripts\Runtime\Combat\Pawn\Abilities\MoveAbility.cs" />
+    <Compile Include="..\Assets\Scripts\Runtime\Combat\Pawn\Abilities\JumpAbility.cs" />
+    <Compile Include="..\Assets\Scripts\Runtime\Combat\Pawn\Abilities\FlyAbility.cs" />
+    <Compile Include="..\Assets\Scripts\Runtime\Combat\Pawn\Abilities\ChargeAbility.cs" />
+    <Compile Include="..\Assets\Scripts\Runtime\Combat\Pawn\Abilities\CapturePawnAbility.cs" />
+    <Compile Include="..\Assets\Scripts\Runtime\Combat\Pawn\Abilities\KnockbackAbility.cs" />
+    <Compile Include="..\Assets\Scripts\Runtime\Combat\Pawn\Abilities\GainStatusEffect.cs" />
+    <Compile Include="..\Assets\Scripts\Runtime\Combat\Pawn\Abilities\PawnGainDamagePower.cs" />
+    <Compile Include="..\Assets\Scripts\Runtime\Combat\Pawn\Abilities\PawnGameOver.cs" />
+    <Compile Include="..\Assets\Scripts\Runtime\Combat\Pawn\Abilities\PawnWinCombat.cs" />
+    <Compile Include="..\Assets\Scripts\Runtime\Combat\Pawn\Abilities\ChargeAbilityParams.cs" />
+    <Compile Include="..\Assets\Scripts\Runtime\Combat\Pawn\Abilities\MoveDirectionParams.cs" />
+    <Compile Include="..\Assets\Scripts\Runtime\Combat\Pawn\Abilities\StatusEffectParams.cs" />
+    <Compile Include="..\Assets\Scripts\Runtime\Combat\Pawn\MovementDirection.cs" />
+    <Compile Include="..\Assets\Scripts\Runtime\Combat\Pawn\PawnOwner.cs" />
+    <Compile Include="..\Assets\Scripts\Runtime\Combat\Pawn\PawnPlayStrategy.cs" />
+    <Compile Include="..\Assets\Scripts\Runtime\Combat\Pawn\PawnMovePlayStrategy.cs" />
+    <Compile Include="..\Assets\Scripts\Runtime\Combat\Pawn\PawnTargetPlayStrategy.cs" />
+    <Compile Include="..\Assets\Scripts\Runtime\Combat\Pawn\PawnHitPlayStrategy.cs" />
+    <Compile Include="..\Assets\Scripts\Runtime\Combat\Pawn\Abilities\Tests\*.cs" />
   </ItemGroup>
 
 </Project>
