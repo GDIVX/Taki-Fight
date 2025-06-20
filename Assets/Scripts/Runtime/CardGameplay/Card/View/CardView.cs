@@ -45,13 +45,11 @@ namespace Runtime.CardGameplay.Card.View
         [ShowInInspector] [ReadOnly] private CardData _cardData;
         [ShowInInspector] [ReadOnly] private CardController _controller;
 
-        private Tween _currentTween;
 
         private Transform _discardToLocation, _drawFromLocation;
 
         [ShowInInspector, ReadOnly] private bool _isHoverEnabled;
 
-        public bool IsAnimating => _currentTween != null && _currentTween.IsActive() && _currentTween.IsPlaying();
 
         public void SetHoverEnabled(bool value)
         {
@@ -162,53 +160,41 @@ namespace Runtime.CardGameplay.Card.View
             _originalRotation = transform.localRotation.eulerAngles;
         }
 
-        public Sequence AnimateToLocal(Vector3 position, Vector3 rotation, float duration, Ease ease)
+        public Tween AnimateToLocal(Vector3 position, Vector3 rotation, float duration, Ease ease)
         {
-            _currentTween?.Kill();
-            _currentTween = DOTween.Sequence()
+            _isHoverEnabled = false;
+            return DOTween.Sequence()
                 .Join(transform.DOLocalMove(position, duration).SetEase(ease))
                 .Join(transform.DOLocalRotate(rotation, duration).SetEase(ease))
-                .OnComplete(() => _currentTween = null);
-            return _currentTween;
+                .OnComplete((() => { _isHoverEnabled = true; }));
         }
 
-        public Sequence AnimateTo(Vector3 position, Vector3 rotation, float duration, Ease ease)
+        public Tween AnimateTo(Vector3 position, Vector3 rotation, float duration, Ease ease)
         {
-            _currentTween?.Kill();
-            _currentTween = DOTween.Sequence()
+            return DOTween.Sequence()
                 .Join(transform.DOMove(position, duration).SetEase(ease))
                 .Join(transform.DORotate(rotation, duration).SetEase(ease))
-                .OnComplete(() => _currentTween = null);
-            return _currentTween;
+                .OnComplete((() => { _isHoverEnabled = true; }));
         }
 
 
         private void AnimateHoverEnter()
         {
-            _currentTween?.Kill();
-
             transform.SetAsLastSibling();
-            _currentTween = DOTween.Sequence()
+            DOTween.Sequence()
                 .Append(transform.DOLocalRotate(Vector3.zero, _hoverRotationDuration).SetEase(_hoverEaseType))
                 .Join(transform.DOLocalMoveY(_onOverMoveToY, _hoverRotationDuration))
                 .Join(transform.DOScale(_originalScale * _hoverScaleFactor, _hoverRotationDuration)
-                    .SetEase(_hoverEaseType))
-                .OnComplete(() => _currentTween = null);
+                    .SetEase(_hoverEaseType));
         }
 
         private void AnimateReturnToDefault()
         {
-            _currentTween?.Kill();
-
-            _currentTween = DOTween.Sequence()
+            DOTween.Sequence()
                 .Append(transform.DOLocalMove(_originalPosition, _hoverRotationDuration).SetEase(_hoverEaseType))
                 .Join(transform.DOLocalRotate(_originalRotation, _hoverRotationDuration).SetEase(_hoverEaseType))
                 .Join(transform.DOScale(_originalScale, _hoverRotationDuration).SetEase(_hoverEaseType))
-                .OnComplete(() =>
-                {
-                    transform.SetSiblingIndex(_originalSiblingIndex);
-                    _currentTween = null;
-                });
+                .OnComplete(() => { transform.SetSiblingIndex(_originalSiblingIndex); });
         }
 
         public void OnDraw()
@@ -216,30 +202,23 @@ namespace Runtime.CardGameplay.Card.View
             _isHoverEnabled = false;
             transform.position = _drawFromLocation.position;
             transform.localScale = new(_minScale, _minScale, 1);
-            _currentTween?.Kill();
-            _currentTween = DOTween.Sequence()
+            DOTween.Sequence()
                 .Append(transform.DOScale(1, _cardMovementDuration).SetEase(_cardMovementEase))
-                .OnComplete(() =>
-                {
-                    _isHoverEnabled = true;
-                    _currentTween = null;
-                });
+                .OnComplete(() => { _isHoverEnabled = true; });
         }
 
         public void OnDiscard()
         {
             _isHoverEnabled = false;
-            AnimateTo(_discardToLocation.position, Vector3.zero, _cardMovementDuration, _cardMovementEase)
+            Sequence sequence = DOTween.Sequence();
+            sequence.Append(AnimateTo(_discardToLocation.position, Vector3.zero, _cardMovementDuration,
+                    _cardMovementEase))
                 .Join(transform.DOScale(_minScale, _cardMovementDuration))
-                .OnComplete(() =>
-                {
-                    _controller.Disable();
-                    _currentTween = null;
-                });
+                .OnComplete(() => { _controller.Disable(); });
         }
 
         [Button]
-        public void OnBurn()
+        public void OnConsume()
         {
             _canvasGroup.interactable = false;
             _canvasGroup.blocksRaycasts = false;
