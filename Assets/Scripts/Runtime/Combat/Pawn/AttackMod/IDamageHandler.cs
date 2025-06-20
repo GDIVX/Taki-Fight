@@ -69,7 +69,7 @@ namespace Runtime.Combat.Pawn.AttackMod
     ///     Damage armor only
     /// </summary>
     [Serializable]
-    public class ShredDamageHandler : IDamageHandler
+    public class SunderDamageHandler : IDamageHandler
     {
         public DamageResult DamagePawn(int inDamage, int currentArmor)
         {
@@ -87,18 +87,19 @@ namespace Runtime.Combat.Pawn.AttackMod
     }
 
     /// <summary>
-    ///     Double damage against armor, spillover isn't doubled
+    ///     Double damage against armor
     /// </summary>
     [Serializable]
     public class BluntDamageHandler : IDamageHandler
     {
         public DamageResult DamagePawn(int inDamage, int currentArmor)
         {
-            var rawArmorDamage = Mathf.Min(inDamage, currentArmor);
-            var armorDamage = Mathf.Min(currentArmor, rawArmorDamage * 2);
-            var remainingDamage = inDamage - rawArmorDamage;
+            var damage = currentArmor > 0 ? inDamage * 2 : inDamage;
+            var armorDamage = Mathf.Min(damage, currentArmor);
+            var healthDamage = damage - armorDamage;
 
-            return new DamageResult(remainingDamage, armorDamage);
+
+            return new DamageResult(healthDamage, armorDamage);
         }
 
         public string GetDescription()
@@ -118,9 +119,9 @@ namespace Runtime.Combat.Pawn.AttackMod
     {
         public DamageResult DamagePawn(int inDamage, int currentArmor)
         {
-            var armorDamage = Mathf.Min(inDamage, currentArmor);
-            var remainingDamage = inDamage - armorDamage;
-            var healthDamage = remainingDamage * 2;
+            var damage = currentArmor <= 0 ? inDamage * 2 : inDamage;
+            var armorDamage = Mathf.Min(damage, currentArmor);
+            var healthDamage = damage - armorDamage;
 
             return new DamageResult(healthDamage, armorDamage);
         }
