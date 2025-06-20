@@ -162,6 +162,16 @@ namespace Runtime.CardGameplay.Card.View
             _originalRotation = transform.localRotation.eulerAngles;
         }
 
+        public Tween AnimateToLocal(Vector3 position, Vector3 rotation, float duration, Ease ease)
+        {
+            _currentTween?.Kill();
+            _currentTween = DOTween.Sequence()
+                .Join(transform.DOLocalMove(position, duration).SetEase(ease))
+                .Join(transform.DOLocalRotate(rotation, duration).SetEase(ease))
+                .OnComplete(() => _currentTween = null);
+            return _currentTween;
+        }
+
 
         private void AnimateHoverEnter()
         {
