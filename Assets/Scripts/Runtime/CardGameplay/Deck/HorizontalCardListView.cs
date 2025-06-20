@@ -125,7 +125,7 @@ namespace Runtime.CardGameplay.Deck
 
             if (count == 1)
             {
-                CardAnimationMediator.Instance.Animate(_cards[0].View, Vector3.zero, Vector3.zero, animationDuration, easeType);
+                _cards[0].View.AnimateToLocal(Vector3.zero, Vector3.zero, animationDuration, easeType);
                 return;
             }
 
@@ -157,8 +157,7 @@ namespace Runtime.CardGameplay.Deck
                 }
 
                 _currentArrangeSequence.Join(
-                    CardAnimationMediator.Instance.Animate(
-                        card.View,
+                    card.View.AnimateToLocal(
                         new Vector3(xPos, yPos, 0),
                         new Vector3(0, 0, -angle),
                         animationDuration,

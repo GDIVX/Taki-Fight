@@ -162,12 +162,22 @@ namespace Runtime.CardGameplay.Card.View
             _originalRotation = transform.localRotation.eulerAngles;
         }
 
-        public Tween AnimateToLocal(Vector3 position, Vector3 rotation, float duration, Ease ease)
+        public Sequence AnimateToLocal(Vector3 position, Vector3 rotation, float duration, Ease ease)
         {
             _currentTween?.Kill();
             _currentTween = DOTween.Sequence()
                 .Join(transform.DOLocalMove(position, duration).SetEase(ease))
                 .Join(transform.DOLocalRotate(rotation, duration).SetEase(ease))
+                .OnComplete(() => _currentTween = null);
+            return _currentTween;
+        }
+
+        public Sequence AnimateTo(Vector3 position, Vector3 rotation, float duration, Ease ease)
+        {
+            _currentTween?.Kill();
+            _currentTween = DOTween.Sequence()
+                .Join(transform.DOMove(position, duration).SetEase(ease))
+                .Join(transform.DORotate(rotation, duration).SetEase(ease))
                 .OnComplete(() => _currentTween = null);
             return _currentTween;
         }
@@ -206,18 +216,25 @@ namespace Runtime.CardGameplay.Card.View
             _isHoverEnabled = false;
             transform.position = _drawFromLocation.position;
             transform.localScale = new(_minScale, _minScale, 1);
-            transform.DOScale(1, _cardMovementDuration).OnComplete(() => _isHoverEnabled = true);
+            _currentTween?.Kill();
+            _currentTween = DOTween.Sequence()
+                .Append(transform.DOScale(1, _cardMovementDuration).SetEase(_cardMovementEase))
+                .OnComplete(() =>
+                {
+                    _isHoverEnabled = true;
+                    _currentTween = null;
+                });
         }
 
         public void OnDiscard()
         {
             _isHoverEnabled = false;
-            transform.DOMove(_discardToLocation.position, _cardMovementDuration).SetEase(_cardMovementEase);
-            transform.DOScale(_minScale, _cardMovementDuration)
+            AnimateTo(_discardToLocation.position, Vector3.zero, _cardMovementDuration, _cardMovementEase)
+                .Join(transform.DOScale(_minScale, _cardMovementDuration))
                 .OnComplete(() =>
                 {
-                    // Disable the view and then reset for future use
                     _controller.Disable();
+                    _currentTween = null;
                 });
         }
 
