@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using DG.Tweening;
 using Runtime.CardGameplay.Card;
+using Runtime.CardGameplay.Card.View;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
@@ -124,7 +125,7 @@ namespace Runtime.CardGameplay.Deck
 
             if (count == 1)
             {
-                _cards[0].View.AnimateToLocal(Vector3.zero, Vector3.zero, animationDuration, easeType);
+                CardAnimationMediator.Instance.Animate(_cards[0].View, Vector3.zero, Vector3.zero, animationDuration, easeType);
                 return;
             }
 
@@ -156,7 +157,8 @@ namespace Runtime.CardGameplay.Deck
                 }
 
                 _currentArrangeSequence.Join(
-                    card.View.AnimateToLocal(
+                    CardAnimationMediator.Instance.Animate(
+                        card.View,
                         new Vector3(xPos, yPos, 0),
                         new Vector3(0, 0, -angle),
                         animationDuration,
