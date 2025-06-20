@@ -63,7 +63,7 @@ namespace Runtime.Combat.Pawn
 
 
             _view ??= GetComponent<PawnView>();
-            _view.Init(this, Combat.Defense, data);
+            _view.Init(this, Combat.Armor, data);
 
             IsAgile = data.IsAgile;
             Owner = data.Owner;

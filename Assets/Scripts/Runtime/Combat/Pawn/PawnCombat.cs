@@ -12,7 +12,7 @@ namespace Runtime.Combat.Pawn
     [Serializable]
     internal class PawnCombat
     {
-        public Stat Defense;
+        public Stat Armor;
         public Stat Damage;
         public Stat Attacks;
         public IDamageHandler DamageHandler;
@@ -20,7 +20,7 @@ namespace Runtime.Combat.Pawn
         public PawnCombat(PawnController pawn, PawnData data)
         {
             Pawn = pawn;
-            Defense = new(data.Defense);
+            Armor = new(data.Defense);
             Damage = new(data.Damage);
             Attacks = new(data.Attacks);
             DamageHandler = data.DamageType;
@@ -40,10 +40,11 @@ namespace Runtime.Combat.Pawn
                 return;
             }
 
-            var result = handler.DamagePawn(damage, Defense.Value);
+            var result = handler.DamagePawn(damage, Armor.Value);
+
 
             Pawn.Health.Damage(result.HealthOnlyDamage);
-            Defense.BaseValue = Mathf.Max(0, Defense.Value - result.ArmorOnlyDamage);
+            Armor.BaseValue = Mathf.Max(0, Armor.Value - result.ArmorOnlyDamage);
 
             OnBeingAttacked?.Invoke(damage, result.HealthOnlyDamage);
             Pawn.ExecuteStrategies(Pawn.Data.OnDamagedStrategies);

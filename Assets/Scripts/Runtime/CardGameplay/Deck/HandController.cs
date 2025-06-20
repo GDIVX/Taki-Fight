@@ -181,7 +181,7 @@ namespace Runtime.CardGameplay.Deck
             Deck.Consume(cardController.Instance);
             RemoveCard(cardController);
             cardController.OnDiscard();
-            cardController.View.OnBurn();
+            cardController.View.OnConsume();
             OnCardBurnt?.Invoke(cardController);
         }
 
@@ -194,7 +194,7 @@ namespace Runtime.CardGameplay.Deck
         public void LimboCard(CardController cardController)
         {
             Deck.Limbo(cardController.Instance);
-            cardController.View.OnBurn();
+            cardController.View.OnConsume();
         }
 
         public bool Has(CardController cardController)

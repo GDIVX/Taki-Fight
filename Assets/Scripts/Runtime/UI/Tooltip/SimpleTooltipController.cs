@@ -18,29 +18,38 @@ namespace Runtime.UI.Tooltip
 
         public override void SetTooltip(ITooltipSource source)
         {
-            if (source is not IContentTooltipSource tooltipSource) return;
+            if (source is not IContentTooltipSource tooltipSource)
+                return;
 
-            _headerField.text = tooltipSource.Header;
-            _secondHeaderField.text = tooltipSource.Subtitle;
-            _descriptionText.text = tooltipSource.Content;
+            if (!_headerField || !_secondHeaderField || !_descriptionText ||
+                !_iconImage || !_background || !_layoutElement)
+            {
+                Debug.LogError("[SimpleTooltipController] Missing serialized field(s) in the Inspector.");
+                return;
+            }
+
+            _headerField.text = tooltipSource.Header ?? string.Empty;
+            _secondHeaderField.text = tooltipSource.Subtitle ?? string.Empty;
+            _descriptionText.text = tooltipSource.Content ?? string.Empty;
             _background.color = tooltipSource.BackgroundColor;
 
-            int headerLength = _headerField ? _headerField.text.Length : 0;
-            int secondHeaderLength = _secondHeaderField ? _secondHeaderField.text.Length : 0;
-            int contentLength = _descriptionText ? _descriptionText.text.Length : 0;
-            _layoutElement.enabled = headerLength > _characterWrapLimit
-                                     || secondHeaderLength > _characterWrapLimit ||
-                                     contentLength > _characterWrapLimit;
+            int headerLength = _headerField.text?.Length ?? 0;
+            int secondHeaderLength = _secondHeaderField.text?.Length ?? 0;
+            int contentLength = _descriptionText.text?.Length ?? 0;
 
-            var icon = tooltipSource.Icon;
-            if (icon)
+            _layoutElement.enabled = headerLength > _characterWrapLimit
+                                     || secondHeaderLength > _characterWrapLimit
+                                     || contentLength > _characterWrapLimit;
+
+            if (tooltipSource.Icon)
             {
-                _iconImage.sprite = icon;
-                _iconImage?.gameObject.SetActive(true);
+                _iconImage.sprite = tooltipSource.Icon;
+                _iconImage.gameObject.SetActive(true);
             }
             else
             {
-                _iconImage?.gameObject.SetActive(false);
+                _iconImage.sprite = null;
+                _iconImage.gameObject.SetActive(false);
             }
         }
 
