@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Runtime.Combat.Pawn;
 using Runtime.Combat.Tilemap;
 using Runtime.Selection;
@@ -73,11 +74,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                         }
 
                         //all tiles must adhear to the tile selection mode
-                        var tileSelectionMode = new TileFilterCriteria
-                        {
-                            Occupancy = OccupancyFilter.Empty,
-                            TileOwner = TileOwner.Player
-                        };
+                        var tileSelectionMode = TileFilterCriteria();
                         if (!TileFilterHelper.FilterTile(tile, tileSelectionMode))
                         {
                             onComplete?.Invoke(false);
@@ -94,30 +91,53 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                     var tileView = selectedEntities[0] as TileView;
                     var tile = tileView.Tile;
 
-                    if (tile.IsOccupied)
-                    {
-                        onComplete?.Invoke(true); // graceful fail
-                        return;
-                    }
-
-                    var pawnFactory = ServiceLocator.Get<PawnFactory>();
-                    if (pawnFactory == null)
-                    {
-                        Debug.LogError("SummonUnitPlay: PawnFactory not found.");
-                        onComplete?.Invoke(false);
-                        return;
-                    }
-
-                    var unit = Pawn;
-                    var pawnController = pawnFactory.CreatePawn(unit, tile);
-
-                    pawnController.AssignSummonCard(cardController);
-
-                    onComplete?.Invoke(true);
+                    Summon(cardController, onComplete, tile);
                 },
                 () => { onComplete?.Invoke(false); },
                 cardController.transform.position
             );
+        }
+
+        private static TileFilterCriteria TileFilterCriteria()
+        {
+            var tileSelectionMode = new TileFilterCriteria
+            {
+                Occupancy = OccupancyFilter.Empty,
+                TileOwner = TileOwner.Player
+            };
+            return tileSelectionMode;
+        }
+
+        private void Summon(CardController cardController, Action<bool> onComplete, Tile tile)
+        {
+            if (tile.IsOccupied)
+            {
+                onComplete?.Invoke(true); // graceful fail
+                return;
+            }
+
+            var pawnFactory = ServiceLocator.Get<PawnFactory>();
+            if (!pawnFactory)
+            {
+                Debug.LogError("SummonUnitPlay: PawnFactory not found.");
+                onComplete?.Invoke(false);
+                return;
+            }
+
+            var unit = Pawn;
+            var pawnController = pawnFactory.CreatePawn(unit, tile);
+
+            pawnController.AssignSummonCard(cardController);
+
+            onComplete?.Invoke(true);
+        }
+
+        public override void BlindPlay(CardController cardController, Action<bool> onComplete)
+        {
+            var tilemap = ServiceLocator.Get<TilemapController>();
+            var randTile = tilemap.AllTiles().Where(t => TileFilterHelper.FilterTile(t, TileFilterCriteria())).ToList()
+                .SelectRandom();
+            Summon(cardController, onComplete, randTile);
         }
 
         public override string GetDescription()
