@@ -94,6 +94,12 @@ namespace Runtime.Combat.Pawn
             ExecuteStrategies(Data.OnKilledStrategies);
             if (!IsCardless)
             {
+                var originalCost = _summonCardInstance.Data.Cost;
+                if (Mathf.Abs(_summonCardInstance.Cost - originalCost) < 3)
+                {
+                    _summonCardInstance.Cost += 1;
+                }
+
                 Recall();
             }
 
@@ -127,8 +133,6 @@ namespace Runtime.Combat.Pawn
 
         public void Recall()
         {
-            _summonCardInstance.Cost += 1;
-
             var hand = ServiceLocator.Get<HandController>();
             hand.RemoveFromLimbo(_summonCardInstance);
             hand?.AddCardFromInstant(_summonCardInstance);
