@@ -59,8 +59,8 @@ namespace Runtime.Combat.Pawn.AttackMod
         {
             var builder = new DescriptionBuilder();
             builder.WithKeyword("Piercing");
-            builder.AppendInLine(" Damage");
-            return builder.GetFormattedText();
+            builder.Append(" Damage");
+            return builder.ToString();
         }
     }
 
@@ -81,8 +81,8 @@ namespace Runtime.Combat.Pawn.AttackMod
         {
             var builder = new DescriptionBuilder();
             builder.WithKeyword("Sundering");
-            builder.AppendInLine(" Damage");
-            return builder.GetFormattedText();
+            builder.Append(" Damage");
+            return builder.ToString();
         }
     }
 
@@ -106,8 +106,8 @@ namespace Runtime.Combat.Pawn.AttackMod
         {
             var builder = new DescriptionBuilder();
             builder.WithKeyword("Blunt");
-            builder.AppendInLine(" Damage");
-            return builder.GetFormattedText();
+            builder.Append(" Damage");
+            return builder.ToString();
         }
     }
 
@@ -130,8 +130,8 @@ namespace Runtime.Combat.Pawn.AttackMod
         {
             var builder = new DescriptionBuilder();
             builder.WithKeyword("Slash");
-            builder.AppendInLine(" Damage");
-            return builder.GetFormattedText();
+            builder.Append(" Damage");
+            return builder.ToString();
         }
     }
 }

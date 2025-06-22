@@ -50,7 +50,7 @@ namespace Runtime.Combat.Pawn.Abilities
             }
 
             var builder = new DescriptionBuilder();
-            return builder.WithLine("Gain ").WithKeyword(keyword, false).AppendInLine($" {Potency}").GetFormattedText();
+            return builder.WithLine("Gain ").WithKeyword(keyword, false).Append($" {Potency}").ToString();
         }
     }
 }

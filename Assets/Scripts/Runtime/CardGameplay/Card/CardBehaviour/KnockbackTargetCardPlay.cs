@@ -63,7 +63,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
             var builder = new DescriptionBuilder();
             builder.WithKeyword("Knockback");
             var directionText = GetDirectionDescription();
-            var knockbackText = $"{builder.GetFormattedText()} {Potency} tiles {directionText}";
+            var knockbackText = $"{builder.ToString()} {Potency} tiles {directionText}";
 
             return _params.TargetsCount > 1
                 ? $"{knockbackText} {_params.TargetsCount} {relation}s"

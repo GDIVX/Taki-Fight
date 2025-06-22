@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Runtime.CardGameplay.Deck;
 using Sirenix.OdinInspector;
-using Sirenix.Utilities;
 using UnityEngine;
 using Utilities;
 
@@ -84,9 +84,59 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
 
         public override string GetDescription()
         {
-            //TODO: Temp. Create a tooltip that display a card.
-            return _params.Clone ? "Clone Card" : "Create a new Card";
+            if (_params == null)
+                return "Create a card.";
+
+            var builder = new DescriptionBuilder();
+
+            if (_params.Clone)
+            {
+                builder.StartBlueHighlight().Append("Clone").EndHighlight().Append(" this card");
+            }
+            else
+            {
+                builder.StartBlueHighlight().Append("Create").EndHighlight()
+                    .Append(" ").AppendBold(_params.CardData.Title);
+            }
+
+            // if (_params.MakeConsume)
+            // {
+            //     builder.Append(", it is ").WithKeyword("Consume", false);
+            // }
+            //
+            // if (_params.ModifyPotencyBy != null && _params.ModifyPotencyBy.Count > 0)
+            // {
+            //     int total = _params.ModifyPotencyBy.Sum();
+            //     if (total > 0)
+            //         builder.Append($", gain +{total} potency");
+            //     else if (total < 0)
+            //         builder.Append($", lose {Mathf.Abs(total)} potency");
+            // }
+            //
+            // if (_params.ModifyCostBy != 0)
+            // {
+            //     if (_params.ModifyCostBy > 0)
+            //         builder.Append($", cost +{_params.ModifyCostBy}");
+            //     else
+            //         builder.Append($", cost {Mathf.Abs(_params.ModifyCostBy)} less");
+            // }
+            //
+            // if (_params.InjectedStrategies != null && _params.InjectedStrategies.Count > 0)
+            // {
+            //     builder.Append(", gains: ");
+            //     for (int i = 0; i < _params.InjectedStrategies.Count; i++)
+            //     {
+            //         builder.Append(_params.InjectedStrategies[i].PlayStrategy);
+            //         if (i < _params.InjectedStrategies.Count - 2)
+            //             builder.Append(", ");
+            //         else if (i == _params.InjectedStrategies.Count - 2)
+            //             builder.Append(" and ");
+            //     }
+            // }
+
+            return builder.ToString();
         }
+
 
         [Serializable]
         public class CardCreationParams : StrategyParams

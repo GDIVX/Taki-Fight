@@ -27,8 +27,10 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
 
         public override string GetDescription()
         {
-            return $"{base.GetDescription()} Deal {Potency} {_params.DamageHandler.GetDescription()} in a {_params.AreaSize.x}x{_params.AreaSize.y} area";
+            var builder = new DescriptionBuilder();
+            return builder.WithLine("Deal ").AppendBold(Potency.ToString())
+                .Append($" {_params.DamageHandler.GetDescription()} in a ").StartBlueHighlight()
+                .Append($"{_params.AreaSize.x}x{_params.AreaSize.y} area").EndHighlight().ToString();
         }
     }
 }
-

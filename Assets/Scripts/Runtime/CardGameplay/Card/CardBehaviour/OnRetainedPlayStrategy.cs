@@ -68,7 +68,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                 builder.WithKeyword("Consume");
             }
 
-            return builder.GetFormattedText();
+            return builder.ToString();
         }
     }
 

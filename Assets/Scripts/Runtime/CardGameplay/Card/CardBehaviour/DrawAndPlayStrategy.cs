@@ -29,7 +29,10 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
 
         public override string GetDescription()
         {
-            return Potency > 1 ? $"Draw and play {Potency} cards" : "Draw and play a card";
+            if (Potency <= 1) return "Draw and play a card";
+            var builder = new DescriptionBuilder();
+            return builder.WithLine("Draw and play ").AppendBold(Potency.ToString()).Append(" cards.")
+                .ToString();
         }
     }
 }

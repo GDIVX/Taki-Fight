@@ -12,23 +12,37 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
 
         public override void Play(CardController cardController, Action<bool> onComplete)
         {
-            PawnHelper.SelectPawnsAndInvokeAction(_params, pawn => HandleAttack(pawn, Potency),
+            PawnHelper.SelectPawnsAndInvokeAction(_params, pawn =>
+                {
+                    if (!pawn)
+                    {
+                        onComplete?.Invoke(false);
+                        return;
+                    }
+
+                    HandleAttack(pawn, Potency);
+                },
                 cardController.transform.position, onComplete);
         }
 
         public override void BlindPlay(CardController cardController, Action<bool> onComplete)
         {
             PawnController pawn = PawnHelper.FindRandomPawn(_params.PawnOwner);
+            if (!pawn)
+            {
+                onComplete?.Invoke(false);
+                return;
+            }
+
             HandleAttack(pawn, Potency);
         }
 
 
         private void HandleAttack(PawnController target, int potency)
         {
-            //TODO: Magic power stat
-            if (target == null)
+            if (!target)
             {
-                Debug.LogError($"Card '{name}' tried to attack a null target.");
+                Debug.LogWarning($"Card '{name}' tried to attack a null target.");
                 return;
             }
 
@@ -44,11 +58,17 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
 
         public override string GetDescription()
         {
-            var relation = _params.PawnOwner == PawnOwner.Player ? "Allied Familiar" : "Hostile Familiar";
-            var str = _params.TargetsCount > 1
-                ? $"Deal {Potency} {_params.DamageHandler.GetDescription()} to {_params.TargetsCount} {relation}s."
-                : $"Deal {Potency} {_params.DamageHandler.GetDescription()} to a {relation}.";
-            return $"{base.GetDescription()} {str}";
+            var builder = new DescriptionBuilder();
+
+            if (_params.TargetsCount == 1)
+            {
+                return builder.WithLine("Deal ").AppendBold(Potency.ToString()).WithSpace()
+                    .Append(_params.DamageHandler).Append(" to ").WithRelations(_params.PawnOwner, true).ToString();
+            }
+
+            return builder.WithLine("Deal ").AppendBold(Potency.ToString()).WithSpace().Append(_params.DamageHandler)
+                .Append(" to ").AppendBold(_params.TargetsCount.ToString()).WithRelations(_params.PawnOwner, false)
+                .ToString();
         }
 
         public override void Initialize(PlayStrategyData playStrategyData, CardController cardController)

@@ -13,7 +13,7 @@ namespace Runtime.CardGameplay.Card
         private readonly StringBuilder _builder = new();
         private bool _isFirstLine = true;
 
-        public string GetFormattedText()
+        public override string ToString()
         {
             return _builder.ToString().Trim();
         }
@@ -84,10 +84,48 @@ namespace Runtime.CardGameplay.Card
             return this;
         }
 
-        public DescriptionBuilder AppendInLine(string text)
+        public DescriptionBuilder Append(string text)
         {
             if (text == null) return this;
             _builder.Append(text);
+            return this;
+        }
+
+        public DescriptionBuilder Append(IDescribable describable)
+        {
+            if (describable == null) return this;
+            _builder.Append(describable.GetDescription());
+            return this;
+        }
+
+        public DescriptionBuilder StartRedHighlight()
+        {
+            _builder.Append("<color=#ff0000>");
+            return this;
+        }
+
+        public DescriptionBuilder StartGreenHighlight()
+        {
+            _builder.Append("<color=#00ff00>");
+            return this;
+        }
+
+        public DescriptionBuilder StartBlueHighlight()
+        {
+            _builder.Append("<color=#0000ff>");
+            return this;
+        }
+
+        public DescriptionBuilder EndHighlight()
+        {
+            _builder.Append("</color>");
+            return this;
+        }
+
+        public DescriptionBuilder AppendBold(string text)
+        {
+            if (text == null) return this;
+            _builder.Append($"<b>{text}</b>");
             return this;
         }
 
@@ -105,7 +143,7 @@ namespace Runtime.CardGameplay.Card
                 WithLine(strategy.PlayStrategy);
             }
 
-            return GetFormattedText();
+            return ToString();
         }
 
         /// <summary>
@@ -146,7 +184,7 @@ namespace Runtime.CardGameplay.Card
 
             WithTriggeredAbilities("Moved", GetDescribableAbilities(unit.OnMoveStrategies));
 
-            return GetFormattedText();
+            return ToString();
         }
 
         /// <summary>
@@ -214,7 +252,26 @@ namespace Runtime.CardGameplay.Card
                 WithLine(strategy.PlayStrategy);
             }
 
-            return GetFormattedText();
+            return ToString();
+        }
+
+        public DescriptionBuilder WithRelations(PawnOwner owner, bool singular)
+        {
+            var str = "";
+            str = singular
+                ? owner == PawnOwner.Player
+                    ? "an <color=#00ff00>allied</color> Familiar"
+                    : "an <color=#ff0000>hostile</color> Familiar"
+                : owner == PawnOwner.Player
+                    ? "<color=#00ff00>allied</color> Familiars"
+                    : "<color=#ff0000>hostile</color> Familiars";
+            return Append(str);
+        }
+
+        public DescriptionBuilder WithSpace()
+        {
+            _builder.Append(" ");
+            return this;
         }
     }
 }
