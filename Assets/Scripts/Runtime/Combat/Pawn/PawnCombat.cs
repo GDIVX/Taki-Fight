@@ -51,17 +51,29 @@ namespace Runtime.Combat.Pawn
         }
 
 
-        public IEnumerator Attack(PawnController target, Action onComplete)
+        public IEnumerator Attack(Action onComplete)
         {
+            var currTarget = ChooseTarget();
+            ;
             for (int i = 0; i < Attacks.Value; i++)
             {
+                if (!currTarget || currTarget.Health.IsDead())
+                {
+                    currTarget = ChooseTarget();
+                }
+
+                if (!currTarget)
+                {
+                    break;
+                }
+
                 var feedbackDone = false;
-                Pawn.ExecuteAttackFeedbackStrategy(target, () => feedbackDone = true);
+                Pawn.ExecuteAttackFeedbackStrategy(currTarget, () => feedbackDone = true);
                 yield return new WaitUntil(() => feedbackDone);
 
                 int attackDamage = Damage.Value;
-                Pawn.ExecuteHitStrategies(Pawn.Data.OnHitStrategies, target, ref attackDamage);
-                target.Combat.HandleDamage(attackDamage, DamageHandler);
+                Pawn.ExecuteHitStrategies(Pawn.Data.OnHitStrategies, currTarget, ref attackDamage);
+                currTarget.Combat.HandleDamage(attackDamage, DamageHandler);
                 yield return null;
             }
 
@@ -98,7 +110,8 @@ namespace Runtime.Combat.Pawn
             foreach (var tile in tiles)
             {
                 var pawnAtTile = tile.Pawn;
-                if (pawnAtTile && pawnAtTile.Owner != Pawn.Owner) targets.Add(pawnAtTile);
+                if (pawnAtTile && pawnAtTile.Owner != Pawn.Owner && !pawnAtTile.Health.IsDead())
+                    targets.Add(pawnAtTile);
             }
         }
 

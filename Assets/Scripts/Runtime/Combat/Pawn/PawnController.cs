@@ -177,7 +177,7 @@ namespace Runtime.Combat.Pawn
                 var target = Combat.ChooseTarget();
                 if (target)
                 {
-                    StartCoroutine(Combat.Attack(target, () => IsProcessingTurn = false));
+                    StartCoroutine(Combat.Attack(() => IsProcessingTurn = false));
                     yield break;
                 }
 
