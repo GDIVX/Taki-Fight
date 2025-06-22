@@ -880,18 +880,18 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 303423369}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1716781921}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1020, y: -266}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 600, y: 206.45999}
-  m_Pivot: {x: 0.5, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &303423371
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -907,8 +907,8 @@ MonoBehaviour:
   arcAngle: 15
   animationDuration: 1
   easeType: 27
-  minArcWidthFactor: 0.25
-  maxArcWidthFactor: 1.5
+  minArcWidthFactor: 0.5
+  maxArcWidthFactor: 2
   PointerEnterEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -2279,7 +2279,7 @@ Transform:
   m_GameObject: {fileID: 1377694100}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.5, y: -1.5, z: 0}
+  m_LocalPosition: {x: -6, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2299,7 +2299,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tilePrefab: {fileID: 2339652383917641911, guid: efed50a4891ec7a41a518cddff1e5b8f, type: 3}
   tileSize: 1.5
-  tilePadding: 0.1
+  tilePadding: 0.25
 --- !u!114 &1377694104
 MonoBehaviour:
   m_ObjectHideFlags: 0
