@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Maintainers should add a new entry for each release.
 
+🛠️ Codex Instructions:
+1. **Append** each new version's changelog at the top of this file.
+   - Use the format: `## [x.y.z] - YYYY-MM-DD`
+   - At the **start of each version**, include a short `### Summary` section (1–2 sentences max) explaining the *main focus* of the update (e.g., "Focus on UI polish and tooltips").
+   - Follow with the usual `### Added`, `### Changed`, `### Fixed`, etc.
+2. **Overwrite** the file at `Assets/Resources/changelog.txt` with only the current version’s entry.
+   - Include the `[x.y.z]` version header and the entire changelog block (including `### Summary`).
+   - Do **not** include older versions.
+
+> The `.txt` file is used for in-game display and Discord announcements.  
+> The `.md` file is used to track full changelog history and help Codex identify what changed.
+
 Use in-game lingo:
 - Pawn == Familiar
 
