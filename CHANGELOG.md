@@ -38,6 +38,21 @@ Maintainers must add a new entry for each release.
 
 ## [Unreleased]
 
+## [0.1.15] - 2025-06-22
+### Summary
+Early build focusing on small improvements and bug fixes.
+
+### Added
+- New build for early testing.
+
+### Changed
+- Polished various UI elements.
+
+### Fixed
+- Minor bugs reported by testers.
+
+---
+
 ## [0.1.14] - 2025-06-17  
 ### Summary  
 Tooltips, combat polish, and Familiar QoL improvements.  
