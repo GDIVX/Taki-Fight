@@ -18,34 +18,24 @@ namespace Runtime.Combat.Pawn
         private static readonly int FlashAmount = Shader.PropertyToID("_FlashAmount");
         private static readonly int Dissolve = Shader.PropertyToID("_Dissolve");
 
-        [SerializeField] [BoxGroup("Stats")] private LayoutGroup _layout;
 
-        [SerializeField] [BoxGroup("Stats/Health")]
-        private Image _defenseImage;
+        [SerializeField] [BoxGroup("Health")] private Image _defenseImage;
 
-        [SerializeField] [BoxGroup("Stats/Health")]
-        private TextMeshProUGUI _defenseCount;
+        [SerializeField] [BoxGroup("Health")] private TextMeshProUGUI _defenseCount;
 
-        [SerializeField] [BoxGroup("Stats/Health")]
-        private float _dissolveTime;
+        [SerializeField] [BoxGroup("Health")] private float _dissolveTime;
 
-        [SerializeField] [BoxGroup("Stats/Health")]
-        private Ease _dissolveEase;
+        [SerializeField] [BoxGroup("Health")] private Ease _dissolveEase;
 
-        [SerializeField] [BoxGroup("Stats/Damage")]
-        private float _flashTime;
+        [SerializeField] [BoxGroup("Damage")] private float _flashTime;
 
-        [SerializeField] [BoxGroup("Stats/Damage")]
-        private Ease _flashEase;
+        [SerializeField] [BoxGroup("Damage")] private Ease _flashEase;
 
-        [SerializeField] [BoxGroup("Stats/Damage")]
-        private TextMeshProUGUI _damageText;
+        [SerializeField] [BoxGroup("Damage")] private TextMeshProUGUI _damageText;
 
-        [SerializeField] [BoxGroup("Stats/Damage")]
-        private TextMeshProUGUI _attacksText;
+        [SerializeField] [BoxGroup("Damage")] private TextMeshProUGUI _attacksText;
 
-        [SerializeField] [BoxGroup("Stats/Damage")]
-        private Image _attacksImage;
+        [SerializeField] [BoxGroup("Damage")] private Image _attacksImage;
 
 
         [SerializeField, BoxGroup("Movement")] private Ease _movementEase;
@@ -141,22 +131,22 @@ namespace Runtime.Combat.Pawn
                 _spriteRenderer.flipY = false;
             }
 
-            // Adjust the anchors and pivot based on ownership
-            if (!_layout.TryGetComponent(out RectTransform rectTransform)) return;
-            if (owner == PawnOwner.Enemy)
-            {
-                rectTransform.anchorMin = new Vector2(1, 1);
-                rectTransform.anchorMax = new Vector2(1, 1);
-                rectTransform.pivot = new Vector2(1, 1);
-            }
-            else
-            {
-                rectTransform.anchorMin = new Vector2(0, 1);
-                rectTransform.anchorMax = new Vector2(0, 1);
-                rectTransform.pivot = new Vector2(0, 1);
-            }
-
-            rectTransform.anchoredPosition = Vector2.zero;
+            // // Adjust the anchors and pivot based on ownership
+            // if (!_layout.TryGetComponent(out RectTransform rectTransform)) return;
+            // if (owner == PawnOwner.Enemy)
+            // {
+            //     rectTransform.anchorMin = new Vector2(1, 1);
+            //     rectTransform.anchorMax = new Vector2(1, 1);
+            //     rectTransform.pivot = new Vector2(1, 1);
+            // }
+            // else
+            // {
+            //     rectTransform.anchorMin = new Vector2(0, 1);
+            //     rectTransform.anchorMax = new Vector2(0, 1);
+            //     rectTransform.pivot = new Vector2(0, 1);
+            // }
+            //
+            // rectTransform.anchoredPosition = Vector2.zero;
         }
 
         private void ApplyFootprintScale(int width, int height)
