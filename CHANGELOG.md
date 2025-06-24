@@ -1,38 +1,42 @@
 # Changelog
 
-All notable frontend changes to this project will be documented in this file.  
-Do not document backend changes; this file is for playtesters, players, and stakeholders to track patch notes.  
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0)  
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).  
-Maintainers must add a new entry for each release.
+All notable **frontend** changes to this project are documented here.  
+This file is intended for **players, playtesters, and stakeholders**.  
+**Do not document backend-only changes** here.
+
+Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0)  
+Adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ---
 
-🛠️ **Codex Instructions:**
+🛠️ Codex Instructions:
 
-1. **Append** each new version’s changelog at the top of this file.  
-   - Use the format: `## [x.y.z] - YYYY-MM-DD`  
-   - Start each version with a short `### Summary` section (1–2 sentences max) describing the *main focus* of the update.  
-   - Follow with categorized entries: `### Added`, `### Changed`, `### Fixed`, etc.
+1. **Append** new entries to the top of this file:  
+   - Format: \`## [x.y.z] - YYYY-MM-DD\`  
+   - Start with a short \`### Summary\` (1–2 sentences).  
+   - Then list changes under: \`### Added\`, \`### Changed\`, \`### Fixed\`, etc.
 
-2. **Overwrite** the file at `Assets/Resources/changelog.txt` with only the current version’s entry.  
-   - Include the `[x.y.z]` version header and the entire changelog block (including `### Summary`)  
-   - Do **not** include older versions.
+2. **Overwrite** \`Assets/Resources/changelog.txt\` with the current version only:  
+   - Include the full block starting from the \`[x.y.z]\` header.  
+   - Do **not** include older entries.
 
-3. When appropriate, append this to the end of `changelog.txt`:  
+3. Append this at the end of \`changelog.txt\` if appropriate:  
 
    ---
-   📝 Submit feedback: https://forms.gle/6nVJeP1MwBQdxoxg8  
-   📅 Book a playtest: https://calendar.app.google/vqCvZXTd6tQFMGTLA  
-   💬 Or post in the #feedback Discord forum
+   Download, play, and tell us what you think!
+   Simply use one of these commands:
+   /bug  
+   /idea  
+   /feedback  
 
-> `.txt` is used for Discord and in-game display.  
-> `.md` stores the full changelog history and helps Codex infer what changed and why.
+\> \`.txt\` is used for in-game display and Discord.  
+\> \`.md\` contains the full changelog history for Codex and internal use.
 
 ---
 
-**Use in-game lingo:**
-- Pawn == Familiar
+**Terminology**  
+- Use in-game lingo: “Pawn” = Familiar
+
 
 ---
 
