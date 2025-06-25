@@ -107,7 +107,7 @@ namespace Runtime.Combat.Pawn
             else
             {
                 _multiStrikeObject.SetActive(true);
-                _attacksText.text = attacks.ToString();
+                _attacksText.text = $"X{attacks}";
             }
         }
 
