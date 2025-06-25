@@ -1,4 +1,9 @@
-﻿using DG.Tweening;
+﻿using System;
+using System.Linq;
+using DG.Tweening;
+using JetBrains.Annotations;
+using Runtime.CardGameplay.Card.CardBehaviour;
+using Runtime.Combat.Pawn;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
@@ -23,6 +28,12 @@ namespace Runtime.CardGameplay.Card.View
         [SerializeField] private float _cardMovementDuration;
         [SerializeField] private float _minScale;
         [SerializeField] private Ease _cardMovementEase;
+
+        //Pawn
+        [SerializeField, BoxGroup("Pawn")] GameObject _pawnContentContainer;
+
+        [SerializeField, BoxGroup("Pawn")]
+        TextMeshProUGUI _healthText, _attackDamageText, _multistrikeText, _speedText, _sizeText, _rangeText;
 
         [SerializeField, TabGroup("Hover Animation")]
         private float _hoverScaleFactor = 1.2f;
@@ -92,8 +103,10 @@ namespace Runtime.CardGameplay.Card.View
         }
 
         [Button]
-        private CardView Draw(CardData data)
+        private CardView Draw([NotNull] CardData data)
         {
+            if (!data) throw new ArgumentNullException(nameof(data));
+
             _title.text = data.Title;
             _image.sprite = data.Image;
 
@@ -104,7 +117,37 @@ namespace Runtime.CardGameplay.Card.View
 
             _cardData = data;
 
+            if (_cardData.PlayStrategies.FirstOrDefault().PlayStrategy is SummonUnitPlay summonUnitPlay)
+            {
+                _pawnContentContainer.gameObject.SetActive(true);
+                ConfigSummonCard(summonUnitPlay.Pawn);
+            }
+            else
+            {
+                _pawnContentContainer.gameObject.SetActive(false);
+            }
+
             return this;
+        }
+
+        private void ConfigSummonCard(PawnData pawn)
+        {
+            _healthText.text = pawn.Health.ToString();
+            _attackDamageText.text = pawn.Damage.ToString();
+
+            if (pawn.Attacks > 1)
+            {
+                _multistrikeText.gameObject.SetActive(true);
+                _multistrikeText.text = pawn.Attacks.ToString();
+            }
+            else
+            {
+                _multistrikeText.gameObject.SetActive(false);
+            }
+
+            _speedText.text = pawn.Speed.ToString();
+            _sizeText.text = pawn.Size.x.ToString();
+            _rangeText.text = pawn.AttackRange.ToString();
         }
 
         [Button]
