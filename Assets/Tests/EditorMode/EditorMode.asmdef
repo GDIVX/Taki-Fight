@@ -2,12 +2,12 @@
     "name": "EditorMode",
     "rootNamespace": "",
     "references": [
-        "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
         "CodeMonkey_HealthSystem",
         "CodeMonkey_HealthSystem_Editor",
         "Runtime",
-        "Utilities"
+        "Utilities",
+        "UnityEngine.TestRunner"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
