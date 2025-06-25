@@ -35,7 +35,8 @@ namespace Runtime.Combat.Pawn
 
         [SerializeField] [BoxGroup("Damage")] private TextMeshProUGUI _attacksText;
 
-        [SerializeField] [BoxGroup("Damage")] private GameObject _attacksImage;
+        [SerializeField] [BoxGroup("Damage")] private GameObject _multiStrikeObject;
+        [SerializeField] [BoxGroup("Damage")] private RectTransform _gui;
 
 
         [SerializeField, BoxGroup("Movement")] private Ease _movementEase;
@@ -100,12 +101,12 @@ namespace Runtime.Combat.Pawn
         {
             if (attacks <= 1)
             {
-                _attacksImage.SetActive(false);
+                _multiStrikeObject.SetActive(false);
                 _attacksText.text = "";
             }
             else
             {
-                _attacksImage.SetActive(true);
+                _multiStrikeObject.SetActive(true);
                 _attacksText.text = attacks.ToString();
             }
         }
