@@ -1,18 +1,22 @@
-## [0.1.15] - 2025-06-22
+## [0.1.16] - 2025-06-25
 ### Summary
-Early build focusing on small improvements and bug fixes.
+UI rework and better card descriptions.
 
 ### Added
-- New build for early testing.
+- Summon cards display Familiar stats.
 
 ### Changed
-- Polished various UI elements.
+- Reworked character UI for clarity.
+- Card text now generated with DescriptionBuilder.
 
 ### Fixed
-- Minor bugs reported by testers.
+- Pawn scaling issues.
+- Multi-strike targeting bug.
 
 ---
-📝 Submit feedback: https://forms.gle/6nVJeP1MwBQdxoxg8
-📅 Book a playtest: https://calendar.app.google/vqCvZXTd6tQFMGTLA
-💬 Or post in the #feedback Discord forum
+Download, play, and tell us what you think!
+Simply use one of these commands:
+ /bug
+ /idea
+ /feedback
 

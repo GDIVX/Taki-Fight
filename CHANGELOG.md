@@ -42,6 +42,21 @@ Adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
+## [0.1.16] - 2025-06-25
+### Summary
+UI rework and better card descriptions.
+
+### Added
+- Summon cards display Familiar stats.
+
+### Changed
+- Reworked character UI for clarity.
+- Card text now generated with DescriptionBuilder.
+
+### Fixed
+- Pawn scaling issues.
+- Multi-strike targeting bug.
+
 ## [0.1.15] - 2025-06-22
 ### Summary
 Early build focusing on small improvements and bug fixes.
