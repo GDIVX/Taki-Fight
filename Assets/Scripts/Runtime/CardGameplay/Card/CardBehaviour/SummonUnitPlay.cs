@@ -25,65 +25,10 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                 {
                     //cast the target to a tile
                     var tileView = target as TileView;
-                    if (tileView == null)
-                    {
-                        // Debug.LogError("SummonUnitPlay: Target is not a TileView.");
-                        onComplete?.Invoke(false);
-                        return false;
-                    }
-
-                    //get the size of the unit
-                    var unitSize = Pawn.Size;
-
-                    //get all tiles for the footprint of the unit
-                    var tilemap = ServiceLocator.Get<TilemapController>();
-                    if (tilemap == null)
-                    {
-                        Debug.LogError("SummonUnitPlay: TilemapController not found.");
-                        onComplete?.Invoke(false);
-                        return false;
-                    }
-
-                    if (!tilemap.TryGenerateFootprintBounded(tileView.Tile.Position, unitSize, out var footprint))
-                    {
-                        onComplete?.Invoke(false);
-                        return false;
-                    }
-
-                    //check if the footprint is valid
-                    //iterate through the footprint and check validation
-                    foreach (var tile in footprint)
-                    {
-                        if (tile == null)
-                        {
-                            onComplete?.Invoke(false);
-                            return false;
-                        }
-
-                        //check if tile is in bounds of the tilemap
-                        if (!tilemap.IsInBounds(tile.Position))
-                        {
-                            onComplete?.Invoke(false);
-                            return false;
-                        }
-
-                        if (tile.IsOccupied)
-                        {
-                            onComplete?.Invoke(false);
-                            return false;
-                        }
-
-                        //all tiles must adhear to the tile selection mode
-                        var tileSelectionMode = TileFilterCriteria();
-                        if (!TileFilterHelper.FilterTile(tile, tileSelectionMode))
-                        {
-                            onComplete?.Invoke(false);
-                            return false;
-                        }
-                    }
-
-                    //if all tiles are valid, return true
-                    return true;
+                    if (tileView) return IsValidTile(tileView.Tile);
+                    // Debug.LogError("SummonUnitPlay: Target is not a TileView.");
+                    onComplete?.Invoke(false);
+                    return false;
                 },
                 1,
                 selectedEntities =>
@@ -106,6 +51,57 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                 TileOwner = TileOwner.Player
             };
             return tileSelectionMode;
+        }
+
+        public override bool IsValidTile(Tile tile)
+        {
+            //get all tiles for the footprint of the unit
+            var tilemap = ServiceLocator.Get<TilemapController>();
+            if (tilemap == null)
+            {
+                Debug.LogError("SummonUnitPlay: TilemapController not found.");
+                return false;
+            }
+
+            //get the size of the unit
+            var unitSize = Pawn.Size;
+            if (!tilemap.TryGenerateFootprintBounded(tile.Position, unitSize, out var footprint))
+            {
+                return false;
+            }
+
+            //check if the footprint is valid
+            //iterate through the footprint and check validation
+            foreach (var t in footprint)
+            {
+                if (t == null)
+                {
+                    return false;
+                }
+
+                //check if tile is in bounds of the tilemap
+                if (!tilemap.IsInBounds(t.Position))
+                {
+                    return false;
+                }
+
+                if (t.IsOccupied)
+                {
+                    return false;
+                }
+
+                //all tiles must adhear to the tile selection mode
+                var tileSelectionMode = TileFilterCriteria();
+                if (!TileFilterHelper.FilterTile(t, tileSelectionMode))
+                {
+                    return false;
+                }
+                
+                
+            }
+
+            //if all tiles are valid, return true
+            return true;
         }
 
         private void Summon(CardController cardController, Action<bool> onComplete, Tile tile)

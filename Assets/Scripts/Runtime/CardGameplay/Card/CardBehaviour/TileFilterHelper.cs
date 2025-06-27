@@ -21,6 +21,16 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
 
         [ShowIf("@Occupancy == OccupancyFilter.Occupied")] [EnumToggleButtons]
         public PawnOwner PawnOwner;
+
+        public static TileFilterCriteria All()
+        {
+            return new TileFilterCriteria
+            {
+                Occupancy = OccupancyFilter.All,
+                PawnOwner = PawnOwner.Any,
+                TileOwner = TileOwner.All
+            };
+        }
     }
 
     internal static class TileFilterHelper

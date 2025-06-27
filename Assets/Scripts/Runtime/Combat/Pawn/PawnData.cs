@@ -7,6 +7,7 @@ using Runtime.CardGameplay.Card.CardBehaviour;
 using Runtime.Combat.Pawn;
 using Runtime.Combat.Pawn.AttackFeedback;
 using Runtime.Combat.Pawn.AttackMod;
+using Runtime.Combat.Tilemap;
 using Sirenix.OdinInspector;
 using UnityEngine;
 #if UNITY_EDITOR
@@ -293,6 +294,7 @@ namespace Runtime.Combat.Pawn
                 Potency = 1,
                 Parameters = parameters
             };
+            card.Highlight = HighlightType.Friendly;
             card.PlayStrategies = new List<PlayStrategyData> { playStrategy };
 
             if (!AssetDatabase.IsValidFolder("Assets/Resources/Data/Strategies/Summon"))

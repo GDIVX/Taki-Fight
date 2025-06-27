@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Linq;
 using DG.Tweening;
 using Runtime.Selection;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Utilities;
 
 namespace Runtime.Combat.Tilemap
 {
@@ -148,6 +150,14 @@ namespace Runtime.Combat.Tilemap
         public bool IsAnimating()
         {
             return DOTween.IsTweening(spriteRenderer);
+        }
+
+        public void Highlight(HighlightType highlight)
+        {
+            if (highlight == HighlightType.None) return;
+            var service = ServiceLocator.GetScriptableService<HighlightColors>();
+            var color = service.Colors.FirstOrDefault(c => c.Type == highlight).Color;
+            Highlight(color);
         }
     }
 }
