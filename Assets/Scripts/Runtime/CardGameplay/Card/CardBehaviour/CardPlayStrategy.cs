@@ -53,7 +53,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
         /// <returns></returns>
         public virtual bool IsValidTile(Tile tile)
         {
-            return true;
+            return false;
         }
 
         /// <summary>
