@@ -2,6 +2,7 @@
 using System.Linq;
 using Runtime.CardGameplay.Card.CardBehaviour;
 using Runtime.CardGameplay.Card.CardBehaviour.Feedback;
+using Runtime.Combat.Tilemap;
 using Runtime.RunManagement;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -51,14 +52,17 @@ namespace Runtime.CardGameplay.Card
 
 
         // Gameplay ───────────────────────────────────────────────────
+        [TabGroup("Gameplay")] [SerializeField]
+        private HighlightType _highlight;
+
+        [TabGroup("Gameplay")] [LabelText("Consume After Use?")] [SerializeField]
+        private bool _isConsumed;
+
         [TabGroup("Gameplay")]
         [ListDrawerSettings(ShowFoldout = true)]
         [SerializeField]
         [ValidateInput("ValidateStrategies", "Invalid Strategies.")]
         private List<PlayStrategyData> _playStrategies;
-
-        [TabGroup("Gameplay")] [LabelText("Consume After Use?")] [SerializeField]
-        private bool _isConsumed;
 
 
         // Feedback ───────────────────────────────────────────────────
@@ -132,6 +136,12 @@ namespace Runtime.CardGameplay.Card
         {
             get => _feedbackStrategy;
             set => _feedbackStrategy = value;
+        }
+
+        public HighlightType Highlight
+        {
+            get => _highlight;
+            set => _highlight = value;
         }
 
         #endregion

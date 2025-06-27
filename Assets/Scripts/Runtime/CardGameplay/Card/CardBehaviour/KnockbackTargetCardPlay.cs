@@ -1,6 +1,7 @@
 using System;
 using Runtime.Combat.Pawn;
 using Runtime.CardGameplay.Card;
+using Runtime.Combat.Tilemap;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -89,6 +90,11 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
         {
             _params = playStrategyData.Parameters as KnockbackParams;
             base.Initialize(playStrategyData, cardController);
+        }
+
+        public override bool IsValidTile(Tile tile)
+        {
+            return tile.IsOccupied && tile.Pawn && tile.Pawn.Owner == _params.PawnOwner;
         }
     }
 }

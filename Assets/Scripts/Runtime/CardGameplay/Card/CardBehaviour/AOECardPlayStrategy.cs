@@ -33,7 +33,7 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                         return false;
                     }
 
-                    return TileFilterHelper.FilterTile(tileView.Tile, aoeParams.TileFilter);
+                    return IsValidTile(tileView.Tile);
                 },
                 1,
                 selectedEntities =>
@@ -79,6 +79,11 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
         {
             aoeParams = playStrategyData.Parameters as AOEPlayParams;
             base.Initialize(playStrategyData, cardController);
+        }
+
+        public override bool IsValidTile(Tile tile)
+        {
+            return TileFilterHelper.FilterTile(tile, aoeParams.TileFilter);
         }
     }
 }

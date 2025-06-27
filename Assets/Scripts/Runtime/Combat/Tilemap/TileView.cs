@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Linq;
 using DG.Tweening;
 using Runtime.Selection;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Utilities;
 
 namespace Runtime.Combat.Tilemap
 {
@@ -11,14 +13,14 @@ namespace Runtime.Combat.Tilemap
         IPointerExitHandler
     {
         private static Action _onClearHighlights;
-        [SerializeField] private SpriteRenderer spriteRenderer; // Reference to the sprite renderer
+        [SerializeField] private SpriteRenderer spriteRenderer;
 
-        [ShowInInspector, ReadOnly] private Tile tile;
+        [ShowInInspector, ReadOnly] private Tile _tile;
 
         public Tile Tile
         {
-            get => tile;
-            private set => tile = value;
+            get => _tile;
+            private set => _tile = value;
         }
 
         public void OnPointerClick(PointerEventData eventData)
@@ -41,11 +43,11 @@ namespace Runtime.Combat.Tilemap
             if (SelectionService.Instance.CurrentState == SelectionState.InProgress)
             {
                 // Trigger AOE visualization on hover
-                AOEHighlight.HighlightForSelection(tile); // Highlight the tile for AOE selection
+                AOEHighlight.HighlightForSelection(_tile); // Highlight the tile for AOE selection
             }
-            else if (tile.Pawn)
+            else if (_tile.Pawn)
             {
-                tile.Pawn.OnPointerEnter(eventData); // Trigger the pawn's OnPointerEnter method if it exists
+                _tile.Pawn.OnPointerEnter(eventData); // Trigger the pawn's OnPointerEnter method if it exists
                 // Highlight the tile in green if the pawn is on it
                 Highlight(Color.green);
             }
@@ -122,7 +124,7 @@ namespace Runtime.Combat.Tilemap
         internal void OnOwnerModified()
         {
             // Change color based on the owner using a shader or color assignment
-            var owner = tile.Owner;
+            var owner = _tile.Owner;
 
             var color = Color.white;
             switch (owner)
@@ -131,10 +133,13 @@ namespace Runtime.Combat.Tilemap
                     color = Color.white; // Default color for no owner
                     break;
                 case TileOwner.Player:
-                    color = Color.blue; // Color for player-owned tiles
+                    color = Color.yellow;
                     break;
                 case TileOwner.Enemy:
-                    color = Color.red; // Color for enemy-owned tiles
+                    color = Color.magenta; // Color for enemy-owned tiles
+                    break;
+                case TileOwner.All:
+                    color = Color.white; // Default color for no owner
                     break;
                 default:
                     Debug.LogWarning("Unknown TileOwner type.");
@@ -148,6 +153,19 @@ namespace Runtime.Combat.Tilemap
         public bool IsAnimating()
         {
             return DOTween.IsTweening(spriteRenderer);
+        }
+
+        public void Highlight(HighlightType highlight)
+        {
+            if (highlight == HighlightType.None)
+            {
+                ClearHighlight();
+                return;
+            }
+
+            var service = ServiceLocator.GetScriptableService<HighlightColors>();
+            var color = service.Colors.FirstOrDefault(c => c.Type == highlight).Color;
+            Highlight(color);
         }
     }
 }

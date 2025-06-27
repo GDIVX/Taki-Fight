@@ -3,12 +3,16 @@ using System.Linq;
 using DG.Tweening;
 using JetBrains.Annotations;
 using Runtime.CardGameplay.Card.CardBehaviour;
+using Runtime.CardGameplay.Deck;
 using Runtime.Combat.Pawn;
+using Runtime.Combat.Tilemap;
 using Sirenix.OdinInspector;
+using Sirenix.Utilities;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Utilities;
 
 namespace Runtime.CardGameplay.Card.View
 {
@@ -75,21 +79,12 @@ namespace Runtime.CardGameplay.Card.View
         [ShowInInspector, ReadOnly] private int _originalSiblingIndex;
 
 
+        #region Initialize
+
         private void Awake()
         {
             _originalScale = transform.localScale;
             SetOriginalValues();
-        }
-
-
-        public void OnPointerEnter(PointerEventData eventData)
-        {
-            if (_isHoverEnabled) AnimateHoverEnter();
-        }
-
-        public void OnPointerExit(PointerEventData eventData)
-        {
-            if (_isHoverEnabled) AnimateReturnToDefault();
         }
 
         public CardView Init(Transform drawFrom, Transform discardTo)
@@ -130,6 +125,79 @@ namespace Runtime.CardGameplay.Card.View
             return this;
         }
 
+        public void Draw(CardController controller)
+        {
+            Draw(controller.Data);
+            _controller = controller;
+            SetCost(controller.Instance.Cost);
+            UpdateDescription();
+            _controller.IsPlayable.OnValueChanged += Highlight;
+        }
+
+        private void Highlight(bool enable)
+        {
+            if (enable)
+            {
+                DOTween.To(() => _uiOutline.color.a,
+                    a => _uiOutline.color =
+                        new Color(_uiOutline.color.r, _uiOutline.color.g, _uiOutline.color.b, a),
+                    _outlineAlphaMax,
+                    _outlineTransitionDuration);
+            }
+            else
+            {
+                DOTween.To(() => _uiOutline.color.a,
+                    a => _uiOutline.color =
+                        new Color(_uiOutline.color.r, _uiOutline.color.g, _uiOutline.color.b, a),
+                    _outlineAlphaMin,
+                    _outlineTransitionDuration);
+            }
+        }
+
+        #endregion
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            if (!_isHoverEnabled) return;
+            AnimateHoverEnter();
+            HighlightAskedCards();
+            HighlightAskedTiles();
+        }
+
+        private void HighlightAskedTiles()
+        {
+            var tilemap = ServiceLocator.Get<TilemapController>();
+            tilemap.AllTiles().Where(tile => _controller.IsAskingForTile(tile))
+                .ForEach(tile => tile.View.Highlight(_cardData.Highlight));
+        }
+
+        private void HighlightAskedCards()
+        {
+            var hand = ServiceLocator.Get<HandController>();
+            hand.Cards.ForEach(card =>
+            {
+                //exclude self
+                if (card.View == this) return;
+                card.View.Highlight(_controller.IsAskingForCard(card));
+            });
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            if (!_isHoverEnabled) return;
+            AnimateReturnToDefault();
+
+            //remove highlight from tiles
+            var tilemap = ServiceLocator.Get<TilemapController>();
+            tilemap.AllTiles().Where(tile => _controller.IsAskingForTile(tile))
+                .ForEach(tile => tile.View.ClearHighlight());
+
+            //remove highlight from cards
+            var hand = ServiceLocator.Get<HandController>();
+            hand.Cards.ForEach(card => { card.View.Highlight(_controller.IsPlayable); });
+        }
+
+
         private void ConfigSummonCard(PawnData pawn)
         {
             _healthText.text = pawn.Health.ToString();
@@ -156,33 +224,6 @@ namespace Runtime.CardGameplay.Card.View
             _uiOutline.color = color;
         }
 
-
-        public void Draw(CardController controller)
-        {
-            Draw(controller.Data);
-            _controller = controller;
-            SetCost(controller.Instance.Cost);
-            UpdateDescription();
-            _controller.IsPlayable.OnValueChanged += isPlayable =>
-            {
-                if (isPlayable)
-                {
-                    DOTween.To(() => _uiOutline.color.a,
-                        a => _uiOutline.color =
-                            new Color(_uiOutline.color.r, _uiOutline.color.g, _uiOutline.color.b, a),
-                        _outlineAlphaMax,
-                        _outlineTransitionDuration);
-                }
-                else
-                {
-                    DOTween.To(() => _uiOutline.color.a,
-                        a => _uiOutline.color =
-                            new Color(_uiOutline.color.r, _uiOutline.color.g, _uiOutline.color.b, a),
-                        _outlineAlphaMin,
-                        _outlineTransitionDuration);
-                }
-            };
-        }
 
         public void UpdateDescription()
         {

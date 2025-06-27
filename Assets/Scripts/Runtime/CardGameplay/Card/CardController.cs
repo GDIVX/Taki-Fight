@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Runtime.CardGameplay.Card.CardBehaviour;
 using Runtime.CardGameplay.Card.CardBehaviour.Feedback;
 using Runtime.CardGameplay.Card.View;
 using Runtime.CardGameplay.Deck;
+using Runtime.Combat.Tilemap;
 using Runtime.Selection;
 using Runtime.UI.OnScreenMessages;
 using Sirenix.OdinInspector;
@@ -320,6 +322,17 @@ namespace Runtime.CardGameplay.Card
         public void AddStrategies(List<PlayStrategyData> newStrategies)
         {
             _playStrategies.AddRange(newStrategies);
+        }
+
+
+        internal bool IsAskingForCard(CardController otherCard)
+        {
+            return _playStrategies.Any(data => data.PlayStrategy.IsAskingForCard(otherCard));
+        }
+
+        internal bool IsAskingForTile(Tile tile)
+        {
+            return _playStrategies.Any(d => d.PlayStrategy.IsValidTile(tile));
         }
     }
 }

@@ -18,7 +18,11 @@ namespace Utilities
 
         private void RegisterSelf()
         {
-            if (Self && Application.isPlaying) ServiceLocator.Register(Self);
+            if (Self && Application.isPlaying)
+            {
+                ServiceLocator.Register(Self);
+                Debug.Log($"Registered {Self.name} as {typeof(T).Name}");
+            }
         }
 
         private void UnregisterSelf()

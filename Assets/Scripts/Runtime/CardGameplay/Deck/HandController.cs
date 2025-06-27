@@ -17,12 +17,6 @@ namespace Runtime.CardGameplay.Deck
         [ShowInInspector, ReadOnly] private List<CardController> _cards = new();
         [ShowInInspector] [ReadOnly] public Deck Deck { get; set; }
 
-        public int CardsToDrawPerTurn
-        {
-            get => _cardsToDrawPerTurn;
-            set => _cardsToDrawPerTurn = value;
-        }
-
         public int DrawPerTurn
         {
             get => _cardsToDrawPerTurn;
@@ -32,6 +26,8 @@ namespace Runtime.CardGameplay.Deck
                 OnCardDrawPerTurnUpdated?.Invoke(value);
             }
         }
+
+        public List<CardController> Cards => _cards;
 
 
         public event Action<CardController> OnCardAdded;
@@ -214,7 +210,7 @@ namespace Runtime.CardGameplay.Deck
 
             foreach (var card in cardsToDiscard)
             {
-                if(callRetained) card.InvokeOnRetained();
+                if (callRetained) card.InvokeOnRetained();
                 yield return new WaitForSeconds(_cardMovementDelay);
                 DiscardCard(card);
             }

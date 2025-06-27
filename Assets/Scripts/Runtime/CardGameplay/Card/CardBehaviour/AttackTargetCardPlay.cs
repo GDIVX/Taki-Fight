@@ -1,6 +1,7 @@
 ﻿using System;
 using Runtime.Combat.Pawn;
 using Runtime.Combat.Pawn.AttackMod;
+using Runtime.Combat.Tilemap;
 using UnityEngine;
 
 namespace Runtime.CardGameplay.Card.CardBehaviour
@@ -23,6 +24,11 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                     HandleAttack(pawn, Potency);
                 },
                 cardController.transform.position, onComplete);
+        }
+
+        public override bool IsValidTile(Tile tile)
+        {
+            return tile.IsOccupied && tile.Pawn && tile.Pawn.Owner == _params.PawnOwner;
         }
 
         public override void BlindPlay(CardController cardController, Action<bool> onComplete)

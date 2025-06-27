@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -100,6 +101,18 @@ namespace Utilities
         {
             if (Services.TryGetValue(typeof(T), out var instance) && instance is T typedInstance)
                 Services.Remove(typeof(T));
+        }
+
+        public static T GetScriptableService<T>() where T : ScriptableService<T>
+        {
+            if (TryGet<T>(out T obj))
+            {
+                return obj;
+            }
+
+            obj = Resources.FindObjectsOfTypeAll<T>().FirstOrDefault();
+            Register(obj);
+            return obj;
         }
     }
 }
