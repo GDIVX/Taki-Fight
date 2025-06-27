@@ -325,30 +325,14 @@ namespace Runtime.CardGameplay.Card
         }
 
 
-        private readonly List<bool> _allAsks = new();
-
         internal bool IsAskingForCard(CardController otherCard)
         {
-            if (_allAsks.Count == 0)
-            {
-                //Initialize the list
-                _playStrategies.ForEach(data => _allAsks.Add(data.PlayStrategy.IsAskingForCard(otherCard)));
-            }
-
-            //Iterate. Return on the first true
-            return _allAsks.Any(t => t);
+            return _playStrategies.Any(data => data.PlayStrategy.IsAskingForCard(otherCard));
         }
-
-        private readonly List<bool> _tileFilters = new();
 
         internal bool IsAskingForTile(Tile tile)
         {
-            if (_tileFilters.Count == 0)
-            {
-                _playStrategies.ForEach(d => _tileFilters.Add(d.PlayStrategy.IsValidTile(tile)));
-            }
-
-            return _tileFilters.Any(t => t);
+            return _playStrategies.Any(d => d.PlayStrategy.IsValidTile(tile));
         }
     }
 }
