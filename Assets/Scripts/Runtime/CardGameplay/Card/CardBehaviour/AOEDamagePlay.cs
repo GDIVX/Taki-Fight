@@ -32,5 +32,6 @@ namespace Runtime.CardGameplay.Card.CardBehaviour
                 .Append($" {_params.DamageHandler.GetDescription()} in a ").StartBlueHighlight()
                 .Append($"{_params.AreaSize.x}x{_params.AreaSize.y} area").EndHighlight().ToString();
         }
+        
     }
 }
