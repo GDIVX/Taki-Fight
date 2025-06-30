@@ -11,13 +11,14 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Utilities;
 
-namespace Runtime.Combat.Pawn
+namespace Runtime.Combat.Pawn.VIew
 {
     public class PawnView : MonoBehaviour
     {
         private static readonly int FlashAmount = Shader.PropertyToID("_FlashAmount");
         private static readonly int Dissolve = Shader.PropertyToID("_Dissolve");
 
+        [SerializeField, Required] PawnFloatingTextManager _floatingTextManager;
 
         [SerializeField] [BoxGroup("Health")] private Image _defenseImage;
 
@@ -61,6 +62,7 @@ namespace Runtime.Combat.Pawn
         public void Init(PawnController controller, Observable<int> defense, PawnData data)
         {
             _spriteRenderer ??= GetComponent<SpriteRenderer>();
+            _floatingTextManager ??= GetComponent<PawnFloatingTextManager>();
 
             InitiateHealthView(controller);
             InitiateDefenseView(defense);
@@ -74,6 +76,11 @@ namespace Runtime.Combat.Pawn
 
             ApplyFootprintScale(data.Size.x, data.Size.y);
             ApplyOrientation(data.Owner);
+
+            controller.Combat.OnBeingAttacked += (rawDamage, _) =>
+            {
+                _floatingTextManager.ShowDamageNumber(rawDamage , controller.Health.GetHealth());
+            };
         }
 
         public bool IsAnimating()
