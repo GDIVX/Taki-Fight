@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
 using Runtime.CardGameplay.Card;
-using Runtime.UI.OnScreenMessages;
+using Runtime.CardGameplay.Card.View;
 using Sirenix.OdinInspector;
+using UnityEngine;
 using Utilities;
 
 namespace Runtime.CardGameplay.Deck
@@ -55,7 +55,8 @@ namespace Runtime.CardGameplay.Deck
             {
                 if (_discardPile.Count == 0)
                 {
-                    ServiceLocator.Get<MessageManager>().ShowMessage("Can't Draw More Cards", MessageType.Notification);
+                    var textManager = ServiceLocator.Get<FloatingMessageManager>();
+                    textManager.ShowError("Can't Draw More Cards");
                     cardInstance = null;
                     return false;
                 }

@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections;
 using System.Linq;
+using Runtime.CardGameplay.Card.View;
 using Runtime.CardGameplay.Deck;
 using Runtime.CardGameplay.Energy;
 using Runtime.Combat.Pawn;
 using Runtime.Combat.Spawning;
 using Runtime.Combat.Tilemap;
-using Runtime.UI.OnScreenMessages;
 using Sirenix.OdinInspector;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using Utilities;
@@ -102,7 +103,7 @@ namespace Runtime.Combat
         {
             CurrentTurn++;
 
-            ServiceLocator.Get<MessageManager>().ShowMessage($"Turn {CurrentTurn}", MessageType.Notification);
+            ServiceLocator.Get<FloatingMessageManager>().ShowMessage($"Turn {CurrentTurn}");
 
             // Check if the player has cards to play
             var handController = ServiceLocator.Get<HandController>();

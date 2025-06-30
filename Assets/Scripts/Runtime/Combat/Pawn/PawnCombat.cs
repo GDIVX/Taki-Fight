@@ -30,6 +30,9 @@ namespace Runtime.Combat.Pawn
 
         public PawnController Pawn { get; private set; }
 
+        /// <summary>
+        /// Invoked when damaged. The first int is the raw incoming damage, and the second is the actual damage taken
+        /// </summary>
         public event Action<int, int> OnBeingAttacked;
 
         public void HandleDamage(int damage, IDamageHandler handler)

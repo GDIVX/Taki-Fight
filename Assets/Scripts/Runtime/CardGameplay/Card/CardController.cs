@@ -7,7 +7,6 @@ using Runtime.CardGameplay.Card.View;
 using Runtime.CardGameplay.Deck;
 using Runtime.Combat.Tilemap;
 using Runtime.Selection;
-using Runtime.UI.OnScreenMessages;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -74,10 +73,14 @@ namespace Runtime.CardGameplay.Card
 
             if (SelectionService.Instance.CurrentState == SelectionState.InProgress)
                 // If selection is in progress, validate card selection instead of playing it
+            {
                 TryToSelect();
+            }
             else
                 // Normal card play logic when selection is NOT active
+            {
                 TryToPlay();
+            }
         }
 
         public void TryToSelect()
@@ -179,14 +182,13 @@ namespace Runtime.CardGameplay.Card
         }
 
 
-        public void Play()
+        private void Play()
         {
-            if (!CanAfford())
-            {
-                ServiceLocator.Get<MessageManager>()
-                    .ShowMessage("Not enough energy to play this card.", MessageType.Critical);
-                return;
-            }
+            // if (!CanAfford())
+            // {
+            //     View.ShowMessage($"Need {Cost} Mana, but I only have {Energy.Amount}");
+            //     return;
+            // }
 
             if (_feedbackStrategy)
             {
@@ -283,6 +285,17 @@ namespace Runtime.CardGameplay.Card
         {
             if (!IsPlayable.Value)
             {
+                //determine why and show an appropriete message
+
+                //is is due to cost?
+                if (!CanAfford())
+                {
+                    View.ShowMessage($"Need {Cost} Mana, but I only have {Energy.Amount}");
+                    return;
+                }
+
+                //default message
+                View.ShowMessage("Can't Play");
                 return;
             }
 

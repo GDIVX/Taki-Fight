@@ -119,6 +119,53 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &254068258
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 254068260}
+  - component: {fileID: 254068259}
+  m_Layer: 0
+  m_Name: Floating Text Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &254068259
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 254068258}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f4d182c547a401691df9160ad6c6d28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _genericMessageTextPrefab: {fileID: 5547011204377387585, guid: 27771e40617b3ee49b0cb125e83f6182, type: 3}
+  _errorMessageTextPrefab: {fileID: 5464617847540050835, guid: 32dd215f640795d429d71b9c21341772, type: 3}
+  _warningMessageTextPrefab: {fileID: 5818807166366252396, guid: 54719aa9f6f697e40ae1d8ac8a7a091c, type: 3}
+--- !u!4 &254068260
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 254068258}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 4, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1038084658
 GameObject:
   m_ObjectHideFlags: 0
@@ -477,3 +524,4 @@ SceneRoots:
   - {fileID: 2124363126}
   - {fileID: 1038084660}
   - {fileID: 2001608340}
+  - {fileID: 254068260}

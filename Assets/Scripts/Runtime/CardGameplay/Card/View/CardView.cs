@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using DamageNumbersPro;
 using DG.Tweening;
 using JetBrains.Annotations;
 using Runtime.CardGameplay.Card.CardBehaviour;
@@ -27,6 +28,9 @@ namespace Runtime.CardGameplay.Card.View
         [SerializeField, TabGroup("Dissolve")] private CanvasGroup _canvasGroup;
         [SerializeField, TabGroup("Dissolve")] private float _dissolveTime;
         [SerializeField, TabGroup("Dissolve")] private Ease _dissolveEase;
+
+        [SerializeField, TabGroup("Floating Text")]
+        private DamageNumberGUI _floatingTextPrefab;
 
 
         [SerializeField] private float _cardMovementDuration;
@@ -162,6 +166,11 @@ namespace Runtime.CardGameplay.Card.View
             AnimateHoverEnter();
             HighlightAskedCards();
             HighlightAskedTiles();
+        }
+
+        public void ShowMessage(string message)
+        {
+            _floatingTextPrefab.SpawnGUI(transform as RectTransform, Vector2.up, message);
         }
 
         private void HighlightAskedTiles()
