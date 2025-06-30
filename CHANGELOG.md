@@ -42,6 +42,20 @@ Adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
+## [0.1.17] - 2025-06-30
+### Summary
+Floating damage numbers and tile highlights improve combat feedback.
+
+### Added
+- Pop-up damage numbers and error messages.
+- Highlighted tiles show valid card targets.
+
+### Changed
+- Updated fallback font for readability.
+
+### Fixed
+- Tile highlight caching issues.
+
 ## [0.1.16] - 2025-06-25
 ### Summary
 UI rework and better card descriptions.
