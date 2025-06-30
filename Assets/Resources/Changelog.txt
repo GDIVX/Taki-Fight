@@ -1,17 +1,16 @@
-## [0.1.16] - 2025-06-25
+## [0.1.17] - 2025-06-30
 ### Summary
-UI rework and better card descriptions.
+Floating damage numbers and tile highlights improve combat feedback.
 
 ### Added
-- Summon cards display Familiar stats.
+- Pop-up damage numbers and error messages.
+- Highlighted tiles show valid card targets.
 
 ### Changed
-- Reworked character UI for clarity.
-- Card text now generated with DescriptionBuilder.
+- Updated fallback font for readability.
 
 ### Fixed
-- Pawn scaling issues.
-- Multi-strike targeting bug.
+- Tile highlight caching issues.
 
 ---
 Download, play, and tell us what you think!
