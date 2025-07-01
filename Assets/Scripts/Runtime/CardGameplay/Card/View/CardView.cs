@@ -1,216 +1,127 @@
 ﻿using System;
-using System.Linq;
 using DamageNumbersPro;
 using DG.Tweening;
-using JetBrains.Annotations;
-using Runtime.CardGameplay.Card.CardBehaviour;
-using Runtime.CardGameplay.Deck;
 using Runtime.Combat.Pawn;
-using Runtime.Combat.Tilemap;
 using Sirenix.OdinInspector;
-using Sirenix.Utilities;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using Utilities;
 
 namespace Runtime.CardGameplay.Card.View
 {
     public class CardView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
-        [SerializeField, TabGroup("Draw")] private TextMeshProUGUI _title;
-        [SerializeField, TabGroup("Draw")] private TextMeshProUGUI _description;
-        [SerializeField, TabGroup("Draw")] private Image _image;
-        [SerializeField, TabGroup("Draw")] private TextMeshProUGUI _costText;
+        // === UI EVENTS ===
+        public event Action OnHoverEnter;
+        public event Action OnHoverExit;
 
-        [SerializeField, TabGroup("Dissolve")] private Image _mask;
-        [SerializeField, TabGroup("Dissolve")] private CanvasGroup _canvasGroup;
-        [SerializeField, TabGroup("Dissolve")] private float _dissolveTime;
-        [SerializeField, TabGroup("Dissolve")] private Ease _dissolveEase;
+// === MAIN UI ===
+        [TabGroup("Main UI")] [SerializeField] private TextMeshProUGUI _title;
+        [TabGroup("Main UI")] [SerializeField] private TextMeshProUGUI _description;
+        [TabGroup("Main UI")] [SerializeField] private Image _image;
+        [TabGroup("Main UI")] [SerializeField] private TextMeshProUGUI _costText;
+        [TabGroup("Main UI")] [SerializeField] private UIOutline _uiOutline;
 
-        [SerializeField, TabGroup("Floating Text")]
+// === HOVER / ANIMATION ===
+        [TabGroup("Hover")] [SerializeField] private float _hoverScaleFactor = 1.2f;
+
+        [TabGroup("Hover")] [SerializeField] private float _hoverDuration = 0.3f;
+
+        [TabGroup("Hover")] [SerializeField] private float _onOverMoveToY;
+
+        [TabGroup("Anim")] [SerializeField] private Ease _MoveEase = Ease.InOutSine;
+        [TabGroup("Anim")] [SerializeField] private Ease _ScaleEase = Ease.OutQuad;
+        [TabGroup("Anim")] [SerializeField] private Ease _rotateEase = Ease.OutQuad;
+
+
+// === HIGHLIGHT ===
+        [TabGroup("Highlight")] [SerializeField]
+        private float _outlineTransitionDuration = 0.2f;
+
+        [TabGroup("Highlight")] [SerializeField]
+        private float _outlineAlphaMin = 0f;
+
+        [TabGroup("Highlight")] [SerializeField]
+        private float _outlineAlphaMax = 1f;
+
+// === SUMMON STATS ===
+        [TabGroup("Summon Stats")] [SerializeField]
+        private GameObject _pawnContentContainer;
+
+        [TabGroup("Summon Stats")] [SerializeField]
+        private TextMeshProUGUI _healthText;
+
+        [TabGroup("Summon Stats")] [SerializeField]
+        private TextMeshProUGUI _attackDamageText;
+
+        [TabGroup("Summon Stats")] [SerializeField]
+        private TextMeshProUGUI _multistrikeText;
+
+        [TabGroup("Summon Stats")] [SerializeField]
+        private TextMeshProUGUI _speedText;
+
+        [TabGroup("Summon Stats")] [SerializeField]
+        private TextMeshProUGUI _sizeText;
+
+        [TabGroup("Summon Stats")] [SerializeField]
+        private TextMeshProUGUI _rangeText;
+
+// === FLOATING TEXT ===
+        [TabGroup("Floating Text")] [SerializeField]
+        private GameObject _floatingTextRoot;
+
+        [TabGroup("Floating Text")] [SerializeField]
         private DamageNumberGUI _floatingTextPrefab;
 
 
-        [SerializeField] private float _cardMovementDuration;
-        [SerializeField] private float _minScale;
-        [SerializeField] private Ease _cardMovementEase;
+        private Vector3 _rootScale;
+        private Vector3 _rootPosition;
+        private Vector3 _rootRotation;
+        private int _originalSiblingIndex;
 
-        //Pawn
-        [SerializeField, BoxGroup("Pawn")] GameObject _pawnContentContainer;
-
-        [SerializeField, BoxGroup("Pawn")]
-        TextMeshProUGUI _healthText, _attackDamageText, _multistrikeText, _speedText, _sizeText, _rangeText;
-
-        [SerializeField, TabGroup("Hover Animation")]
-        private float _hoverScaleFactor = 1.2f;
-
-        [SerializeField, TabGroup("Hover Animation")]
-        private float _hoverRotationDuration = 0.3f;
-
-        [SerializeField, TabGroup("Hover Animation")]
-        private float _onOverMoveToY;
-
-        [SerializeField, TabGroup("Hover Animation")]
-        private Ease _hoverEaseType = Ease.OutQuad;
-
-        [SerializeField, TabGroup("Outline")] private UIOutline _uiOutline;
-        [SerializeField, TabGroup("Outline")] private float _outlineTransitionDuration;
-
-        [SerializeField, TabGroup("Outline")] private float _outlineAlphaMin;
-        [SerializeField, TabGroup("Outline")] private float _outlineAlphaMax = 1;
-
-        [ShowInInspector] [ReadOnly] private CardData _cardData;
-        [ShowInInspector] [ReadOnly] private CardController _controller;
-
-
-        private Transform _discardToLocation, _drawFromLocation;
-
-        [ShowInInspector, ReadOnly] private bool _isHoverEnabled;
-
-
-        public void SetHoverEnabled(bool value)
-        {
-            _isHoverEnabled = value;
-        }
-
-        [ShowInInspector, ReadOnly] private Vector3 _originalPosition;
-        [ShowInInspector, ReadOnly] private Vector3 _originalRotation;
-
-
-        [ShowInInspector] [ReadOnly] private Vector3 _originalScale;
-        [ShowInInspector, ReadOnly] private int _originalSiblingIndex;
-
-
-        #region Initialize
+        private bool _isHoverEnabled;
+        public RectTransform RectTransform { get; private set; }
 
         private void Awake()
         {
-            _originalScale = transform.localScale;
-            SetOriginalValues();
+            _rootScale = transform.localScale;
+            _rootPosition = transform.localPosition;
+            _rootRotation = transform.localRotation.eulerAngles;
+            _originalSiblingIndex = transform.GetSiblingIndex();
+            RectTransform ??= GetComponent<RectTransform>();
         }
 
-        public CardView Init(Transform drawFrom, Transform discardTo)
-        {
-            _drawFromLocation = drawFrom;
-            _discardToLocation = discardTo;
-            _canvasGroup.interactable = true;
-            _canvasGroup.blocksRaycasts = true;
+        public void SetHoverEnabled(bool value) => _isHoverEnabled = value;
 
-            return this;
+        public void UpdateDescription(string description) => _description.text = description;
+
+        public void SetCost(int cost)
+        {
+            _costText.text = cost.ToString();
+            _costText.transform.parent?.gameObject.SetActive(cost > 0);
         }
 
-        [Button]
-        private CardView Draw([NotNull] CardData data)
+        public void SetTitle(string title) => _title.text = title;
+
+        public void SetImage(Sprite sprite) => _image.sprite = sprite;
+
+        public void SetHighlight(bool enabled)
         {
-            if (!data) throw new ArgumentNullException(nameof(data));
-
-            _title.text = data.Title;
-            _image.sprite = data.Image;
-
-            SetCost(data.Cost);
-
-            _mask.fillAmount = 1;
-            _canvasGroup.alpha = 1;
-
-            _cardData = data;
-
-            if (_cardData.PlayStrategies.FirstOrDefault().PlayStrategy is SummonUnitPlay summonUnitPlay)
-            {
-                _pawnContentContainer.gameObject.SetActive(true);
-                ConfigSummonCard(summonUnitPlay.Pawn);
-            }
-            else
-            {
-                _pawnContentContainer.gameObject.SetActive(false);
-            }
-
-            return this;
+            DOTween.To(() => _uiOutline.color.a,
+                a => _uiOutline.color = new Color(_uiOutline.color.r, _uiOutline.color.g, _uiOutline.color.b, a),
+                enabled ? _outlineAlphaMax : _outlineAlphaMin,
+                _outlineTransitionDuration);
         }
 
-        public void Draw(CardController controller)
+        public void ShowPawnStats(PawnData pawn)
         {
-            Draw(controller.Data);
-            _controller = controller;
-            SetCost(controller.Instance.Cost);
-            UpdateDescription();
-            _controller.IsPlayable.OnValueChanged += Highlight;
-        }
-
-        private void Highlight(bool enable)
-        {
-            if (enable)
-            {
-                DOTween.To(() => _uiOutline.color.a,
-                    a => _uiOutline.color =
-                        new Color(_uiOutline.color.r, _uiOutline.color.g, _uiOutline.color.b, a),
-                    _outlineAlphaMax,
-                    _outlineTransitionDuration);
-            }
-            else
-            {
-                DOTween.To(() => _uiOutline.color.a,
-                    a => _uiOutline.color =
-                        new Color(_uiOutline.color.r, _uiOutline.color.g, _uiOutline.color.b, a),
-                    _outlineAlphaMin,
-                    _outlineTransitionDuration);
-            }
-        }
-
-        #endregion
-
-        public void OnPointerEnter(PointerEventData eventData)
-        {
-            if (!_isHoverEnabled) return;
-            AnimateHoverEnter();
-            HighlightAskedCards();
-            HighlightAskedTiles();
-        }
-
-        public void ShowMessage(string message)
-        {
-            _floatingTextPrefab.SpawnGUI(transform as RectTransform, Vector2.up, message);
-        }
-
-        private void HighlightAskedTiles()
-        {
-            var tilemap = ServiceLocator.Get<TilemapController>();
-            tilemap.AllTiles().Where(tile => _controller.IsAskingForTile(tile))
-                .ForEach(tile => tile.View.Highlight(_cardData.Highlight));
-        }
-
-        private void HighlightAskedCards()
-        {
-            var hand = ServiceLocator.Get<HandController>();
-            hand.Cards.ForEach(card =>
-            {
-                //exclude self
-                if (card.View == this) return;
-                card.View.Highlight(_controller.IsAskingForCard(card));
-            });
-        }
-
-        public void OnPointerExit(PointerEventData eventData)
-        {
-            if (!_isHoverEnabled) return;
-            AnimateReturnToDefault();
-
-            //remove highlight from tiles
-            var tilemap = ServiceLocator.Get<TilemapController>();
-            tilemap.AllTiles().Where(tile => _controller.IsAskingForTile(tile))
-                .ForEach(tile => tile.View.ClearHighlight());
-
-            //remove highlight from cards
-            var hand = ServiceLocator.Get<HandController>();
-            hand.Cards.ForEach(card => { card.View.Highlight(_controller.IsPlayable); });
-        }
-
-
-        private void ConfigSummonCard(PawnData pawn)
-        {
+            _pawnContentContainer.SetActive(true);
             _healthText.text = pawn.Health.ToString();
             _attackDamageText.text = pawn.Damage.ToString();
+            _speedText.text = pawn.Speed.ToString();
+            _sizeText.text = pawn.Size.x.ToString();
+            _rangeText.text = pawn.AttackRange.ToString();
 
             if (pawn.Attacks > 1)
             {
@@ -221,110 +132,119 @@ namespace Runtime.CardGameplay.Card.View
             {
                 _multistrikeText.gameObject.SetActive(false);
             }
-
-            _speedText.text = pawn.Speed.ToString();
-            _sizeText.text = pawn.Size.x.ToString();
-            _rangeText.text = pawn.AttackRange.ToString();
         }
 
-        [Button]
-        public void SetOutlineColor(Color color)
+        public void HidePawnStats()
         {
-            _uiOutline.color = color;
+            _pawnContentContainer.SetActive(false);
         }
 
 
-        public void UpdateDescription()
+        public void OnPointerEnter(PointerEventData eventData)
         {
-            var builder = new DescriptionBuilder();
-            _description.text = _controller ? builder.Build(_controller) : builder.Build(_cardData);
+            if (!_isHoverEnabled) return;
+            AnimateHoverEnter();
+            OnHoverEnter?.Invoke();
         }
 
-        public void SetCost(int cost)
+        public void OnPointerExit(PointerEventData eventData)
         {
-            _costText.text = cost.ToString();
-            _costText.transform.parent.gameObject.SetActive(cost > 0);
+            if (!_isHoverEnabled) return;
+            AnimateHoverExit();
+            OnHoverExit?.Invoke();
         }
-
-        public void SetOriginalValues()
-        {
-            _originalSiblingIndex = transform.GetSiblingIndex();
-            _originalPosition = transform.localPosition;
-            _originalRotation = transform.localRotation.eulerAngles;
-        }
-
-        public Tween AnimateToLocal(Vector3 position, Vector3 rotation, float duration, Ease ease)
-        {
-            _isHoverEnabled = false;
-            return DOTween.Sequence()
-                .Join(transform.DOLocalMove(position, duration).SetEase(ease))
-                .Join(transform.DOLocalRotate(rotation, duration).SetEase(ease))
-                .OnComplete((() => { _isHoverEnabled = true; }));
-        }
-
-        public Tween AnimateTo(Vector3 position, Vector3 rotation, float duration, Ease ease)
-        {
-            return DOTween.Sequence()
-                .Join(transform.DOMove(position, duration).SetEase(ease))
-                .Join(transform.DORotate(rotation, duration).SetEase(ease))
-                .OnComplete((() => { _isHoverEnabled = true; }));
-        }
-
 
         private void AnimateHoverEnter()
         {
             transform.SetAsLastSibling();
             DOTween.Sequence()
-                .Append(transform.DOLocalRotate(Vector3.zero, _hoverRotationDuration).SetEase(_hoverEaseType))
-                .Join(transform.DOLocalMoveY(_onOverMoveToY, _hoverRotationDuration))
-                .Join(transform.DOScale(_originalScale * _hoverScaleFactor, _hoverRotationDuration)
-                    .SetEase(_hoverEaseType));
+                .Append(transform.DOLocalRotate(Vector3.zero, _hoverDuration).SetEase(_ScaleEase))
+                .Join(transform.DOLocalMoveY(_onOverMoveToY, _hoverDuration))
+                .Join(transform.DOScale(_rootScale * _hoverScaleFactor, _hoverDuration).SetEase(_ScaleEase));
         }
 
-        private void AnimateReturnToDefault()
+        private void AnimateHoverExit()
         {
             DOTween.Sequence()
-                .Append(transform.DOLocalMove(_originalPosition, _hoverRotationDuration).SetEase(_hoverEaseType))
-                .Join(transform.DOLocalRotate(_originalRotation, _hoverRotationDuration).SetEase(_hoverEaseType))
-                .Join(transform.DOScale(_originalScale, _hoverRotationDuration).SetEase(_hoverEaseType))
-                .OnComplete(() => { transform.SetSiblingIndex(_originalSiblingIndex); });
+                .Append(transform.DOLocalMove(_rootPosition, _hoverDuration).SetEase(_ScaleEase))
+                .Join(transform.DOLocalRotate(_rootRotation, _hoverDuration).SetEase(_ScaleEase))
+                .Join(transform.DOScale(_rootScale, _hoverDuration).SetEase(_ScaleEase))
+                .OnComplete(() => transform.SetSiblingIndex(_originalSiblingIndex));
+        }
+
+        public void ShowMessage(string message)
+        {
+            if (_floatingTextPrefab == null || _floatingTextRoot == null)
+            {
+                Debug.LogWarning($"Missing floating text setup on {gameObject.name} for ShowMessage().");
+                return;
+            }
+
+            _floatingTextPrefab.SpawnGUI(_floatingTextRoot.transform as RectTransform, Vector2.up, message);
         }
 
         public void OnDraw()
         {
-            _isHoverEnabled = false;
-            transform.position = _drawFromLocation.position;
-            transform.localScale = new(_minScale, _minScale, 1);
-            DOTween.Sequence()
-                .Append(transform.DOScale(1, _cardMovementDuration).SetEase(_cardMovementEase))
-                .OnComplete(() => { _isHoverEnabled = true; });
+            // Bring to front and show entrance animation
+            transform.SetAsLastSibling();
+            transform.localScale = Vector3.zero;
+
+            MoveToRoot(0.3f);
         }
 
         public void OnDiscard()
         {
-            _isHoverEnabled = false;
-            Sequence sequence = DOTween.Sequence();
-            sequence.Append(AnimateTo(_discardToLocation.position, Vector3.zero, _cardMovementDuration,
-                    _cardMovementEase))
-                .Join(transform.DOScale(_minScale, _cardMovementDuration))
-                .OnComplete(() => { _controller.Disable(); });
+            DOTween.Sequence()
+                .Append(transform.DOScale(Vector3.zero, 0.2f).SetEase(Ease.InBack))
+                .OnComplete(() => gameObject.SetActive(false));
         }
 
-        [Button]
         public void OnConsume()
         {
-            _canvasGroup.interactable = false;
-            _canvasGroup.blocksRaycasts = false;
+            DOTween.Sequence()
+                .Append(transform.DOScale(Vector3.zero, 0.15f).SetEase(Ease.InBack))
+                .Join(transform.DOLocalRotate(new Vector3(0, 0, 180), 0.15f).SetEase(Ease.InBack))
+                .OnComplete(() => gameObject.SetActive(false));
+        }
 
-            AnimateHoverEnter();
-            _mask.DOFillAmount(0, _dissolveTime).SetEase(_dissolveEase);
-            _canvasGroup.DOFade(0, _dissolveTime).SetEase(_dissolveEase).onComplete += () =>
-            {
-                _controller.Disable();
-                transform.localPosition = _originalPosition;
-                transform.localRotation = Quaternion.Euler(_originalRotation);
-                transform.localScale = _originalScale;
-            };
+
+        /// <summary>
+        /// Animate the card’s RectTransform to the given local position & rotation.
+        /// </summary>
+        public Tween Move(Vector3 targetPosition, Vector3 targetRotation, float duration)
+        {
+            // Cancel any ongoing tweens on this transform
+            DOTween.Kill(transform);
+
+            return DOTween.Sequence()
+                .Join(RectTransform.DOLocalMove(targetPosition, duration).SetEase(_MoveEase))
+                .Join(RectTransform.DOLocalRotate(targetRotation, duration).SetEase(_rotateEase));
+        }
+
+        /// <summary>
+        /// Reset only the transform (position, rotation, scale) back to its original values.
+        /// Does NOT touch sibling index.
+        /// </summary>
+        /// <param name="duration"></param>
+        public Tween MoveToRoot(float duration)
+        {
+            DOTween.Kill(transform);
+            return DOTween.Sequence()
+                .Join(transform.DOScale(_rootScale, duration / 3).SetEase(_ScaleEase))
+                .Join(transform.DOLocalRotate(_rootRotation, duration / 3).SetEase(_rotateEase))
+                .Join(transform.DOLocalMove(_rootPosition, duration / 3).SetEase(_MoveEase));
+        }
+
+        public void SetRoot(Vector3 position, Vector3 rotation, Vector3 scale)
+        {
+            _rootPosition = position;
+            _rootRotation = rotation;
+            _rootScale = scale;
+        }
+
+        public void SetRoot(Vector3 position, Vector3 rotation)
+        {
+            SetRoot(position, rotation, _rootScale);
         }
     }
 }
