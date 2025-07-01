@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using DG.Tweening;
 using Runtime.CardGameplay.Card;
-using Runtime.CardGameplay.Card.View;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
@@ -20,10 +19,6 @@ namespace Runtime.CardGameplay.Deck
         private RectTransform _rectTransform;
         private readonly List<CardController> _cards = new();
 
-        public UnityEvent<CardController> PointerEnterEvent;
-        public UnityEvent<CardController> PointerExitEvent;
-        public UnityEvent<CardController> BeginDragEvent;
-        public UnityEvent<CardController> EndDragEvent;
 
         private CardController _hoveredCard;
         private CardController _selectedCard;
@@ -107,72 +102,81 @@ namespace Runtime.CardGameplay.Deck
         {
             int count = _cards.Count;
 
-            if (_currentArrangeSequence.IsActive() && _currentArrangeSequence.IsPlaying())
+            // Stop any existing animation and reset transforms
+            if (_currentArrangeSequence != null && _currentArrangeSequence.IsPlaying())
             {
                 _currentArrangeSequence.Kill();
                 foreach (var c in _cards)
-                {
-                    c.View.SetOriginalValues();
-                }
+                    c.ViewMediator.ResetLayoutState(); // only resets transform, not sibling
             }
 
+            // Disable hover during layout
             foreach (var c in _cards)
-            {
-                c.View.SetHoverEnabled(false);
-            }
+                c.ViewMediator.SetLayoutHoverEnabled(false);
 
+            // Keep hovered card on top
             _hoveredCard?.Transform.SetAsLastSibling();
 
+            // Single-card shortcut
             if (count == 1)
             {
-                _cards[0].View.AnimateToLocal(Vector3.zero, Vector3.zero, animationDuration, easeType);
+                var single = _cards[0];
+                single.ViewMediator
+                    .SetRoot(Vector3.zero, Vector3.zero, animationDuration)
+                    .OnComplete(() => single.ViewMediator.SetLayoutHoverEnabled(true));
                 return;
             }
 
-            if (count == 0 || arcAngle == 0) return;
-            float baseWidth = _rectTransform.rect.width;
+            if (count == 0 || arcAngle == 0f) return;
 
+            // Compute arc radius
+            float baseWidth = _rectTransform.rect.width;
             float scaledWidth = Mathf.Lerp(
                 baseWidth * minArcWidthFactor,
                 baseWidth * maxArcWidthFactor,
-                Mathf.InverseLerp(1, 10, count)
+                Mathf.InverseLerp(1f, 10f, count)
             );
-
-            float radius = scaledWidth / (2 * Mathf.Tan(Mathf.Deg2Rad * (arcAngle / 2)));
+            float radius = scaledWidth / (2f * Mathf.Tan(Mathf.Deg2Rad * (arcAngle / 2f)));
             if (float.IsNaN(radius) || float.IsInfinity(radius)) return;
 
+            // Build new sequence
             _currentArrangeSequence = DOTween.Sequence();
 
+            // Join all card animations (position + rotation)
             for (int i = 0; i < count; i++)
             {
-                float angle = Mathf.Lerp(-arcAngle / 2, arcAngle / 2, i / Mathf.Max(1f, (count - 1f)));
-                float xPos = Mathf.Sin(Mathf.Deg2Rad * angle) * radius;
-                float yPos = Mathf.Cos(Mathf.Deg2Rad * angle) * radius - radius;
-
-                var card = _cards[i];
-
-                if (card != _hoveredCard)
-                {
-                    card.Transform.SetSiblingIndex(i);
-                }
+                float t = (count > 1) ? i / (float)(count - 1) : 0f;
+                float angle = Mathf.Lerp(-arcAngle / 2f, arcAngle / 2f, t);
+                Vector3 pos = new Vector3(
+                    Mathf.Sin(Mathf.Deg2Rad * angle) * radius,
+                    Mathf.Cos(Mathf.Deg2Rad * angle) * radius - radius,
+                    0f
+                );
+                Vector3 rot = new Vector3(0f, 0f, -angle);
 
                 _currentArrangeSequence.Join(
-                    card.View.AnimateToLocal(
-                        new Vector3(xPos, yPos, 0),
-                        new Vector3(0, 0, -angle),
-                        animationDuration,
-                        easeType)
+                    _cards[i].ViewMediator.SetRoot(pos, rot, animationDuration)
                 );
             }
 
-            _currentArrangeSequence.OnComplete(() =>
-            {
-                foreach (var card in _cards)
+            // Reorder siblings once, at the very end
+            _currentArrangeSequence
+                .AppendCallback(() =>
                 {
-                    card.View.SetOriginalValues();
-                    card.View.SetHoverEnabled(true);
-                }
-            });
+                    for (int i = 0; i < _cards.Count; i++)
+                    {
+                        if (_cards[i] != _hoveredCard)
+                            _cards[i].Transform.SetSiblingIndex(i);
+                    }
+                })
+                .AppendInterval(0f) // ensure it's applied in the final frame
+                .OnComplete(() =>
+                {
+                    foreach (var c in _cards)
+                    {
+                        c.ViewMediator.SetLayoutHoverEnabled(true);
+                    }
+                });
         }
     }
 }

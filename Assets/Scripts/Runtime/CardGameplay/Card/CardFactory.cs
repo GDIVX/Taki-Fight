@@ -39,9 +39,6 @@ namespace Runtime.CardGameplay.Card
             CardController controller = GetController();
             if (controller.Init(instance))
             {
-                controller.View
-                    .Init(_drawFromLocation, _discardToLocation)
-                    .Draw(controller);
                 controller.gameObject.SetActive(true);
                 return controller;
             }

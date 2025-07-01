@@ -79,7 +79,6 @@ namespace Runtime.CardGameplay.Deck
             }
 
             cardController.OnDraw();
-            cardController.View.OnDraw();
             AddCard(cardController);
         }
 
@@ -114,7 +113,6 @@ namespace Runtime.CardGameplay.Deck
             }
 
             controller.OnDraw();
-            controller.View.OnDraw();
             AddCard(controller);
             return controller;
         }
@@ -163,7 +161,6 @@ namespace Runtime.CardGameplay.Deck
             Deck.Discard(cardController.Instance);
             RemoveCard(cardController);
             cardController.OnDiscard();
-            cardController.View.OnDiscard();
         }
 
         public void ConsumeCard(CardController cardController)
@@ -177,7 +174,6 @@ namespace Runtime.CardGameplay.Deck
             Deck.Consume(cardController.Instance);
             RemoveCard(cardController);
             cardController.OnDiscard();
-            cardController.View.OnConsume();
             OnCardBurnt?.Invoke(cardController);
         }
 

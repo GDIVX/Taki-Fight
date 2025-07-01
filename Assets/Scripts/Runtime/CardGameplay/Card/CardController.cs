@@ -14,15 +14,17 @@ using Utilities;
 
 namespace Runtime.CardGameplay.Card
 {
-    public class CardController : MonoBehaviour, IPointerClickHandler, ISelectableEntity, ICloneable
+    public sealed class CardController : MonoBehaviour, IPointerClickHandler, ISelectableEntity, ICloneable
     {
-        [ShowInInspector] [ReadOnly] public Observable<bool> IsPlayable;
+        [ShowInInspector, ReadOnly] public Observable<bool> IsPlayable;
 
         private CardFactory _cardFactory;
-        [ShowInInspector] [ReadOnly] private FeedbackStrategy _feedbackStrategy;
+        private FeedbackStrategy _feedbackStrategy;
         private bool _isSelecting;
+        private CardViewMediator _viewMediator;
 
-        [ShowInInspector] [ReadOnly] private List<PlayStrategyData> _playStrategies;
+        [ShowInInspector, ReadOnly] private List<PlayStrategyData> _playStrategies;
+        [SerializeField] private CardView _view;
 
         public List<PlayStrategyData> PlayStrategies
         {
@@ -31,13 +33,13 @@ namespace Runtime.CardGameplay.Card
         }
 
         public CardType CardType { get; private set; }
-
         public CardInstance Instance { get; private set; }
         public Transform Transform => gameObject.transform;
-        public CardView View { get; set; }
 
+        internal CardView View => _view;
+
+        public CardViewMediator ViewMediator => _viewMediator;
         public CardData Data { get; private set; }
-
         public bool IsConsumed { get; set; }
         public HandController HandController { get; private set; }
         public Energy.Energy Energy { get; private set; }
@@ -50,10 +52,10 @@ namespace Runtime.CardGameplay.Card
             set
             {
                 Instance.Cost = value;
-                View?.SetCost(value);
-                View?.UpdateDescription();
+                _viewMediator?.Refresh();
             }
         }
+
 
         public void OnPointerClick(PointerEventData eventData)
         {
@@ -72,12 +74,10 @@ namespace Runtime.CardGameplay.Card
             if (eventData.button != PointerEventData.InputButton.Left) return;
 
             if (SelectionService.Instance.CurrentState == SelectionState.InProgress)
-                // If selection is in progress, validate card selection instead of playing it
             {
                 TryToSelect();
             }
             else
-                // Normal card play logic when selection is NOT active
             {
                 TryToPlay();
             }
@@ -132,11 +132,12 @@ namespace Runtime.CardGameplay.Card
 
             Instance = instance;
             Instance.Controller = this;
-
             CardType = instance.Data.CardType;
+            Data = instance.Data;
 
             _feedbackStrategy = instance.Data.FeedbackStrategy;
-            View = GetComponent<CardView>();
+
+
             _playStrategies = new List<PlayStrategyData>(instance.Data.PlayStrategies);
             _playStrategies.ForEach(s => s.PlayStrategy.Initialize(s, this));
 
@@ -144,13 +145,14 @@ namespace Runtime.CardGameplay.Card
             Energy = ServiceLocator.Get<Energy.Energy>();
             HandController = ServiceLocator.Get<HandController>();
 
-
             IsPlayable = new Observable<bool>(true);
             IsConsumed = instance.Data.IsConsumed;
+
             OnCardPlayedEvent += _ => UpdateAffordability();
             Energy.OnAmountChanged += _ => UpdateAffordability();
-            Data = instance.Data;
 
+            _viewMediator = new CardViewMediator();
+            _viewMediator.Bind(this, View);
             gameObject.name = instance.Data.Title + instance.Guid;
 
             return true;
@@ -159,41 +161,28 @@ namespace Runtime.CardGameplay.Card
         private void UpdateAffordability()
         {
             IsPlayable.Value = CanAfford();
-            View.UpdateDescription();
+            _viewMediator?.Refresh();
         }
 
-        private List<(CardPlayStrategy, int)> CreatePlayStrategyTupletList(List<PlayStrategyData> dataPlayStrategies)
+        private void TryToPlay()
         {
-            List<(CardPlayStrategy, int)> tuples = new();
-            dataPlayStrategies.ForEach(x => tuples.Add((x.PlayStrategy, x.Potency)));
-            return tuples;
-        }
+            if (!IsPlayable.Value)
+            {
+                _viewMediator?.ShowMessage(!CanAfford()
+                    ? $"Need {Cost} Mana, but I only have {Energy.Amount}"
+                    : "Can't Play");
 
-        public int GetPotency(int index)
-        {
-            return _playStrategies[index].Potency;
-        }
+                return;
+            }
 
-        public void SetPotency(int index, int newValue)
-        {
-            var strategy = _playStrategies[index].PlayStrategy;
-            strategy.Potency = newValue;
-            View?.UpdateDescription();
+            Play();
         }
-
 
         private void Play()
         {
-            // if (!CanAfford())
-            // {
-            //     View.ShowMessage($"Need {Cost} Mana, but I only have {Energy.Amount}");
-            //     return;
-            // }
-
             if (_feedbackStrategy)
             {
-                //TODO: First play the card and then animate
-                _feedbackStrategy.Animate(RunPlayLogic);
+                _feedbackStrategy.Animate(() => RunPlayLogic());
             }
             else
             {
@@ -201,30 +190,22 @@ namespace Runtime.CardGameplay.Card
             }
         }
 
-        private void RunPlayLogic()
-        {
-            RunPlayLogic(false);
-        }
-
         [Button]
         internal void RunPlayLogic(bool blind = false)
         {
             int remainingPlays = _playStrategies.Count;
 
-
-            foreach (var tuple in _playStrategies)
+            foreach (var strategy in _playStrategies)
             {
                 if (blind)
                 {
-                    tuple.PlayStrategy.BlindPlay(this, OnStrategyComplete);
+                    strategy.PlayStrategy.BlindPlay(this, OnStrategyComplete);
                 }
                 else
                 {
-                    tuple.PlayStrategy.Play(this, OnStrategyComplete);
+                    strategy.PlayStrategy.Play(this, OnStrategyComplete);
                 }
             }
-
-            return;
 
             void OnStrategyComplete(bool isResolved)
             {
@@ -242,17 +223,12 @@ namespace Runtime.CardGameplay.Card
             HandleCost();
 
             if (IsConsumed)
-            {
                 HandController.ConsumeCard(this);
-            }
             else
-            {
                 HandController.DiscardCard(this);
-            }
 
             OnCardPlayedEvent?.Invoke(this);
         }
-
 
         private void HandleCost()
         {
@@ -266,11 +242,9 @@ namespace Runtime.CardGameplay.Card
 
         public void OnDiscard()
         {
+            _viewMediator.Consume();
         }
 
-        /// <summary>
-        /// Remove the card.
-        /// </summary>
         public void Disable()
         {
             _cardFactory.ReturnToPool(this);
@@ -279,48 +253,26 @@ namespace Runtime.CardGameplay.Card
         public void OnDraw()
         {
             UpdateAffordability();
-        }
-
-        private void TryToPlay()
-        {
-            if (!IsPlayable.Value)
-            {
-                //determine why and show an appropriete message
-
-                //is is due to cost?
-                if (!CanAfford())
-                {
-                    View.ShowMessage($"Need {Cost} Mana, but I only have {Energy.Amount}");
-                    return;
-                }
-
-                //default message
-                View.ShowMessage("Can't Play");
-                return;
-            }
-
-            Play();
+            _viewMediator.Draw();
         }
 
         public void Discard()
         {
-            var hand = ServiceLocator.Get<HandController>();
-            if (hand) hand.DiscardCard(this);
+            HandController?.DiscardCard(this);
+            _viewMediator.Discard();
         }
 
         public void Consume()
         {
-            var hand = ServiceLocator.Get<HandController>();
-            if (hand) hand.ConsumeCard(this);
+            HandController?.ConsumeCard(this);
         }
 
         public void Limbo()
         {
-            var hand = ServiceLocator.Get<HandController>();
-            if (hand) hand.LimboCard(this);
+            HandController?.LimboCard(this);
         }
 
-        public virtual void InvokeOnRetained()
+        public void InvokeOnRetained()
         {
             OnRetained?.Invoke(this);
         }
@@ -337,7 +289,6 @@ namespace Runtime.CardGameplay.Card
             _playStrategies.AddRange(newStrategies);
         }
 
-
         internal bool IsAskingForCard(CardController otherCard)
         {
             return _playStrategies.Any(data => data.PlayStrategy.IsAskingForCard(otherCard));
@@ -345,7 +296,7 @@ namespace Runtime.CardGameplay.Card
 
         internal bool IsAskingForTile(Tile tile)
         {
-            return _playStrategies.Any(d => d.PlayStrategy.IsValidTile(tile));
+            return _playStrategies.Any(data => data.PlayStrategy.IsValidTile(tile));
         }
     }
 }
