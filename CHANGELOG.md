@@ -42,6 +42,14 @@ Adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
+## [0.1.18] - 2025-07-03
+### Summary
+Refactored card visualization logic. Expect to see fewer animation glitches and sorting errors.
+
+### Fixes
+- Separated the resting position of cards from their animating position. This should result in fewer glitches and conflicting animations.
+- Separated card presentation and animation from orchestrating visuals. This should result in fewer glitches and conflicting animations, and would make it simpler to spot such issues in the future.
+
 ## [0.1.17] - 2025-06-30
 ### Summary
 Floating damage numbers and tile highlights improve combat feedback.
