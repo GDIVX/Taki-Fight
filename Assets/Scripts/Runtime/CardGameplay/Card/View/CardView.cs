@@ -22,6 +22,7 @@ namespace Runtime.CardGameplay.Card.View
         [TabGroup("Main UI")] [SerializeField] private Image _image;
         [TabGroup("Main UI")] [SerializeField] private TextMeshProUGUI _costText;
         [TabGroup("Main UI")] [SerializeField] private UIOutline _uiOutline;
+        [TabGroup("Main UI")] [SerializeField] private CanvasGroup _canvasGroup;
 
 // === HOVER / ANIMATION ===
         [TabGroup("Hover")] [SerializeField] private float _hoverScaleFactor = 1.2f;
@@ -80,8 +81,7 @@ namespace Runtime.CardGameplay.Card.View
         private Vector3 _rootRotation;
         private int _originalSiblingIndex;
 
-        private bool _isHoverEnabled;
-        public RectTransform RectTransform { get; private set; }
+        private RectTransform RectTransform { get; set; }
 
         private void Awake()
         {
@@ -92,7 +92,6 @@ namespace Runtime.CardGameplay.Card.View
             RectTransform ??= GetComponent<RectTransform>();
         }
 
-        public void SetHoverEnabled(bool value) => _isHoverEnabled = value;
 
         public void UpdateDescription(string description) => _description.text = description;
 
@@ -100,6 +99,10 @@ namespace Runtime.CardGameplay.Card.View
         {
             _costText.text = cost.ToString();
             _costText.transform.parent?.gameObject.SetActive(cost > 0);
+        }
+        public void ToggleBlockRaycast(bool value)
+        {
+            _canvasGroup.blocksRaycasts = value;
         }
 
         public void SetTitle(string title) => _title.text = title;
@@ -142,14 +145,12 @@ namespace Runtime.CardGameplay.Card.View
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            if (!_isHoverEnabled) return;
             AnimateHoverEnter();
             OnHoverEnter?.Invoke();
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            if (!_isHoverEnabled) return;
             AnimateHoverExit();
             OnHoverExit?.Invoke();
         }

@@ -112,7 +112,7 @@ namespace Runtime.CardGameplay.Deck
 
             // Disable hover during layout
             foreach (var c in _cards)
-                c.ViewMediator.SetLayoutHoverEnabled(false);
+                c.ViewMediator.SetBlockRaycast(false);
 
             // Keep hovered card on top
             _hoveredCard?.Transform.SetAsLastSibling();
@@ -123,7 +123,7 @@ namespace Runtime.CardGameplay.Deck
                 var single = _cards[0];
                 single.ViewMediator
                     .SetRoot(Vector3.zero, Vector3.zero, animationDuration)
-                    .OnComplete(() => single.ViewMediator.SetLayoutHoverEnabled(true));
+                    .OnComplete(() => single.ViewMediator.SetBlockRaycast(true));
                 return;
             }
 
@@ -174,7 +174,7 @@ namespace Runtime.CardGameplay.Deck
                 {
                     foreach (var c in _cards)
                     {
-                        c.ViewMediator.SetLayoutHoverEnabled(true);
+                        c.ViewMediator.SetBlockRaycast(true);
                     }
                 });
         }

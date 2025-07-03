@@ -18,7 +18,7 @@ namespace Runtime.CardGameplay.Card.View
             _controller = controller;
             _view = view;
 
-            _view.SetHoverEnabled(true);
+            _view.ToggleBlockRaycast(true);
 
             _view.OnHoverEnter += HandleHoverEnter;
             _view.OnHoverExit += HandleHoverExit;
@@ -141,10 +141,10 @@ namespace Runtime.CardGameplay.Card.View
             _view.MoveToRoot(0.2f);
         }
 
-        public void SetLayoutHoverEnabled(bool enabled)
+        public void SetBlockRaycast(bool enabled)
         {
             if (!_view) return;
-            _view.SetHoverEnabled(enabled);
+            _view.ToggleBlockRaycast(enabled);
         }
 
         public Tween SetRoot(Vector3 position, Vector3 rotation, float duration)

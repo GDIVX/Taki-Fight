@@ -816,18 +816,6 @@ MonoBehaviour:
   easeType: 27
   minArcWidthFactor: 0.5
   maxArcWidthFactor: 2
-  PointerEnterEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  PointerExitEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  BeginDragEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  EndDragEvent:
-    m_PersistentCalls:
-      m_Calls: []
   _handController: {fileID: 303423372}
   _fadeDuration: 0.5
   _fadeEase: 5
@@ -895,7 +883,7 @@ MonoBehaviour:
   m_BlockingObjects: 0
   m_BlockingMask:
     serializedVersion: 2
-    m_Bits: 55
+    m_Bits: 119
 --- !u!114 &303998075
 MonoBehaviour:
   m_ObjectHideFlags: 0
