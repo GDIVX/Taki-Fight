@@ -1,21 +1,16 @@
-## [0.1.17] - 2025-06-30
+## [0.1.18] - 2025-07-03
 ### Summary
-Floating damage numbers and tile highlights improve combat feedback.
+Refactored card visualization logic. Expect to see fewer animation glitches and sorting errors.
 
-### Added
-- Pop-up damage numbers and error messages.
-- Highlighted tiles show valid card targets.
-
-### Changed
-- Updated fallback font for readability.
-
-### Fixed
-- Tile highlight caching issues.
+### Fixes
+- Separated the resting position of cards from their animating position. This should result in fewer glitches and conflicting animations.
+- Separated card presentation and animation from orchestrating visuals. This should result in fewer glitches and conflicting animations, making it simpler to spot such issues in the future.
 
 ---
 Download, play, and tell us what you think!
-Simply use one of these commands:
- /bug
- /idea
- /feedback
+Use one of these commands:
+ /bug at #bugs
+ /idea at #ideas
+ /feedback at #feedback
+/help at #help
 
