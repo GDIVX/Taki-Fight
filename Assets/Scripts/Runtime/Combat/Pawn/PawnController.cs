@@ -171,6 +171,14 @@ namespace Runtime.Combat.Pawn
             // Execute onTurnStart strategies
             ExecuteStrategies(Data.OnTurnStartStrategies);
 
+            //QND:: Simply skip the turn if this is allied
+            //TODO: Refactor the QND
+            if (Owner == PawnOwner.Player)
+            {
+                IsProcessingTurn = false;
+                return;
+            }
+
             StartCoroutine(ProcessTurn());
         }
 
